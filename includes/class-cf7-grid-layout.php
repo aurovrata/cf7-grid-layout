@@ -112,7 +112,7 @@ class Cf7_Grid_Layout {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cf7-grid-layout-admin.php';
-
+    require_once plugin_dir_path( dirname( __FILE__ ) ) . 'assets/cf7-admin-table/cf7-admin-table-loader.php';
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
@@ -150,13 +150,6 @@ class Cf7_Grid_Layout {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Cf7_Grid_Layout_Admin( $this->get_plugin_name(), $this->get_version() );
-    //add cf7 key column
-    $this->loader->add_action( 'manage_wpcf7_contact_form_posts_custom_column' , $plugin_admin, 'show_cf7_key_column', 10, 2 );
-    $this->loader->add_filter('manage_edit-wpcf7_contact_form_columns', $plugin_admin, 'add_cf7_key_column');
-    //add quick edit
-    $this->loader->add_filter('post_row_actions', $plugin_admin, 'add_cf7_post_action',20,2);
-    $this->loader->add_action( 'quick_edit_custom_box', $plugin_admin, 'quick_edit_box', 100, 2 );
-    $this->loader->add_action('save_post',$plugin_admin, 'save_cf7_key', 10, 2);
 
     //enqueue styles
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
