@@ -1,0 +1,14 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+ .display-none {
+    display: none;
+}
+#wpbody-content .inline-edit-row-page fieldset.hide-element,
+#wpbody-content .inline-edit-row-page fieldset.hide-element *{
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    margin:0;
+}
