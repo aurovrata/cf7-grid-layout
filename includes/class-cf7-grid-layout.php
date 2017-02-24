@@ -175,8 +175,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_scripts' );
     $this->loader->add_action( 'wp_print_scripts', $plugin_public, 'dequeue_cf7_scripts',100 );
 		$this->loader->add_action( 'wp_print_styles', $plugin_public, 'dequeue_cf7_styles',100 );
-    $this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'enqueue_styles',10,3 );
-    $this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'enqueue_scripts',10,3 );
+    $this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'cf7_shortcode_request',10,3 );
 
     /* CF7 Hooks */
     //disable autloading of cf7 plugin scripts

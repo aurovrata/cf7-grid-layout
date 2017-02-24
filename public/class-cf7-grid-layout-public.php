@@ -110,48 +110,50 @@ class Cf7_Grid_Layout_Public {
    * hooked on 'do_shortcode_tag',
    * @since 1.0.0
   **/
-  public function enqueue_scripts($output, $tag, $attr){
+  public function cf7_shortcode_request($output, $tag, $attr){
     if('contact-form-7' != $tag){
       return $output;
     }
     wp_enqueue_script('contact-form-7');
     wp_enqueue_script($this->plugin_name);
+    $class[]='has-validation';
     wp_enqueue_script('jquery-select2');
+    wp_enqueue_style('select2-style');
+    $class[]='has-select2';
     wp_enqueue_script('jquery-ui-accordion');
+    $class[]='has-accordion';
     wp_enqueue_script('jquery-ui-tabs');
+    $class[]='has-tabs';
     wp_enqueue_script('jquery-effects-core');
+    $class[]='has-effects';
     wp_enqueue_script('jquery-nice-select');
+    wp_enqueue_style('jquery-nice-select-css');
+    $class[]='has-nice-select';
     wp_enqueue_script('jquery-toggles');
+    wp_enqueue_style('jquery-toggles-css');
+    wp_enqueue_style('jquery-toggles-light-css');
+    $class[]='has-toggles';
+    wp_enqueue_script('jquery-ui-dialog');
+    //styles
+    wp_enqueue_style('contact-form-7');
+    wp_enqueue_style($this->plugin_name);
+    wp_enqueue_style('smart-grid');
+    $class[]='has-grid';
+    wp_enqueue_style('cf7-jquery-ui-theme');
+    wp_enqueue_style('cf7-jquery-ui-structure');
+    wp_enqueue_style('cf7-jquery-ui');
+
     //get the key
     $cf7_id = $attr['id'];
     $cf7_key = get_post_meta($cf7_id, '_smart_grid_cf7_form_key', true);
     //allow custom script print
     do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
+    //form id
+    $css_id = apply_filters('cf7_smart_grid_form_id', $cf7_key, $attr);
+    $output = '<div id="'.$css_id.'" class="cf7-smart-grid has-validation has-table has-accordion has-tabs has-toggles has-nice-select">'.$output.'</div>';
     return $output;
   }
-  /**
-   * Enqueue scripts requried for cf7 shortcode
-   * hooked on 'do_shortcode_tag',
-   * @since 1.0.0
-  **/
-  public function enqueue_styles($output, $tag, $attr){
-    if('contact-form-7' != $tag){
-      return $output;
-    }
 
-    wp_enqueue_style('contact-form-7');
-    wp_enqueue_style($this->plugin_name);
-    wp_enqueue_style('smart-grid');
-    wp_enqueue_style('select2-style');
-    wp_enqueue_style('cf7-jquery-ui-theme');
-    wp_enqueue_style('cf7-jquery-ui-structure');
-    wp_enqueue_style('cf7-jquery-ui');
-    wp_enqueue_style('jquery-nice-select-css');
-    wp_enqueue_style('jquery-toggles-css');
-    wp_enqueue_style('jquery-toggles-light-css');
-
-    return $output;
-  }
   /**
 	 * Register shortcode with CF7.
 	 * Hooked  o 'wpcf7_init'

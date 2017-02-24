@@ -60,9 +60,11 @@ class Cf7_Grid_Layout_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
+    $screen = get_current_screen();
+    if ('wpcf7_contact_form' != $screen->post_type){
+      return;
+    }
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cf7-grid-layout-admin.css', array(), $this->version, 'all' );
-    do_action('smart_grid_register_styles');
 	}
 
 	/**
@@ -87,11 +89,11 @@ class Cf7_Grid_Layout_Admin {
 		    //for the future
         break;
       case 'edit':
-        wp_enqueue_script( $this->plugin_name.'-quick-edit', plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-quick-edit.js', false, $this->version, true );
+        //wp_enqueue_script( $this->plugin_name.'-quick-edit', plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-quick-edit.js', false, $this->version, true );
         break;
     }
 	}
-  
+
   /**
 	 * Add to the wpcf7 tag generator.
 	 * This function registers a callback function with cf7 to display
