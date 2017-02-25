@@ -2,16 +2,16 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
- .cf7-smart-grid .table-button {
+ .cf7-smart-grid .cf7-sg-table-button {
     margin-top: 10px;
 }
-.cf7-smart-grid .row.table-footer {
+.cf7-smart-grid .row.cf7-sg-table-footer {
     margin-top: 5px;
 }
-.cf7-smart-grid .row.table {
+.cf7-smart-grid .row.cf7-sg-table {
     margin-top: 3px;
 }
-.cf7-smart-grid .row.table-footer+.table-button {
+.cf7-smart-grid .row.cf7-sg-table-footer+.cf7-sg-table-button {
     margin-top: 0;
 }
 .row.cf7-sg-table-layout .columns input:not([type="submit"]){

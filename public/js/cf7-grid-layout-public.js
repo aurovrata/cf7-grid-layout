@@ -18,7 +18,7 @@
           }
         });
         //add a button at the end of the table to add new rows
-        table.append('<div class="table-button ui-button add-row">Add Row</div>');
+        table.append('<div class="cf7-sg-table-button ui-button add-row">Add Row</div>');
         //append a hidden clone of the first row which we can use to add
         row = row.clone().addClass('cf7-sg-cloned-table-row');
         table.append(row.hide());
@@ -142,6 +142,11 @@
         var form = $(this);
         var toggled_accordion = $('.collapsible.with-toggle', form);
         toggled_accordion.each(function(){
+          var cssId = $(this).attr('id');
+          if(typeof cssId == 'undefined'){
+            cssId = randString(6);
+            $(this).attr('id', cssId); //assign a random id
+          }
           var state = $(this).data('active');
           if(typeof state == 'undefined'){
             state = false;
@@ -157,18 +162,14 @@
             if(onText.length == 0){
               offText = 'No';
             }
-            var active = false;
-            if(!state){
-              active = true;
-            }
-            toggle.toggles( { text:{ on:onText, off:offText }, on: active});
+            toggle.toggles( { text:{ on:onText, off:offText }, on: state});
           }
           //enable the accordion
-          toggled_accordion.accordion({
+          $('#'+cssId).accordion({
             collapsible:true,
             icons:false,
             active:state,
-            header:'div.collapsible-title',
+            header:'> div.collapsible-title',
             heightStyle: "content",
             activate: function(event, ui){
               $(this).trigger('sgContentIncrease');
@@ -179,35 +180,44 @@
             $(this).accordion("refresh");
           });
           //event delegation on the header click to sync the toggle state
-          form.click(toggled_accordion, function(event){
-            if( !$(event.target).is('.collapsible.with-toggle') ){
+         form.click(toggled_accordion, function(event){
+            var header=$(this).find('.collapsible-title');
+            if($(event.target).is('.toggle-on') || $(event.target).is('.toggle-off')){
+              header = $(event.target).closest('.collapsible-title');
+            }else if($(event.target).parent().is('.collapsible.with-toggle') ){
+              header = $(event.target);
+            }else{
               return;
             }
-            var header = $(event.target).children('.collapsible-title');
-            var toggle = header.children('.toggle').data('toggles');
+            var toggleSwitch = header.children('.toggle').data('toggles');
             if( header.hasClass('ui-state-active') ){
-              toggle.toggle(true);
+              toggleSwitch.toggle(true);
             }else{
-              toggle.toggle(false);
+              toggleSwitch.toggle(false);
             }
           });
         });
       });
       //now enable the other collapsible rows
       cf7Form_accordion.each(function(){
-        var rows = $('.collapsible', $(this)).not('.collapsible.with-toggle', $(this));
+        var rows = $('.collapsible', $(this)).not('.collapsible.with-toggle');
         rows.each(function(){
+          var cssId = $(this).attr('id');
+          if(typeof cssId == 'undefined'){
+            cssId = randString(6);
+            $(this).attr('id', cssId); //assign a random id
+          }
           var state = $(this).data('active');
           if(typeof state == 'undefined' || state.length > 0){
             state = false;
           }else{
             state = 0;
           }
-          $(this).accordion({
+          $('#'+cssId).accordion({
             collapsible:true,
             active:state,
             heightStyle: "content",
-            header: 'div.collapsible-title',
+            header: '> div.collapsible-title',
             activate: function(event, ui){
               $(this).trigger('sgContentIncrease');
             }
@@ -220,7 +230,18 @@
       });
       cf7Form_accordion.trigger('sgCollapsibleRowsReady')
     }//end collapsible rows
-
+    //random string generator
+    function randString(n){
+      if(!n){
+          n = 5;
+      }
+      var text = '';
+      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      for(var i=0; i < n; i++){
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
+    }
     $('div.cf7-smart-grid form.wpcf7-form').trigger("cf7SmartGridReady");
   });
 })( jQuery );
