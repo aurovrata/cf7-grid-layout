@@ -2,8 +2,42 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+ .ui-button {
+    border-radius: 3px;
+}
+ul.cf7-sg-tabs-list li .dashicons.dashicons-no-alt {
+    position: absolute;
+    right: 0;
+    border-left: solid 1px grey;
+    border-bottom: solid 1px grey;
+    border-bottom-left-radius: 14px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.ui-tabs .cf7-sg-tabs-list.ui-tabs-nav .ui-tabs-anchor {
+    padding: .5em 20px;
+}
+ul.cf7-sg-tabs-list li {
+    position: relative;
+}
+.cf7-sg-tabs.ui-tabs ul.ui-tabs-nav li a:hover,
+.cf7-sg-tabs.ui-tabs ul.ui-tabs-nav li .dashicons-no-alt:hover {
+    cursor: pointer;
+}
+ .cf7-smart-grid .dashicons{
+  vertical-align: middle;
+}
+.ui-tabs .cf7sg-add-tab.ui-tabs-nav {
+    display: inline-block;
+    padding-left: 0;
+    margin-left: -0.4em;
+}
+ul.cf7-sg-tabs-list {
+    display: inline-block;
+}
  .cf7-smart-grid .cf7-sg-table-button {
-    margin-top: 10px;
+  text-align: right;
+  margin-top: 10px;
 }
 .cf7-smart-grid .row.cf7-sg-table-footer {
     margin-top: 5px;
@@ -16,4 +50,27 @@
 }
 .row.cf7-sg-table-layout .columns input:not([type="submit"]){
   width:100%;
+}
+.row.cf7-sg-table {
+  position:relative;
+}
+.row.cf7-sg-table .row-control .dashicons:hover {
+    cursor: pointer;
+}
+.row.cf7-sg-table .row-control {
+    position: absolute;
+    height: 100%;
+    border: solid 1px #b9b9b9;
+    border-left: none;
+    width: 5px;
+}
+.row.cf7-sg-table .row-control .dashicons {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    margin-left: -5px;
+    background-color: white;
+    border-radius: 50%;
+    border: solid 1px #b9b9b9;
+    color: #848484;
 }

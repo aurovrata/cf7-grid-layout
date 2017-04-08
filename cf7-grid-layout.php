@@ -29,6 +29,7 @@
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
+define('WPCF7_AUTOP', false);
 
 /**
  * The code that runs during plugin activation.

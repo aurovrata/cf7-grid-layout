@@ -149,13 +149,31 @@ class Cf7_Grid_Layout {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Cf7_Grid_Layout_Admin( $this->get_plugin_name(), $this->get_version() );
+    $plugin_admin = new Cf7_Grid_Layout_Admin( $this->get_plugin_name(), $this->get_version() );
 
     //enqueue styles
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-    //CF7 Hooks
-    $this->loader->add_action( 'wpcf7_admin_init', $plugin_admin, 'add_tag_generator' );
+    //add new sub-menu
+    $this->loader->add_action('admin_menu', $plugin_admin,  'add_cf7_sub_menu' );
+    $this->loader->add_filter( 'custom_menu_order', $plugin_admin, 'change_cf7_submenu_order' );
+    //modify cf7 post type
+    $this->loader->add_action('register_post_type_args',  $plugin_admin, 'modify_cf7_post_type_args' , 20, 2 );
+    //$this->loader->add_action('init',  $plugin_admin, 'modify_cf7_post_type' , 20 );
+    //add some metabox to the wpcf7_contact_form post type
+    $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'main_editor_meta_box' );
+    $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'info_meta_box' );
+    //save the using ajax
+    //$this->loader->add_action('wp_ajax_cf7_grid_save_post', $plugin_admin, 'ajax_save_post');
+    $this->loader->add_action('save_post_wpcf7_contact_form', $plugin_admin, 'save_post', 10,3);
+    //redirect hack on save
+    //$this->loader->add_filter('wp_redirect', $plugin_admin, 'redirect_to_post' ,10, 2);
+    /*
+    CF7 Hooks
+    */
+    //$this->loader->add_action( 'wpcf7_admin_init', $plugin_admin, 'add_tag_generator' );
+    //modify the default form template
+    //$this->loader->add_filter( 'wpcf7_default_template', $plugin_admin, 'default_form_template', 5, 2);
 
 	}
 
@@ -176,12 +194,13 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wp_print_scripts', $plugin_public, 'dequeue_cf7_scripts',100 );
 		$this->loader->add_action( 'wp_print_styles', $plugin_public, 'dequeue_cf7_styles',100 );
     $this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'cf7_shortcode_request',10,3 );
-
+    /*Shortcodes*/
+    //add_shortcode('multi-cf7-form', array($plugin_public, 'multi_form_shortcode'));
+    //add_shortcode('child-cf7-form', array($plugin_public, 'child_form_shortcode'));
     /* CF7 Hooks */
     //disable autloading of cf7 plugin scripts
     add_filter( 'wpcf7_load_js',  '__return_false' );
     add_filter( 'wpcf7_load_css', '__return_false' );
-    $this->loader->add_action( 'wpcf7_init', $plugin_public, 'add_cf7_shortcode' );
 
 	}
 

@@ -109,31 +109,6 @@ if(!class_exists('Cf7_WP_Post_Table')){
           break;
       }
   	}
-
-    /**
-  	 * Loads footer script on admin table list page
-     * script to chagne the link to the 'Add New' button, hooked on 'admin_print_footer_scripts'
-  	 *
-  	 * @since    1.1.3
-  	 */
-  	public function change_add_new_button() {
-  		if( !$this->is_cf7_admin_page() ){
-  			return;
-  		}
-      $url = admin_url('admin.php?page=wpcf7-new');
-      ?>
-      <script type='text/javascript'>
-        (function( $ ) {
-          'use strict';
-          $(document).ready(function() {
-            $('h1 > a.page-title-action').attr('href','<?php echo $url; ?>');
-            $('h1 ~ a.page-title-action').attr('href','<?php echo $url; ?>');
-          });
-        })( jQuery );
-      </script>
-      <?php
-
-  	}
     /**
     *  Checks if this is the admin table list page
     *
@@ -190,12 +165,6 @@ if(!class_exists('Cf7_WP_Post_Table')){
     */
     public function add_cf7_sub_menu(){
 
-      $hook = add_submenu_page(
-        'wpcf7',
-        __( 'Edit Contact Form', 'contact-form-7' ),
-    		__( 'Contact Forms', 'contact-form-7' ),
-    		'wpcf7_read_contact_forms',
-        'edit.php?post_type=wpcf7_contact_form');
       //remove_submenu_page( $menu_slug, $submenu_slug );
       remove_submenu_page( 'wpcf7', 'wpcf7' );
     }
@@ -281,7 +250,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
 
         if ($post->post_type =="wpcf7_contact_form"){
           $form = WPCF7_ContactForm::get_instance($post->ID);
-          $url = admin_url( 'admin.php?page=wpcf7&post=' . absint( $form->id() ) );
+          $url = admin_url( 'post.php?post=' . absint( $form->id() ) . '&action=edit');
           $edit_link = add_query_arg( array( 'action' => 'edit' ), $url );
           $idx = strpos($actions['trash'],'_wpnonce=') + 9;
           $nonce = substr($actions['trash'], $idx, strpos($actions['trash'],'"', $idx) - $idx);
@@ -321,6 +290,8 @@ if(!class_exists('Cf7_WP_Post_Table')){
      * @var int $status the html redirect status code
      */
      public function filter_cf7_redirect($location, $status){
+       debug_msg($status, 'redirecting ...'.$location);
+
        if( self::is_cf7_admin_page() || self::is_cf7_edit_page() ){
          if( 'delete' == wpcf7_current_action()){
            global $post_ID;
@@ -373,7 +344,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
           'cf7key' => '',
       ), $atts );
       if(empty($a['cf7key'])){
-        return '<em>' . _('cf7-form shortcode missing key','cf7-admin-table') . '</em>';
+        return '<em>' . _('cf7-form shortcode missing key attribute','cf7-admin-table') . '</em>';
       }
       //else get the post ID
       $form = get_posts(array(

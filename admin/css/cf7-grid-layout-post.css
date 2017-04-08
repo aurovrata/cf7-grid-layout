@@ -1,0 +1,217 @@
+#ajax-response.error-msg{
+  color:red;
+}
+#form-editor-tabs ul.ui-tabs-nav {
+    border-bottom: 1px solid #ddd;
+    padding: 7px 0px 0 3px;
+    margin: 0;
+    min-width: 100%;
+    text-align: right;
+}
+#form-editor-tabs ul.ui-tabs-nav > li {
+    display: inline-block;
+    border: solid 1px #ddd;
+    padding: 3px 7px;
+    background-color: #d1d1d1;
+    margin: 0 0px -1px;
+    border-top-left-radius: 3px;
+}
+#form-editor-tabs ul.ui-tabs-nav > li.ui-tabs-active {
+    background: transparent;
+    border-bottom: none;
+}
+/*
+grid layout
+*/
+#html-script, #grid-col,
+#grid-form .grid-controls,
+#grid-form .row-controls .dashicons-no-alt,
+#grid-form .grid-column .dashicons-no-alt,
+#grid-row, #grid-collapsible, #grid-tabs, .cf7-sg-hidden,
+#grid-collapsible-with-toggle,
+#grid-cf7-forms {
+    display: none;
+}
+textarea.grid-input {
+    width: 100%;
+}
+.grid-controls {
+    position: absolute;
+    background: #f1f1f1;
+    padding: 5px;
+    border: solid 1px grey;
+    width: 137px;
+    z-index:1008;
+}
+#grid-form .container {
+    max-width: 100%;
+}
+#cf7-codemirror .CodeMirror {
+    height: calc( 100vh - 180px);
+}
+#grid-form .row.cf7-sg-table {
+    box-shadow: 0px 0px 4px #0093ff;
+}
+#grid-form .grid-column {
+    background-color: #ddd;
+}
+ #grid-form .dashicons:hover{
+   cursor:pointer;
+   color: blue;
+ }
+ #grid-form .dashicons{
+   clear:both;
+ }
+ #grid-form .columns {
+  border-top: solid 2px #ddd;
+  border-bottom: solid 2px #ddd;
+ }
+#grid-form .columns.column-selected {
+  border-bottom-color: #0055d4;
+  border-top-color: #0055d4;
+}
+#grid-form .container {
+   padding: 0;
+   border: solid 1px #d7d7d7;
+   margin-top: 5px;
+   border-radius: 3px;
+}
+ #grid-form .row {
+    padding: 4px 20px 4px 4px;
+    position: relative;
+}
+#grid-form .row-controls {
+    position: absolute;
+    right: 0;
+    width: 20px;
+    display: inline-block;
+    height: 100%;
+    background: #606060;
+    margin-top: -4px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+#grid-form .row-controls .grid-controls {
+    position: absolute;
+    top: 20px;
+    right: 0px;
+    text-align: right;
+}
+#grid-form .cf7sg-collapsible-title label {
+    padding-left: 4px;
+}
+#grid-form .row-selected .row-controls{
+    background-color: #0055d4;
+}
+#grid-form  .row-controls .dashicons{
+  color: #ddd;
+}
+.dashicons.dashicons-plus.row-control::before {
+    position: relative;
+    top: 1px;
+}
+#grid-form .grid-column .dashicons-move {
+    margin-left: calc(50% - 65px);
+}
+#grid-form .columns.one .grid-column .dashicons-move {
+    margin-left: 0;
+}
+/*limit inner tables/tabs within tables/tabs */
+#grid-form .container.cf7-sg-table .container .row-controls span.dashicons-edit,
+#grid-form .container.cf7-sg-tabs-panel .row label.table-row-label,
+#grid-form .container.cf7-sg-tabs-panel .row label.tabs-row-label {
+    display: none !important;
+}
+#grid-form .row-controls .dashicons {
+    margin-top: 3px;
+}
+#grid-form > .container > .row:first-child > .columns:first-child .dashicons-trash.column-control{
+    display: none;
+}
+#grid-form > .container > .row:first-child > .columns:first-child .dashicons-move.column-control {
+    margin-left: calc(50% - 45px);
+}
+#grid-form > .container:first-child >.row:first-child > .row-controls  .dashicons-trash {
+  visibility:hidden;
+}
+.CodeMirror-wrap .cm-shortcode {
+    color: blue;
+}
+.CodeMirror-wrap.cm-s-paraiso-light span.cm-string {
+    color: #fea218;
+}
+.disable-button{
+  text-decoration: none;
+  padding: 0 10px 1px;
+  color: #9b9b9b;
+  border: solid 1px #ccc;
+  background-color: #ccc;
+  height: 28px;
+  line-height: 26px;
+  vertical-align: top;
+  display: inline-block;
+  border-radius: 3px;
+  font-size: 13px;
+  margin: 0;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+.disable-button:hover {
+    color: #939393;
+    cursor: unset;
+}
+.disable-button.button:hover {
+    cursor: pointer;
+    color:inherit;
+}
+#top-grid-controls {
+    padding-top: 2px;
+}
+#grid-form > .container {
+    max-width: 100%;
+}
+#new-row {
+    width: 100%;
+    text-align: center;
+    margin-top: 5px;
+}
+#form-editor-tabs > ul li > a {
+    padding: 3px 8px;
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+div#form-editor-tabs > ul.ui-tabs-nav li {
+    padding: 0;
+}
+#form-editor-tabs ul.ui-tabs-nav > li.ui-tabs-active a:hover {
+    cursor: default;
+}
+.columns .row-controls .table-row-label,
+.columns .row-controls .tabs-row-label,
+.container.cf7-sg-table + .container  > .row .row-controls .footer-row-label{
+    display: inline-block;
+}
+#grid-form ul.cf7-sg-tabs-list{
+    margin: 0;
+}
+#grid-form ul.cf7-sg-tabs-list li{
+    display: inline-block;
+    background-color: #d7d7d7;
+    padding: 2px 2px 0 5px;
+    margin-bottom: -5px;
+    border-top-right-radius: 3px;
+    margin-top: 2px;
+    border-bottom-right-radius: 0px;
+}
+#grid-form input:disabled:hover, #grid-form .grid-controls label:hover {
+    cursor: default;
+}
+#grid-form .container.cf7-sg-tabs-panel, #grid-form .container.cf7sg-collapsible {
+    border: solid 2px #009cff;
+}
+#grid-form ul.cf7-sg-tabs-list li {
+    border-top: solid 2px #009cff;
+    border-left: solid 2px #009cff;
+    border-right: solid 2px #009cff;
+}

@@ -114,6 +114,7 @@ class Cf7_Grid_Layout_Public {
     if('contact-form-7' != $tag){
       return $output;
     }
+
     wp_enqueue_script('contact-form-7');
     wp_enqueue_script($this->plugin_name);
     $class[]='has-validation';
@@ -153,54 +154,111 @@ class Cf7_Grid_Layout_Public {
     $output = '<div id="'.$css_id.'" class="cf7-smart-grid has-validation has-table has-accordion has-tabs has-toggles has-nice-select">'.$output.'</div>';
     return $output;
   }
-
   /**
-	 * Register shortcode with CF7.
-	 * Hooked  o 'wpcf7_init'
-	 * This function registers a callback function to expand the shortcode for the googleMap form fields.
-	 * @since 1.0.0
-	 */
-	public function add_cf7_shortcode() {
-    if( function_exists('wpcf7_add_form_tag') ) {
-      wpcf7_add_form_tag(
-        array( 'smart-grid' ),
-        array($this,'grid_shortcode_handler'),
-        false //has name
-      );
-      wpcf7_add_form_tag( array( 'js-accordion' ), array($this,'tabs_shortcode_handler'),false );
-      wpcf7_add_form_tag( array( 'js-tabs' ), array($this,'accordion_shortcode_handler'),false );
+   * Shortcode handler for multi-forms [multi-cf7-form]
+   * Hooked to 'add_shortcode'
+   * @since 1.0.0
+   * @param      Array    $atts     attributes from the shortcode.
+   * @param      String    $content     shortcode content.
+   * @return     String    shorcode rendered content.
+  **/
+  public function multi_form_shortcode($atts, $content){
+    //encapsulate the forms in a form element,
+    //and make sure we had a submit button if non-provided in the content
+    //parse all shild form  shotcodes
+    $shortcode = '<div id="cf7sg-multi-form">';
 
+    $shortcode .= do_shortcode($content);
+
+    $shortcode .='</div>';
+    //extract main form
+    //$start = strpos($shortcode, '<!-- MULTI-CF7 MAIN FORM START -->');
+    //$end = strpos($shortcode, '<!-- MULTI-CF7 MAIN FORM END -->');
+
+    //$main_form_html = substr($shortcode, $start, $end - $start);
+    //Create a new DOM document
+    require_once plugin_dir_path( dirname( __DIR__ ) ) . 'assets/php-query/phpQuery.php';
+
+    phpQuery::newDocument($main_form_html);
+    $inner_main_form = pq('#cf7sg-multi-form-main')->find('form.wpcf-form')->contents()->remove();
+    $form_wrap = pq('#cf7sg-multi-form-main')->contents()->remove();
+    //reinsert main form
+    pq('#cf7sg-multi-form-main').after($inner_main_form);
+    //remove the main form wrapper
+    pq('#cf7sg-multi-form')->find('#cf7sg-multi-form-main')->remove();
+    $form_wrap->find(('form.wpcf-form'))->append(pq('#cf7sg-multi-form')->html());
+
+    return $form_wrap->htmlOuter();
+
+
+    //Parse the HTML. The @ is used to suppress any parsing errors
+    //that will be thrown if the $html string isn't valid XHTML.
+    /*
+    @$dom->loadHTML($main_form_html);
+    $node = $dom->getElementsByTagName('form')->item(0);
+    //$outerHTML = $node->ownerDocument->saveHTML($node);
+    $innerHTML = '';
+    if( $a('main')){
+      $innerHTML = '<!-- MULTI-CF7 MAIN FORM START -->';
     }
-	}
+    foreach ($node->childNodes as $childNode){
+      if( !$a('main')){
+        //ignore hidden fields div as well as display message
+        if('div' == $childNode->tagName &&
+          $childNode.hasAttribute('style') &&
+          !$childNode.hasAttribute('class') &&
+          !$childNode.hasAttribute('id')){
+            if( 1 == preg_match('/^display:\s?none$/g', $childNode.getAttribute('style')) ) continue;
+        } //hidden fields
+        if('div' == $childNode->tagName && $childNode.hasAttribute('class') !$childNode.hasAttribute('id') ){
+          if( 1 == preg_match('/wpcf7-response-output/g', $childNode.getAttribute('class')) ) continue;
+        }//response output
+        //''
+      }
+      $innerHTML .= $childNode->ownerDocument->saveHTML($childNode);
+    }
+    */
+
+    //TODO: enable a filter for cf7 form submission as well as post my cf7 form
+  }
   /**
-	 * Function for [smart-grid] shortcode handler.
-	 * This function is called by cf7 directly, registered above.
-	 *
-	 * @since 1.0.0
-	 * @param strng $tag the tag name designated in the tag help screen
-	 * @return string a set of html fields to capture the googleMap information
-	 */
-	public function grid_shortcode_handler( $tag ) {
-      //enqueue required scripts and styles
-      //wp_enqueue_script($this->plugin_name);
-      //wp_enqueue_script('jquery-select2');
-      //wp_enqueue_script('jquery-ui-accordion');
-      //wp_enqueue_script('jquery-ui-tabs');
-      //styles
-      wp_enqueue_style($this->plugin_name);
-      wp_enqueue_style('smart-grid');
-      //wp_enqueue_style('select2-style');
+   * Shortcode handler for multi-forms to include a child form [child-cf7-form]
+   * Hooked to 'add_shortcode'
+   * @since 1.0.0
+   * @param      Array    $atts     attributes from the shortcode.
+   * @return     String    shorcode rendered content.
+  **/
+  public function child_form_shortcode($atts){
+    $a = shortcode_atts( array(
+      'main' => false,
+      'cf7key' => ''
+    ), $atts );
+    if(!$a('main')){
+      $cf7_posts = get_posts(array(
+        'post_type' => 'wpcf7_contact_form',
+        'name' => $a['cf7key']
+      ));
+      wp_reset_postdata();
+      if(!empty($cf7_posts)){
+        $cf7_id = $cf7_posts[0]->ID;
+        $cf7_form = wpcf7_contact_form($cf7_id);
+        $shortcode =  $cf7_form->form_elements();
+        if(1 == preg_match('/type="submit"/g', $html)){
+          $shortcode .=  $cf7_form->form_response_output();
+        }
+        return $shortcode;
+      }else{
+        return '<em>' . _('[child-cf7-form] shortcode missing cf7key attribute','cf7-admin-table') . '</em>';
+      }
+    }
+    /* Assuming this is the main cf7 form */
+    $shortcode = '<div id="cf7sg-multi-form-main">';
 
-	    $tag = new WPCF7_FormTag( $tag );
-      if ( empty( $tag->name ) ) {
-    		return '';
-    	}
+    //get the cf7 form
+    $shortcode .= do_shortcode('[cf7-form cf7key="'.$a['cf7key'].'"]');
 
-      $plugin_url = plugin_dir_url( __DIR__ );
-      ob_start();
-	    include( plugin_dir_path( __FILE__ ) . '/partials/cf7-smart-grid.php');
-      $html = ob_get_contents ();
-      ob_end_clean();
-	    return $html;
-	}
+    $shortcode .= '</div>';
+
+    return $shortcode;
+  }
 }
