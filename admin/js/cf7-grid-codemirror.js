@@ -7,7 +7,6 @@
     var $grid = $('#grid-form');
     var gridTab = '#cf7-editor-grid'; //default at load time.
 
-
     $wpcf7Editor.on('grid-ready', function(){ //------ setup the codemirror editor
       //codemirror editor
       CodeMirror.defineMode("shortcode", function(config, parserConfig) {
@@ -147,6 +146,13 @@
       }
       var $form = $('<div>').append(  $(this).html() );
       var text='';
+      //remove the external forms
+      var external = {};
+      $('.cf7sg-external-form', $form).each(function(){
+        var id = $(this).data('form');
+        external[id] = $(this).children('.cf7sg-external-form-content').remove();
+        $(this).children('.form-controls').remove();
+      });
       //remove the row controls
       $('.row', $form).removeClass('ui-sortable').children('.row-controls').remove();
       //remove the collapsible input
@@ -170,6 +176,11 @@
           $(this).html('\n'+text);
         }//else this column is a grid.
         $gridCol.remove();
+      });
+      //reinsert the external forms
+      $('.cf7sg-external-form', $form).each(function(){
+        var id = $(this).data('form');
+        $(this).append( external[id] );
       });
       text = $form.html();
       text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gm, "");

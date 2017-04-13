@@ -159,19 +159,27 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter( 'custom_menu_order', $plugin_admin, 'change_cf7_submenu_order' );
     //modify cf7 post type
     $this->loader->add_action('register_post_type_args',  $plugin_admin, 'modify_cf7_post_type_args' , 20, 2 );
+    //register dynamic dropdown taxonomy with cf7 post
+    $this->loader->add_action('init',  $plugin_admin, 'register_dynamic_dropdown_taxonomy' , 20, 2 );
     //$this->loader->add_action('init',  $plugin_admin, 'modify_cf7_post_type' , 20 );
     //add some metabox to the wpcf7_contact_form post type
     $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'main_editor_meta_box' );
     $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'info_meta_box' );
-    //save the using ajax
-    //$this->loader->add_action('wp_ajax_cf7_grid_save_post', $plugin_admin, 'ajax_save_post');
+    //save the post
     $this->loader->add_action('save_post_wpcf7_contact_form', $plugin_admin, 'save_post', 10,3);
-    //redirect hack on save
-    //$this->loader->add_filter('wp_redirect', $plugin_admin, 'redirect_to_post' ,10, 2);
+    //ajax load cf7 form content
+    $this->loader->add_action('wp_ajax_get_cf7_content', $plugin_admin, 'get_cf7_content');
+    //hook for adding fields to sumit action metabox
+    $this->loader->add_filter('post_submitbox_misc_actions', $plugin_admin, 'cf7_post_submit_action' ,10);
+    
     /*
     CF7 Hooks
     */
-    //$this->loader->add_action( 'wpcf7_admin_init', $plugin_admin, 'add_tag_generator' );
+    //save cf7 form post
+    $this->loader->add_action( 'wpcf7_save_contact_form', $plugin_admin, 'save_factory_metas' , 10, 1);
+    //print submit metabox
+    $this->loader->add_action( 'wpcf7_admin_misc_pub_section', $plugin_admin, 'dynamic_select_choices' , 10, 1);
+    $this->loader->add_action( 'wpcf7_admin_init', $plugin_admin, 'cf7_shortcode_tags' );
     //modify the default form template
     //$this->loader->add_filter( 'wpcf7_default_template', $plugin_admin, 'default_form_template', 5, 2);
 
@@ -202,6 +210,8 @@ class Cf7_Grid_Layout {
     add_filter( 'wpcf7_load_js',  '__return_false' );
     add_filter( 'wpcf7_load_css', '__return_false' );
 
+    //instroduced a dynamic taxonomy droppdown tag for forms
+    $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_dynamic_taxonomy_shortcode' );
 	}
 
 	/**

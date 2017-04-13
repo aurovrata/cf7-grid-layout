@@ -202,7 +202,6 @@ class Cf7_Grid_Layout_Admin {
     //remove_submenu_page( $menu_slug, $submenu_slug );
     remove_submenu_page( 'wpcf7', 'wpcf7-new' );
     remove_meta_box('slugdiv', 'wpcf7_contact_form', 'normal');
-    //remove_meta_box('submitdiv', 'wpcf7_contact_form', 'normal');
   }
   /**
   * Change the submenu order
@@ -263,8 +262,23 @@ class Cf7_Grid_Layout_Admin {
       $args['labels']['items_list_navigation'] = 'Forms list navigation';
       $args['labels']['items_list'] = 'Forms list';
     }
+
     return $args;
   }
+  /**
+   * Register custom taxonomy for dynamic dropdown lists
+   * Hooked on 'init'
+   * @since 1.0.0
+   *
+  **/
+  public function register_dynamic_dropdown_taxonomy(){
+    //register the dynamic dropdown taxonomies.
+    $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
+    foreach($dropdowns as $taxonomy){
+      $this->register_dynamic_dropdown($taxonomy);
+    }
+  }
+
   /**
   * Function to add the metabox to the cf7 post edit screen
   * This adds the main editor, hooked on 'add_meta_boxes'
@@ -299,17 +313,18 @@ class Cf7_Grid_Layout_Admin {
     if('auto-draft' !== $post->post_status){
       wpcf7_contact_form($post); //set the post
     }
-    $post = wpcf7_get_current_contact_form();
+    $post_id = $post->ID;
+    $cf7_form = wpcf7_get_current_contact_form();
 
-  	if ( ! $post ) {
-  		$post = WPCF7_ContactForm::get_template();
+  	if ( ! $cf7_form ) {
+  		$cf7_form = WPCF7_ContactForm::get_template();
   	}
 
-  	if(empty($post)){
-      $post_id = -1;
-    }else{
-      $post_id = $post->ID;
-    }
+  	// if(empty($post)){
+    //   $post_id = -1;
+    // }else{
+    //   $post_id = $post->ID;
+    // }
   	require_once WPCF7_PLUGIN_DIR . '/admin/includes/editor.php';
   	require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-admin-editor-display.php';
   }
@@ -329,6 +344,17 @@ class Cf7_Grid_Layout_Admin {
         'side',
         'high'
       );
+    }
+  }
+  /**
+   * Re-introduces the wordpress 'wpcf7_admin_misc_pub_section' for plugins to add their fields for submission
+   * Hooked to 'post_submitbox_misc_actions' which fires after post dat/time parameters are printed
+   * @since 1.0.0
+   * @param      WP_Post    $post    post object being edited/created.
+  **/
+  public function cf7_post_submit_action($post){
+    if('wpcf7_contact_form' == $post->post_type){
+      do_action( 'wpcf7_admin_misc_pub_section', $post->ID );
     }
   }
   /**
@@ -396,19 +422,142 @@ class Cf7_Grid_Layout_Admin {
     update_post_meta($post_id, 'cf7_grid_form', true);
   }
   /**
-   * Redirect to post.php hack as for some reason saving redirects to edit.php
-   * Hooked on 'wp_redirect'
+   * Ajax function to return the content of a cf7 form
+   * Hooked on 'wp_ajax_get_cf7_content'
    * @since 1.0.0
-   * @param     String    $location     redirect url to filter .
-   * @param     String    $status     page status.
-   * @return    String    new redirect url.
+   * @return     String    cf7 form content.
   **/
-  public function redirect_to_post($location, $status){
-    if ( isset( $_POST['action'] ) &&  'editpost' == $_POST['action']){
-      if('wpcf7_contact_form' == $_POST['post_type']){
-        $location = admin_url('post.php?post='.$_POST['ID'].'&action=edit');
+  public function get_cf7_content(){
+    $cf7_id = $_POST['cf7_id'];
+    $cf7_form = wpcf7_contact_form($cf7_id);
+    echo $cf7_form->prop( 'form' );
+    wp_die();
+  }
+  /**
+   * Adds a [taxonomy] tag to cf7 forms
+   * Hooked on 'wpcf7_admin_init'
+   * @since 1.0.0
+  **/
+  public function cf7_shortcode_tags(){
+    if ( class_exists( 'WPCF7_TagGenerator' ) ) {
+      $tag_generator = WPCF7_TagGenerator::get_instance();
+      $tag_generator->add(
+        'dynamic_select', //tag id
+        __( 'dynamic-dropdown', 'cf7_2_post' ), //tag button label
+        array($this,'dynamic_tag_generator') //callback
+      );
+    }
+  }
+  /**
+	 * Dynamic select screen displayt.
+	 *
+	 * This function is called by cf7 plugin, and is registered with a hooked function above
+	 *
+	 * @since 1.0.0
+	 * @param WPCF7_ContactForm $contact_form the cf7 form object
+	 * @param array $args arguments for this form.
+	 */
+	function dynamic_tag_generator( $contact_form, $args = '' ) {
+    $args = wp_parse_args( $args, array() );
+    $factory_mapping = Cf7_2_Post_Factory::get_factory($contact_form->id());
+		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-dynamic-tag-display.php');
+	}
+  /**
+   * Print hiddend field on cf7 post submit box
+   * Hooked on 'wpcf7_admin_misc_pub_section'
+   * @since 1.0.0
+   * @param      string    $post_id    cf7 form post id .
+  **/
+  public function dynamic_select_choices($post_id){
+    echo '<input id="cf72post-dynamic-select" type="hidden" name="cf72post_dynamic_select_taxonomies[]" />';
+  }
+  /**
+   * CF7 Form saved from backend, check if dynamic-select are used
+   * Hooked on 'wpcf7_save_contact_form'
+   * @since 1.0.0
+   * @param  WPCF7_Contact_Form $cf7_form  cf7 form object
+  **/
+  public function save_factory_metas($cf7_form){
+    $cf7_post_id = $cf7_form->id();
+    //get the tags used in this form
+    if( isset($_POST['cf72post_dynamic_select_taxonomies']) ){
+      $created_taxonomies = array();
+      foreach( $_POST['cf72post_dynamic_select_taxonomies'] as $json_string){
+        $taxonomy = json_decode(str_replace('\"','"',$json_string), true);
+        $created_taxonomies[$taxonomy[0]['slug']] = $taxonomy[0];
+      }
+      $tags = $cf7_form->scan_form_tags(); //get your form tags
+      foreach($tags as $tag){
+        if('dynamic-select' == $tag['basetype']){
+          if(isset($tag['values'])){
+            foreach($tag['values'] as $values){
+              if(0 == strpos($values, 'slug:') ){
+                $slug = str_replace('slug:', '', $values);
+              }
+            }
+            //is slug newly created?
+            if(isset($created_taxonomies[$slug])){
+              //store this taxonomy in the cf7 post metas.
+              $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
+
+              $dropdowns[] = $created_taxonomies[$slug];
+              update_option('_cf7sg_dynamic_dropdown_taxonomy', $dropdowns);
+            }
+            //store the taxonomy slug in the cf7 metas.
+            update_post_meta($cf7_post_id, '_cf7sg_dynamic_dropdown_taxonomy', $slug);
+          }
+        }
       }
     }
-		return $location;
+  }
+
+  /**
+   * function to regsiter dyanmic dropdown taxonomies
+   *
+   * @since 1.0.0
+   * @param      Object    $taxonomy_object     std object with parameters $taxonomy_object->slug, $taxonomy_object->singular, $taxonomy_object->plural, $taxonomy_object->hierarchical .
+  **/
+  protected function register_dynamic_dropdown($taxonomy_array){
+    $slug = $taxonomy_array['slug'];
+    $name = $taxonomy_array['singular'];
+    $plural = $taxonomy_array['plural'];
+    $is_hierarchical = $taxonomy_array['hierarchical'];
+
+    $labels = array(
+  		'name'                       =>  $plural,
+  		'singular_name'              =>  $name,
+  		'menu_name'                  =>  $plural,
+  		'all_items'                  =>  'All '.$plural,
+  		'parent_item'                =>  'Parent '.$name,
+  		'parent_item_colon'          =>  'Parent '.$name.':',
+  		'new_item_name'              =>  'New '.$name.' Name',
+  		'add_new_item'               =>  'Add New '.$name,
+  		'edit_item'                  =>  'Edit '.$name,
+  		'update_item'                =>  'Update '.$name,
+  		'view_item'                  =>  'View '.$name,
+  		'separate_items_with_commas' =>  'Separate '.$plural.' with commas',
+  		'add_or_remove_items'        =>  'Add or remove '.$plural,
+  		'choose_from_most_used'      =>  'Choose from the most used',
+  		'popular_items'              =>  'Popular '.$plural,
+  		'search_items'               =>  'Search '.$plural,
+  		'not_found'                  =>  'Not Found',
+  		'no_terms'                   =>  'No '.$plural,
+  		'items_list'                 =>  $plural.' list',
+  		'items_list_navigation'      =>  $plural.' list navigation',
+  	);
+    //labels can be modified post registration
+  	$args = array(
+  		'labels'                     => $labels,
+  		'hierarchical'               => $is_hierarchical,
+  		'public'                     => false,
+  		'show_ui'                    => true,
+  		'show_admin_column'          => false,
+  		'show_in_nav_menus'          => false,
+  		'show_tagcloud'              => false,
+      'show_in_quick_edit'         => false,
+      'description'                => 'Contact Form 7 dynamic dropdown taxonomy list',
+  	);
+
+    register_taxonomy( $slug, WPCF7_ContactForm::post_type, $args );
   }
 }

@@ -14,16 +14,16 @@
 ?>
 <?php do_action( 'wpcf7_admin_warnings' ); ?>
 <?php do_action( 'wpcf7_admin_notices' ); ?>
-<input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $post->locale() ); ?>" />
+<input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
 <input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />
-<?php $nonce = wp_create_nonce( 'wpcf7-save-contact-form_' .  $post->ID );?>
+<?php $nonce = wp_create_nonce( 'wpcf7-save-contact-form_' .  $post_id );?>
 
 <div id="contact-form-editor">
 <div class="keyboard-interaction"><?php echo sprintf( esc_html( __( '%s keys switch panels', 'contact-form-7' ) ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
 
 <?php
 
-	$editor = new WPCF7_Editor( $post );
+	$editor = new WPCF7_Editor( $cf7_form );
 	$panels = array();
 
 	if ( current_user_can( 'wpcf7_edit_contact_form', $post_id ) ) {
@@ -38,7 +38,7 @@
 				'title' => __( 'Messages', 'contact-form-7' ),
 				'callback' => 'wpcf7_editor_panel_messages' ) );
 
-		$additional_settings = trim( $post->prop( 'additional_settings' ) );
+		$additional_settings = trim( $cf7_form->prop( 'additional_settings' ) );
 		$additional_settings = explode( "\n", $additional_settings );
 		$additional_settings = array_filter( $additional_settings );
 		$additional_settings = count( $additional_settings );
@@ -62,11 +62,39 @@
 ?>
 </div><!-- #contact-form-editor -->
 
-
-
+<form action="" class="dummy-form" data-id="dummy">
+  <!-- DUMMY FORM to prevent some wp-core scripts from tempering with cf7 tags forms printed below-->
+</form>
 <?php
 
 	$tag_generator = WPCF7_TagGenerator::get_instance();
-	$tag_generator->print_panels( $post );
 
-	do_action( 'wpcf7_admin_footer', $post );
+	$tag_generator->print_panels( $cf7_form );
+
+	do_action( 'wpcf7_admin_footer', $cf7_form );
+
+  $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
+  $taxonomy_metas = get_post_meta($post_id, '_cf7sg_dynamic_dropdown_taxonomy');
+?>
+<script type="text/javascript">
+(function( $ ) {
+	'use strict';
+  //hide the taxonomy metabox not used on this page.
+  $(document).ready(function() {
+    <?php
+    foreach($dropdowns as $taxonomy){
+      if( $taxonomy['hierarchical'] ){
+        $hide_id = $taxonomy['slug'].'div';
+      }else{
+        $hide_id = 'tagsdiv-'.$taxonomy['slug'];
+      }
+      if( false === array_search($taxonomy['slug'], $taxonomy_metas) ){
+        echo '$("#' . $hide_id . '").hide();';
+      }else{
+        echo '$("#' . $hide_id . '").show();';
+      }
+    }
+    ?>
+  });
+})( jQuery );
+</script>

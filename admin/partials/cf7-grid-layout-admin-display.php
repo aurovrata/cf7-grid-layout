@@ -29,6 +29,10 @@
     <textarea class="cf7-sg-hidden codemirror-cf7-update"></textarea>
   </div>
 </div>
+<?php
+  $tag_generator = WPCF7_TagGenerator::get_instance();
+  $tag_generator->print_buttons();
+?>
 <div id="grid-row">
   <div class="container">
     <div class="row">
@@ -62,21 +66,28 @@
   </div>
 </div>
 <div id="grid-cf7-forms">
-  <div class="cf7sg-external-form" data-form-id="">
-    <select>
-      <?php
-        $cf7_forms = get_posts(array(
-          'post_type' => 'wpcf7_contact_form',
-          'post_status'=> 'publish',
-          'post__not_in' => array($form_post->id())
-        ));
-        foreach($cf7_forms as $cf7_form):
+  <div class="cf7sg-external-form" data-form="">
+    <div class="form-controls">
+      <select class="form-select">
+        <option value="">Select contact form 7</option>
+        <?php
+          $cf7_forms = get_posts(array(
+            'post_type' => 'wpcf7_contact_form',
+            'post_status'=> 'publish',
+            'post__not_in' => array($form_post->id())
+          ));
+          foreach($cf7_forms as $cf7_form):
+        ?>
+        <option value="<?php echo $cf7_form->ID ?>"><?php echo $cf7_form->post_title ?></option>
+    <?php endforeach;
+          wp_reset_postdata();
       ?>
-      <option value="<?php echo $cf7_form->ID ?>"><?php echo $cf7_form->post_title ?></option>
-  <?php endforeach;
-        wp_reset_postdata();
-    ?>
-    </select>
+      </select>
+      <div class="row-controls">
+        <span class="dashicons dashicons-trash form-control"></span>
+      </div>
+    </div>
+    <div class="cf7sg-external-form-content"></div>
   </div>
 </div>
 <div id="grid-collapsible">
@@ -128,7 +139,7 @@
         <option value="eleven">eleven (11/12<sup>ths</sup>)</option>
         <option value="full" selected>full wifth</option>
       </select>
-      <a id="new-row" class="button" href="javascript:void(0);"><?php _e('Make grid', 'cf7-grid-layout');?></a>
+      <a id="new-row" class="button make-grid" href="javascript:void(0);"><?php _e('Make grid', 'cf7-grid-layout');?></a>
       <a class="button external-form" href="javascript:void(0);"><?php _e('Insert form', 'cf7-grid-layout');?></a>
     </div>
     <textarea class="grid-input"></textarea>

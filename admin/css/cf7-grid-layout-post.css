@@ -20,6 +20,15 @@
     background: transparent;
     border-bottom: none;
 }
+.tagsdiv .tagchecklist > span {
+    display: block;
+    margin: 0;
+    clear: both;
+    line-height: 15px;
+}
+.tagsdiv .tagchecklist button.ntdelbutton{
+  display:none;
+}
 /*
 grid layout
 */
@@ -29,13 +38,28 @@ grid layout
 #grid-form .grid-column .dashicons-no-alt,
 #grid-row, #grid-collapsible, #grid-tabs, .cf7-sg-hidden,
 #grid-collapsible-with-toggle,
-#grid-cf7-forms {
+#grid-cf7-forms,
+#grid-form .cf7sg-external-form-content {
     display: none;
+}
+#grid-form .form-select {
+    display: block;
+    margin: 0 auto;
+}
+#grid-form .form-controls {
+    position: relative;
+    padding: 1em;
+}
+#grid-form .cf7sg-external-form {
+    border: solid 1px #777;
+    background-color: #ddd;
+    margin: 3px 0;
+    border-radius: 3px;
 }
 textarea.grid-input {
     width: 100%;
 }
-.grid-controls {
+#grid-form .grid-controls {
     position: absolute;
     background: #f1f1f1;
     padding: 5px;
@@ -80,14 +104,14 @@ textarea.grid-input {
     padding: 4px 20px 4px 4px;
     position: relative;
 }
-#grid-form .row-controls {
+#grid-form .row-controls{
     position: absolute;
+    top:0;
     right: 0;
     width: 20px;
     display: inline-block;
     height: 100%;
     background: #606060;
-    margin-top: -4px;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
 }
@@ -118,7 +142,6 @@ textarea.grid-input {
 }
 /*limit inner tables/tabs within tables/tabs */
 #grid-form .container.cf7-sg-table .container .row-controls span.dashicons-edit,
-#grid-form .container.cf7-sg-tabs-panel .row label.table-row-label,
 #grid-form .container.cf7-sg-tabs-panel .row label.tabs-row-label {
     display: none !important;
 }
@@ -170,7 +193,7 @@ textarea.grid-input {
 #grid-form > .container {
     max-width: 100%;
 }
-#new-row {
+.button.make-grid, .button.external-form {
     width: 100%;
     text-align: center;
     margin-top: 5px;

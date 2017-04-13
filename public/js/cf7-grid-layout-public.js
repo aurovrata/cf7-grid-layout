@@ -120,9 +120,21 @@
           var $panel = $(this).children('.cf7-sg-tabs-panel').first();
           //convert all fields to arrays
           $panel.fields2arrays();
+          //handle tables within tabs
+          $('.container.cf7-sg-table', $panel ).each(function(){
+            //get the first field name in the table
+            var iname = $(this).find(':input').first().attr('name');
+            if(iname.lastIndexOf('[]') > 0){
+              iname = iname.replace('[]','_cf7sg_tab_ext[]');
+            }else{
+              iname = iname + '_cf7sg_tab_ext[]';
+            }
+            //add a hidden field for storing tab id
+            $(this).parent().children('.cf7-sg-table-button').append($('<input type="hidden" name="'+iname+'" class=".cf7sg-tabs-table-hidden"/>'))
+          });
+          //finally store a clone of the paenl to be able to add new tabs
           panels[$panel.attr('id')] = $('<div>').append($panel.clone()).html();
         }
-        //add a remove button to each tab
       });
       //trigger tabs ready event
       $cf7Form_tabs.trigger('sgTabsReady');
@@ -131,8 +143,18 @@
         var $target = $(event.target);
         if($target.is('.cf7sg-close-tab')){ //---------------------- close tab
           var panelId = $target.siblings('a').attr('href');
-          $target.closest('.cf7-sg-tabs').children('div'+panelId).remove(); //remove panel
-          $target.closest('li').remove(); //remove tab
+          var $container = $target.closest('.cf7-sg-tabs');
+          var activate = false;
+          $container.children('div'+panelId).remove(); //remove panel
+          if($target.closest('li').remove().is('.ui-state-active')){ //remove tab
+            activate = true;
+          }
+          //show last close button
+          var $lastClose = $container.find('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab');
+          if($lastClose.length > 0) $lastClose.show();
+          if(activate){
+            $container.tabs({active:0}); //activate the last tab
+          }
         }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab
           //add a new tab
           var $container = $target.closest('.cf7-sg-tabs');
@@ -145,6 +167,8 @@
           var $newTab = $target.closest('ul.cf7sg-add-tab').siblings('ul.ui-tabs-nav').children('li').first().clone();
           $newTab.find('a').attr('href','#'+panelId).text($newTab.text()+ ' ('+ tabCount + ')');
           $newTab.append('<span class="cf7sg-close-tab dashicons dashicons-no-alt"></span>'); //remove button
+          $newTab.removeClass('ui-tabs-active ui-state-active');
+          $tabList.find('li .cf7sg-close-tab').hide();
           //append tab to list
           $tabList.append( $newTab );
           //new panel
@@ -184,6 +208,19 @@
             }else{
               toggle.toggle(false);
             }
+          });
+          //rename table fields in new panel
+          $('.container.cf7-sg-table', $newPanel).each(function(){
+            //hiden field is in the button which is a sibbling to this table container
+            $('.cf7sg-tabs-table-hidden', $(this).parent()).val('_'+tabCount);
+            //rename all fields
+            $(':input', $(this)).each(function(){
+                var iname = $(this).attr('name');
+                if(iname.lastIndexOf('[]') > 0){
+                  iname = iname.replace('[]','_'+tabCount+'[]');
+                  $(this).attr('name', iname);
+                }
+            });
           });
           //append new panel
           $container.append($newPanel);

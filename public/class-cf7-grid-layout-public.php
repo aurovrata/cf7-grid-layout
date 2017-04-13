@@ -154,6 +154,7 @@ class Cf7_Grid_Layout_Public {
     $output = '<div id="'.$css_id.'" class="cf7-smart-grid has-validation has-table has-accordion has-tabs has-toggles has-nice-select">'.$output.'</div>';
     return $output;
   }
+
   /**
    * Shortcode handler for multi-forms [multi-cf7-form]
    * Hooked to 'add_shortcode'
@@ -260,5 +261,38 @@ class Cf7_Grid_Layout_Public {
     $shortcode .= '</div>';
 
     return $shortcode;
+  }
+  /**
+   * Register a [save] shortcode with CF7.
+   * Hooked  on 'wpcf7_init'
+   * This function registers a callback function to expand the shortcode for the save button field.
+   * @since 2.0.0
+   */
+  public function register_dynamic_taxonomy_shortcode() {
+    if( function_exists('wpcf7_add_form_tag') ) {
+      //dynamic select
+      wpcf7_add_form_tag(
+        array( 'dynamic_select', 'dynamic_select*' ),
+        array($this,'cf7_taxonomy_shortcode'),
+        true //has name
+      );
+    }
+  }
+  /**
+	 * Register a [taxonomy] shortcode with CF7.
+	 * called by funciton above
+	 * This function registers a callback function to expand the shortcode for the googleMap form fields.
+	 * @since 1.0.0
+   * @param strng $tag the tag name designated in the tag help screen
+   * @return string a set of html fields to capture the googleMap information
+	 */
+
+  public function cf7_taxonomy_shortcode($tag){
+    $tag = new WPCF7_FormTag( $tag );
+    ob_start();
+    include( plugin_dir_path( __FILE__ ) . '/partials/cf7-taxonomy-tag-display.php');
+    $html = ob_get_contents ();
+    ob_end_clean();
+    return $html;
   }
 }

@@ -5,6 +5,10 @@
  .ui-button {
     border-radius: 3px;
 }
+/*
+.cf7-sg-tabs-list li span.cf7sg-close-tab {display: none !important;}
+.cf7-sg-tabs-list li:last-child span.cf7sg-close-tab {display: inline-block !important;}
+*/
 ul.cf7-sg-tabs-list li .dashicons.dashicons-no-alt {
     position: absolute;
     right: 0;

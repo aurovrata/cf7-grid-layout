@@ -7,9 +7,14 @@
     var $grid = $('#grid-form');
     var $rowControl = $('#top-grid-controls');
 
-
     function buildGridForm(){
       var $form = $('<div>').append( $wpcf7Editor.text() );
+      //remove the external forms
+      var external = {};
+      $('.cf7sg-external-form', $form).each(function(){
+        var id = $(this).data('form');
+        external[id] = $(this).children('.cf7sg-external-form-content').remove();
+      });
       //replace columns content with textareas
       $('div.columns', $form).each(function(){
         var $area =  $($('#grid-col').html());
@@ -56,6 +61,14 @@
         $(this).append($('#grid-tabs ul li label').clone());
         $('label input', $(this)).val(text);
       });
+      //reinsert the external forms
+      $('.cf7sg-external-form', $form).each(function(){
+        var id = $(this).data('form');
+        //add controls
+        $(this).append($('#grid-cf7-forms .form-controls').clone());
+        $('.form-controls .form-select', $(this)).val(id);
+        $(this).append( external[id] );
+      });
       //add the form to the grid
       $grid.html($form.children());
       //set the value of each textarea as inner text
@@ -72,7 +85,8 @@
         $textareaSelected = $(this).attr('id','wpcf7-form');
       });
 
-    }
+    } //end buildGridForm()
+
     //initial contrustion of grid form
     buildGridForm();
     $grid.on('build-grid', function(){
@@ -107,27 +121,41 @@
       }
     });*/
     //offset/size change using event delegation
-    $grid.on('change', $('select.column-setting'), function(event){
+    $grid.on('change', $('select'), function(event){
       var $target = $(event.target);
-      var validation = ['dummy'];
-      if( $target.is('.column-offset') ){
-        validation = offsets;
-      }else if( $target.is('.column-size') ){
-        validation = columnsizes;
-      }else{
-        return false;
-      }
-      var $column = $target.closest('.columns');
-      var classList = $column.attr('class').split(/\s+/);
-      var idx;
-      for(idx=0; idx<classList.length; idx++){
-        if($.inArray(classList[idx], validation) > -1){
-           $column.removeClass(classList[idx]);
+      if($target.is('.column-setting')){ //----------- column size/offset settings
+        var validation = ['dummy'];
+        if( $target.is('.column-offset') ){
+          validation = offsets;
+        }else if( $target.is('.column-size') ){
+          validation = columnsizes;
+        }else{
+          return false;
         }
+        var $column = $target.closest('.columns');
+        var classList = $column.attr('class').split(/\s+/);
+        var idx;
+        for(idx=0; idx<classList.length; idx++){
+          if($.inArray(classList[idx], validation) > -1){
+             $column.removeClass(classList[idx]);
+          }
+        }
+        $column.addClass($target.val());
+        //filter the options
+        $target.closest('.grid-controls').filterColumnControls();
+      }else if($target.is('.form-select')){ //-------------- external form selection
+        var $container = $target.closest('.cf7sg-external-form');
+        $container.attr('data-form', $target.val());
+        //TODO: disable the selected options
+        //ajax get form content
+        var data = {
+    			'action': 'get_cf7_content',
+    			'cf7_id': $target.val()
+    		};
+        $.post(ajaxurl, data, function(response) {
+    			$('.cf7sg-external-form-content', $container).html(response);
+    		});
       }
-      $column.addClass($target.val());
-      //filter the options
-      $target.closest('.grid-controls').filterColumnControls();
     });
     //show controls using delegation
     /*
@@ -137,17 +165,7 @@
     $grid.on('click', $('.row-control'), function(event){
       var $target = $(event.target);
       var $parentRow;
-      if( $target.is('.dashicons-move.row-control') ){  //-------MOVE / SELECT
-        $parentRow = $target.closest('.row');
-        if($parentRow.is('.row-selected')){
-          $parentRow.removeClass('row-selected');
-          $('#new-accordion', $rowControl).removeClass('button');
-        }else{
-          $('.row', $grid).removeClass('row-selected');
-          $parentRow.addClass('row-selected');
-          $('#new-accordion', $rowControl).addClass('button');
-        }
-      }else if($target.is('.dashicons-trash.row-control')){ //--------TRASH
+      if($target.is('.dashicons-trash.row-control')){ //--------TRASH
         var $parentContainer = $target.closest('.container');
         var $parent = $parentContainer.parent();
         $parentContainer.remove();
@@ -157,6 +175,9 @@
             $parent.children('.grid-column').append('<textarea class="grid-input"></textarea>');
           }
         }
+      }else if($target.is('.dashicons-trash.form-control') ){ //-----------TRASH external form
+        $target.closest('cf7sg-external-form').remove();
+        //TODO: update via ajax external form removal
       }else if($target.is('.dashicons-plus.row-control')){ //-----------ADD
         $target.closest('.container').parent().appendNewRow();
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
@@ -273,7 +294,7 @@
         $target.siblings('.dashicons-edit').show();
       }else if($target.is('.dashicons-trash.column-control') ){ //-------------------delete column
         $parentColumn.remove();
-      }else if( $target.is('#new-row') ){ //--------------------add row/convert column to grid
+      }else if( $target.is('.make-grid') ){ //--------------------add row/convert column to grid
         //close the grid-control box
         $target.parent().hide();
         $target.parent().siblings('.dashicons-no-alt').hide();
@@ -291,6 +312,14 @@
         }else{ //add to the main container
           $grid.appendNewRow();
         }
+      }else if($target.is('.external-form')){ //---------------- insert cf7 form
+        //close the grid-control box
+        $target.parent().hide();
+        $target.parent().siblings('.dashicons-no-alt').hide();
+        $target.parent().siblings('.dashicons-edit').show();
+        //replace container with form selector
+        $target.closest('.container').after($('#grid-cf7-forms').html());
+        $target.closest('.container').remove();
       }else if( $target.is('.dashicons-plus.column-control') ){ //--------------------add column
         var $parentColumn = $target.closest('.columns');
         var $parentRow = $parentColumn.closest('.row');
