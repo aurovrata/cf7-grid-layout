@@ -21,7 +21,7 @@
         if($(this).children().is('.container')){
           $('textarea.grid-input', $area).remove();
         }else{
-          $('textarea.grid-input', $area).val($(this).html());
+          $('textarea.grid-input', $area).val($(this).html().trim());
           $(this).children().remove();
           $(this).text('');
         }

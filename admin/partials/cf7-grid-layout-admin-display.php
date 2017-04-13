@@ -12,23 +12,23 @@
     <div id="grid-form"></div>
   </div>
   <div id="cf7-codemirror">
-    <textarea id="wpcf7-form-hidden" name="wpcf7-form" class="large-text code" data-config-field="form.body">
-<?php if( metadata_exists( 'post', $form_post->id(), 'cf7_grid_form' )): //grid form ?>
-  <?php echo esc_textarea( $form_post->prop( 'form' ) ); ?>
-<?php else: ?>
-  <div class="container">
-    <div class="row">
-      <div class="columns full">
-  <?php echo esc_textarea( $form_post->prop( 'form' ) ); ?>
-
-      </div>
-    </div>
-  </div>
-<?php endif; ?>
-    </textarea>
     <textarea class="cf7-sg-hidden codemirror-cf7-update"></textarea>
   </div>
 </div>
+<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden large-text code" data-config-field="form.body">
+<?php if( metadata_exists( 'post', $form_post->id(), 'cf7_grid_form' )): //grid form ?>
+<?php echo esc_textarea( $form_post->prop( 'form' ) ); ?>
+<?php else: ?>
+<div class="container">
+<div class="row">
+  <div class="columns full">
+<?php echo esc_textarea( $form_post->prop( 'form' ) ); ?>
+
+  </div>
+</div>
+</div>
+<?php endif; ?>
+</textarea>
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();

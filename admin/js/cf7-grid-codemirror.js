@@ -26,7 +26,8 @@
         };
         return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), cf7Overlay);
       });
-      var cmEditor = CodeMirror.fromTextArea( $wpcf7Editor.get(0), {
+      var cmEditor = CodeMirror( $codemirror.get(0), {
+        value: $wpcf7Editor.text(),
         extraKeys: {"Ctrl-Space": "autocomplete"},
         mode:  "shortcode",
         lineNumbers: true,

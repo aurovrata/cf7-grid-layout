@@ -74,7 +74,7 @@
 	do_action( 'wpcf7_admin_footer', $cf7_form );
 
   $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-  $taxonomy_metas = get_post_meta($post_id, '_cf7sg_dynamic_dropdown_taxonomy');
+
 ?>
 <script type="text/javascript">
 (function( $ ) {
@@ -82,16 +82,25 @@
   //hide the taxonomy metabox not used on this page.
   $(document).ready(function() {
     <?php
-    foreach($dropdowns as $taxonomy){
-      if( $taxonomy['hierarchical'] ){
-        $hide_id = $taxonomy['slug'].'div';
-      }else{
-        $hide_id = 'tagsdiv-'.$taxonomy['slug'];
-      }
-      if( false === array_search($taxonomy['slug'], $taxonomy_metas) ){
-        echo '$("#' . $hide_id . '").hide();';
-      }else{
-        echo '$("#' . $hide_id . '").show();';
+    $slugs = array();
+    foreach($dropdowns as $id => $all_lists){
+      foreach($all_lists as $slug => $taxonomy){
+        if(isset($slugs[$slug])){
+          continue;
+        }else{
+          $slugs[$slug] = $slug;
+        }
+        if( $taxonomy['hierarchical'] ){
+          $hide_id = $slug.'div';
+        }else{
+          $hide_id = 'tagsdiv-'.$slug;
+        }
+        //debug_msg($taxonomy['slug']);
+        if( $id != $post_id ){
+          echo '$("#' . $hide_id . '").hide();';
+        }else{
+          echo '$("#' . $hide_id . '").show();';
+        }
       }
     }
     ?>

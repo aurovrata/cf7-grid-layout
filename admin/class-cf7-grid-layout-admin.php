@@ -274,8 +274,14 @@ class Cf7_Grid_Layout_Admin {
   public function register_dynamic_dropdown_taxonomy(){
     //register the dynamic dropdown taxonomies.
     $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-    foreach($dropdowns as $taxonomy){
-      $this->register_dynamic_dropdown($taxonomy);
+    $created = array();
+    foreach($dropdowns as $post_lists){
+      foreach($post_lists as $slug=>$taxonomy){
+        if(!isset($created[$slug])){
+          $this->register_dynamic_dropdown($taxonomy);
+          $created[$slug] = $slug;
+        }
+      }
     }
   }
 
@@ -459,7 +465,6 @@ class Cf7_Grid_Layout_Admin {
 	 */
 	function dynamic_tag_generator( $contact_form, $args = '' ) {
     $args = wp_parse_args( $args, array() );
-    $factory_mapping = Cf7_2_Post_Factory::get_factory($contact_form->id());
 		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-dynamic-tag-display.php');
 	}
   /**
@@ -469,7 +474,7 @@ class Cf7_Grid_Layout_Admin {
    * @param      string    $post_id    cf7 form post id .
   **/
   public function dynamic_select_choices($post_id){
-    echo '<input id="cf72post-dynamic-select" type="hidden" name="cf72post_dynamic_select_taxonomies[]" />';
+    echo '<input id="cf72post-dynamic-select" type="hidden" name="cf72post_dynamic_select_taxonomies" />';
   }
   /**
    * CF7 Form saved from backend, check if dynamic-select are used
@@ -482,32 +487,43 @@ class Cf7_Grid_Layout_Admin {
     //get the tags used in this form
     if( isset($_POST['cf72post_dynamic_select_taxonomies']) ){
       $created_taxonomies = array();
-      foreach( $_POST['cf72post_dynamic_select_taxonomies'] as $json_string){
-        $taxonomy = json_decode(str_replace('\"','"',$json_string), true);
-        $created_taxonomies[$taxonomy[0]['slug']] = $taxonomy[0];
+      $taxonomies = json_decode(str_replace('\"','"',$_POST['cf72post_dynamic_select_taxonomies']), true);
+      if(empty($taxonomies)){
+        $taxonomies = array();
+      }
+      foreach($taxonomies as $taxonomy){
+        $created_taxonomies[$taxonomy['slug']] = $taxonomy;
       }
       $tags = $cf7_form->scan_form_tags(); //get your form tags
+      $post_lists = $saved_list = array();
+      $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
+      if(isset($dropdowns[$cf7_post_id])){
+        $saved_list = $dropdowns[$cf7_post_id];
+      }
       foreach($tags as $tag){
-        if('dynamic-select' == $tag['basetype']){
+        if('dynamic_select' == $tag['basetype']){
           if(isset($tag['values'])){
             foreach($tag['values'] as $values){
               if(0 == strpos($values, 'slug:') ){
                 $slug = str_replace('slug:', '', $values);
+                break;
               }
             }
             //is slug newly created?
             if(isset($created_taxonomies[$slug])){
-              //store this taxonomy in the cf7 post metas.
-              $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-
-              $dropdowns[] = $created_taxonomies[$slug];
-              update_option('_cf7sg_dynamic_dropdown_taxonomy', $dropdowns);
+              //store this taxonomy.
+              $post_lists[$slug] = $created_taxonomies[$slug];
+            }else if(isset($saved_list[$slug])){
+              //retain previously saved list if we are stilling using it.
+              $post_lists[$slug] = $saved_list[$slug];
             }
             //store the taxonomy slug in the cf7 metas.
-            update_post_meta($cf7_post_id, '_cf7sg_dynamic_dropdown_taxonomy', $slug);
+            //$post_lists[$slug] = null;
           }
         }
       }
+      $dropdowns[$cf7_post_id] = $post_lists;
+      update_option('_cf7sg_dynamic_dropdown_taxonomy', $dropdowns);
     }
   }
 

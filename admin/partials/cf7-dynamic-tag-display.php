@@ -38,8 +38,17 @@
             <?php
             //get options.
             $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-            foreach($dropdowns as $taxonomy){
-              echo '<option selected data-name="' . $taxonomy['singular'] . '" value="'. $taxonomy['slug'] . '" class="cf7sg-taxonomy">' . $taxonomy['plural'] . '</option>';
+            $slugs = array();
+
+            foreach($dropdowns as $all_lists){
+              foreach($all_lists as $slug => $taxonomy){
+                if(isset($slugs[$slug]) ){
+                  continue;
+                }else{
+                  $slugs[$slug] = $slug;
+                }
+                echo '<option selected data-name="' . $taxonomy['singular'] . '" value="'. $taxonomy['slug'] . '" class="cf7sg-taxonomy">' . $taxonomy['plural'] . '</option>';
+              }
             }
             //inset the default post tags and category
             ?>
