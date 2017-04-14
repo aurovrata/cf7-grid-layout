@@ -6,6 +6,7 @@
     var codemirrorUpdated = false;
     var $grid = $('#grid-form');
     var gridTab = '#cf7-editor-grid'; //default at load time.
+    var cmEditor ;
 
     $wpcf7Editor.on('grid-ready', function(){ //------ setup the codemirror editor
       //codemirror editor
@@ -26,7 +27,7 @@
         };
         return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), cf7Overlay);
       });
-      var cmEditor = CodeMirror( $codemirror.get(0), {
+      cmEditor = CodeMirror( $codemirror.get(0), {
         value: $wpcf7Editor.text(),
         extraKeys: {"Ctrl-Space": "autocomplete"},
         mode:  "shortcode",
@@ -137,6 +138,8 @@
           }
         );
         $('textarea#wpcf7-form-hidden').html(code);
+      }else if(codemirrorUpdated){
+        $('textarea#wpcf7-form-hidden').html(cmEditor.getValue());
       }
       $(this).unbind('submit').submit(); // continue the submit unbind preventDefault
    });
