@@ -1,0 +1,98 @@
+/*[dynamic-select] tag*/
+#dynamic-select-tag-generator .cf72post-new-taxonomy label {
+    float: left;
+    width: 24%;
+    margin-right: 0.5%;
+    color: gray;
+}
+#dynamic-select-tag-generator input.cf72post-new-taxonomy{
+  width:100%;
+}
+#dynamic-select-tag-generator .cf72post-new-taxonomy label:last-child {
+    margin-right: 0;
+    margin-top: 21px;
+}
+#dynamic-select-tag-generator .cf72post-new-taxonomy label:last-child input{
+  width:auto;
+}
+#dynamic-select-tag-generator .cf72post-new-taxonomy label:first-child {
+    width: 26.5%;
+}
+#dynamic-select-tag-generator option.system-taxonomy {
+    background: #0085ba;
+    color: white;
+}
+#dynamic-select-tag-generator .hidden{
+  display:none;
+}
+#dynamic-select-tag-generator option.cf7sg-taxonomy {
+    background-color: #098f09;
+    color: white;
+}
+.tabordion {
+  color: #333;
+  display: block;
+  font-family: arial, sans-serif;
+  position: relative;
+  width: 100%;
+}
+.tabordion input[name="sections"] {
+  left: -9999px;
+  position: absolute;
+  top: -9999px;
+}
+.tabordion section {
+  display: block;
+}
+.tabordion  {
+  border-top: 1px solid #ccc;
+}
+.tabordion section > label {
+    background: #ccc;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 4px 10px 4px 2px;
+    position: relative;
+    width: 120px;
+    z-index: 100;
+    color: #333;
+    border-top: 1px solid #fff;
+}
+.tabordion section article {
+  display: none;
+  left: 133px;
+  min-width: 300px;
+  padding: 0 0 0 9px;
+  position: absolute;
+  top: 0;
+}
+.tabordion section article:after {
+  /*background-color: #ccc;*/
+  bottom: 0;
+  content: "";
+  display: block;
+  left:-229px;
+  position: absolute;
+  top: 0;
+  width: 220px;
+  z-index:1;
+}
+.tabordion input[name="sections"]:checked + label {
+  background: #fff;
+  border-right: 1px solid #fff;
+}
+.tabordion input[name="sections"]:checked ~ article {
+  display: block;
+}
+#dynamic-dropdown-sources .select2.select2-container {
+    min-width: 100%;
+}
+.select2-container{
+  z-index:100051;
+}
+#dynamic-dropdown-sources article h4 {
+    margin: 0 0 2px 0;
+}

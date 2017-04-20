@@ -2,7 +2,7 @@
 
 	$(document).ready( function(){
     var offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'];
-    var columnsizes = ['one', 'two', 'one-fourth', 'four', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
+    var columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
     var $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     var $grid = $('#grid-form');
     var $rowControl = $('#top-grid-controls');
@@ -114,12 +114,6 @@
       items: '> .container'
     });
 
-    /*$grid.on('change', 'textarea.grid-input', function(event){
-      var $target = $(event.target);
-      if($target.is('textarea') ){
-        $target.text($target.val());
-      }
-    });*/
     //offset/size change using event delegation
     $grid.on('change', $('select'), function(event){
       var $target = $(event.target);
@@ -175,6 +169,9 @@
             $parent.children('.grid-column').append('<textarea class="grid-input"></textarea>');
           }
         }
+      }else if($target.is('.dashicons-trash.form-control')){ //--------TRASH included form
+        $target.closest('.cf7sg-external-form').remove();
+
       }else if($target.is('.dashicons-trash.form-control') ){ //-----------TRASH external form
         $target.closest('cf7sg-external-form').remove();
         //TODO: update via ajax external form removal

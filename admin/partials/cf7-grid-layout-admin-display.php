@@ -74,6 +74,7 @@
           $cf7_forms = get_posts(array(
             'post_type' => 'wpcf7_contact_form',
             'post_status'=> 'publish',
+            'posts_per_page' => -1,
             'post__not_in' => array($form_post->id())
           ));
           foreach($cf7_forms as $cf7_form):

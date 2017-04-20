@@ -29,6 +29,26 @@
 .tagsdiv .tagchecklist button.ntdelbutton{
   display:none;
 }
+.cf7sg-dynamic-list p.the-tagcloud a {
+    display: block;
+    line-height: 15px;
+    font-size: 13px !important;
+    text-decoration: none;
+    color: #669;
+    cursor:default;
+}
+#poststuff .cf7sg-dynamic-list  p.the-tagcloud {
+  border: none;
+  padding: 0;
+  margin-left: 14px;
+  margin-top:0;
+}
+.cf7sg-dynamic-list button.tagcloud-link {
+    display: none;
+}
+.cf7sg-dynamic-list .hide-if-no-js {
+    margin-top: 0;
+}
 /*
 grid layout
 */
@@ -58,6 +78,7 @@ grid layout
 }
 textarea.grid-input {
     width: 100%;
+    min-height: 65px;
 }
 #grid-form .grid-controls {
     position: absolute;
@@ -103,6 +124,7 @@ textarea.grid-input {
  #grid-form .row {
     padding: 4px 20px 4px 4px;
     position: relative;
+    min-height: 90px;
 }
 #grid-form .row-controls{
     position: absolute;
@@ -238,3 +260,6 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     border-left: solid 2px #009cff;
     border-right: solid 2px #009cff;
 }
+#grid-form .two .grid-column .dashicons-move {
+    margin-left: -2px;
+  }

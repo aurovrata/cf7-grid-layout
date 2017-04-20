@@ -101,6 +101,7 @@ class Cf7_Grid_Layout {
 		 * core plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cf7-grid-layout-loader.php';
+    require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wordpress-gurus-debug-api.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
@@ -171,7 +172,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action('wp_ajax_get_cf7_content', $plugin_admin, 'get_cf7_content');
     //hook for adding fields to sumit action metabox
     $this->loader->add_filter('post_submitbox_misc_actions', $plugin_admin, 'cf7_post_submit_action' ,10);
-    
+
     /*
     CF7 Hooks
     */
@@ -181,7 +182,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wpcf7_admin_misc_pub_section', $plugin_admin, 'dynamic_select_choices' , 10, 1);
     $this->loader->add_action( 'wpcf7_admin_init', $plugin_admin, 'cf7_shortcode_tags' );
     //modify the default form template
-    //$this->loader->add_filter( 'wpcf7_default_template', $plugin_admin, 'default_form_template', 5, 2);
+    //$this->loader->add_action( 'wp_print_scripts', $plugin_admin, 'inspect_scripts' , 10);
 
 	}
 
@@ -207,8 +208,8 @@ class Cf7_Grid_Layout {
     //add_shortcode('child-cf7-form', array($plugin_public, 'child_form_shortcode'));
     /* CF7 Hooks */
     //disable autloading of cf7 plugin scripts
-    add_filter( 'wpcf7_load_js',  '__return_false' );
-    add_filter( 'wpcf7_load_css', '__return_false' );
+    //add_filter( 'wpcf7_load_js',  '__return_false' );
+    //add_filter( 'wpcf7_load_css', '__return_false' );
 
     //instroduced a dynamic taxonomy droppdown tag for forms
     $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_dynamic_taxonomy_shortcode' );

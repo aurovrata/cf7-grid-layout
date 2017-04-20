@@ -167,6 +167,13 @@ if(!class_exists('Cf7_WP_Post_Table')){
 
       //remove_submenu_page( $menu_slug, $submenu_slug );
       remove_submenu_page( 'wpcf7', 'wpcf7' );
+      $hook = add_submenu_page(
+        'wpcf7',
+        __( 'Edit Form Types', 'contact-form-7' ),
+        __( 'Form Types', 'contact-form-7' ),
+        'manage_options',
+        'edit-tags.php?taxonomy=wpcf7_type&post_type=wpcf7_contact_form'
+      );
     }
 
     /**
@@ -179,10 +186,12 @@ if(!class_exists('Cf7_WP_Post_Table')){
         if(!isset($submenu['wpcf7']) ){
           return $menu_ord;
         }
+        //debug_msg($submenu['wpcf7']);
         if( is_network_admin() ){
           return $menu_ord;
         }
         $arr = array();
+        //debug_msg($submenu['wpcf7']);
         foreach($submenu['wpcf7'] as $menu){
           switch($menu[2]){
             case 'cf7_post': //do nothing, we hide this submenu
@@ -364,6 +373,55 @@ if(!class_exists('Cf7_WP_Post_Table')){
         wp_reset_postdata();
         return '<em>' . _('cf7-form shortcode key error, unable to find form','cf7-admin-table') . '</em>';
       }
+    }
+
+    /**
+     * Register a form type taxoonmy for classifying forms
+     * Hooked to 'init' action
+     * @since 1.0.0
+    **/
+    public function register_cf7_taxonomy(){
+      $plural = 'Form Types';
+      $name = 'Form Type';
+      $is_hierarchical = true;
+      $slug = 'wpcf7_type';
+      $labels = array(
+    		'name'                       =>  $plural,
+    		'singular_name'              =>  $name,
+    		'menu_name'                  =>  $plural,
+    		'all_items'                  =>  'All '.$plural,
+    		'parent_item'                =>  'Parent '.$name,
+    		'parent_item_colon'          =>  'Parent '.$name.':',
+    		'new_item_name'              =>  'New '.$name.' Name',
+    		'add_new_item'               =>  'Add New '.$name,
+    		'edit_item'                  =>  'Edit '.$name,
+    		'update_item'                =>  'Update '.$name,
+    		'view_item'                  =>  'View '.$name,
+    		'separate_items_with_commas' =>  'Separate '.$plural.' with commas',
+    		'add_or_remove_items'        =>  'Add or remove '.$plural,
+    		'choose_from_most_used'      =>  'Choose from the most used',
+    		'popular_items'              =>  'Popular '.$plural,
+    		'search_items'               =>  'Search '.$plural,
+    		'not_found'                  =>  'Not Found',
+    		'no_terms'                   =>  'No '.$plural,
+    		'items_list'                 =>  $plural.' list',
+    		'items_list_navigation'      =>  $plural.' list navigation',
+    	);
+      //labels can be modified post registration
+    	$args = array(
+    		'labels'                     => $labels,
+    		'hierarchical'               => $is_hierarchical,
+    		'public'                     => true,
+    		'show_ui'                    => true,
+        'show_in_menu'               => true,
+    		'show_admin_column'          => true,
+    		'show_in_nav_menus'          => false,
+    		'show_tagcloud'              => false,
+        'show_in_quick_edit'         => true,
+        'description'                => 'Contact Form 7 types',
+    	);
+
+      register_taxonomy( $slug, WPCF7_ContactForm::post_type, $args );
     }
   }
 }

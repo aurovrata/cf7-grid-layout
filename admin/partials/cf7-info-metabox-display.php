@@ -11,5 +11,19 @@ if(!empty($post)){
   <?php echo wpcf7_link( __( 'https://contactform7.com/faq/', 'contact-form-7' ), __( 'FAQ', 'contact-form-7' ) ); ?>&nbsp;
   <?php echo wpcf7_link( __( 'https://contactform7.com/support/', 'contact-form-7' ), __( 'Support', 'contact-form-7' ) ); ?>
 </p>
-
+<?php
+$dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
+$show_dropdown = array();
+if( isset($dropdowns[$post->ID]) ):
+  $show_dropdown = $dropdowns[$post->ID];
+?>
+<strong> Manage dynamic lists</strong>
+<ul>
+<?php foreach($show_dropdown as $slug=>$taxonomy): ?>
+  <li>
+    <?php echo $taxonomy['plural']?> (<a target="_blank" href="<?php echo admin_url('edit-tags.php?taxonomy='.$slug.'&post_type=wpcf7_contact_form')?>"><?php _e( 'Edit', 'cf7-smart-grid' );?></a>)
+  </li>
+<?php endforeach;?>
+</ul>
+<?php endif;?>
 <div class="clear"></div>

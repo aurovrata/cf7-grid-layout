@@ -16,10 +16,10 @@
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
-<div class="control-box cf7-dynamic-select">
+<div id="dynamic-select-tag-generator" class="control-box cf7-dynamic-select">
   <fieldset>
     <legend>Dynamic Select Dropdown field</legend>
-    <table id="dynamic-select-tag-generator" class="form-table">
+    <table  class="form-table">
       <tbody>
         <tr>
       	<th scope="row"><label for="<?php echo esc_attr( $args['content'] . '-name' ); ?>"><?php echo esc_html( __( 'Name', 'contact-form-7' ) ); ?></label></th>
@@ -29,53 +29,6 @@
         	<th scope="row">Field type</th>
         	<td><input name="required" type="checkbox"> Required field<br /></td>
       	</tr>
-        <tr>
-          <th scope="row">Taxonomy source</th>
-          <td>
-            <select class="taxonomy-list">
-              <option value="" data-name="" >Choose a Taxonomy</option>
-              <option class="cf7sg-new-taxonomy" value="new_taxonomy" data-name="New Category">New Categories</option>
-            <?php
-            //get options.
-            $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-            $slugs = array();
-
-            foreach($dropdowns as $all_lists){
-              foreach($all_lists as $slug => $taxonomy){
-                if(isset($slugs[$slug]) ){
-                  continue;
-                }else{
-                  $slugs[$slug] = $slug;
-                }
-                echo '<option selected data-name="' . $taxonomy['singular'] . '" value="'. $taxonomy['slug'] . '" class="cf7sg-taxonomy">' . $taxonomy['plural'] . '</option>';
-              }
-            }
-            //inset the default post tags and category
-            ?>
-            <option value="post_tag" data-name="Post Tag" class="system-taxonomy">Post Tags</option>
-            <option value="category" data-name="Post Category" class="system-taxonomy">Post Categories</option>
-            <?php
-            $system_taxonomies = get_taxonomies( array('public'=>true, '_builtin' => false), 'objects' );
-            foreach($system_taxonomies as $taxonomy){
-              if( !empty($taxonomy_slug) && $taxonomy_slug == $taxonomy->name ) continue;
-              echo '<option value="' . $taxonomy->name . '" data-name="' . $taxonomy->labels->singular_name . '" class="system-taxonomy">' . $taxonomy->labels->name . '</option>';
-            }
-            ?>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">New Taxonomy</th>
-          <td class="cf72post-new-taxonomy">
-            <label>Plural Name<br />
-            <input disabled="true" class="cf72post-new-taxonomy" type="text" name="plural_name" value=""></label>
-            <label >Singular Name<br />
-            <input disabled="true"  class="cf72post-new-taxonomy" type="text" name="singular_name" value=""></label>
-            <label>Slug<br />
-            <input disabled="true"  class="cf72post-new-taxonomy" type="text" name="taxonomy_slug" value="" /></label>
-            <label class="hidden"><input class="cf72post-new-taxonomy" type="checkbox" name="is_hierarchical" />hierarchical</label>
-          </td>
-        </tr>
         <tr>
           <th>
             <label for="tag-generator-panel-number-id">Id attribute</label>
@@ -94,6 +47,122 @@
         </tr>
       </tbody>
     </table>
+    <div id="dynamic-dropdown-sources" class="tabordion">
+      <section id="taxonomy-source">
+        <input type="radio" name="sections" id="taxonomy-tab" checked>
+        <label for="taxonomy-tab">Taxonomy</label>
+        <article>
+          <h4>Taxonomy source</h4>
+          <select class="taxonomy-list">
+            <option value="" data-name="" >Choose a Taxonomy</option>
+            <option class="cf7sg-new-taxonomy" value="new_taxonomy" data-name="New Category">New Categories</option>
+          <?php
+          //get options.
+          $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
+          $slugs = array();
+
+          foreach($dropdowns as $all_lists){
+            foreach($all_lists as $slug => $taxonomy){
+              if(isset($slugs[$slug]) ){
+                continue;
+              }else{
+                $slugs[$slug] = $slug;
+              }
+              echo '<option selected data-name="' . $taxonomy['singular'] . '" value="'. $taxonomy['slug'] . '" class="cf7sg-taxonomy">' . $taxonomy['plural'] . '</option>';
+            }
+          }
+          //inset the default post tags and category
+          ?>
+          <option value="post_tag" data-name="Post Tag" class="system-taxonomy">Post Tags</option>
+          <option value="category" data-name="Post Category" class="system-taxonomy">Post Categories</option>
+          <?php
+          $system_taxonomies = get_taxonomies( array('public'=>true, '_builtin' => false), 'objects' );
+          foreach($system_taxonomies as $taxonomy){
+            if( !empty($taxonomy_slug) && $taxonomy_slug == $taxonomy->name ) continue;
+            echo '<option value="' . $taxonomy->name . '" data-name="' . $taxonomy->labels->singular_name . '" class="system-taxonomy">' . $taxonomy->labels->name . '</option>';
+          }
+          ?>
+          </select>
+          <div class="cf72post-new-taxonomy">
+            <div><strong>New Taxonomy</strong></div>
+            <label>Plural Name<br />
+            <input disabled="true" class="cf72post-new-taxonomy" type="text" name="plural_name" value=""></label>
+            <label >Singular Name<br />
+            <input disabled="true"  class="cf72post-new-taxonomy" type="text" name="singular_name" value=""></label>
+            <label>Slug<br />
+            <input disabled="true"  class="cf72post-new-taxonomy" type="text" name="taxonomy_slug" value="" /></label>
+            <label class="hidden"><input class="cf72post-new-taxonomy" type="checkbox" name="is_hierarchical" />hierarchical</label>
+          </div>
+        </article>
+      </section>
+      <section id="post-source">
+        <input type="radio" name="sections" id="post-tab">
+        <label for="post-tab">Post</label>
+        <article class="">
+          <h4>Post source</h4>
+          <select class="post-list">
+            <option value="">Select a post</option>
+            <?php
+            $args = array(
+               'show_ui'   => true,
+               '_builtin' => false
+            );
+            $output = 'objects'; // names or objects, note names is the default
+            $operator = 'and'; // 'and' or 'or'
+
+            $post_types = get_post_types( $args, $output, $operator );
+            foreach($post_types as $type=>$post){
+              echo '<option value="'.$type.'">'.$post->labels->name.'</option>';
+              $taxonomies = get_object_taxonomies( $type, 'objects' );
+
+              $taxonomy_lists[$type] = '';
+              foreach($taxonomies as $taxonomy){
+                //skup cf7 dynamic list taxonomies.
+                if(WPCF7_ContactForm::post_type == $type && 'wpcf7_type' != $taxonomy->name) continue;
+                $taxonomy_lists[$type] .= '<optgroup label="'.$taxonomy->label.'">'.PHP_EOL;
+                $taxonomy_lists[$type] .= cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical,0);
+                $taxonomy_lists[$type] .= '</optgroup>'.PHP_EOL;
+              }
+            }
+            $taxonomies = get_object_taxonomies( 'post', 'objects' );
+            $taxonomy_lists['post'] = '';
+            foreach($taxonomies as $taxonomy){
+              $taxonomy_lists['post'] .= '<optgroup label="'.$taxonomy->label.'">'.PHP_EOL;
+              $taxonomy_lists['post'] .= cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical,0);
+              $taxonomy_lists['post'] .= '</optgroup>'.PHP_EOL;
+            }
+            $taxonomies = get_object_taxonomies( 'page', 'objects' );
+            $taxonomy_lists['page'] = '';
+            foreach($taxonomies as $taxonomy){
+              $taxonomy_lists['page'] .= '<optgroup label="'.$taxonomy->label.'">'.PHP_EOL;
+              $taxonomy_lists['page'] .= cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical,0);
+              $taxonomy_lists['page'] .= '</optgroup>'.PHP_EOL;
+            }
+            ?>
+            <option value="post">Posts</option>
+            <option value="page">Pages</option>
+          </select>
+
+  <?php foreach($taxonomy_lists as $type=>$list ):
+          if(empty($list)) continue;
+    ?>
+          <div id="<?php echo $type ?>" class="post-taxonomies hidden">
+            <select multiple class="select2">
+              <?php echo $list?>
+            </select>
+          </div>
+  <?php endforeach;  ?>
+        </article>
+      </section>
+      <section id="custom-source">
+        <input type="radio" name="sections" id="custom-tab">
+        <label for="custom-tab">Custom</label>
+        <article>
+          <h4>Custom source</h4>
+        </article>
+      </section>
+    </div> <!-- end-tabs-->
+
   </fieldset>
 </div>
 <div class="insert-box">
@@ -106,131 +175,39 @@
 
   <br class="clear" />
 </div>
-<script>
-(function( $ ) {
-  'use strict';
-  var $tag = $('input.tag' , $('#dynamic-select-tag-generator').closest('.control-box').siblings('.insert-box'));
-  var $button = $tag.siblings('.submitbox').find('input.insert-tag');
-  var $select = $('#dynamic-select-tag-generator select.taxonomy-list');
-  var $plural = $('#dynamic-select-tag-generator input[name="plural_name"]');
-  var $single = $('#dynamic-select-tag-generator input[name="singular_name"]');
-  var $taxonomy = $('#dynamic-select-tag-generator input[name="taxonomy_slug"]');
-  var $is_cat = $('#dynamic-select-tag-generator input[name="is_hierarchical"]');
-  var $req = $('#dynamic-select-tag-generator input[name="required"]');
-  var $name = $('#dynamic-select-tag-generator input[name="name"]');
-  var $id = $('#dynamic-select-tag-generator input[name="id"]');
-  var $cl = $('#dynamic-select-tag-generator input[name="class"]');
-
-  $('#dynamic-select-tag-generator').on('change',':input', function(event){
-    var $target = $(event.target);
-    if($target.is('select.taxonomy-list')){
-      var $option = $target.find('option:selected');
-      $taxonomy.val($target.val());
-      $plural.val($option.text());
-      $single.val($option.data('name'));
-      if($option.is('.cf7sg-new-taxonomy')){
-        $plural.prop('disabled',false);
-        $single.prop('disabled',false);
-        $taxonomy.prop('disabled',false);
-        $is_cat.parent().show();
-      }else if($target.val().length > 0){
-        $plural.prop('disabled',true);
-        $single.prop('disabled',true);
-        $taxonomy.prop('disabled',true);
-        //$plural.val('');
-        $is_cat.parent().hide();
-      }
-    }
-    updateCF7Tag();
-  });
-  //udpate the new category if created
-  $button.on('click', function(){
-    var $option = $select.find('option:selected');
-    if($option.is('.cf7sg-new-taxonomy')){
-      $option.after('<option data-name="'+$single.val()+'" value="'+$taxonomy.val()+'">'+$plural.val()+'</option>');
-      $option.next().prop('selected', true);
-      $plural.prop('disabled',true);
-      $single.prop('disabled',true);
-      $taxonomy.prop('disabled',true);
-      $is_cat.parent().hide();
-      //store this new value in the hidden field
-      var values = $('input#cf72post-dynamic-select').val();
-      if(0 == values.length){
-        values = [];
-      }else{
-        values = JSON.parse(values);
-      }
-      values[values.length] = {
-        "slug":$taxonomy.val(),
-        "singular":$single.val(),
-        "plural":$plural.val(),
-        "hierarchical":$is_cat.is(':checked')
-      };
-      $('input#cf72post-dynamic-select').val(JSON.stringify(values));
-    }
-  });
-
-
-  function updateCF7Tag() {
-    var id=$id.val();
-    if(id.length > 0) id =' id:'+id;
-
-    var classes = $cl.val();
-    if(classes.length > 0){
-      var classArr = classes.split(',');
-      var idx;
-      classes='';
-      for(idx=0; idx<classArr.length; idx++){
-        classes += " class:" + classArr[idx].trim() + " ";
-      }
-    }
-    var values = ''
-    if($taxonomy.val().length > 0){
-      values = ' "slug:'+ $taxonomy.val()+'"';
-    }
-    /*
-    if($select.find('option:selected').is('.cf7sg-new-taxonomy')){
-      values += ' "hierarchical:'+ $is_cat.is(':checked')+'"';
-      values += ' "single:'+ $single.val()+'"';
-      values += ' "plural:'+ $plural.val()+'"';
-    }*/
-    //update tag.
-    var type = 'dynamic_select ';
-    if($req.is(':checked')) type = 'dynamic_select* ';
-    $tag.val('[' + type + $name.val() + id + classes + values +']');
+<?php
+/*
+Added functionality
+*/
+function cf7sg_terms_to_options($taxonomy, $is_hierarchical, $parent=0){
+  $args = array('hide_empty' => 0);
+  if($is_hierarchical){
+    $args['parent'] = $parent;
   }
-  })( jQuery );
-</script>
-<style>
-/*[dynamic-select] tag*/
-#dynamic-select-tag-generator .cf72post-new-taxonomy label {
-    float: left;
-    width: 24%;
-    margin-right: 0.5%;
-    color: gray;
+  //check the WP version
+  global $wp_version;
+  if ( $wp_version >= 4.5 ) {
+    $args['taxonomy'] = $taxonomy;
+    $terms = get_terms($args); //WP>= 4.5 the get_terms does not take a taxonomy slug field
+  }else{
+    $terms = get_terms($taxonomy, $args);
+  }
+  if( is_wp_error( $terms ) ){
+    debug_msg('Taxonomy '.$taxonomy.' does not exist');
+    return '';
+  }else if( empty($terms) ){
+    return'';
+  }
+  if(0==$parent) $class = 'parent';
+  else $class = 'child';
+  $script = '';
+  foreach($terms as $term){
+    $script .='<option value="taxonomy:' . $taxonomy . ':' . $term->slug . '" >' . $term->name . '</option>' . PHP_EOL;
+    if($is_hierarchical){
+      $script .= cf7sg_terms_to_options($taxonomy, $is_hierarchical, $term->term_id);
+    }
+  }
+  return $script;
 }
-#dynamic-select-tag-generator input.cf72post-new-taxonomy{
-  width:100%;
-}
-#dynamic-select-tag-generator .cf72post-new-taxonomy label:last-child {
-    margin-right: 0;
-    margin-top: 21px;
-}
-#dynamic-select-tag-generator .cf72post-new-taxonomy label:last-child input{
-  width:auto;
-}
-#dynamic-select-tag-generator .cf72post-new-taxonomy label:first-child {
-    width: 26.5%;
-}
-#dynamic-select-tag-generator option.system-taxonomy {
-    background: #0085ba;
-    color: white;
-}
-#dynamic-select-tag-generator .hidden{
-  display:none;
-}
-#dynamic-select-tag-generator option.cf7sg-taxonomy {
-    background-color: #098f09;
-    color: white;
-}
-</style>
+
+?>

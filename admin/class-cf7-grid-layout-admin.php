@@ -64,19 +64,22 @@ class Cf7_Grid_Layout_Admin {
     if ('wpcf7_contact_form' != $screen->post_type){
       return;
     }
-
+    $plugin_dir = plugin_dir_url( __DIR__ );
     switch( $screen->base ){
       case 'post':
-        wp_enqueue_style( "cf7-grid-post-css", plugin_dir_url( __FILE__ ) . 'css/cf7-grid-layout-post.css', array(), $this->version, 'all' );
+        wp_enqueue_style( "cf7-grid-post-css", $plugin_dir . 'admin/css/cf7-grid-layout-post.css', array(), $this->version, 'all' );
+        //dynamic tag
+        wp_enqueue_style('cf7sg-dynamic-tag-css', $plugin_dir . 'admin/css/cf7sg-dynamic-tag.css', array(), $this->version, 'all' );
         //codemirror
-        wp_enqueue_style( "codemirror-css", plugin_dir_url( __DIR__ ) . 'assets/codemirror/codemirror.css', array(), $this->version, 'all' );
-        wp_enqueue_style( "codemirror-theme-css", plugin_dir_url( __DIR__ ) . 'assets/codemirror/theme/paraiso-light.css', array(), $this->version, 'all' );
-        wp_enqueue_style( "codemirror-foldgutter-css", plugin_dir_url( __DIR__ ) . 'assets/codemirror/addon/fold/foldgutter.css', array(), $this->version, 'all' );
-        wp_enqueue_style( 'smart-grid-css', plugin_dir_url( __DIR__ ) . 'assets/css.gs/smart-grid.min.css', array(), $this->version, 'all');
+        wp_enqueue_style( "codemirror-css", $plugin_dir . 'assets/codemirror/codemirror.css', array(), $this->version, 'all' );
+        wp_enqueue_style( "codemirror-theme-css", $plugin_dir . 'assets/codemirror/theme/paraiso-light.css', array(), $this->version, 'all' );
+        wp_enqueue_style( "codemirror-foldgutter-css", $plugin_dir . 'assets/codemirror/addon/fold/foldgutter.css', array(), $this->version, 'all' );
+        wp_enqueue_style( 'smart-grid-css', $plugin_dir . 'assets/css.gs/smart-grid.min.css', array(), $this->version, 'all');
         wp_enqueue_style('dashicons');
+        wp_enqueue_style('select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), $this->version, 'all' );
         break;
       case 'edit':
-        wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cf7-grid-layout-admin.css', array(), $this->version, 'all' );
+        wp_enqueue_style( $this->plugin_name, $plugin_dir . 'admin/css/cf7-grid-layout-admin.css', array(), $this->version, 'all' );
 
         break;
     }
@@ -91,8 +94,9 @@ class Cf7_Grid_Layout_Admin {
 	public function enqueue_scripts($page) {
 
     //debug_msg($screen, $this->custom_type );
+    $plugin_dir = plugin_dir_url( __DIR__ );
     if('toplevel_page_wpcf7' == $page){
-      wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-admin.js', array( 'jquery' ), $this->version, false );
+      wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array( 'jquery' ), $this->version, false );
       return;
     }
     $screen = get_current_screen();
@@ -103,9 +107,19 @@ class Cf7_Grid_Layout_Admin {
       case 'post':
 		    //for the future
         $this->setup_cf7_object();
+        //enqueue the cf7 scripts.
+        wpcf7_admin_enqueue_scripts( 'wpcf7' );
+        //force cf7 script
+        // wp_enqueue_script( 'wpcf7-admin-js',
+      	// 	wpcf7_plugin_url( 'admin/js/scripts.js' ),
+      	// 	array( 'jquery', 'jquery-ui-tabs' ),
+      	// 	WPCF7_VERSION, true );
+        // wp_enqueue_script('wpcf7-admin-tag-js', wpcf7_plugin_url( 'admin/js/tag-generator.js' ),
+    		// array( 'jquery', 'thickbox', 'wpcf7-admin' ), WPCF7_VERSION, true);
 
-        wp_enqueue_script( 'cf7-grid-codemirror-js', plugin_dir_url( __FILE__ ) . 'js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs' ), $this->version, false );
-        wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable', 'jquery-ui-draggable' ), $this->version, false );
+        wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs' ), $this->version, false );
+        wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable', 'jquery-ui-draggable' ), $this->version, false );
+        wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
         wp_localize_script(
           $this->plugin_name,
           'cf7_grid_ajaxData',
@@ -113,68 +127,68 @@ class Cf7_Grid_Layout_Admin {
             'url' => admin_url( 'admin-ajax.php' )
           )
         );
-        wpcf7_admin_enqueue_scripts( 'wpcf7' );
 
         //codemirror script
         wp_enqueue_script( 'codemirror-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/codemirror.js',
+          $plugin_dir . 'assets/codemirror/codemirror.js',
           array(), $this->version, false
         );
         //fold code
         wp_enqueue_script( 'codemirror-foldcode-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/addon/fold/foldcode.js',
+          $plugin_dir . 'assets/codemirror/addon/fold/foldcode.js',
           array('codemirror-js'), $this->version, false
         );
         wp_enqueue_script( 'codemirror-foldgutter-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/addon/fold/foldgutter.js',
+          $plugin_dir . 'assets/codemirror/addon/fold/foldgutter.js',
           array('codemirror-js'), $this->version, false
         );
         wp_enqueue_script( 'codemirror-indent-fold-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/addon/fold/indent-fold.js',
+          $plugin_dir . 'assets/codemirror/addon/fold/indent-fold.js',
           array('codemirror-js'), $this->version, false
         );
         wp_enqueue_script( 'codemirror-xml-fold-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/addon/fold/xml-fold.js',
+          $plugin_dir . 'assets/codemirror/addon/fold/xml-fold.js',
           array('codemirror-js'), $this->version, false
         );
         wp_enqueue_script( 'codemirror-brace-fold-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/addon/fold/brace-fold.js',
+          $plugin_dir . 'assets/codemirror/addon/fold/brace-fold.js',
           array('codemirror-js'), $this->version, false
         );
         wp_enqueue_script( 'codemirror-comment-fold-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/addon/fold/comment-fold.js',
+          $plugin_dir . 'assets/codemirror/addon/fold/comment-fold.js',
           array('codemirror-js'), $this->version, false
         );
         wp_enqueue_script( 'codemirror-mixed-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/mode/htmlmixed/htmlmixed.js',
+          $plugin_dir . 'assets/codemirror/mode/htmlmixed/htmlmixed.js',
           array('codemirror-js'), $this->version, false
         );
         wp_enqueue_script( 'codemirror-javascript-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/mode/javascript/javascript.js',
+          $plugin_dir . 'assets/codemirror/mode/javascript/javascript.js',
           array('codemirror-js'), $this->version, false
         );
         wp_enqueue_script( 'codemirror-xml-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/mode/xml/xml.js',
+          $plugin_dir . 'assets/codemirror/mode/xml/xml.js',
           array('codemirror-js'), $this->version, false
         );
         wp_enqueue_script( 'codemirror-css-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/mode/css/css.js',
+          $plugin_dir . 'assets/codemirror/mode/css/css.js',
           array('codemirror-js'), $this->version, false
         );
         //overlay for shortcode highligh
         wp_enqueue_script( 'codemirror-overlay-js',
-          plugin_dir_url( __DIR__ ) . 'assets/codemirror/addon/mode/overlay.js',
+          $plugin_dir . 'assets/codemirror/addon/mode/overlay.js',
           array('codemirror-js'), $this->version, false
         );
         //js beautify
         wp_enqueue_script( 'beautify-js',
-          plugin_dir_url( __DIR__ ) . 'assets/beautify/beautify.js',
+          $plugin_dir . 'assets/beautify/beautify.js',
           array('jquery'), $this->version, false
         );
         wp_enqueue_script( 'beautify-html-js',
-          plugin_dir_url( __DIR__ ) . 'assets/beautify/beautify-html.js',
+          $plugin_dir . 'assets/beautify/beautify-html.js',
           array('beautify-js'), $this->version, false
         );
+        wp_enqueue_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
         break;
       case 'edit':
         //wp_enqueue_script( $this->plugin_name.'-quick-edit', plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-quick-edit.js', false, $this->version, true );
@@ -182,6 +196,10 @@ class Cf7_Grid_Layout_Admin {
         break;
     }
 	}
+//   public function inspect_scripts() {
+//     global $wp_scripts;
+//     debug_msg($wp_scripts->queue);
+// }
 
   /**
   * Adds a new sub-menu to replace the 'Add New' CF7 menu
@@ -197,6 +215,7 @@ class Cf7_Grid_Layout_Admin {
       'wpcf7_edit_contact_forms',
       'post-new.php?post_type=wpcf7_contact_form'
     );
+    
     //initial cf7 object when creating new form
     add_action( 'load-' . $hook, array($this, 'setup_cf7_object'));
     //remove_submenu_page( $menu_slug, $submenu_slug );
@@ -242,6 +261,18 @@ class Cf7_Grid_Layout_Admin {
   public function modify_cf7_post_type_args($args, $post_type){
     if(class_exists('WPCF7_ContactForm') &&  $post_type === WPCF7_ContactForm::post_type  ) {
       //debug_msg($args, 'pre-args');
+      $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
+      $system_taxonomy = array();
+      if(!empty($system_dropdowns)){
+        foreach($system_dropdowns as $id=>$list){
+          $system_taxonomy = array_merge($system_taxonomy, $list);
+        }
+        if(!empty($args['taxonomies'])){
+          $system_taxonomy = array_merge($args['taxonomies'], $system_taxonomy);
+        }
+        $system_taxonomy = array_unique($system_taxonomy);
+        $args['taxonomies'] = $system_taxonomy;
+      }
       $args['public'] = false;
       $args['show_ui']= true;
       $args['show_in_menu']= 'wpcf7';
@@ -278,8 +309,10 @@ class Cf7_Grid_Layout_Admin {
     foreach($dropdowns as $post_lists){
       foreach($post_lists as $slug=>$taxonomy){
         if(!isset($created[$slug])){
-          $this->register_dynamic_dropdown($taxonomy);
-          $created[$slug] = $slug;
+          if(is_array($taxonomy)){
+            $this->register_dynamic_dropdown($taxonomy);
+            $created[$slug] = $slug;
+          }
         }
       }
     }
@@ -494,11 +527,14 @@ class Cf7_Grid_Layout_Admin {
       foreach($taxonomies as $taxonomy){
         $created_taxonomies[$taxonomy['slug']] = $taxonomy;
       }
+      //debug_msg($created_taxonomies);
       $tags = $cf7_form->scan_form_tags(); //get your form tags
-      $post_lists = $saved_list = array();
+      $post_lists = $saved_lists = $system_list = array();
+
       $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-      if(isset($dropdowns[$cf7_post_id])){
-        $saved_list = $dropdowns[$cf7_post_id];
+
+      foreach($dropdowns as $id => $lists){
+        $saved_lists = array_merge($saved_lists, $lists);
       }
       foreach($tags as $tag){
         if('dynamic_select' == $tag['basetype']){
@@ -513,17 +549,29 @@ class Cf7_Grid_Layout_Admin {
             if(isset($created_taxonomies[$slug])){
               //store this taxonomy.
               $post_lists[$slug] = $created_taxonomies[$slug];
-            }else if(isset($saved_list[$slug])){
-              //retain previously saved list if we are stilling using it.
-              $post_lists[$slug] = $saved_list[$slug];
+            }else if(isset($saved_lists[$slug])){
+              //retain previously saved list if we are stil using it.
+              $post_lists[$slug] = $saved_lists[$slug];
+            }else{ //system taxonomy.
+              $system_list[] = $slug;
             }
             //store the taxonomy slug in the cf7 metas.
             //$post_lists[$slug] = null;
           }
         }
       }
-      $dropdowns[$cf7_post_id] = $post_lists;
+      //list of taxonomy to register.
+      //unset the old value.
+      unset($dropdowns[$cf7_post_id]);
+      //unshift new value to top of array.
+      $dropdowns = array($cf7_post_id => $post_lists) + $dropdowns ;
+
       update_option('_cf7sg_dynamic_dropdown_taxonomy', $dropdowns);
+      //list of system taxonomy to register
+      $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
+      $system_dropdowns[$cf7_post_id] = $system_list;
+      update_option('_cf7sg_dynamic_dropdown_system_taxonomy', $system_dropdowns);
+
     }
   }
 

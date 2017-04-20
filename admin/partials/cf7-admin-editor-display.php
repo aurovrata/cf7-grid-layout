@@ -74,7 +74,10 @@
 	do_action( 'wpcf7_admin_footer', $cf7_form );
 
   $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-
+  $show_dropdown = array();
+  if( isset($dropdowns[$post_id]) ){
+    $show_dropdown = $dropdowns[$post_id];
+  }
 ?>
 <script type="text/javascript">
 (function( $ ) {
@@ -83,12 +86,23 @@
   $(document).ready(function() {
     <?php
     $slugs = array();
+    // foreach($show_dropdown as $slug => $taxonomy){
+    //   if( $taxonomy['hierarchical'] ){
+    //     $hide_id = $slug.'div';
+    //   }else{
+    //     $hide_id = 'tagsdiv-'.$slug;
+    //   }
+    //   //debug_msg($taxonomy['slug']);
+    //   $slugs[$slug] = $slug; //to make sure it is not overwritten.
+    //   echo '$("#' . $hide_id . ' button.tagcloud-link").trigger("click");'.PHP_EOL;
+    //   echo '$("#' . $hide_id . '").addClass("cf7sg-dynamic-list");'.PHP_EOL;
+    //   echo '$("#' . $hide_id . '").show();'.PHP_EOL;
+    // }
     foreach($dropdowns as $id => $all_lists){
+      //if($id == $post_id) continue;
       foreach($all_lists as $slug => $taxonomy){
         if(isset($slugs[$slug])){
           continue;
-        }else{
-          $slugs[$slug] = $slug;
         }
         if( $taxonomy['hierarchical'] ){
           $hide_id = $slug.'div';
@@ -96,11 +110,9 @@
           $hide_id = 'tagsdiv-'.$slug;
         }
         //debug_msg($taxonomy['slug']);
-        if( $id != $post_id ){
-          echo '$("#' . $hide_id . '").hide();';
-        }else{
-          echo '$("#' . $hide_id . '").show();';
-        }
+        // echo '$("#' . $hide_id . ' button.tagcloud-link").trigger("click");'.PHP_EOL;
+        // echo '$("#' . $hide_id . '").addClass("cf7sg-dynamic-list");'.PHP_EOL;
+        echo '$("#' . $hide_id . '").hide();'.PHP_EOL;
       }
     }
     ?>
