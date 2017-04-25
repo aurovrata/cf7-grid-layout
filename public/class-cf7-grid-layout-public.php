@@ -149,12 +149,20 @@ class Cf7_Grid_Layout_Public {
 
     //get the key
     $cf7_id = $attr['id'];
-    $cf7_key = get_post_meta($cf7_id, '_smart_grid_cf7_form_key', true);
+    $cf7_key = '';
+    //debug_msg($attr);
+    if( isset($attr['cf7key']) ) {
+      $cf7_key = $attr['cf7key'];
+    }else{
+      $cf7post = get_post($cf7_id);
+      $cf7_key = $cf7post->post_name;
+    }
+    //$cf7_key = get_post_meta($cf7_id, '_smart_grid_cf7_form_key', true);
     //allow custom script print
     do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
     //form id
     $css_id = apply_filters('cf7_smart_grid_form_id', $cf7_key, $attr);
-    $output = '<div id="'.$css_id.'" class="cf7-smart-grid has-validation has-table has-accordion has-tabs has-toggles has-nice-select">'.$output.'</div>';
+    $output = '<div id="cf7sg-form-'.$css_id.'" class="cf7-smart-grid has-validation has-table has-accordion has-tabs has-toggles has-nice-select">'.$output.'</div>';
     return $output;
   }
 

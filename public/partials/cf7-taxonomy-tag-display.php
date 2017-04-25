@@ -41,7 +41,7 @@ $options = array();
          $source['taxonomy'][$exp[1]] = $exp[0];
        }
      }
-     if(0 == strpos($value, 'source:filter')){
+     if(0 == strpos($values, 'source:filter')){
        $source['source'] = "filter";
      }
    }
@@ -93,17 +93,18 @@ $options = array();
    }else if('filter' == $source['source']){
      $options = apply_filters('cf7sg_dynamic_dropdown_custom_options', $options, $tag->name);
    }
+ }
 ?>
 <select id="<?php echo $id?>" name="<?php echo $tag->name ?>" class="<?php echo $class?>">
 <?php
-$value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $source, $tag->name);
-if(!is_null($value)):
+$default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $source, $tag->name);
+if(!is_null($default_value)):
 ?>
-  <option value=""><?php echo $value ?></option>
+  <option value=""><?php echo $default_value ?></option>
 <?php
 endif;
 foreach($options as $value=>$name){
-  echo '<option value="'.$term->slug.'">'.$term->name.'</option>';
+  echo '<option value="'.$value.'">'.$name.'</option>';
 }
 ?>
 </select>
