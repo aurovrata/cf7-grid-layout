@@ -203,6 +203,11 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wp_print_scripts', $plugin_public, 'dequeue_cf7_scripts',100 );
 		$this->loader->add_action( 'wp_print_styles', $plugin_public, 'dequeue_cf7_styles',100 );
     $this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'cf7_shortcode_request',10,3 );
+
+    //save grid fields
+    $this->loader->add_action( 'wp_ajax_nopriv_save_grid_fields', $plugin_public, 'save_grid_fields' );
+    $this->loader->add_action( 'wp_ajax_save_grid_fields', $plugin_public, 'save_grid_fields' );
+
     /*Shortcodes*/
     //add_shortcode('multi-cf7-form', array($plugin_public, 'multi_form_shortcode'));
     //add_shortcode('child-cf7-form', array($plugin_public, 'child_form_shortcode'));
@@ -213,6 +218,11 @@ class Cf7_Grid_Layout {
 
     //instroduced a dynamic taxonomy droppdown tag for forms
     $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_dynamic_taxonomy_shortcode' );
+    //setup individual tag filers
+    $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_tag_filters', 10, 1 );
+
+    //filter cf7 validation
+    $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 30, 2 );
 	}
 
 	/**

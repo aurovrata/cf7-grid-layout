@@ -215,7 +215,7 @@ class Cf7_Grid_Layout_Admin {
       'wpcf7_edit_contact_forms',
       'post-new.php?post_type=wpcf7_contact_form'
     );
-    
+
     //initial cf7 object when creating new form
     add_action( 'load-' . $hook, array($this, 'setup_cf7_object'));
     //remove_submenu_page( $menu_slug, $submenu_slug );
@@ -419,6 +419,17 @@ class Cf7_Grid_Layout_Admin {
    * @since 1.0.0
   **/
   public function save_post($post_id, $post, $update){
+    //make sure this is the edit page and not a quick-edit.
+    if( !isset($_POST['_wpcf7nonce']) ){
+      return;
+    }
+    //validate the nonce.
+    check_admin_referer( 'wpcf7-save-contact-form_' . $post_id, '_wpcf7nonce');
+
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ){
+      return;
+    }
+
     switch($post->post_status){
       case 'auto-draft':
       case 'trash':
@@ -426,6 +437,7 @@ class Cf7_Grid_Layout_Admin {
       default:
         break;
     }
+
     //debug_msg($_POST, 'submitted ');
     $args = $_REQUEST;
 		$args['id'] = $post_id;
@@ -454,6 +466,7 @@ class Cf7_Grid_Layout_Admin {
 			? $_POST['wpcf7-additional-settings'] : '';
 
     //need to unhook this function so as not to loop infinitely
+    //debug_msg($args, 'saving cf7 posts');
     remove_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
     $contact_form = wpcf7_save_contact_form( $args );
     add_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);

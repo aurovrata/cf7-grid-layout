@@ -1,7 +1,9 @@
 (function( $ ) {
 	'use strict';
-  $(document).ready( function(){
 
+  var trackGridFields = []; //to keep track of fields that are converted to arrays.
+
+  $(document).ready( function(){
     //.cf7-sg-table structure
     var $cf7Form_table = $('div.has-table form.wpcf7-form');
     if($cf7Form_table.length){
@@ -9,14 +11,15 @@
       $('.container.cf7-sg-table', $cf7Form_table).each(function(){
         var $table = $(this);
         var $row = $('.row.cf7-sg-table', $table);
+        var label = $row.data('button');
         //change the input and select fields to arrays for storage
         $row.fields2arrays();
         //add a button at the end of the $table to add new rows
         var $footer = $table.next('.container.cf7-sg-table-footer');
         if($footer.length>0){
-          $footer.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="ui-button">Add Row</a></div>');
+          $footer.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="ui-button">'+label+'</a></div>');
         }else{
-          $table.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="ui-button">Add Row</a></div>');
+          $table.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="ui-button">'+label+'</a></div>');
         }
         //append a hidden clone of the first row which we can use to add
         $row = $row.clone().addClass('cf7-sg-cloned-table-row');
@@ -31,6 +34,7 @@
       $cf7Form_table.click('.container', function(event){
         var $button = $(event.target);
         if( $button.is('div.cf7-sg-table-button a') ){ //----------add a row
+          var rowIdx = $button.closest( '.container.cf7-sg-table' ).children( '.row.cf7-sg-table' ).length;
           $button = $button.parent();
           var $table = $button.prev('.container');
           if($table.is('.cf7-sg-table-footer')){
@@ -38,6 +42,11 @@
           }
           var $cloneRow = $('.cf7-sg-cloned-table-row', $table);
           var $row = $cloneRow.clone().removeClass('cf7-sg-cloned-table-row');
+          //add input name as class to parent span
+          $(':input', $row).each(function(){
+            var name = $(this).attr('name').replace('[]','');
+            $(this).parent('span').removeClass(name).addClass(name+'_'+rowIdx);
+          });
           $cloneRow.before($row.show());
           //when the button is clicked, trigger a content increase for accordions to refresh
           $table.trigger('sgContentIncrease');
@@ -158,13 +167,13 @@
         }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab
           //add a new tab
           var $container = $target.closest('.cf7-sg-tabs');
-          var $addButton = $target.closest('ul.ui-tabs-nav.f7sg-add-tab').remove();
+          //var $addButton = $target.closest('ul.ui-tabs-nav.f7sg-add-tab').remove();
           var $tabList = $container.children('.cf7-sg-tabs-list');
           var tabCount = $tabList.children('li').length + 1;
           var firstTabId  = $container.children('.cf7-sg-tabs-panel').first().attr('id');
           var panelId = firstTabId + '-' + tabCount;
           //tab
-          var $newTab = $target.closest('ul.cf7sg-add-tab').siblings('ul.ui-tabs-nav').children('li').first().clone();
+          var $newTab = $target.closest( 'ul.cf7sg-add-tab' ).siblings( 'ul.ui-tabs-nav' ).children('li').first().clone();
           $newTab.find('a').attr('href','#'+panelId).text($newTab.text()+ ' ('+ tabCount + ')');
           $newTab.append('<span class="cf7sg-close-tab dashicons dashicons-no-alt"></span>'); //remove button
           $newTab.removeClass('ui-tabs-active ui-state-active');
@@ -174,6 +183,11 @@
           //new panel
           var $newPanel = $( panels[firstTabId] );
           $newPanel.attr('id', panelId);
+          //add input name as class to parent span
+          $(':input', $newPanel).each(function(){
+            var name = $(this).attr('name').replace('[]','');
+            $(this).parent('span').removeClass(name).addClass(name + '_' + (tabCount-1));
+          });
           //change all the ids of inner tabs in the new panel
           var $innerTabs = $newPanel.find('ul.ui-tabs-nav li a');
           $innerTabs.each(function(){
@@ -225,7 +239,7 @@
           //append new panel
           $container.append($newPanel);
           $container.tabs( "refresh" );
-          $tabList.after($addButton);
+          //$tabList.after($addButton);
         }
       });
     }
@@ -339,6 +353,7 @@
       });
       cf7Form_accordion.trigger('sgCollapsibleRowsReady')
     }//end collapsible rows
+
     //random string generator
     function randString(n){
       if(!n){
@@ -351,7 +366,11 @@
       }
       return text;
     }
+    /*
+     Smart Grid is now ready
+    */
     $('div.cf7-smart-grid form.wpcf7-form').trigger("cf7SmartGridReady");
+
   });
   /*
     jQuery extended functions
@@ -378,7 +397,9 @@
     $('input, select', $(this)).each(function(){
       var name = $(this).attr('name');
       if( -1 == name.lastIndexOf('[]') ){
+        trackGridFields[trackGridFields.length] = $(this).attr('name');
         $(this).attr('name', name+'[]');
+        $(this).addClass('cf7sg-'+name);
       }
       /*
        TODO: convert existing arrays to array of arrays, or possibly use objects?
@@ -393,4 +414,25 @@
       */
     });
   }
+  //send grid fields back to server
+
+  $('form.wpcf7-form').on('cf7SmartGridReady', function(){
+    var $form = $(this);
+    var serverRequest = $.ajax({
+      type: 'POST',
+      url: cf7sg_ajaxData.url,
+      dataType: 'json',
+      data: {
+        'action':'save_grid_fields',
+        'grid_fields' : JSON.stringify(trackGridFields),
+        'id': $('input[name="_wpcf7"]', $form).val()
+      }
+    });
+    serverRequest.done(function(msg){
+      console.log('success');
+    });
+    serverRequest.fail(function(jqXHR, textStatus){
+      console.log('CF7 Smart Grid ERROR sending grid fields to server: '+textStatus);
+    });
+  });
 })( jQuery );

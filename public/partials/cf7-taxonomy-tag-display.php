@@ -23,15 +23,15 @@ $options = array();
  if(!empty($tag->values)){
    $source = array();
    foreach($tag->values as $values){
-     if(0 == strpos($values, 'slug:') ){
+     if(0 === strpos($values, 'slug:') ){
        $source['source'] = "taxonomy";
        $source['taxonomy'] = str_replace('slug:', '', $values);
      }
-     if(0 == strpos($values, 'source:post')){
+     if(0 === strpos($values, 'source:post')){
        $source['source'] = "post";
        $source['post'] = str_replace('source:post:', '', $values);
      }
-     if(0 == strpos($values, 'taxonomy:')){
+     if(0 === strpos($values, 'taxonomy:')){
        if(empty($source['taxonomy'])){
          $source['taxonomy'] = array();
        }
@@ -41,7 +41,7 @@ $options = array();
          $source['taxonomy'][$exp[1]] = $exp[0];
        }
      }
-     if(0 == strpos($values, 'source:filter')){
+     if(0 === strpos($values, 'source:filter')){
        $source['source'] = "filter";
      }
    }

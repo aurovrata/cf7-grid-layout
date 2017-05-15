@@ -52,6 +52,10 @@
             Row table input
             <input type="checkbox" class="table-row" />
           </label>
+          <label class="table-row-button">
+            Button label
+            <input type="text" value="Add Row"/>
+          </label>
           <label class="cf7-sg-hidden footer-row-label unique-mod">
             Row table footer
             <input type="checkbox" class="footer-row" />

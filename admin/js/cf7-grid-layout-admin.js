@@ -50,8 +50,15 @@
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
       });
       $('div.container.cf7-sg-table', $form).each(function(){
-        var $ctrl = $(this).find('.row.cf7-sg-table > .row-controls').first().find('.table-row-label');
+        var $ctrl = $(this).find('.row.cf7-sg-table > .row-controls' ).first().find('.table-row-label');
         $('input', $ctrl).prop('checked', true);
+        //set button label
+        var text = $('.row.cf7-sg-table', $(this)).data('button');
+        if(typeof text  == 'undefined'){
+          text = 'Add Row';
+          $('.row.cf7-sg-table', $(this)).attr('data-button',text);
+        }
+        $ctrl.next('.table-row-button').children('input').val(text);
         //toggle disable the sibling input
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
       });
@@ -155,7 +162,6 @@
     /*
       Row controls
     */
-
     $grid.on('click', $('.row-control'), function(event){
       var $target = $(event.target);
       var $parentRow;
@@ -262,6 +268,8 @@
         }
       }else if($target.is('ul.cf7-sg-tabs-list li label input[type="text"]')){ //------- Tabs title
         $target.parent().siblings('a').text($target.val());
+      }else if($target.is('label.table-row-button input')){
+        $target.closest('.row.cf7-sg-table').attr('data-button',$target.val());
       }
     });
     /*

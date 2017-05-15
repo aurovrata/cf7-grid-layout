@@ -40,6 +40,15 @@ class Cf7_Grid_Layout_Public {
 	 */
 	private $version;
 
+  /**
+	 * The cf7 submitted data.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      Array    $submitted_data    The cf7 submitted data.
+	 */
+	private $submitted_data;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -51,7 +60,7 @@ class Cf7_Grid_Layout_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
+    $this->submitted_data = array();
 	}
 
 	/**
@@ -120,6 +129,8 @@ class Cf7_Grid_Layout_Public {
 
     wp_enqueue_script('contact-form-7');
     wp_enqueue_script($this->plugin_name);
+    wp_localize_script( $this->plugin_name, 'cf7sg_ajaxData', array('url' => admin_url( 'admin-ajax.php' )));
+
     $class[]='has-validation';
     wp_enqueue_script('jquery-select2');
     wp_enqueue_style('select2-style');
@@ -305,5 +316,133 @@ class Cf7_Grid_Layout_Public {
     $html = ob_get_contents ();
     ob_end_clean();
     return $html;
+  }
+  /**
+   * Function to save ajax submitted grid fields
+   * hooked on wp_ajax_nopriv_save_grid_fields and wp_ajax_save_grid_fields
+   * @since 1.0.0
+  **/
+  public function save_grid_fields(){
+    /*TODO: set up a nonce validation */
+    if(isset($_POST['grid_fields'])){
+      $grid_fields =  json_decode(stripslashes($_POST['grid_fields']));
+      $cf7_id = $_POST['id'];
+      //debug_msg($grid_fields, $cf7_id);
+      update_post_meta($cf7_id, '_cf7sg_grid_field_names', $grid_fields);
+      wp_send_json_success(array('message'=>'saved fields'));
+    }else{
+      wp_send_json_error(array('message'=>'no data received'));
+    }
+    wp_die();
+  }
+  /**
+   *  Use this function to setup validations filters for the submitted form.
+   * Funciton hooked on 'wpcf7_posted_data'
+   * @since 1.0.0
+   * @param   Array    $data    unvalidated submitted data.
+   * @return  Array    filtered submitted data.
+  **/
+  public function setup_tag_filters($data){
+    //TODO: validate with sfgrid form nonce.
+    $cf7form = WPCF7_ContactForm::get_current();
+    if(empty($cf7form) ){
+      debug_msg("Unable to load submitted form");
+      return $data;
+    }else if(isset($data['_wpcf7']) ){
+      $cf7_id = $data['_wpcf7'];
+      if( $cf7_id != $cf7form->id() ){
+        $cf7form = WPCF7_ContactForm::get_instance($cf7_id);
+      }
+    }
+    $grid_fields = get_post_meta($cf7_id , '_cf7sg_grid_field_names', true);
+
+    $tags = $cf7form->scan_form_tags();
+    foreach($tags as $tag){
+      if(in_array($tag['name'], $grid_fields)){
+        //setup wpcf7 validation filters for arrays prior to cf7 default filters so as not to get array conversion errors.
+        add_filter("wpcf7_validate_{$tag['type']}", array($this, 'validate_array_values'), 5,2);
+      }
+    }
+
+    return $data;
+  }
+  /**
+	 * Filter the validation results of cf7 plugin. Resets the results for array fields
+	 * @since 1.0.0
+   * @param WPCF7_Validation $results   validation object
+   * @param Array $tags   an array of cf7 tag used in this form
+   * @return WPCF7_Validation  validation result
+	 */
+  public function validate_array_values($results, $tag){
+    /*
+    TODO: see if $resutls[name] can be replaced from field bame to <field-name>-<index> so that error msg insertion can take place accurately on the front end.
+    This woudl also require that the js file that builds array fields (tabs/tables) also replaces the class in teh outer span with an indexed one,
+    span.wpcf7-form-control-wrap.<field-name> to span.wpcf7-form-control-wrap.<field-name>-<index>
+    */
+    $tag_obj = new WPCF7_FormTag( $tag );
+
+  	$name = $tag_obj->name;
+    //reset the $_POST data as cf7 expect single value
+    if( isset($_POST[$name]) && is_array($_POST[$name]) ){
+      $values = $_POST[$name];
+      $_POST[$name] = $values[0];
+      //temporarily remove this filter
+      remove_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
+      for($idx=1; $idx<sizeof($values); $idx++){
+        $_POST[$name.'_'.$idx] =$values[$idx];
+        $tag['name'] = $name.'_'.$idx;
+        apply_filters("wpcf7_validate_{$tag_obj->type}", $results, $tag);
+      }
+      //reapply this filter
+      add_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
+    }
+    return $results;
+  }
+  /**
+   * Final validation with all values submitted for inter dependent validation
+   * Hooked to filter 'wpcf7_validate', sets up the final $results object
+   * @since 1.0.0
+   * @param WPCF7_Validation $results   validation object
+   * @param Array $tags   an array of cf7 tag used in this form
+   * @return WPCF7_Validation  validation result
+  **/
+  public function filter_wpcf7_validate($results, $tags){
+    //TODO: validate with sfgrid form nonce.
+    //get the submitted values
+    $submitted = WPCF7_Submission::get_instance();
+    $data = $submitted->get_posted_data();
+    $tag_types = array();
+    foreach($tags as $tag){
+      $tag_types[$tag['name']] = $tag['type'];
+    }
+    $validation = array();
+    /**
+    * filter to validate the entire submission and check interdependency of fields
+    * @since 1.0.0
+    * @param Array  $validation  intially an empty array
+    * @param Array  $data   submitted data, $field_name => $value pairs ($value can be an array).
+    * @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
+    */
+    $validation = apply_filters('cf7sg_validate_submission', $validation, $data);
+    if(!empty($validation)){
+      foreach($validation as $name=>$msg){
+        if(is_array($data[$name]) ) {
+          if( is_array($msg) ){
+            for($idx=0, $sfx=''; $idx < sizeof($msg); $idx++){
+              if(empty($msg[$idx])) continue;
+              //setup the error message to return to the form.
+              $tag = new WPCF7_FormTag( array('name'=>$name.$sfx, 'type'=>$tag_types[$name]) );
+              $result->invalidate( $tag, $msg[$idx] );
+            }
+          }else{
+            debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
+          }
+        }elseif( !empty($msg) ){
+          $tag = new WPCF7_FormTag( array('name'=>$name, 'type'=>$tag_types[$name]) );
+          $result->invalidate( $tag, $msg);
+        }
+      }
+    }
+    return $results;
   }
 }

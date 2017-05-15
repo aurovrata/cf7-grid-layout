@@ -16,7 +16,7 @@
 <?php do_action( 'wpcf7_admin_notices' ); ?>
 <input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
 <input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />
-<?php $nonce = wp_create_nonce( 'wpcf7-save-contact-form_' .  $post_id );?>
+<?php wp_nonce_field( 'wpcf7-save-contact-form_' .  $post_id, '_wpcf7nonce' ); ?>
 
 <div id="contact-form-editor">
 <div class="keyboard-interaction"><?php echo sprintf( esc_html( __( '%s keys switch panels', 'contact-form-7' ) ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>

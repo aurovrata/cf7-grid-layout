@@ -59,8 +59,13 @@ grid layout
 #grid-row, #grid-collapsible, #grid-tabs, .cf7-sg-hidden,
 #grid-collapsible-with-toggle,
 #grid-cf7-forms,
-#grid-form .cf7sg-external-form-content {
+#grid-form .cf7sg-external-form-content,
+#grid-form .table-row-button {
     display: none;
+}
+#grid-form .row.cf7-sg-table .row-controls label.table-row-button {
+    display: block;
+    text-align: center;
 }
 #grid-form .form-select {
     display: block;
@@ -88,7 +93,8 @@ textarea.grid-input {
     width: 137px;
     z-index:1008;
 }
-#grid-form .container {
+#grid-form .container,
+#grid-form .table-row-button input  {
     max-width: 100%;
 }
 #cf7-codemirror .CodeMirror {

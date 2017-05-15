@@ -67,6 +67,10 @@ ul.cf7-sg-tabs-list {
     border: solid 1px #b9b9b9;
     border-left: none;
     width: 5px;
+    display:none;
+}
+.row.cf7-sg-table:nth-last-child(2) .row-control {
+    display: inline;
 }
 .row.cf7-sg-table .row-control .dashicons {
     position: absolute;
