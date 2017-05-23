@@ -82,3 +82,13 @@ ul.cf7-sg-tabs-list {
     border: solid 1px #b9b9b9;
     color: #848484;
 }
+div.field span.wpcf7-not-valid-tip {
+    display: inherit;
+    position: absolute;
+    left: 0;
+    bottom: -36px;
+    background: #e9e9e9;
+    padding: 3px 10px;
+    border-radius: 3px;
+    min-width: 195px;
+}

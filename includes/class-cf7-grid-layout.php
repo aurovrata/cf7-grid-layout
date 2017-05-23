@@ -220,9 +220,10 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_dynamic_taxonomy_shortcode' );
     //setup individual tag filers
     $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_tag_filters', 10, 1 );
-
     //filter cf7 validation
     $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 30, 2 );
+    //setup hidden key field in cf7 forms.
+    $this->loader->add_filter( 'wpcf7_form_hidden_fields', $plugin_public, 'set_hidden_key' );
 	}
 
 	/**

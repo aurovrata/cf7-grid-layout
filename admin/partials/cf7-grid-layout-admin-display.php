@@ -29,6 +29,7 @@
 </div>
 <?php endif; ?>
 </textarea>
+<input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms[]" />
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();
@@ -83,7 +84,7 @@
           ));
           foreach($cf7_forms as $cf7_form):
         ?>
-        <option value="<?php echo $cf7_form->ID ?>"><?php echo $cf7_form->post_title ?></option>
+        <option value="<?php echo $cf7_form->post_name ?>"><?php echo $cf7_form->post_title ?></option>
     <?php endforeach;
           wp_reset_postdata();
       ?>

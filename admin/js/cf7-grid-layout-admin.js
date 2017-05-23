@@ -14,6 +14,19 @@
       $('.cf7sg-external-form', $form).each(function(){
         var id = $(this).data('form');
         external[id] = $(this).children('.cf7sg-external-form-content').remove();
+        //check for form update.
+        var data = {
+    			'action' : 'get_cf7_content',
+          'id': $('#post_ID').val(),
+          'nonce'  : $('#_wpcf7nonce').val(),
+    			'cf7_key' : id,
+          'update'  :true
+    		};
+        $.post(ajaxurl, data, function(response) {
+          if(response.length > 0){
+            external[id] = $('<div class="cf7sg-external-form-content">').append(response);
+          }
+    		});
       });
       //replace columns content with textareas
       $('div.columns', $form).each(function(){
@@ -71,10 +84,14 @@
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
         var id = $(this).data('form');
-        //add controls
-        $(this).append($('#grid-cf7-forms .form-controls').clone());
-        $('.form-controls .form-select', $(this)).val(id);
-        $(this).append( external[id] );
+        if($('#grid-cf7-forms .form-select option[value="'+id+'"]' ).length > 0 ){
+          //add controls
+          $(this).append($('#grid-cf7-forms .form-controls').clone());
+          $('.form-controls .form-select', $(this)).val(id);
+          $(this).append( external[id] );
+        }else{
+          $(this).append($( $('#grid-cf7-forms .cf7sg-external-form').html() ) );
+        }
       });
       //add the form to the grid
       $grid.html($form.children());
@@ -150,11 +167,13 @@
         //TODO: disable the selected options
         //ajax get form content
         var data = {
-    			'action': 'get_cf7_content',
-    			'cf7_id': $target.val()
+    			'action' : 'get_cf7_content',
+          'id': $('#post_ID').val(),
+          'nonce'  : $('#_wpcf7nonce').val(),
+    			'cf7_key' : $target.val()
     		};
         $.post(ajaxurl, data, function(response) {
-    			$('.cf7sg-external-form-content', $container).html(response);
+    			$('.cf7sg-external-form-content', $container).attr('id','cf7sg-form-'+$target.val()).html(response);
     		});
       }
     });
@@ -380,97 +399,97 @@
         $parentColumn.after($newColumn);
       }
     });
-    //refresh controls select
-    $.fn.changeColumnSize = function(oldSize, newSize){
-      if(oldSize.length > 0) $(this).removeClass(oldSize);
-      $(this).addClass(newSize);
-      $('.column-size option[value="'+newSize+'"]', $(this) ).prop('selected', true);
-    }
 
-    $.fn.filterColumnControls = function(){
-      //enable all options
-      $('.column-size option', $(this) ).prop('disabled', false);
-      $('.column-offset option', $(this) ).prop('disabled', false);
-      var $parentRow = $(this).closest('.row');
-      var $parentColumn = $(this).closest('.columns');
-      var row = $parentRow.getRowSize();
-      var col = $parentColumn.getColumnTotalSize();
-      var idx, start, free = 0;
-      if(row.length < 12) free = (12 - row.length);
-      for(idx = start = col.size+1; idx < columnsizes.length; idx++){
-        if( idx > (free + start - 1) ){
-          $('.column-size option[value="'+columnsizes[idx]+'"]', $(this) ).prop('disabled', true);
-        }
-      }
-      for(idx = start = col.length - col.size - 1 ;idx< offsets.length; idx++){
-        if( idx > (free + start - 1) ){
-          $('.column-offset option[value="'+offsets[idx]+'"]', $(this) ).prop('disabled', true);
-        }
-      }
-    }
-
-    $.fn.getRowSize = function(){
-      var size, off, idx, foundSize, classList;
-      var total = 0;
-      var sizes = [0];
-      $(this).children('.columns').each(function(index){
-        classList = $(this).attr('class').split(/\s+/);
-        foundSize = false;
-        for(idx=0;idx<classList.length; idx++){
-          size = $.inArray(classList[idx], columnsizes);
-          off = $.inArray(classList[idx], offsets);
-          if(size > -1){
-            foundSize = true;
-            sizes[index] = size;
-            total += size + 1;
-          }
-          if(off > -1) total+= off+1;
-        }
-        if(!foundSize){ //by default a colum which is not set set is treated as 1
-          sizes[index] = 0;
-          total += 1;
-        }
-      });
-      return {'length':total, 'cols':sizes};
-    }
-    $.fn.getColumnTotalSize = function(){
-      if(! $(this).is('.columns')){
-        return 0;
-      }
-      var off, foundSize, size = 0;
-      var total = 0;
-      var classList = $(this).attr('class').split(/\s+/);
+    //grid is ready
+    $wpcf7Editor.trigger('grid-ready');
+  });
+  /* some function definitions...*/
+  $.fn.getRowSize = function(){
+    var size, off, idx, foundSize, classList;
+    var total = 0;
+    var sizes = [0];
+    $(this).children('.columns').each(function(index){
+      classList = $(this).attr('class').split(/\s+/);
       foundSize = false;
       for(idx=0;idx<classList.length; idx++){
         size = $.inArray(classList[idx], columnsizes);
         off = $.inArray(classList[idx], offsets);
         if(size > -1){
           foundSize = true;
+          sizes[index] = size;
           total += size + 1;
         }
-        if(off > -1) total += off+1;
+        if(off > -1) total+= off+1;
       }
       if(!foundSize){ //by default a colum which is not set set is treated as 1
-        size = 0; //by default a colum which is not set set is treated as 1
+        sizes[index] = 0;
         total += 1;
       }
-      return {'length':total, 'size':size};
+    });
+    return {'length':total, 'cols':sizes};
+  }
+  $.fn.getColumnTotalSize = function(){
+    if(! $(this).is('.columns')){
+      return 0;
     }
-    //add new rows
-    $.fn.appendNewRow = function(areaCode = ''){
-      if( $(this).is('.columns') || $(this).is($grid)){
-        var $newRow = $( $('#grid-row').html() );
-        //append the column controls and textarea
-        $('.columns', $newRow).append( $($('#grid-col').html()) );
-        //add the code to the textarea
-        $('textarea.grid-input',$newRow).val(areaCode);
-        //finaly append the new row to the column or container
-        $(this).append($newRow);
+    var off, foundSize, size = 0;
+    var total = 0;
+    var classList = $(this).attr('class').split(/\s+/);
+    foundSize = false;
+    for(idx=0;idx<classList.length; idx++){
+      size = $.inArray(classList[idx], columnsizes);
+      off = $.inArray(classList[idx], offsets);
+      if(size > -1){
+        foundSize = true;
+        total += size + 1;
+      }
+      if(off > -1) total += off+1;
+    }
+    if(!foundSize){ //by default a colum which is not set set is treated as 1
+      size = 0; //by default a colum which is not set set is treated as 1
+      total += 1;
+    }
+    return {'length':total, 'size':size};
+  }
+  //add new rows
+  $.fn.appendNewRow = function(areaCode = ''){
+    if( $(this).is('.columns') || $(this).is($grid)){
+      var $newRow = $( $('#grid-row').html() );
+      //append the column controls and textarea
+      $('.columns', $newRow).append( $($('#grid-col').html()) );
+      //add the code to the textarea
+      $('textarea.grid-input',$newRow).val(areaCode);
+      //finaly append the new row to the column or container
+      $(this).append($newRow);
+    }
+  }
+  //refresh controls select
+  $.fn.changeColumnSize = function(oldSize, newSize){
+    if(oldSize.length > 0) $(this).removeClass(oldSize);
+    $(this).addClass(newSize);
+    $('.column-size option[value="'+newSize+'"]', $(this) ).prop('selected', true);
+  }
+
+  $.fn.filterColumnControls = function(){
+    //enable all options
+    $('.column-size option', $(this) ).prop('disabled', false);
+    $('.column-offset option', $(this) ).prop('disabled', false);
+    var $parentRow = $(this).closest('.row');
+    var $parentColumn = $(this).closest('.columns');
+    var row = $parentRow.getRowSize();
+    var col = $parentColumn.getColumnTotalSize();
+    var idx, start, free = 0;
+    if(row.length < 12) free = (12 - row.length);
+    for(idx = start = col.size+1; idx < columnsizes.length; idx++){
+      if( idx > (free + start - 1) ){
+        $('.column-size option[value="'+columnsizes[idx]+'"]', $(this) ).prop('disabled', true);
       }
     }
-    //grid is ready
-    $wpcf7Editor.trigger('grid-ready');
-  });
-
+    for(idx = start = col.length - col.size - 1 ;idx< offsets.length; idx++){
+      if( idx > (free + start - 1) ){
+        $('.column-offset option[value="'+offsets[idx]+'"]', $(this) ).prop('disabled', true);
+      }
+    }
+  }
 
 })( jQuery );

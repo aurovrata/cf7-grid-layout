@@ -120,13 +120,11 @@
       });
     }); //-----------end codemirror editor setup
 
-
-    /*
-     Save the form TODO: need to move wpcf7-form textarea outside the grid tabs to ensure it is updated properly, this means the codemirror needs to be set by value rather than using the textarea intially.
-    */
     $('form#post').submit(function(event) {
       $( window ).off( 'beforeunload' ); //remove event to stop cf7 script from warning on save
       event.preventDefault(); //this will prevent the default submit
+      var $embdedForms = '';
+      var $hiddenEmbeds = $('#cf7sg-embeded-forms');
       if('#cf7-editor-grid' == gridTab){ //set up the code in the cf7 textarea
         var $txta = $('textarea#wpcf7-form');
         $txta.html($txta.val()+'\n');
@@ -137,10 +135,20 @@
             'wrap_line_length': 0
           }
         );
+        $embdedForms = $('.cf7sg-external-form', $grid);
         $('textarea#wpcf7-form-hidden').html(code);
       }else if(codemirrorUpdated){
         $('textarea#wpcf7-form-hidden').html(cmEditor.getValue());
+        $embdedForms = $('.cf7sg-external-form', $(cmEditor.getValue()));
       }
+      //setup sub-forms hiddend field.
+      var embeds = [];
+      if($embdedForms.length>0){
+        $embdedForms.each(function(){
+          embeds[embeds.length] = $(this).data('form');
+        });
+      }
+      $hiddenEmbeds.val(embeds);
       $(this).unbind('submit').submit(); // continue the submit unbind preventDefault
    });
 

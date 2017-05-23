@@ -118,6 +118,18 @@ class Cf7_Grid_Layout_Public {
     wp_dequeue_style('contact-form-7');
   }
   /**
+   * Add the cf7 key to the hiddend fields so as not to have to load it after each submission.
+   * Hooked to
+   * @since 1.0.0
+   * @param      Array    $hidden     hidden fields to add to cf7 form.
+   * @return      Array    $hidden     hidden fields to add to cf7 form.
+  **/
+  public function set_hidden_key($hidden){
+    $form = wpcf7_get_current_contact_form();
+    $post = get_post($form->id());
+    return $hidden['_wpcf7_key'] = $post->post_name;
+  }
+  /**
    * Enqueue scripts requried for cf7 shortcode
    * hooked on 'do_shortcode_tag',
    * @since 1.0.0
@@ -160,13 +172,36 @@ class Cf7_Grid_Layout_Public {
 
     //get the key
     $cf7_id = $attr['id'];
-    $cf7_key = '';
-    //debug_msg($attr);
-    if( isset($attr['cf7key']) ) {
-      $cf7_key = $attr['cf7key'];
-    }else{
-      $cf7post = get_post($cf7_id);
-      $cf7_key = $cf7post->post_name;
+    $cf7post = get_post($cf7_id);
+    $cf7_key = $cf7post->post_name;
+    $form_time = strtotime($cf7post->post_modified);
+    //check if there are any recently updated sub-forms.
+    $sub_form_keys = get_post_meta($cf7_id, '_cf7sg_sub_forms', true);
+    if(!empty($sub_form_keys)){
+      $args = array(
+        'post_type' => 'wpcf7_contact_form',
+        'post_name__in' => $sub_form_keys
+      );
+      $sub_forms = get_posts($args);
+      $cf7_form = $form_raw = '';
+      foreach($sub_forms as $post_obj){
+        //check form saved date
+        //debug_msg()
+        if(strtotime($post_obj->post_modified ) > $form_time){
+          if(empty($cf7_form)){
+            $cf7_form = wpcf7_contact_form($cf7_id);
+            $form_raw = $cf7_form->prop( 'form' );
+          }
+          $form_raw = $this->update_sub_form($form_raw, $post_obj);
+        }
+      }
+      if(!empty($cf7_form)){ //redraw the form.
+        wpcf7_save_contact_form(array('id'=>$cf7_id, 'form'=>$form_raw));
+        debug_msg('Updated embeded forms in cf7 form: '.$cf7_key);
+        //reload the form
+        $cf7_form = wpcf7_contact_form($cf7_id);
+        $output = $cf7_form->form_html($attr);
+      }
     }
     //$cf7_key = get_post_meta($cf7_id, '_smart_grid_cf7_form_key', true);
     //allow custom script print
@@ -178,112 +213,31 @@ class Cf7_Grid_Layout_Public {
   }
 
   /**
-   * Shortcode handler for multi-forms [multi-cf7-form]
-   * Hooked to 'add_shortcode'
+   * Update sub-forms in cf7 forms
+   * Hooked to 'do_shortcode'
    * @since 1.0.0
    * @param      Array    $atts     attributes from the shortcode.
    * @param      String    $content     shortcode content.
    * @return     String    shorcode rendered content.
   **/
-  public function multi_form_shortcode($atts, $content){
-    //encapsulate the forms in a form element,
-    //and make sure we had a submit button if non-provided in the content
-    //parse all shild form  shotcodes
-    $shortcode = '<div id="cf7sg-multi-form">';
-
-    $shortcode .= do_shortcode($content);
-
-    $shortcode .='</div>';
-    //extract main form
-    //$start = strpos($shortcode, '<!-- MULTI-CF7 MAIN FORM START -->');
-    //$end = strpos($shortcode, '<!-- MULTI-CF7 MAIN FORM END -->');
-
-    //$main_form_html = substr($shortcode, $start, $end - $start);
+  public function update_sub_form($form_raw, $sub_form_post){
     //Create a new DOM document
-    require_once plugin_dir_path( dirname( __DIR__ ) ) . 'assets/php-query/phpQuery.php';
+    $cf7_key = $sub_form_post->post_name;
+    $sub_form_raw = get_post_meta($sub_form_post->ID, '_form', true);
 
-    phpQuery::newDocument($main_form_html);
-    $inner_main_form = pq('#cf7sg-multi-form-main')->find('form.wpcf-form')->contents()->remove();
-    $form_wrap = pq('#cf7sg-multi-form-main')->contents()->remove();
-    //reinsert main form
-    pq('#cf7sg-multi-form-main').after($inner_main_form);
-    //remove the main form wrapper
-    pq('#cf7sg-multi-form')->find('#cf7sg-multi-form-main')->remove();
-    $form_wrap->find(('form.wpcf-form'))->append(pq('#cf7sg-multi-form')->html());
-
-    return $form_wrap->htmlOuter();
-
-
-    //Parse the HTML. The @ is used to suppress any parsing errors
-    //that will be thrown if the $html string isn't valid XHTML.
-    /*
-    @$dom->loadHTML($main_form_html);
-    $node = $dom->getElementsByTagName('form')->item(0);
-    //$outerHTML = $node->ownerDocument->saveHTML($node);
-    $innerHTML = '';
-    if( $a('main')){
-      $innerHTML = '<!-- MULTI-CF7 MAIN FORM START -->';
-    }
-    foreach ($node->childNodes as $childNode){
-      if( !$a('main')){
-        //ignore hidden fields div as well as display message
-        if('div' == $childNode->tagName &&
-          $childNode.hasAttribute('style') &&
-          !$childNode.hasAttribute('class') &&
-          !$childNode.hasAttribute('id')){
-            if( 1 == preg_match('/^display:\s?none$/g', $childNode.getAttribute('style')) ) continue;
-        } //hidden fields
-        if('div' == $childNode->tagName && $childNode.hasAttribute('class') !$childNode.hasAttribute('id') ){
-          if( 1 == preg_match('/wpcf7-response-output/g', $childNode.getAttribute('class')) ) continue;
-        }//response output
-        //''
-      }
-      $innerHTML .= $childNode->ownerDocument->saveHTML($childNode);
-    }
-    */
-
-    //TODO: enable a filter for cf7 form submission as well as post my cf7 form
+    //PHP DOM plugin.
+    require_once plugin_dir_path(  __DIR__  ) . 'assets/php-query/phpQuery.php';
+    $doc = phpQuery::newDocument($form_raw);
+    //$form = pq('#cf7sg-form-'.$key)->find('form.wpcf-form')->contents()->remove();
+    //remove old form content.
+    pq('#cf7sg-form-'.$cf7_key)->contents()->remove();
+    //$form_wrap = pq('#cf7sg-multi-form-main')->contents()->remove();
+    //$form_wrap->find(('form.wpcf-form'))->append(pq('#cf7sg-multi-form')->html());
+    //add updated form
+    pq('#cf7sg-form-'.$cf7_key)->append($sub_form_raw);
+    return $doc->htmlOuter();
   }
-  /**
-   * Shortcode handler for multi-forms to include a child form [child-cf7-form]
-   * Hooked to 'add_shortcode'
-   * @since 1.0.0
-   * @param      Array    $atts     attributes from the shortcode.
-   * @return     String    shorcode rendered content.
-  **/
-  public function child_form_shortcode($atts){
-    $a = shortcode_atts( array(
-      'main' => false,
-      'cf7key' => ''
-    ), $atts );
-    if(!$a('main')){
-      $cf7_posts = get_posts(array(
-        'post_type' => 'wpcf7_contact_form',
-        'name' => $a['cf7key']
-      ));
-      wp_reset_postdata();
-      if(!empty($cf7_posts)){
-        $cf7_id = $cf7_posts[0]->ID;
-        $cf7_form = wpcf7_contact_form($cf7_id);
-        $shortcode =  $cf7_form->form_elements();
-        if(1 == preg_match('/type="submit"/g', $html)){
-          $shortcode .=  $cf7_form->form_response_output();
-        }
-        return $shortcode;
-      }else{
-        return '<em>' . _('[child-cf7-form] shortcode missing cf7key attribute','cf7-admin-table') . '</em>';
-      }
-    }
-    /* Assuming this is the main cf7 form */
-    $shortcode = '<div id="cf7sg-multi-form-main">';
 
-    //get the cf7 form
-    $shortcode .= do_shortcode('[cf7-form cf7key="'.$a['cf7key'].'"]');
-
-    $shortcode .= '</div>';
-
-    return $shortcode;
-  }
   /**
    * Register a [save] shortcode with CF7.
    * Hooked  on 'wpcf7_init'
@@ -318,15 +272,25 @@ class Cf7_Grid_Layout_Public {
     return $html;
   }
   /**
-   * Function to save ajax submitted grid fields
+   * Function to save ajax submitted grid fields, grid fields are any input/select fields used in the table/tabs constructs
    * hooked on wp_ajax_nopriv_save_grid_fields and wp_ajax_save_grid_fields
    * @since 1.0.0
   **/
   public function save_grid_fields(){
-    /*TODO: set up a nonce validation */
+    if( !isset($_POST['nonce']) ){
+      wp_send_json_error(array('message'=>'nonce failed'));
+      wp_die();
+    }
+    $cf7_id = $_POST['id'];
+
+    if(!wpcf7_verify_nonce($_POST['nonce'], $cf7_id)){
+      wp_send_json_error(array('message'=>'nonce failed'));
+      wp_die();
+    }
+
     if(isset($_POST['grid_fields'])){
       $grid_fields =  json_decode(stripslashes($_POST['grid_fields']));
-      $cf7_id = $_POST['id'];
+
       //debug_msg($grid_fields, $cf7_id);
       update_post_meta($cf7_id, '_cf7sg_grid_field_names', $grid_fields);
       wp_send_json_success(array('message'=>'saved fields'));
@@ -386,12 +350,18 @@ class Cf7_Grid_Layout_Public {
     if( isset($_POST[$name]) && is_array($_POST[$name]) ){
       $values = $_POST[$name];
       $_POST[$name] = $values[0];
+      if('thermal-fuel-qty' == $name){
+        debug_msg($values, 'thermal-fuel-qty');
+      }
       //temporarily remove this filter
       remove_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
       for($idx=1; $idx<sizeof($values); $idx++){
         $_POST[$name.'_'.$idx] =$values[$idx];
         $tag['name'] = $name.'_'.$idx;
         apply_filters("wpcf7_validate_{$tag_obj->type}", $results, $tag);
+        if('thermal-fuel-qty' == $name){
+          debug_msg($results, 'thermal-fuel-qty:'.$tag_obj->type.' ');
+        }
       }
       //reapply this filter
       add_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
@@ -416,14 +386,19 @@ class Cf7_Grid_Layout_Public {
       $tag_types[$tag['name']] = $tag['type'];
     }
     $validation = array();
+    $form_key = '';
+    if(isset($data['_wpcf7_key'])){
+      $form_key = $data['_wpcf7_key'];
+    }
     /**
     * filter to validate the entire submission and check interdependency of fields
     * @since 1.0.0
     * @param Array  $validation  intially an empty array
     * @param Array  $data   submitted data, $field_name => $value pairs ($value can be an array).
+    * @param String  $form_key  unique form key to identify current form.
     * @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
     */
-    $validation = apply_filters('cf7sg_validate_submission', $validation, $data);
+    $validation = apply_filters('cf7sg_validate_submission', $validation, $data, $form_key);
     if(!empty($validation)){
       foreach($validation as $name=>$msg){
         if(is_array($data[$name]) ) {
@@ -443,6 +418,7 @@ class Cf7_Grid_Layout_Public {
         }
       }
     }
+    //debug_msg
     return $results;
   }
 }

@@ -424,6 +424,7 @@
       dataType: 'json',
       data: {
         'action':'save_grid_fields',
+        'nonce' :$('input[name="_wpnonce"]', $form).val(),
         'grid_fields' : JSON.stringify(trackGridFields),
         'id': $('input[name="_wpcf7"]', $form).val()
       }

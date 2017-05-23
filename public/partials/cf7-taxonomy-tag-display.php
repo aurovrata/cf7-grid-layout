@@ -18,7 +18,7 @@
  }
 $class = $tag->get_class_option( $class );
 $id = $tag->get_id_option();
-
+$source = array();
 $options = array();
  if(!empty($tag->values)){
    $source = array();

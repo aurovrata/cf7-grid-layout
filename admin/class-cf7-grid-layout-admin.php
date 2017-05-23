@@ -472,6 +472,10 @@ class Cf7_Grid_Layout_Admin {
     add_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
     //flag as a grid form
     update_post_meta($post_id, 'cf7_grid_form', true);
+    //save sub-forms if any
+    $sub_forms = $_POST['cf7sg-embeded-forms'];
+    update_post_meta($post_id, '_cf7sg_sub_forms', $sub_forms);
+
   }
   /**
    * Ajax function to return the content of a cf7 form
@@ -480,9 +484,38 @@ class Cf7_Grid_Layout_Admin {
    * @return     String    cf7 form content.
   **/
   public function get_cf7_content(){
-    $cf7_id = $_POST['cf7_id'];
-    $cf7_form = wpcf7_contact_form($cf7_id);
-    echo $cf7_form->prop( 'form' );
+    if( !isset($_POST['nonce']) ){
+      echo 'error, nonce failed, try to reload the page.';
+      wp_die();
+    }
+    if(!wp_verify_nonce($_POST['nonce'], 'wpcf7-save-contact-form_' . $_POST['id'], '_wpcf7nonce')){
+      echo 'error, nonce failed, try to reload the page.';
+      wp_die();
+    }
+
+    $cf7_key = $_POST['cf7_key'];
+    $sub_forms = get_posts(array(
+      'post_type' => 'wpcf7_contact_form',
+      'post_name__in' => array($cf7_key)
+    ));
+    if(!empty($sub_forms)){
+      if(isset($_POST['update'])){
+        $parent = get_post($_POST['id']);
+        if( strtotime($parent->post_modified) < strtotime($sub_forms[0]->post_modified) ){
+          $form = get_post_meta($sub_forms[0]->ID, '_form', true);;
+          echo $form;
+        }else{
+          echo '';
+        }
+      }else{
+        $form = get_post_meta($sub_forms[0]->ID, '_form', true);;
+        echo $form;
+      }
+      //$cf7_form = wpcf7_contact_form($post[0]->ID);
+      //echo $cf7_form->prop( 'form' );
+    }else{
+      echo 'unable to find form '.$cf7_key;
+    }
     wp_die();
   }
   /**
