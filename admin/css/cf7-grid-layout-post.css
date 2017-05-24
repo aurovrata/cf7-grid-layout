@@ -170,13 +170,13 @@ textarea.grid-input {
 }
 /*limit inner tables/tabs within tables/tabs */
 #grid-form .container.cf7-sg-table .container .row-controls span.dashicons-edit,
-#grid-form .container.cf7-sg-tabs-panel .row label.tabs-row-label {
+#grid-form .container.cf7-sg-tabs-panel .row .row label.tabs-row-label {
     display: none !important;
 }
 #grid-form .row-controls .dashicons {
     margin-top: 3px;
 }
-#grid-form > .container > .row:first-child > .columns:first-child .dashicons-trash.column-control{
+#grid-form > .container .row:first-child > .columns:first-child > .grid-column .dashicons-trash.column-control{
     display: none;
 }
 #grid-form > .container > .row:first-child > .columns:first-child .dashicons-move.column-control {

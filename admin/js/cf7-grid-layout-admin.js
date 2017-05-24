@@ -1,12 +1,11 @@
 (function( $ ) {
-
+  var offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'];
+  var columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
+  var $wpcf7Editor,$grid,$rowControl = null;
 	$(document).ready( function(){
-    var offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'];
-    var columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
-    var $wpcf7Editor = $('textarea#wpcf7-form-hidden');
-    var $grid = $('#grid-form');
-    var $rowControl = $('#top-grid-controls');
-
+    $wpcf7Editor = $('textarea#wpcf7-form-hidden');
+    $grid = $('#grid-form');
+    $rowControl = $('#top-grid-controls');
     function buildGridForm(){
       var $form = $('<div>').append( $wpcf7Editor.text() );
       //remove the external forms
@@ -74,6 +73,13 @@
         $ctrl.next('.table-row-button').children('input').val(text);
         //toggle disable the sibling input
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
+        //toggle footer row
+        var $footer = $(this).next();
+        if($footer.is('.cf7-sg-table-footer')){
+          $ctrl = $footer.children('.row').first().find('.row-controls .footer-row-label');
+          $('input.footer-row', $ctrl).prop('checked', true);
+          $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
+        }
       });
       //tabs
       $('ul.cf7-sg-tabs-list li', $form).each(function(){

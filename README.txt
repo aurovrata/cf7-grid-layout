@@ -44,8 +44,7 @@ This section describes how to install the plugin and get it working.
 e.g.
 
 1. Upload `cf7-grid-layout.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
+2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Frequently Asked Questions ==
 
@@ -59,11 +58,18 @@ Answer to foo bar dilemma.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. The CF7 form editor page is now replaced by the WP core `post.php` page for custom posts.  It offers a UI grid building tool as well as a CodeMirror html editor with colour highlighted markup for both html as well as CF7 tags.  You can add new rows with the '+' button in the row controls, delete with the 'bin' button which only appears on the 2nd row onwards. You can re-order rows with the 'crosshair' button and you can edit the row with the 'pencil' button.  Similarly you can add columns with the '+' button on the column controls, delete with the 'bin' button (only available on the 2nd column onwards), rearrange columns within a row using the 'crosshairs' button, and edit a column using the 'pencil' button.  This plugin also introduces CF7 Form Type taxonomy to organise your forms.
+2. The CodeMirror html editor with colour highlighted markup for both html as well as CF7 tags.
+3. A row can be converted into a collapsible 'accordion' style section to collapse part of your form into more manageable parts.
+4. A column can be converted into an entire existing cf7 form by editing the column ('pencil' button) and selecting the option 'Insert Form'.
+5. An existing form can be inserted into the column by selecting the form from the dropdown menu.  Moving to the CodeMirror html editor view will reveal the entire sub-form structure.
+6. A column can be converted into a more complex inner-structure by editing the column ('pencil' button in the control bar above the column) and selecting the option 'Make grid' which will convert the column into an inner-row.
+7. An inner-row (see previous screenshot) can be converted into a table input which allows a front-end user to add (duplicate) the fields you have entered into the table row and thereby submit multiple entries of the same row set of fields.
+8. A row that immediately follows a table input row can be converted into a table footer row which can be used a table caption and the 'Add Row' button added by the plugin when the form is built will be appended below the footer row. (see the next screenshot).
+9. An example of a book review form where each row submitted (added) by a user represents a book review.
+10. The plugin introduces a dynamic dropdown field which can be populated using a specially created taxonomy (allowing ease of list options form the admin dashboard).
+11. The dynamic dropdown field can also be populated using existing custom posts available on your site.  This is useful if you have a form with users need to select options that represent custom-posts in your site. You can further reduce the posts to be displayed by selecting terms from one of its associated taxonomy.  In this example I wish to display a dropdown with a list forms from which a user can register form, but I have differentiated my  forms between partial forms which are used to build final forms.
+12.
 
 == Changelog ==
 
