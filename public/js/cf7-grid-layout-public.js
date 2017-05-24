@@ -23,6 +23,8 @@
         }
         //append a hidden clone of the first row which we can use to add
         $row = $row.clone().addClass('cf7-sg-cloned-table-row');
+        //disable all inputs from the clone row
+        $(':input', $row).prop('disabled', true);
         //add controls to the row to delete
         $row.append('<span class="row-control"><span class="dashicons dashicons-no-alt"></span></span>');
         $table.append($row.hide());
@@ -34,18 +36,24 @@
       $cf7Form_table.click('.container', function(event){
         var $button = $(event.target);
         if( $button.is('div.cf7-sg-table-button a') ){ //----------add a row
-          var rowIdx = $button.closest( '.container.cf7-sg-table' ).children( '.row.cf7-sg-table' ).length;
           $button = $button.parent();
           var $table = $button.prev('.container');
           if($table.is('.cf7-sg-table-footer')){
             $table = $table.prev('.container.cf7-sg-table');
           }
+          var rowIdx = $table.children( '.row.cf7-sg-table').length - 1; //minus hidden row.
           var $cloneRow = $('.cf7-sg-cloned-table-row', $table);
           var $row = $cloneRow.clone().removeClass('cf7-sg-cloned-table-row');
           //add input name as class to parent span
           $(':input', $row).each(function(){
+            //enable inputs
+            $(this).prop('disabled', false);
             var name = $(this).attr('name').replace('[]','');
             $(this).parent('span').removeClass(name).addClass(name+'_'+rowIdx);
+            //finally enabled the nice select dropdown.
+            if($(this).is('select.ui-select')){
+              $(this).niceSelect();
+            }
           });
           $cloneRow.before($row.show());
           //when the button is clicked, trigger a content increase for accordions to refresh
@@ -142,7 +150,10 @@
             $(this).parent().children('.cf7-sg-table-button').append($('<input type="hidden" name="'+iname+'" class=".cf7sg-tabs-table-hidden"/>'))
           });
           //finally store a clone of the paenl to be able to add new tabs
-          panels[$panel.attr('id')] = $('<div>').append($panel.clone()).html();
+          var $clonedP = $('<div>').append($panel.clone());
+          //disable all inputs in the cloned panel so they don't get submitted.
+          $(':input', $clonedP).prop('disabled', true);
+          panels[$panel.attr('id')] = $clonedP.html();
         }
       });
       //trigger tabs ready event
@@ -185,8 +196,14 @@
           $newPanel.attr('id', panelId);
           //add input name as class to parent span
           $(':input', $newPanel).each(function(){
+            //enable inputs
+            $(this).prop('disabled', false);
             var name = $(this).attr('name').replace('[]','');
             $(this).parent('span').removeClass(name).addClass(name + '_' + (tabCount-1));
+            //enable nice select on the dropdown.
+            if($(this).is('select.ui-select')){
+              $(this).niceSelect();
+            }
           });
           //change all the ids of inner tabs in the new panel
           var $innerTabs = $newPanel.find('ul.ui-tabs-nav li a');
@@ -196,10 +213,10 @@
             var $innerPanel = $(this).closest('ul.ui-tabs-nav').siblings('div'+panelId);
             $innerPanel.attr( 'id' , panelId.substring(1)+'-'+tabCount );
           });
-          //setup nice select in the new panel
-          $('select.ui-select', $newPanel).each(function(){
-            $(this).niceSelect();
-          });
+          // //setup nice select in the new panel
+          // $('select.ui-select:enabled', $newPanel).each(function(){
+          //   $(this).niceSelect();
+          // });
           //enable tabs in the new panel
           $( '.cf7-sg-tabs', $newPanel ).each(function(){
             $(this).tabs();
@@ -251,7 +268,7 @@
         var nonceID = $(this).closest('div.cf7_2_post').attr('id');
         if(nonceID.length>0){
           $(this).on(nonceID, function(){
-            $('select.ui-select', $(this)).each(function(){
+            $('select.ui-select:enabled', $(this)).each(function(){
               $(this).niceSelect();
             });
             $(this).trigger('sgNiceSelect');
@@ -260,7 +277,7 @@
       });
       //for non cf7 2 post forms, just enable the nice select
       cf7Form_niceSelect.not('div.cf7_2_post form.wpcf7-form').each(function(){
-        $('select.ui-select', $(this)).each(function(){
+        $('select.ui-select:enabled', $(this)).each(function(){
           $(this).niceSelect();
         });
         $(this).trigger('sgNiceSelect');
