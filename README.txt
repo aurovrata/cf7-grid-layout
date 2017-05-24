@@ -69,7 +69,10 @@ Answer to foo bar dilemma.
 9. An example of a book review form where each row submitted (added) by a user represents a book review.
 10. The plugin introduces a dynamic dropdown field which can be populated using a specially created taxonomy (allowing ease of list options form the admin dashboard).
 11. The dynamic dropdown field can also be populated using existing custom posts available on your site.  This is useful if you have a form with users need to select options that represent custom-posts in your site. You can further reduce the posts to be displayed by selecting terms from one of its associated taxonomy.  In this example I wish to display a dropdown with a list forms from which a user can register form, but I have differentiated my  forms between partial forms which are used to build final forms.
-12.
+12. An inner-row can be converted into a tabbed group of fields (see screenshot 6).  Tabbed rows cannot contain table input rows, and currently any array fields will cause errors, so tabbed rows should not contain radio fields (stored as arrays) or multi-select dropdowns.
+13. A tabbed row is converted into jQuery tabs which a user can dynamically duplciate to enter multiple sets of the fields present in the initial tab.
+14. A row can be converted into a collapsible section to sections of the forms to be closed like an accordion tab.
+
 
 == Changelog ==
 

@@ -86,6 +86,11 @@
         var text = $(this).children('a').text();
         $(this).append($('#grid-tabs ul li label').clone());
         $('label input', $(this)).val(text);
+        //setup checkbox
+        var $ctrl = $(this).parent().siblings('.cf7-sg-tabs-panel');
+        $ctrl = $ctrl.children('.row').find('.row-controls' ).first().find('.tabs-row-label');
+        $('input.tabs-row', $ctrl).prop('checked', true);
+        $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
       });
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
