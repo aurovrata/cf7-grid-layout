@@ -322,12 +322,13 @@
   */
   //clone table row
   $.fn.cf7sgCloneRow = function(){
-    if(!$(this).is('.container.cf7-sg-table')){
-      return $(this);
-    }
     var $table = $(this);
     if($table.is('.cf7-sg-table-footer')){
       $table = $table.prev('.container.cf7-sg-table');
+    }
+    //if not a table let's exit.
+    if(!$table.is('.container.cf7-sg-table')){
+      return $(this);
     }
     var rowIdx = $table.children( '.row.cf7-sg-table').length - 1; //minus hidden row.
     var $cloneRow = $('.cf7-sg-cloned-table-row', $table);
