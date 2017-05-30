@@ -49,6 +49,24 @@ class Cf7_Grid_Layout_Public {
 	 */
 	private $submitted_data;
 
+  /**
+   * The cf7 array fields.
+   *
+   * @since    1.0.0
+   * @access   private
+   * @var      Array    $array_tabs_fields    The form fields which were converted to arrays by the plugin.
+   */
+  private $array_tabs_fields;
+
+  /**
+   * The cf7 array fields.
+   *
+   * @since    1.0.0
+   * @access   private
+   * @var      Array    $array_table_fields    The form fields which were converted to arrays by the plugin.
+   */
+  private $array_table_fields;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -127,7 +145,8 @@ class Cf7_Grid_Layout_Public {
   public function set_hidden_key($hidden){
     $form = wpcf7_get_current_contact_form();
     $post = get_post($form->id());
-    return $hidden['_wpcf7_key'] = $post->post_name;
+    $hidden['_wpcf7_key'] = $post->post_name;
+    return $hidden;
   }
   /**
    * Enqueue scripts requried for cf7 shortcode
@@ -138,6 +157,8 @@ class Cf7_Grid_Layout_Public {
     if('contact-form-7' != $tag){
       return $output;
     }
+    $cf7_id = $attr['id'];
+    $class = array();
 
     wp_enqueue_script('contact-form-7');
     wp_enqueue_script($this->plugin_name);
@@ -149,8 +170,19 @@ class Cf7_Grid_Layout_Public {
     $class[]='has-select2';
     wp_enqueue_script('jquery-ui-accordion');
     $class[]='has-accordion';
-    wp_enqueue_script('jquery-ui-tabs');
-    $class[]='has-tabs';
+    //load tabs
+    $has_tabs = false;
+    if(get_post_meta($cf7_id, '_cf7sg_has_tabs', true)){
+      wp_enqueue_script('jquery-ui-tabs');
+      $class[]='has-tabs';
+      $has_tabs = true;
+    }
+    //load tables
+    $has_tables = false;
+    if(get_post_meta($cf7_id, '_cf7sg_has_tables', true)){
+      $class[]='has-table';
+      $has_tables = true;
+    }
     wp_enqueue_script('jquery-effects-core');
     $class[]='has-effects';
     wp_enqueue_script('jquery-nice-select');
@@ -171,7 +203,6 @@ class Cf7_Grid_Layout_Public {
     wp_enqueue_style('cf7-jquery-ui');
 
     //get the key
-    $cf7_id = $attr['id'];
     $cf7post = get_post($cf7_id);
     $cf7_key = $cf7post->post_name;
     $form_time = strtotime($cf7post->post_modified);
@@ -194,6 +225,16 @@ class Cf7_Grid_Layout_Public {
           }
           $form_raw = $this->update_sub_form($form_raw, $post_obj);
         }
+        //check if sub-forms needs tabs|table
+        if(!$has_tables && get_post_meta($post_obj->ID, '_cf7sg_has_tables', true)){
+          $class[]='has-table';
+          $has_tables = true;
+        }
+        if(!$has_tabs && get_post_meta($post_obj->ID, '_cf7sg_has_tabs', true)){
+          wp_enqueue_script('jquery-ui-tabs');
+          $class[]='has-tabs';
+          $has_tabs = true;
+        }
       }
       if(!empty($cf7_form)){ //redraw the form.
         wpcf7_save_contact_form(array('id'=>$cf7_id, 'form'=>$form_raw));
@@ -201,6 +242,7 @@ class Cf7_Grid_Layout_Public {
         //reload the form
         $cf7_form = wpcf7_contact_form($cf7_id);
         $output = $cf7_form->form_html($attr);
+        $class[]='has-update';
       }
     }
     //$cf7_key = get_post_meta($cf7_id, '_smart_grid_cf7_form_key', true);
@@ -208,7 +250,8 @@ class Cf7_Grid_Layout_Public {
     do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
     //form id
     $css_id = apply_filters('cf7_smart_grid_form_id', $cf7_key, $attr);
-    $output = '<div id="cf7sg-form-'.$css_id.'" class="cf7-smart-grid has-validation has-table has-accordion has-tabs has-toggles has-nice-select">'.$output.'</div>';
+    $classes = implode(' ', $class);
+    $output = '<div id="cf7sg-form-' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div>';
     return $output;
   }
 
@@ -237,7 +280,41 @@ class Cf7_Grid_Layout_Public {
     pq('#cf7sg-form-'.$cf7_key)->append($sub_form_raw);
     return $doc->htmlOuter();
   }
-
+  /**
+   * Funciton to load cusomt js script for Post My CF7 Form loading of form field values
+   * Hooked to 'cf7_2_post_echo_field_mapping_script'
+   * @since 1.0.0
+   * @param boolean  $default_script  whether to use the default script or not, default is true.
+   * @param string  $field  cf7 form field name
+   * @param string  $type   field type (number, text, select...)
+   * @param string  $json_value  the json value loaded for this field in the form.
+   * @param string  $$js_form  the javascript variable in which the form is loaded.
+   * @return boolean  false to print a custom script from the called function, true for the default script printed by this plugin.
+  **/
+  public function load_tabs_table_field($default_script, $post_id,  $field, $type, $json_value, $js_form){
+    if(!isset($this->array_tabs_fields)){
+      $this->array_tabs_fields = get_post_meta($post_id, '_cf7sg_grid_tabs_names', true);
+      $this->array_table_fields = get_post_meta($post_id, '_cf7sg_grid_table_names', true);
+      $sub_forms = get_post_meta($post_id, '_cf7sg_sub_forms', true);
+      foreach($sub_forms as $form_key){
+        $form_id = Cf7_WP_Post_Table::form_id($form_key);
+        $this->array_table_fields += get_post_meta($form_id, '_cf7sg_grid_table_names', true);
+        $this->array_tabs_fields += get_post_meta($form_id, '_cf7sg_grid_tabs_names', true);
+      }
+    }
+    $grid='';
+    if(false === array_search($field, $this->array_table_fields )){
+      if(false === array_search($field, $this->array_tabs_fields )){
+        return $default_script;
+      }else{
+        $grid = 'tabs';
+      }
+    }else{
+      $grid = 'table';
+    }
+    include( plugin_dir_path( __FILE__ ) . '/partials/cf7sg-field-load-script.php');
+    return false;
+  }
   /**
    * Register a [save] shortcode with CF7.
    * Hooked  on 'wpcf7_init'
@@ -273,7 +350,7 @@ class Cf7_Grid_Layout_Public {
   }
   /**
    * Function to save ajax submitted grid fields, grid fields are any input/select fields used in the table/tabs constructs
-   * hooked on wp_ajax_nopriv_save_grid_fields and wp_ajax_save_grid_fields
+   * hooked on wp_ajax_nopriv_save_grid_fields and wp_ajax_save_grid_fields.  The ajax is only fired in case a sub-form has been updated.
    * @since 1.0.0
   **/
   public function save_grid_fields(){
@@ -288,11 +365,13 @@ class Cf7_Grid_Layout_Public {
       wp_die();
     }
 
-    if(isset($_POST['grid_fields'])){
-      $grid_fields =  json_decode(stripslashes($_POST['grid_fields']));
+    if(isset($_POST['tabs_fields'])){
+      $tabs_fields =  json_decode(stripslashes($_POST['tabs_fields']));
+      $table_fields =  json_decode(stripslashes($_POST['table_fields']));
 
       //debug_msg($grid_fields, $cf7_id);
-      update_post_meta($cf7_id, '_cf7sg_grid_field_names', $grid_fields);
+      update_post_meta($cf7_id, '_cf7sg_grid_tabs_names', $tabs_fields);
+      update_post_meta($cf7_id, '_cf7sg_grid_table_names', $table_fields);
       wp_send_json_success(array('message'=>'saved fields'));
     }else{
       wp_send_json_error(array('message'=>'no data received'));
@@ -318,7 +397,8 @@ class Cf7_Grid_Layout_Public {
         $cf7form = WPCF7_ContactForm::get_instance($cf7_id);
       }
     }
-    $grid_fields = get_post_meta($cf7_id , '_cf7sg_grid_field_names', true);
+    $grid_fields = get_post_meta($cf7_id , '_cf7sg_grid_tabs_names', true);
+    $grid_fields += get_post_meta($cf7_id , '_cf7sg_grid_table_names', true);
 
     $tags = $cf7form->scan_form_tags();
     foreach($tags as $tag){
@@ -350,9 +430,6 @@ class Cf7_Grid_Layout_Public {
     if( isset($_POST[$name]) && is_array($_POST[$name]) ){
       $values = $_POST[$name];
       $_POST[$name] = $values[0];
-      if('thermal-fuel-qty' == $name){
-        debug_msg($values, 'thermal-fuel-qty');
-      }
       //temporarily remove this filter
       remove_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
       for($idx=1; $idx<sizeof($values); $idx++){

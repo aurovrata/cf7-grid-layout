@@ -110,6 +110,47 @@ if(!class_exists('Cf7_WP_Post_Table')){
       }
   	}
     /**
+  	 * Loads footer script on admin table list page
+     * script to chagne the link to the 'Add New' button, hooked on 'admin_print_footer_scripts'
+  	 *
+  	 * @since    1.1.3
+  	 */
+  	public function change_add_new_button() {
+  		if( !$this->is_cf7_admin_page() ){
+  			return;
+  		}
+      $url = admin_url('admin.php?page=wpcf7-new');
+      ?>
+      <script type='text/javascript'>
+        (function( $ ) {
+          'use strict';
+          $(document).ready(function() {
+            $('h1 > a.page-title-action').attr('href','<?php echo $url; ?>');
+            $('h1 ~ a.page-title-action').attr('href','<?php echo $url; ?>');
+          });
+        })( jQuery );
+      </script>
+      <?php
+
+  	}
+    /**
+     * get form id for a given key
+     *
+     * @since 1.2.0
+     * @param      string    $form_key   the unique key for qhich to get the id  .
+     * @return     string    form id     .
+    **/
+    public static function form_id($form_key){
+      $form_id = 0;
+      $forms = get_posts(array(
+        'post_type' => 'wpcf7_contact_form',
+        'post_name__in' => array($form_key)
+      ));
+      if(!empty($forms)) $form_id = $forms[0]->ID;
+      wp_reset_postdata();
+      return $form_id;
+    }
+    /**
     *  Checks if this is the admin table list page
     *
     * @since 1.1.3

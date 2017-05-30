@@ -95,6 +95,7 @@ $options = array();
    }
  }
 ?>
+<span class="wpcf7-form-control-wrap <? echo sanitize_html_class( $tag->name ) ?>">
 <select id="<?php echo $id?>" name="<?php echo $tag->name ?>" class="<?php echo $class?>">
 <?php
 $default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $source, $tag->name);
@@ -108,3 +109,4 @@ foreach($options as $value=>$name){
 }
 ?>
 </select>
+</span>

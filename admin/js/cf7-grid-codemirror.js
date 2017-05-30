@@ -124,7 +124,7 @@
       $( window ).off( 'beforeunload' ); //remove event to stop cf7 script from warning on save
       event.preventDefault(); //this will prevent the default submit
       var $embdedForms = '';
-      var $hiddenEmbeds = $('#cf7sg-embeded-forms');
+      var $formNoEmbeds = '';
       if('#cf7-editor-grid' == gridTab){ //set up the code in the cf7 textarea
         var $txta = $('textarea#wpcf7-form');
         $txta.html($txta.val()+'\n');
@@ -135,21 +135,60 @@
             'wrap_line_length': 0
           }
         );
-        $embdedForms = $('.cf7sg-external-form', $grid);
         $('textarea#wpcf7-form-hidden').html(code);
+        $formNoEmbeds = $('<div>').append(code);
       }else if(codemirrorUpdated){
         $('textarea#wpcf7-form-hidden').html(cmEditor.getValue());
-        $embdedForms = $('.cf7sg-external-form', $(cmEditor.getValue()));
+        $formNoEmbeds = $('<div>').append(cmEditor.getValue());
       }
-      //setup sub-forms hiddend field.
+      $embdedForms = $formNoEmbeds.find('.cf7sg-external-form').remove();
+
+      //setup sub-forms hidden field.
       var embeds = [];
       if($embdedForms.length>0){
         $embdedForms.each(function(){
           embeds[embeds.length] = $(this).data('form');
         });
       }
-      $hiddenEmbeds.val(embeds);
-      $(this).unbind('submit').submit(); // continue the submit unbind preventDefault
+      $('#cf7sg-embeded-forms').val(JSON.stringify(embeds));
+      //scan and submit tabs & tables fields.
+      var tableFields = [];
+      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)\s*(.[^\[]*)\]/img;/* /^.*\[.[^\s]*\s(.[^s]*)\s.*\].*$/img;*/
+      var hasTables = false;
+      $('.row.cf7-sg-table', $formNoEmbeds).each(function(){
+        var search = $(this).html();
+        var match = cf7TagRegexp.exec(search);
+        while (match != null) {
+          //ttFields[ match[2] ] = match[1];
+          tableFields[tableFields.length] = match[2];
+          match = cf7TagRegexp.exec(search); //get the next match.
+        }
+        hasTables = true;
+      });
+      //var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)\s*(.[^\[]*)\]/img;
+      var tabFields = [];
+      var hasTabs = false;
+      $('.container.cf7-sg-tabs-panel', $formNoEmbeds).each(function(){
+        var search = $(this).html();
+        var match = cf7TagRegexp.exec(search);
+        while (match != null) {
+          if( -1 === tableFields.indexOf(match[2]) ) tabFields[tabFields.length] = match[2];
+          //ttFields[match[2]] = match[1];
+          match = cf7TagRegexp.exec(search); //get the next match.
+        }
+        hasTabs = true;
+      });
+      //append hidden fields
+      $(this).append('<input type="hidden" name="cf7sg-has-tabs" value="'+hasTabs+'" /> ');
+      $(this).append('<input type="hidden" name="cf7sg-has-tables" value="'+hasTables+'" /> ');
+      /*
+      TODO: check for nice-select/select2, effects, toggles, accordion, validation to reduce script loads on front end.
+      */
+      $('#cf7sg-tabs-fields').val(JSON.stringify(tabFields));
+      $('#cf7sg-table-fields').val(JSON.stringify(tableFields));
+      //alert(ttFields);
+      // continue the submit unbind preventDefault.
+      $(this).unbind('submit').submit();
    });
 
     $.fn.CF7FormHTML = function(){

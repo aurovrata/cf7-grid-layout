@@ -29,7 +29,10 @@
 </div>
 <?php endif; ?>
 </textarea>
-<input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms[]" />
+<!-- cf7sg - track embeded sub-forms -->
+<input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms" />
+<input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />
+<input type="hidden" value="" id="cf7sg-table-fields" name="cf7sg-table-fields" />
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();
@@ -104,7 +107,7 @@
 </div>
 <div id="grid-tabs">
   <ul class="cf7-sg-tabs-list">
-    <li><a href="" class="cf7-sg-hidden"></a><label>Tab label<input type="text" /></label><span class="dashicons dashicons-no-alt"></span></li>
+    <li><a href="" class="cf7-sg-hidden"></a><label>Tab label<input type="text" /></label></li>
   </ul>
 </div>
 <div id="grid-col">

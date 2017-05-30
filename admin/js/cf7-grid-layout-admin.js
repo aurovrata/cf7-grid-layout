@@ -210,7 +210,6 @@
 
       }else if($target.is('.dashicons-trash.form-control') ){ //-----------TRASH external form
         $target.closest('cf7sg-external-form').remove();
-        //TODO: update via ajax external form removal
       }else if($target.is('.dashicons-plus.row-control')){ //-----------ADD
         $target.closest('.container').parent().appendNewRow();
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls

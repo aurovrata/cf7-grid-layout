@@ -473,9 +473,22 @@ class Cf7_Grid_Layout_Admin {
     //flag as a grid form
     update_post_meta($post_id, 'cf7_grid_form', true);
     //save sub-forms if any
-    $sub_forms = $_POST['cf7sg-embeded-forms'];
+    $sub_forms = json_decode(stripslashes($_POST['cf7sg-embeded-forms']));
+    if(empty($sub_forms)) $sub_forms = array();
     update_post_meta($post_id, '_cf7sg_sub_forms', $sub_forms);
-
+    //save form fields which are in tabs or tables.
+    $tt_fields = json_decode(stripslashes($_POST['cf7sg-table-fields']));
+    if(empty($tt_fields)) $tt_fields = array();
+    update_post_meta($post_id, '_cf7sg_grid_table_names', $tt_fields);
+    //tabs
+    $tt_fields = json_decode(stripslashes($_POST['cf7sg-tabs-fields']));
+    if(empty($tt_fields)) $tt_fields = array();
+    update_post_meta($post_id, '_cf7sg_grid_tabs_names', $tt_fields);
+    //flag tab & tables for more efficient front-end display.
+    $has_tabs =  ( 'true' === $_POST['cf7sg-has-tabs']) ? true : false;
+    update_post_meta($post_id, '_cf7sg_has_tabs', $has_tabs);
+    $has_tables = ( 'true' === $_POST['cf7sg-has-tables']) ? true : false;
+    update_post_meta($post_id, '_cf7sg_has_tables', $has_tables);
   }
   /**
    * Ajax function to return the content of a cf7 form
