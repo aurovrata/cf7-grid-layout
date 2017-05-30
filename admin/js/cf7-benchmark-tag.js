@@ -44,14 +44,14 @@
         var limit = $('#benchmark-above').val();
         var msg = $('#warning-above').val();
         if(limit.length > 0){
-          values = ' above:'+ limit+' "warn:'+msg+'"';
+          values = ' "above:'+ limit+'" "warn:'+msg+'"';
         }
         break;
       case 'below':
         var limit = $('#benchmark-below').val();
         var msg = $('#warning-below').val();
         if(limit.length > 0){
-          values = ' below:'+limit+' "warn:'+msg+'"';
+          values = ' "below:'+limit+'" "warn:'+msg+'"';
         }
         break;
       case 'between':
@@ -59,7 +59,7 @@
         var min = $('#benchmark-min').val();
         var msg = $('#warning-between').val();
         if(max.length > 0 && min .length>0){
-          values = ' between:'+min+':'+max+' "warn:'+msg+'"';
+          values = ' "between:'+min+':'+max+'" "warn:'+msg+'"';
         }
         break;
     }

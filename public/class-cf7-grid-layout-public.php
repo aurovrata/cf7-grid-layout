@@ -91,6 +91,7 @@ class Cf7_Grid_Layout_Public {
     $plugin_dir = plugin_dir_url( __DIR__ );
     //default style for cf7 grid forms (row buttons and tables mainly).
     wp_register_style( $this->plugin_name, $plugin_dir . 'public/css/cf7-grid-layout-public.css', array(), $this->version, 'all' );
+    wp_register_style( 'cf7-benchmark-css', $plugin_dir . 'public/css/cf7-benchmark.css', array('dashicons'), $this->version, 'all' );
     //others
     wp_register_style( 'cf7-jquery-ui', $plugin_dir . 'assets/jquery-ui/jquery-ui.min.css', array(), '1.12.1', 'all');
     wp_register_style( 'cf7-jquery-ui-theme', $plugin_dir . 'assets/jquery-ui/jquery-ui.theme.min.css', array(), '1.12.1', 'all');
@@ -112,10 +113,11 @@ class Cf7_Grid_Layout_Public {
 	 */
 	public function register_scripts() {
 
-		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-public.js', array( 'jquery' ), $this->version, false );
-    wp_register_script('jquery-select2', plugin_dir_url( __DIR__ ) . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, false );
-    wp_register_script('jquery-nice-select', plugin_dir_url( __DIR__ ) . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-public.js', array( 'jquery' ), $this->version, true );
+    wp_register_script('jquery-select2', plugin_dir_url( __DIR__ ) . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
+    wp_register_script('jquery-nice-select', plugin_dir_url( __DIR__ ) . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('jquery-toggles', plugin_dir_url( __DIR__ ) . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
+    wp_register_script('js-cf7sg-benchmarking', plugin_dir_url( __FILE__ ) . 'js/cf7-benchmark.js', array( 'jquery' ), $this->version, true );
     //allow custom script registration
     do_action('smart_grid_register_scripts');
 	}
@@ -201,6 +203,8 @@ class Cf7_Grid_Layout_Public {
     wp_enqueue_style('cf7-jquery-ui-theme');
     wp_enqueue_style('cf7-jquery-ui-structure');
     wp_enqueue_style('cf7-jquery-ui');
+
+    wp_enqueue_script('js-cf7sg-benchmarking');
 
     //get the key
     $cf7post = get_post($cf7_id);
@@ -348,6 +352,8 @@ class Cf7_Grid_Layout_Public {
 
   public function cf7_benchmark_shortcode($tag){
     $tag = new WPCF7_FormTag( $tag );
+    wp_enqueue_script('js-cf7sg-benchmarking');
+    wp_enqueue_style( 'cf7-benchmark-css' );
     ob_start();
     include( plugin_dir_path( __FILE__ ) . '/partials/cf7-benchmark-tag.php');
     $html = ob_get_contents ();

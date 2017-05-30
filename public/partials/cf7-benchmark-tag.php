@@ -18,28 +18,28 @@
  }
 $class = $tag->get_class_option( $class );
 $id = $tag->get_id_option();
+if(!empty($id)) $id = 'id="'.$id.'"';
 $data_limit = '';
 $data_warn = '';
-
  if(!empty($tag->values)){
    foreach($tag->values as $values){
      if(0 === strpos($values, 'above:') ){
-       $data_limit = 'data-type="above" data-limit="'.str_replace('above:', '', $values);
+       $data_limit = 'data-cf7sg-benchmark="above" data-cf7sg-benchmark-limit="'.str_replace('above:', '', $values);
      }
      if(0 === strpos($values, 'below:')){
-       $data_limit = 'data-type="below" data-limit="'.str_replace('below:', '', $values);
+       $data_limit = 'data-cf7sg-benchmark="below" data-cf7sg-benchmark-limit="'.str_replace('below:', '', $values);
      }
      if(0 === strpos($values, 'between:')){
        $range = explode(":",  str_replace('between:', '', $values));
-       $data_limit = 'data-type="range" data-min="'.$range[0].'" data-max="'.$range[1].'"';
+       $data_limit = 'data-cf7sg-benchmark="range" data-cf7sg-benchmark-min="'.$range[0].'" data-cf7sg-benchmark-max="'.$range[1].'"';
      }
      if(0 === strpos($values, 'warn:')){
-       $data_warn = 'data-msg="'.str_replace('warn:', '', $values).'"';
+       $data_warn = 'data-cf7sg-benchmark-msg="'.str_replace('warn:', '', $values).'"';
      }
    }
 
  }
 ?>
 <span class="wpcf7-form-control-wrap <? echo sanitize_html_class( $tag->name ) ?>">
-  <input data-limit="<?= $limit['type']?>" type="number" id="<?php echo $id?>" name="<?php echo $tag->name ?>" class="<?php echo $class?>" />
+  <input <?= $id?> name="<?= $tag->name ?>" class="<?= $class?>" <?= $data_limit?> <?= $data_warn?> type="number" />
 </span>
