@@ -12,7 +12,7 @@
  * @subpackage Cf7_Grid_Layout/public/partials
  */
  $validation_error = wpcf7_get_validation_error( $tag->name );
- $class = wpcf7_form_controls_class( $tag->type, 'cf7sf-dynamic-dropdown' );
+ $class = wpcf7_form_controls_class( $tag->type, 'cf7sg-dynamic-dropdown' );
  if ( $validation_error ) {
      $class .= ' wpcf7-not-valid';
  }

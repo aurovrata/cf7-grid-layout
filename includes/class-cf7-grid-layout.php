@@ -217,7 +217,7 @@ class Cf7_Grid_Layout {
     //add_filter( 'wpcf7_load_css', '__return_false' );
 
     //instroduced a dynamic taxonomy droppdown tag for forms
-    $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_dynamic_taxonomy_shortcode' );
+    $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_cf7_shortcode' );
     //setup individual tag filers
     $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_tag_filters', 10, 1 );
     //filter cf7 validation

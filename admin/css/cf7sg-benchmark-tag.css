@@ -1,0 +1,15 @@
+#benchmark-sources article h4 {
+    margin: 0 0 2px 0;
+}
+.tabordion input[name="bsections"] {
+  left: -9999px;
+  position: absolute;
+  top: -9999px;
+}
+.tabordion input[name="bsections"]:checked + label {
+  background: #fff;
+  border-right: 1px solid #fff;
+}
+.tabordion input[name="bsections"]:checked ~ article {
+  display: block;
+}

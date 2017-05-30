@@ -321,7 +321,7 @@ class Cf7_Grid_Layout_Public {
    * This function registers a callback function to expand the shortcode for the save button field.
    * @since 2.0.0
    */
-  public function register_dynamic_taxonomy_shortcode() {
+  public function register_cf7_shortcode() {
     if( function_exists('wpcf7_add_form_tag') ) {
       //dynamic select
       wpcf7_add_form_tag(
@@ -329,10 +329,33 @@ class Cf7_Grid_Layout_Public {
         array($this,'cf7_taxonomy_shortcode'),
         true //has name
       );
+      //benchmark
+      wpcf7_add_form_tag(
+        array( 'benchmark', 'benchmark*' ),
+        array($this,'cf7_benchmark_shortcode'),
+      true //has name
+    );
     }
   }
   /**
-	 * Register a [taxonomy] shortcode with CF7.
+	 * Register a [benchmark] shortcode with CF7.
+	 * called by funciton above
+	 * This function registers a callback function to expand the shortcode for the googleMap form fields.
+	 * @since 1.0.0
+   * @param strng $tag the tag name designated in the tag help screen
+   * @return string a set of html fields to capture the googleMap information
+	 */
+
+  public function cf7_benchmark_shortcode($tag){
+    $tag = new WPCF7_FormTag( $tag );
+    ob_start();
+    include( plugin_dir_path( __FILE__ ) . '/partials/cf7-benchmark-tag.php');
+    $html = ob_get_contents ();
+    ob_end_clean();
+    return $html;
+  }
+  /**
+	 * Register a [dynamic_display] shortcode with CF7.
 	 * called by funciton above
 	 * This function registers a callback function to expand the shortcode for the googleMap form fields.
 	 * @since 1.0.0

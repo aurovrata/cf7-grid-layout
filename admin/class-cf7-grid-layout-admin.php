@@ -70,6 +70,8 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_style( "cf7-grid-post-css", $plugin_dir . 'admin/css/cf7-grid-layout-post.css', array(), $this->version, 'all' );
         //dynamic tag
         wp_enqueue_style('cf7sg-dynamic-tag-css', $plugin_dir . 'admin/css/cf7sg-dynamic-tag.css', array(), $this->version, 'all' );
+        //benchmark tag
+        wp_enqueue_style('cf7sg-benchmark-tag-css', $plugin_dir . 'admin/css/cf7sg-benchmark-tag.css', array(), $this->version, 'all' );
         //codemirror
         wp_enqueue_style( "codemirror-css", $plugin_dir . 'assets/codemirror/codemirror.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-theme-css", $plugin_dir . 'assets/codemirror/theme/paraiso-light.css', array(), $this->version, 'all' );
@@ -120,6 +122,7 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs' ), $this->version, false );
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable', 'jquery-ui-draggable' ), $this->version, false );
         wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
+        wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
         wp_localize_script(
           $this->plugin_name,
           'cf7_grid_ajaxData',
@@ -544,6 +547,11 @@ class Cf7_Grid_Layout_Admin {
         __( 'dynamic-dropdown', 'cf7_2_post' ), //tag button label
         array($this,'dynamic_tag_generator') //callback
       );
+      $tag_generator->add(
+        'benchmark', //tag id
+        __( 'benchmark', 'cf7_2_post' ), //tag button label
+        array($this,'benchmark_tag_generator') //callback
+      );
     }
   }
   /**
@@ -558,6 +566,19 @@ class Cf7_Grid_Layout_Admin {
 	function dynamic_tag_generator( $contact_form, $args = '' ) {
     $args = wp_parse_args( $args, array() );
 		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-dynamic-tag-display.php');
+	}
+  /**
+	 * Benchmark input screen displayt.
+	 *
+	 * This function is called by cf7 plugin, and is registered with a hooked function above
+	 *
+	 * @since 1.0.0
+	 * @param WPCF7_ContactForm $contact_form the cf7 form object
+	 * @param array $args arguments for this form.
+	 */
+	function benchmark_tag_generator( $contact_form, $args = '' ) {
+    $args = wp_parse_args( $args, array() );
+		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-benchmark-tag.php');
 	}
   /**
    * Print hiddend field on cf7 post submit box
