@@ -28,20 +28,26 @@
       return $(this);
     }
     $(this).removeClass('cf7sg-benchmark-warning');
+    $(this).next('span.cf7sg-benchmark-warning').remove();
+    if('' == $(this).val()){
+      return $(this);
+    }
     var type = $(this).data('cf7sg-benchmark');
     var msg = '<span class="cf7sg-benchmark-warning"><span>warning<span class="dashicons dashicons-no-alt"></span></span><span class="cf7sg-benchmark-msg">'+$(this).data('cf7sg-benchmark-msg')+'</span></span>';
     switch(type){
       case 'above':
         var limit = $(this).data('cf7sg-benchmark-limit');
         if($(this).val() > limit ){
-          if(warn) $(this).after(msg);
+          $(this).after(msg);
+          if(!warn) $(this).next('span.cf7sg-benchmark-warning').hide().find('.dashicons-no-alt').remove();
           $(this).addClass('cf7sg-benchmark-warning');
         }
         break;
       case 'below':
         var limit = $(this).data('cf7sg-benchmark-limit');
         if($(this).val() < limit ){
-          if(warn) $(this).after(msg);
+          $(this).after(msg);
+          if(!warn) $(this).next('span.cf7sg-benchmark-warning').hide().find('.dashicons-no-alt').remove();
           $(this).addClass('cf7sg-benchmark-warning');
         }
         break;
@@ -49,7 +55,8 @@
         var min = $(this).data('cf7sg-benchmark-min');
         var max = $(this).data('cf7sg-benchmark-max');
         if($(this).val() < min || $(this).val() > max ){
-          if(warn) $(this).after(msg);
+          $(this).after(msg);
+          if(!warn) $(this).next('span.cf7sg-benchmark-warning').hide().find('.dashicons-no-alt').remove();
           $(this).addClass('cf7sg-benchmark-warning');
         }
         break;

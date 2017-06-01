@@ -92,3 +92,18 @@ div.field span.wpcf7-not-valid-tip {
     border-radius: 3px;
     min-width: 195px;
 }
+span.cf7sg-validation-warning {
+    display: block;
+    font-size: 80%;
+    color: #626262;
+    position: absolute;
+    right: 50%;
+    top: 25px;
+    width: 140px;
+    height: auto;
+    border-radius: 3px;
+    border: solid 1px #656565;
+    background: #f2f2f2;
+    margin-right: -70px;
+    z-index:999;
+}

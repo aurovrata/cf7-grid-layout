@@ -42,27 +42,6 @@
           $button = $button.parent();
           var $table = $button.prev('.container');
           $table.cf7sgCloneRow();
-          /*if($table.is('.cf7-sg-table-footer')){
-            $table = $table.prev('.container.cf7-sg-table');
-          }
-          var rowIdx = $table.children( '.row.cf7-sg-table').length - 1; //minus hidden row.
-          var $cloneRow = $('.cf7-sg-cloned-table-row', $table);
-          var $row = $cloneRow.clone().removeClass('cf7-sg-cloned-table-row');
-          //add input name as class to parent span
-          $(':input', $row).each(function(){
-            //enable inputs
-            $(this).prop('disabled', false);
-            var name = $(this).attr('name').replace('[]','');
-            $(this).parent('span').removeClass(name).addClass(name+'_'+rowIdx);
-            //finally enabled the nice select dropdown.
-            if($(this).is('select.ui-select')){
-              $(this).niceSelect();
-            }
-          });
-          $cloneRow.before($row.show());
-          //when the button is clicked, trigger a content increase for accordions to refresh
-          $table.trigger('sgContentIncrease');
-          $table.trigger('sgRowAdded');*/
         }else if($button.is('.cf7-sg-table .row-control .dashicons')){ //---------- delete the row
           $button.closest('.row.cf7-sg-table').remove();
           $button.closest('.container').trigger('sgRowDeleted');
@@ -82,45 +61,27 @@
         if( !$(event.target).is('input[type="number"]')){
           return;
         }
-        var field = $(event.target);
-        var prev = field.data('current');
+        var $field = $(event.target);
+        var prev = $field.data('current');
+        var warning = false;
         switch( true ){
-          case field.hasClass('sgv-no-zero'):
-            if( 0 == field.val()){
-              $("<span>Value cannot be zero</span>").dialog({
-                modal: true,
-                buttons: {
-                  Ok: function() {
-                    $( this ).dialog( "close" );
-                  }
-                }
-              });
-              field.val(prev);
-            }
-          case field.hasClass('sgv-no-negative'):
-            if( 0 > field.val()){
-              $("<span>Value cannot be negative</span>").dialog({
-                modal: true,
-                buttons: {
-                  Ok: function() {
-                    $( this ).dialog( "close" );
-                  }
-                }
-              });
-              field.val(prev);
-            }
-          case field.hasClass('sgv-not-empty'):
-            if( ''== field.val()){
-              $("<span>Value cannot be empty</span>").dialog({
-                modal: true,
-                buttons: {
-                  Ok: function() {
-                    $( this ).dialog( "close" );
-                  }
-                }
-              });
-              field.val(prev);
-            }
+          case 0 == $field.val() && $field.is('.sgv-no-zero'):
+            $field.after('<span class="cf7sg-validation-warning">Value cannot be zero</span>');
+            $field.val(prev);
+            warning=true;
+            break;
+          case 0 > $field.val() && $field.is('.sgv-no-negative'):
+            $field.after('<span class="cf7sg-validation-warning">Value cannot be negative</span>');
+            $field.val(prev);
+            warning=true;
+            break;
+          case ''== $field.val() && $field.hasClass('sgv-not-empty'):
+            $field.after('<span class="cf7sg-validation-warning">Value cannot be empty</span>');
+            $field.val(prev);
+            warning=true;
+        }
+        if(warning){
+          $field.next('span.cf7sg-validation-warning').delay(3000).fadeOut('slow');
         }
       });
     }//end validation

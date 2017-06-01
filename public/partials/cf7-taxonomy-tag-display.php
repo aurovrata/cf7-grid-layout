@@ -20,6 +20,8 @@ $class = $tag->get_class_option( $class );
 $id = $tag->get_id_option();
 $source = array();
 $options = array();
+$cf7_form = wpcf7_get_current_contact_form();
+$cf7_key = Cf7_WP_Post_Table::form_key($cf7_form->id());
  if(!empty($tag->values)){
    $source = array();
    foreach($tag->values as $values){
@@ -83,7 +85,7 @@ $options = array();
       	}
         $args['tax_query'] = $tax;
      }
-     $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name);
+     $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name, $cf7_key);
      $posts = get_posts($args);
      if(!empty($posts)){
        foreach($posts as $post){
@@ -91,14 +93,14 @@ $options = array();
        }
      }
    }else if('filter' == $source['source']){
-     $options = apply_filters('cf7sg_dynamic_dropdown_custom_options', $options, $tag->name);
+     $options = apply_filters('cf7sg_dynamic_dropdown_custom_options', $options, $tag->name, $cf7_key);
    }
  }
 ?>
 <span class="wpcf7-form-control-wrap <? echo sanitize_html_class( $tag->name ) ?>">
 <select id="<?php echo $id?>" name="<?php echo $tag->name ?>" class="<?php echo $class?>">
 <?php
-$default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $source, $tag->name);
+$default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $source, $tag->name, $cf7_key);
 if(!is_null($default_value)):
 ?>
   <option value=""><?php echo $default_value ?></option>

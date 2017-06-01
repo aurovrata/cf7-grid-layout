@@ -612,19 +612,20 @@ class Cf7_Grid_Layout_Admin {
       $post_lists = $saved_lists = $system_list = array();
 
       $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-
       foreach($dropdowns as $id => $lists){
         $saved_lists = array_merge($saved_lists, $lists);
       }
       foreach($tags as $tag){
         if('dynamic_select' == $tag['basetype']){
           if(isset($tag['values'])){
+            $slug='';
             foreach($tag['values'] as $values){
               if(0 == strpos($values, 'slug:') ){
                 $slug = str_replace('slug:', '', $values);
                 break;
               }
             }
+            if(empty($slug)) continue; //not a taxonomy list.
             //is slug newly created?
             if(isset($created_taxonomies[$slug])){
               //store this taxonomy.

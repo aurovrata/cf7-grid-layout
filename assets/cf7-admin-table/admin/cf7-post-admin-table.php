@@ -31,6 +31,14 @@ if(!class_exists('Cf7_WP_Post_Table')){
   	 * @var      Cf7_WP_Post_Table    $singleton   cf7 admin list table object.
   	 */
   	private static $singleton;
+    /**
+  	 * A CF7 list table object.
+  	 *
+  	 * @since    1.1.0
+  	 * @access   private
+  	 * @var      array    $forms_key_ids   an array of key=>id pairs
+  	 */
+  	private static $forms_key_ids;
     private $version;
     /**
   	 * A flag to monitor if hooks are in place.
@@ -133,22 +141,65 @@ if(!class_exists('Cf7_WP_Post_Table')){
       <?php
 
   	}
+
     /**
-     * get form id for a given key
+     * Store a psir of key=>id values for each form
      *
      * @since 1.2.0
-     * @param      string    $form_key   the unique key for qhich to get the id  .
-     * @return     string    form id     .
+     * @param      string    $key     form key.
+     * @param      string    $id     form post id.
     **/
-    public static function form_id($form_key){
-      $form_id = 0;
-      $forms = get_posts(array(
-        'post_type' => 'wpcf7_contact_form',
-        'post_name__in' => array($form_key)
-      ));
-      if(!empty($forms)) $form_id = $forms[0]->ID;
-      wp_reset_postdata();
-      return $form_id;
+    private static function set_key_id($key, $id){
+      if(null === self::$forms_key_ids){
+        self::$forms_key_ids = array();
+      }
+      self::$forms_key_ids[$key]=$id;
+    }
+    /**
+     * Get a form id from its key if set
+     *
+     * @since 1.2.0
+     * @param      string    $key     form key.
+     * @return      string    form post id.
+    **/
+    public static function form_id($key){
+      if(null === self::$forms_key_ids){
+        self::$forms_key_ids = array();
+      }
+      if(isset(self::$forms_key_ids[$key])) return self::$forms_key_ids[$key];
+      else{
+        $form_id = 0;
+        $forms = get_posts(array(
+          'post_type' => 'wpcf7_contact_form',
+          'post_name__in' => array($key)
+        ));
+        if(!empty($forms)) $form_id = $forms[0]->ID;
+        wp_reset_postdata();
+        self::$forms_key_ids[$key]=$form_id;
+        return $form_id;
+      }
+    }
+    /**
+     * Get a form key from its id
+     *
+     * @since 1.2.0
+     * @param      string    $id     form id.
+     * @return      string    form post key.
+    **/
+    public static function form_key($id){
+      if(null === self::$forms_key_ids){
+        self::$forms_key_ids = array();
+      }
+      if(false !== ($key = array_search($id, self::$forms_key_ids))) return self::$forms_key_ids[$key];
+      else{
+        $key = null;
+        $form = get_post($id);
+        if(!empty($form)){
+          $key = $form->post_name;
+          self::$forms_key_ids[$key] = $id;
+        }
+        return $key;
+      }
     }
     /**
     *  Checks if this is the admin table list page
