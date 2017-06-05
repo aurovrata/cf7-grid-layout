@@ -30,6 +30,7 @@ class Cf7_Grid_Layout_Public {
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
 	private $plugin_name;
+  private $registered = false;
 
 	/**
 	 * The version of this plugin.
@@ -229,7 +230,7 @@ class Cf7_Grid_Layout_Public {
           }
           $form_raw = $this->update_sub_form($form_raw, $post_obj);
         }
-        //check if sub-forms needs tabs|table
+        //check if sub-forms needs tabs|tablevalidate_beanchmark
         if(!$has_tables && get_post_meta($post_obj->ID, '_cf7sg_has_tables', true)){
           $class[]='has-table';
           $has_tables = true;
@@ -438,6 +439,28 @@ class Cf7_Grid_Layout_Public {
     }
 
     return $data;
+  }
+  /**
+   * Validates required benchmark and dynamic_select tags
+   *
+   * @since 1.0.0
+   * @param WPCF7_Validation $result   validation object
+   * @param Array $tag   an array of cf7 tag attributes and values
+   * @return WPCF7_Validation  validation result
+  **/
+  public function validate_required($result, $tag){
+    $tag = new WPCF7_FormTag( $tag );
+
+    $name = $tag->name;
+  	$value = isset( $_POST[$name] )
+  		? trim( strtr( (string) $_POST[$name], "\n", " " ) )
+  		: '';
+
+
+  	if ( $tag->is_required() && '' == $value ) {
+  		$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
+    }
+    return $result;
   }
   /**
 	 * Filter the validation results of cf7 plugin. Resets the results for array fields

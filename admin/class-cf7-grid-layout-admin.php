@@ -308,6 +308,7 @@ class Cf7_Grid_Layout_Admin {
   public function register_dynamic_dropdown_taxonomy(){
     //register the dynamic dropdown taxonomies.
     $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
+    //debug_msg($dropdowns);
     $created = array();
     foreach($dropdowns as $post_lists){
       foreach($post_lists as $slug=>$taxonomy){

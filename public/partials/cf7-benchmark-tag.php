@@ -21,13 +21,14 @@ $id = $tag->get_id_option();
 if(!empty($id)) $id = 'id="'.$id.'"';
 $data_limit = '';
 $data_warn = '';
+$input_type = 'number';
  if(!empty($tag->values)){
    foreach($tag->values as $values){
      if(0 === strpos($values, 'above:') ){
-       $data_limit = 'data-cf7sg-benchmark="above" data-cf7sg-benchmark-limit="'.str_replace('above:', '', $values);
+       $data_limit = 'data-cf7sg-benchmark="above" data-cf7sg-benchmark-limit="'.str_replace('above:', '', $values).'"';
      }
      if(0 === strpos($values, 'below:')){
-       $data_limit = 'data-cf7sg-benchmark="below" data-cf7sg-benchmark-limit="'.str_replace('below:', '', $values);
+       $data_limit = 'data-cf7sg-benchmark="below" data-cf7sg-benchmark-limit="'.str_replace('below:', '', $values).'"';
      }
      if(0 === strpos($values, 'between:')){
        $range = explode(":",  str_replace('between:', '', $values));
@@ -36,10 +37,14 @@ $data_warn = '';
      if(0 === strpos($values, 'warn:')){
        $data_warn = 'data-cf7sg-benchmark-msg="'.str_replace('warn:', '', $values).'"';
      }
+     if(0 === strpos($values, 'hidden:')){
+       $input_type = ("true" === str_replace('hidden:', '', $values))?'hidden':'number';
+     }
    }
 
  }
+ //debug_msg($tag->name." input:".'<input '.$id.' name="'. $tag->name .'" class="'. $class.'" '. $data_limit.' '. $data_warn.' type="'. $input_type .'" />');
 ?>
 <span class="wpcf7-form-control-wrap <? echo sanitize_html_class( $tag->name ) ?>">
-  <input <?= $id?> name="<?= $tag->name ?>" class="<?= $class?>" <?= $data_limit?> <?= $data_warn?> type="number" />
+  <input <?= $id?> name="<?= $tag->name ?>" class="<?= $class?>" <?= $data_limit?> <?= $data_warn?> type="<?= $input_type ?>" />
 </span>

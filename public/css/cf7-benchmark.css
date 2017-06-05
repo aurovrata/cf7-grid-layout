@@ -13,6 +13,21 @@ span.cf7sg-benchmark-warning {
     margin-right: -70px;
     z-index:999;
 }
+span.cf7sg-benchmark-warning.cf7sg-benchmark-hidden {
+    position: static;
+    width: auto;
+    display: inline-block;
+}
+span.cf7sg-benchmark-warning.cf7sg-benchmark-hidden > span {
+    display: inline-block;
+    padding-right: 5px;
+}
+span.cf7sg-benchmark-warning.cf7sg-benchmark-hidden > span .dashicons-no-alt {
+    float: left;
+    display: inline-block;
+    position: static;
+    margin-top: 1px;
+}
 span.cf7sg-benchmark-warning > span {
     background-color: #6c6c6c;
     display: block;

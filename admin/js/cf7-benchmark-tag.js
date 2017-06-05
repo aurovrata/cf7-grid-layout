@@ -6,12 +6,15 @@
   var $id = $('#benchmark-tag-generator input[name="id"]');
   var $cl = $('#benchmark-tag-generator input[name="class"]');
   var $req = $('#benchmark-tag-generator input[name="required"]');
+  var $eventName = $('#event-name');
+  var $hidden = $('#benchmark-tag-generator input[name="hidden"]');
 
 
   $('#benchmark-tag-generator').on('change',':input', function(event){
     var $target = $(event.target);
     var $tab = $('input[name="bsections"]:checked');
     var source = 'taxonomy';
+    $eventName.text($name.val());
 
     /* which source ? */
     if($tab.is('#above-tab')){
@@ -66,6 +69,7 @@
 
     var type = 'benchmark ';
     if($req.is(':checked')) type = 'benchmark* ';
+    if($hidden.is(':checked')) values += ' "hidden:true"';
     $tag.val('[' + type + $name.val() + id + classes + values +']');
   }
   })( jQuery );

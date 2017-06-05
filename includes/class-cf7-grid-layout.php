@@ -222,6 +222,9 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_tag_filters', 10, 1 );
     //filter cf7 validation
     $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 30, 2 );
+    //benchmark validation
+    $this->loader->add_filter( 'wpcf7_validate_dynamic_select*', $plugin_public, 'validate_required', 30, 2 );
+    $this->loader->add_filter( 'wpcf7_validate_benchmark*', $plugin_public, 'validate_required', 30, 2 );
     //setup hidden key field in cf7 forms.
     $this->loader->add_filter( 'wpcf7_form_hidden_fields', $plugin_public, 'set_hidden_key' );
     //Post My CF7 Form hooks

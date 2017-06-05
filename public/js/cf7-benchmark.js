@@ -33,7 +33,11 @@
       return $(this);
     }
     var type = $(this).data('cf7sg-benchmark');
-    var msg = '<span class="cf7sg-benchmark-warning"><span>warning<span class="dashicons dashicons-no-alt"></span></span><span class="cf7sg-benchmark-msg">'+$(this).data('cf7sg-benchmark-msg')+'</span></span>';
+    var hidden = '';
+    if($(this).is('input[type="hidden"]')){
+      hidden = ' cf7sg-benchmark-hidden';
+    }
+    var msg = '<span class="cf7sg-benchmark-warning'+hidden+'"><span>warning<span class="dashicons dashicons-no-alt"></span></span><span class="cf7sg-benchmark-msg">'+$(this).data('cf7sg-benchmark-msg')+'</span></span>';
     switch(type){
       case 'above':
         var limit = $(this).data('cf7sg-benchmark-limit');
@@ -41,6 +45,9 @@
           $(this).after(msg);
           if(!warn) $(this).next('span.cf7sg-benchmark-warning').hide().find('.dashicons-no-alt').remove();
           $(this).addClass('cf7sg-benchmark-warning');
+          if(hidden.length>0){
+            $(this).trigger('cf7sg-benchmark-'+$(this).attr('name'));
+          }
         }
         break;
       case 'below':
@@ -49,6 +56,9 @@
           $(this).after(msg);
           if(!warn) $(this).next('span.cf7sg-benchmark-warning').hide().find('.dashicons-no-alt').remove();
           $(this).addClass('cf7sg-benchmark-warning');
+          if(hidden.length>0){
+            $(this).trigger('cf7sg-benchmark-'+$(this).attr('name'));
+          }
         }
         break;
       case 'range':
@@ -58,8 +68,12 @@
           $(this).after(msg);
           if(!warn) $(this).next('span.cf7sg-benchmark-warning').hide().find('.dashicons-no-alt').remove();
           $(this).addClass('cf7sg-benchmark-warning');
+          if(hidden.length>0){
+            $(this).trigger('cf7sg-benchmark-'+$(this).attr('name'));
+          }
         }
         break;
     }
+
   }
   })( jQuery );

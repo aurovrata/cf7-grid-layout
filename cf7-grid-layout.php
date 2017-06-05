@@ -68,7 +68,6 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-cf7-grid-layout.php';
  * @since    1.0.0
  */
 function run_cf7_grid_layout() {
-
 	$plugin = new Cf7_Grid_Layout();
 	$plugin->run();
 

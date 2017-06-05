@@ -30,6 +30,15 @@
         	<td><input name="required" type="checkbox"> Required field<br /></td>
       	</tr>
         <tr>
+        	<th scope="row">Hidden field</th>
+        	<td>
+            <input name="hidden" type="checkbox">Make this a hidden field<br />
+            <p>
+              A hidden field will need to be populated with your own custom javascript, but the msg and limits will be automatically checked when the field is populated.  In case the limits are breached, an event 'cf7sg-benchmark-<span id="event-name"></span>' will be fired on the field itself.  Your custom javascript can further take action on the event.
+            </p>
+          </td>
+      	</tr>
+        <tr>
           <th>
             <label for="tag-generator-panel-number-id">Id attribute</label>
           </th>
