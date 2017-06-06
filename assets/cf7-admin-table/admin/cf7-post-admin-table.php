@@ -463,7 +463,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
         return do_shortcode('[contact-form-7 id="'.$id.'"'.$attributes.']');
       }else{
         wp_reset_postdata();
-        return '<em>' . _('cf7-form shortcode key error, unable to find form','cf7-admin-table') . '</em>';
+        return '<em>' . __('cf7-form shortcode key error, unable to find form','cf7-admin-table') . '</em>';
       }
     }
 
