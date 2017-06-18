@@ -107,3 +107,9 @@ span.cf7sg-validation-warning {
     margin-right: -70px;
     z-index:999;
 }
+input.select2-search__field{
+  background-image: url('search.png');
+  background-repeat: no-repeat;
+  background-position-x: calc(100% - 5px);
+  background-position-y: 50%;
+}

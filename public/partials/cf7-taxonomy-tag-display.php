@@ -17,11 +17,14 @@
      $class .= ' wpcf7-not-valid';
  }
 $class = $tag->get_class_option( $class );
+
 $id = $tag->get_id_option();
 $source = array();
 $options = array();
 $cf7_form = wpcf7_get_current_contact_form();
 $cf7_key = Cf7_WP_Post_Table::form_key($cf7_form->id());
+
+
  if(!empty($tag->values)){
    $source = array();
    foreach($tag->values as $values){
@@ -58,7 +61,7 @@ $cf7_key = Cf7_WP_Post_Table::form_key($cf7_form->id());
        $terms = get_terms($source['taxonomy'], $taxonomy_query);
      }
      if( is_wp_error( $terms )) {
-       debug_msg($terms, 'Unable to retried taxonomy <em>'.$source['taxonomy'].'</em> terms');
+       debug_msg($terms, 'Unable to retrieve taxonomy <em>'.$source['taxonomy'].'</em> terms');
        $terms = array();
      }else{
        foreach($terms as $term){
@@ -112,3 +115,24 @@ foreach($options as $value=>$name){
 ?>
 </select>
 </span>
+<?php
+ /* Bookeeping, set up tagged select2 fields to filter newly added options in case Post My CF& Form plugin is running */
+ $form_classes = array();
+ if(strpos($class, 'select2')){
+   $form_classes[] = 'has-select2';
+   //track this field if user sets custom options.
+   if(strpos($class, 'tags')){
+     $tagged_fields = get_post_meta($cf7_form->id(), '_cf7sg_select2_tagged_fields', true);
+     if(empty($tagged_fields)){
+       $tagged_fields = array();
+     }
+     if( !isset($tagged_fields[$tag->name]) ){
+       $tagged_fields[$tag->name] = $source;
+       update_post_meta($cf7_form->id(), '_cf7sg_select2_tagged_fields',$tagged_fields);
+     }
+   }
+ }
+ if(false != strpos($class, 'nice-select') || false !=strpos($class, 'ui-select')){
+   $form_classes[] = 'has-nice-select';
+ }
+ if(!empty($form_classes)) $this->update_form_classes($form_classes, $cf7_form->id());

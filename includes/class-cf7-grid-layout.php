@@ -229,6 +229,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter( 'wpcf7_form_hidden_fields', $plugin_public, 'set_hidden_key' );
     //Post My CF7 Form hooks
     $this->loader->add_filter('cf7_2_post_echo_field_mapping_script', $plugin_public, 'load_tabs_table_field', 10, 6 );
+    $this->loader->add_action('cf7_2_post_form_posted', $plugin_public, 'save_select2_custom_options', 10, 5 );
 	}
 
 	/**

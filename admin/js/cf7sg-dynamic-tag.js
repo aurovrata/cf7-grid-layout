@@ -1,18 +1,25 @@
 
 (function( $ ) {
   'use strict';
-  var $tag = $('input.tag' , $('#dynamic-select-tag-generator').closest('.control-box').siblings('.insert-box'));
+  var $form = $('#dynamic-select-tag-generator');
+  var $tag = $('input.tag' , $form.closest('.control-box').siblings('.insert-box'));
   var $button = $tag.siblings('.submitbox').find('input.insert-tag');
-  var $select = $('#dynamic-select-tag-generator select.taxonomy-list');
-  var $plural = $('#dynamic-select-tag-generator input[name="plural_name"]');
-  var $single = $('#dynamic-select-tag-generator input[name="singular_name"]');
-  var $taxonomy = $('#dynamic-select-tag-generator input[name="taxonomy_slug"]');
-  var $is_cat = $('#dynamic-select-tag-generator input[name="is_hierarchical"]');
-  var $req = $('#dynamic-select-tag-generator input[name="required"]');
-  var $name = $('#dynamic-select-tag-generator input[name="name"]');
-  var $id = $('#dynamic-select-tag-generator input[name="id"]');
-  var $cl = $('#dynamic-select-tag-generator input[name="class"]');
-  var $post = $('#dynamic-select-tag-generator  select.post-list');
+  var $select = $('select.taxonomy-list', $form);
+  var $plural = $('input[name="plural_name"]', $form);
+  var $single = $('input[name="singular_name"]', $form);
+  var $taxonomy = $('input[name="taxonomy_slug"]', $form);
+  var $is_cat = $('input[name="is_hierarchical"]', $form);
+  var $req = $('input[name="required"]', $form);
+  var $name = $('input[name="name"]', $form);
+  var $id = $('input[name="id"]', $form);
+  var $cl = $('input[name="class"]', $form);
+  var $post = $(' select.post-list', $form);
+  var selectType = 'select';
+  // var version6 = false;
+  // var vernums = $.fn.jquery.split('.');
+  // if (parseInt(vernums[0]) > 0 && parseInt(vernums[1]) >= 6 && parseInt(vernums[2]) >= 0 ) {
+  //   version6 = false;
+  // }
 
   $('select.post-list').on('change', function(){
     $('div.post-taxonomies').hide();
@@ -20,9 +27,9 @@
     var type = $(this).val();
     $('div#'+type).show();
     $('select.select2', $('div#'+type)).not('.select2-hidden-accessible').select2();
-
   });
-  $('#dynamic-select-tag-generator').on('change',':input', function(event){
+
+  $form.on('change',':input', function(event){
     var $target = $(event.target);
     var $tab = $('input[name="sections"]:checked');
     var source = 'taxonomy';
@@ -44,6 +51,14 @@
       }else if($option.is('.cf7sg-taxonomy')){
         $plural.prop('disabled',false);
         $single.prop('disabled',false);
+      }
+    }else if($target.is('input.select-type')){ //---------select-type
+      selectType = $('input.select-type:checked').val();
+      if('select2' == selectType){
+        $('input#select2-tags', $form).prop('disabled', false);
+      }else{
+        $('input#select2-tags', $form).prop('checked', false);
+        $('input#select2-tags', $form).prop('disabled', true);
       }
     }
     /* which source ? */
@@ -120,13 +135,27 @@
             var term='';
             for(term of $tax.val()){
               values += ' "'+term+'"';
-
             }
           }
         }
         break;
       case 'filter':
         values = ' source:filter';
+        break;
+    }
+    //select type
+    switch(selectType){
+      case 'nice':
+        classes+= ' class:nice-select';
+        break;
+      case 'select2':
+        classes += ' class:select2';
+        if($('input#select2-tags').is(':checked')){
+          classes += ' class:tags';
+        }
+        break;
+      case 'standard':
+      default:
         break;
     }
     /*
@@ -140,4 +169,4 @@
     if($req.is(':checked')) type = 'dynamic_select* ';
     $tag.val('[' + type + $name.val() + id + classes + values +']');
   }
-  })( jQuery );
+})( jQuery );

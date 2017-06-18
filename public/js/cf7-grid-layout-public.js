@@ -160,16 +160,49 @@
             $('select.ui-select:enabled', $(this)).each(function(){
               $(this).niceSelect();
             });
+            $('select.nice-select:enabled', $(this)).each(function(){
+              $(this).niceSelect();
+            });
             $(this).trigger('sgNiceSelect');
           });
         }
       });
       //for non cf7 2 post forms, just enable the nice select
       cf7Form_niceSelect.not('div.cf7_2_post form.wpcf7-form').each(function(){
-        $('select.ui-select:enabled', $(this)).each(function(){
+        $('.cf7sg-dynamic-dropdown select.ui-select:enabled', $(this)).each(function(){
+          $(this).niceSelect();
+        });
+        $('.cf7sg-dynamic-dropdown select.nice-select:enabled', $(this)).each(function(){
           $(this).niceSelect();
         });
         $(this).trigger('sgNiceSelect');
+      });
+    }
+    //enabled select2 dropdowns
+    var cf7Form_select2 = $('div.has-select2 form.wpcf7-form');
+    if(cf7Form_select2.length > 0){
+      //check if this is a mapped cf7-2-post form
+      cf7Form_select2.filter('div.cf7_2_post form.wpcf7-form').each(function(){
+        var nonceID = $(this).closest('div.cf7_2_post').attr('id');
+        if(nonceID.length>0){
+          $(this).on(nonceID, function(){
+            $('select.wpcf7-dynamic_select.select2:enabled', $(this)).each(function(){
+              $(this).select2({
+                tags: $(this).is('.tags')
+              });
+            });
+            $(this).trigger('sgSelect2');
+          });
+        }
+      });
+      //for non cf7 2 post forms, just enable the nice select
+      cf7Form_select2.not('div.cf7_2_post form.wpcf7-form').each(function(){
+        $('select.wpcf7-dynamic_select.select2:enabled', $(this)).each(function(){
+          $(this).select2({
+            tags: $(this).is('.tags')
+          });
+        });
+        $(this).trigger('sgSelect2');
       });
     }
 

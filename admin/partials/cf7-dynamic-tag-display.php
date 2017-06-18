@@ -30,19 +30,34 @@
         	<td><input name="required" type="checkbox"> Required field<br /></td>
       	</tr>
         <tr>
-          <th>
-            <label for="tag-generator-panel-number-id">Id attribute</label>
-          </th>
+          <th scope="row">Id attribute</th>
           <td>
             <input name="id" class="idvalue oneline option" id="tag-generator-panel-dynamic-select-id" type="text">
           </td>
         </tr>
         <tr>
-          <th>
-            <label for="tag-generator-panel-number-class">Class attribute</label>
-          </th>
+          <th scope="row">Class attribute</th>
           <td>
             <input name="class" class="classvalue oneline option" id="tag-generator-panel-dynamic-select-class" type="text">
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">Dropdown style</th>
+          <td>
+            <div>
+              <input name="select-style[]" class=" select-type "  type="radio" value="select" checked="checked"/>
+              <label>HTML Select field</label>
+            </div>
+            <div>
+              <input name="select-style[]" class=" select-type "  type="radio" value="nice" />
+              <label><a target="_blank" href="http://hernansartorio.com/jquery-nice-select/">jQuery Nice Select</a></label>
+            </div>
+            <div>
+              <input name="select-style[]" class=" select-type "  type="radio" value="select2" />
+              <label><a target="_blank" href="https://select2.github.io/">jQuery Select2</a></label>
+              <input name="select2-tags" id="select2-tags" type="checkbox" disabled value="select2tags"/>
+              <label for="select2-tags"><a target="_blank" href="https://select2.github.io/examples.html#tags">Enable user options</a></label>
+            </div>
           </td>
         </tr>
       </tbody>

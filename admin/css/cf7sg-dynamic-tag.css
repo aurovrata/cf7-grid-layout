@@ -96,3 +96,7 @@
 #dynamic-dropdown-sources article h4 {
     margin: 0 0 2px 0;
 }
+input#select2-tags:disabled + label a {
+    color: #b7b7b7;
+    text-decoration: none;
+}
