@@ -51,7 +51,10 @@
 				: __( 'Additional Settings', 'contact-form-7' ),
 			'callback' => 'wpcf7_editor_panel_additional_settings' );
 	}
-
+  /**
+  * filter to add/remove panels from the cf7 post editor
+  * @param array $panel aarray of panels presented as tabs in the editor, $id => array( 'title' => $panel_title, 'callback' => $callback_function).  The $callback_function must be a valid function to echo the panel html script.
+  */
 	$panels = apply_filters( 'wpcf7_editor_panels', $panels );
 
 	foreach ( $panels as $id => $panel ) {

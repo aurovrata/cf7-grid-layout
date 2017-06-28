@@ -91,6 +91,8 @@
             $('textarea#wpcf7-form').attr('id', '');
             //change the wpcf7 textarea
             $('textarea.codemirror-cf7-update', $codemirror).attr('id', 'wpcf7-form');
+            //setup the form code in the hidden textarea
+            $wpcf7Editor.html(code);
           }else{
             //remove id from textarea
             $('textarea#wpcf7-form').attr('id', '');
@@ -153,7 +155,7 @@
       $('#cf7sg-embeded-forms').val(JSON.stringify(embeds));
       //scan and submit tabs & tables fields.
       var tableFields = [];
-      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)\s*(.[^\[]*)\]/img;/* /^.*\[.[^\s]*\s(.[^s]*)\s.*\].*$/img;*/
+      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)\s*(.[^\[]*)\]/img;
       var hasTables = false;
       $('.row.cf7-sg-table', $formNoEmbeds).each(function(){
         var search = $(this).html();

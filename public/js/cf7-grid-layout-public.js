@@ -157,10 +157,10 @@
         var nonceID = $(this).closest('div.cf7_2_post').attr('id');
         if(nonceID.length>0){
           $(this).on(nonceID, function(){
-            $('select.ui-select:enabled', $(this)).each(function(){
+            $('.cf7sg-dynamic-dropdown.ui-select:enabled', $(this)).each(function(){
               $(this).niceSelect();
             });
-            $('select.nice-select:enabled', $(this)).each(function(){
+            $('.cf7sg-dynamic-dropdown.nice-select:enabled', $(this)).each(function(){
               $(this).niceSelect();
             });
             $(this).trigger('sgNiceSelect');
@@ -169,10 +169,10 @@
       });
       //for non cf7 2 post forms, just enable the nice select
       cf7Form_niceSelect.not('div.cf7_2_post form.wpcf7-form').each(function(){
-        $('.cf7sg-dynamic-dropdown select.ui-select:enabled', $(this)).each(function(){
+        $('.cf7sg-dynamic-dropdown.ui-select:enabled', $(this)).each(function(){
           $(this).niceSelect();
         });
-        $('.cf7sg-dynamic-dropdown select.nice-select:enabled', $(this)).each(function(){
+        $('.cf7sg-dynamic-dropdown.nice-select:enabled', $(this)).each(function(){
           $(this).niceSelect();
         });
         $(this).trigger('sgNiceSelect');
