@@ -1,3 +1,7 @@
+/**
+ Javascript to handle Codemirror editor
+ Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
+*/
 (function( $ ) {
 
 	$(document).ready( function(){
@@ -68,6 +72,7 @@
 
       cmEditor.on('changes', function(){
         codemirrorUpdated = true;
+        $('#contact-form-editor').trigger('cf7sg-form-change');
       });
 
       //create tabs

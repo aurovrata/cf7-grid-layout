@@ -1,3 +1,8 @@
+
+/**
+ Javascript to handle grid editor
+ Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
+*/
 (function( $ ) {
   var offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'];
   var columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
@@ -122,7 +127,7 @@
 
     } //end buildGridForm()
 
-    //initial contrustion of grid form
+    //initial construction of grid form
     buildGridForm();
     $grid.on('build-grid', function(){
       buildGridForm();
@@ -409,7 +414,13 @@
         $parentColumn.after($newColumn);
       }
     });
-
+    //general inputs into the textareas will trigger form change event
+    $grid.on('input selectionchange propertychange', 'textarea', function(event){
+      var $target = $(event.target);
+      if($target.is('textarea')){
+        $('#contact-form-editor').trigger('cf7sg-form-change');
+      }
+    });
     //grid is ready
     $wpcf7Editor.trigger('grid-ready');
   });
