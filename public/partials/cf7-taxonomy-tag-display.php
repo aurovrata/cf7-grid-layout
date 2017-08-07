@@ -19,37 +19,12 @@
 $class = $tag->get_class_option( $class );
 
 $id = $tag->get_id_option();
-$source = array();
 $options = array();
 $cf7_form = wpcf7_get_current_contact_form();
 $cf7_key = Cf7_WP_Post_Table::form_key($cf7_form->id());
 
 
  if(!empty($tag->values)){
-   $source = array();
-   foreach($tag->values as $values){
-     if(0 === strpos($values, 'slug:') ){
-       $source['source'] = "taxonomy";
-       $source['taxonomy'] = str_replace('slug:', '', $values);
-     }
-     if(0 === strpos($values, 'source:post')){
-       $source['source'] = "post";
-       $source['post'] = str_replace('source:post:', '', $values);
-     }
-     if(0 === strpos($values, 'taxonomy:')){
-       if(empty($source['taxonomy'])){
-         $source['taxonomy'] = array();
-       }
-       $values = str_replace('taxonomy:', '', $values);
-       $exp = explode(":", $values);
-       if(!empty($exp) && is_array($exp)){
-         $source['taxonomy'][$exp[1]] = $exp[0];
-       }
-     }
-     if(0 === strpos($values, 'source:filter')){
-       $source['source'] = "filter";
-     }
-   }
    if('taxonomy' == $source['source']){
      $taxonomy_query= array('hide_empty' => false);
      //check the WP version

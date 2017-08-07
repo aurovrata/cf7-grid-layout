@@ -393,6 +393,7 @@ class Cf7_Grid_Layout_Public {
 
   public function cf7_taxonomy_shortcode($tag){
     $tag = new WPCF7_FormTag( $tag );
+		$source = self::get_dynamic_drodown_attributes($tag);
     ob_start();
     include( plugin_dir_path( __FILE__ ) . '/partials/cf7-taxonomy-tag-display.php');
     $html = ob_get_contents ();
@@ -482,12 +483,12 @@ class Cf7_Grid_Layout_Public {
         $cf7form = WPCF7_ContactForm::get_instance($cf7_id);
       }
     }
-    $grid_fields = get_post_meta($cf7_id , '_cf7sg_grid_tabs_names', true);
-    $grid_fields += get_post_meta($cf7_id , '_cf7sg_grid_table_names', true);
+		$grid_fields = self::get_grid_fields($cf7_id);
 
+		//debug_msg($grid_fields, 'grid fields...');
     $tags = $cf7form->scan_form_tags();
     foreach($tags as $tag){
-      if(in_array($tag['name'], $grid_fields)){
+      if( isset($grid_fields[$tag['name']]) ){
         //setup wpcf7 validation filters for arrays prior to cf7 default filters so as not to get array conversion errors.
         add_filter("wpcf7_validate_{$tag['type']}", array($this, 'validate_array_values'), 5,2);
       }
@@ -495,6 +496,36 @@ class Cf7_Grid_Layout_Public {
 
     return $data;
   }
+	/**
+	 * function returns an array of fields which are eitehr tabs or tables
+	 *
+	 * @since 1.0.0
+	 * @param      string    $form_id     form id for which to return fields.
+	 * @return     array    empty array if no fields found..
+	**/
+	static function get_grid_fields($form_id){
+		$grid_fields = array();
+		//tabs
+		$fields = get_post_meta($form_id , '_cf7sg_grid_tabs_names', true);
+		if(!empty($fields)){
+			$grid_fields += array_fill_keys($fields, 'tab');
+		}
+		//tables
+    $fields = get_post_meta($form_id , '_cf7sg_grid_table_names', true);
+		if(!empty($fields)){
+			$grid_fields += array_fill_keys($fields, 'table');
+		}
+		$subform_keys = get_post_meta($form_id, '_cf7sg_sub_forms', true);
+
+		if(empty($subform_keys)) return $grid_fields;
+
+		foreach($subform_keys as $cf7Key){
+			$post_id = Cf7_WP_Post_Table::form_id($cf7Key);
+			$grid_fields += self::get_grid_fields($post_id);
+		}
+
+		return $grid_fields;
+	}
   /**
    * Validates required benchmark and dynamic_select tags
    *
@@ -731,4 +762,44 @@ class Cf7_Grid_Layout_Public {
       }
     }
   }
+	/**
+	 * Function to retrive dynamic-dropdown attributes
+	 *
+	 * @since 1.0.0
+	 * @param      WPCF7_FormTag    $tag     cf7 tag object of basetype dynamic_select.
+	 * @return     array    an array of attributes with 'source'=>[post|taxonomy|filter],     .
+	**/
+	static public function get_dynamic_drodown_attributes($tag){
+	  if(is_array($tag) && isset($tag['basetype']) && 'dynamic_select' === $tag['basetype']){
+			$tag = new WPCF7_FormTag($tag);
+		}
+		if( !($tag instanceof WPCF7_FormTag) || 'dynamic_select' !== $tag['basetype']){
+			return false;
+		}
+		$source = array();
+    foreach($tag->values as $values){
+      if(0 === strpos($values, 'slug:') ){
+        $source['source'] = "taxonomy";
+        $source['taxonomy'] = str_replace('slug:', '', $values);
+      }
+      if(0 === strpos($values, 'source:post')){
+        $source['source'] = "post";
+        $source['post'] = str_replace('source:post:', '', $values);
+      }
+      if(0 === strpos($values, 'taxonomy:')){
+        if(empty($source['taxonomy'])){
+          $source['taxonomy'] = array();
+        }
+        $values = str_replace('taxonomy:', '', $values);
+        $exp = explode(":", $values);
+        if(!empty($exp) && is_array($exp)){
+          $source['taxonomy'][$exp[1]] = $exp[0];
+        }
+      }
+      if(0 === strpos($values, 'source:filter')){
+        $source['source'] = "filter";
+      }
+    }
+		return $source;
+	}
 }

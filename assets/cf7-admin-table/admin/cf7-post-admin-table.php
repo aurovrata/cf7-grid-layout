@@ -515,5 +515,8 @@ if(!class_exists('Cf7_WP_Post_Table')){
 
       register_taxonomy( $slug, WPCF7_ContactForm::post_type, $args );
     }
+  } //end class
+  function get_cf7form_id($cf7_key){
+  	return Cf7_WP_Post_Table::form_id($cf7_key);
   }
 }
