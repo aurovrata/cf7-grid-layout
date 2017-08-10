@@ -574,9 +574,6 @@ class Cf7_Grid_Layout_Public {
         $_POST[$name.'_'.$idx] =$values[$idx];
         $tag['name'] = $name.'_'.$idx;
         apply_filters("wpcf7_validate_{$tag_obj->type}", $results, $tag);
-        if('thermal-fuel-qty' == $name){
-          debug_msg($results, 'thermal-fuel-qty:'.$tag_obj->type.' ');
-        }
       }
       //reapply this filter
       add_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);

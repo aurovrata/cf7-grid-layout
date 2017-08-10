@@ -85,11 +85,13 @@
             'posts_per_page' => -1,
             'post__not_in' => array($form_post->id())
           ));
-          foreach($cf7_forms as $cf7_form):
+          if(!empty($cf7_forms)):
+            foreach($cf7_forms as $cf7_form):
         ?>
         <option value="<?php echo $cf7_form->post_name ?>"><?php echo $cf7_form->post_title ?></option>
-    <?php endforeach;
-          wp_reset_postdata();
+    <?php   endforeach;
+            wp_reset_postdata();
+          endif;
       ?>
       </select>
       <div class="row-controls">
