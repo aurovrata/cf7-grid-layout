@@ -153,6 +153,21 @@
       <a id="new-row" class="button make-grid" href="javascript:void(0);"><?php _e('Make grid', 'cf7-grid-layout');?></a>
       <a class="button external-form" href="javascript:void(0);"><?php _e('Insert form', 'cf7-grid-layout');?></a>
     </div>
+    <p class="cf7-field-label cf7-field-inner">
+      <span class="content">Field label</span>
+      <input type="text" placeholder="Field Label"/>
+      <span class="dashicons dashicons-no-alt field-control"></span>
+    </p>
+    <p class="cf7-field-type cf7-field-inner">
+      <span class="content">[select a field]</span>
+      <textarea placeholder="select a field"></textarea>
+      <span class="dashicons dashicons-no-alt field-control"></span>
+    </p>
+    <p class="cf7-field-tip cf7-field-inner">
+      <span class="content">describe your field</span>
+      <input type="text" placeholder="describe your field here" />
+      <span class="dashicons dashicons-no-alt field-control"></span>
+    </p>
     <textarea class="grid-input"></textarea>
   </div>
 </div>

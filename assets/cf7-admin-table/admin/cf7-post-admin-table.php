@@ -117,30 +117,6 @@ if(!class_exists('Cf7_WP_Post_Table')){
           break;
       }
   	}
-    /**
-  	 * Loads footer script on admin table list page
-     * script to chagne the link to the 'Add New' button, hooked on 'admin_print_footer_scripts'
-  	 *
-  	 * @since    1.1.3
-  	 */
-  	public function change_add_new_button() {
-  		if( !$this->is_cf7_admin_page() ){
-  			return;
-  		}
-      $url = admin_url('admin.php?page=wpcf7-new');
-      ?>
-      <script type='text/javascript'>
-        (function( $ ) {
-          'use strict';
-          $(document).ready(function() {
-            $('h1 > a.page-title-action').attr('href','<?php echo $url; ?>');
-            $('h1 ~ a.page-title-action').attr('href','<?php echo $url; ?>');
-          });
-        })( jQuery );
-      </script>
-      <?php
-
-  	}
 
     /**
      * Store a psir of key=>id values for each form
