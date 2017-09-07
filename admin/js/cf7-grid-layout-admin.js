@@ -11,6 +11,9 @@
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     $grid = $('#grid-form');
     $rowControl = $('#top-grid-controls');
+    /*
+     Build grid from existing form
+    */
     function buildGridForm(){
       var $form = $('<div>').append( $wpcf7Editor.text() );
       //remove the external forms
@@ -33,12 +36,42 @@
     		});
       });
       //replace columns content with textareas
+      var template = cf7grid.preHTML+'\\s*(\\[.*\\s*\\])+\\s*'+cf7grid.postHTML;
+      // console.log('t:'+template);
+      var $pattern = $('<div>').html(template);
+      var required = cf7grid.requiredHTML.replace('*', '\\*');
+      // console.log('r:'+required);
+      $pattern.find('label').html('(\\s*.*[^'+required+'])('+required+')?');
+      $pattern.find('.info-tip').text('(.*\\s*)');
+      // console.log('p:'+$pattern.html());
+      var regex = new RegExp($pattern.html(), 'img');
+      // console.log(regex);
       $('div.columns', $form).each(function(){
         var $area =  $($('#grid-col').html());
         if($(this).children().is('.container')){
           $('textarea.grid-input', $area).remove();
+          $('p.cf7-field-inner', $area).remove();
         }else{
           $('textarea.grid-input', $area).val($(this).html().trim());
+          //fill in the grid fields if the html matches the field format
+          if(cf7grid.ui){
+            var lines = $(this).html().split(/\r\n|\r|\n/g);
+            var search = '';
+            for(var i=0; i<lines.length; i++){
+              search += lines[i].trim();
+            }
+            var match = regex.exec(search);
+            if(null !== match){
+              //populate the fields
+              $('p.cf7-field-label input', $area).val(match[1]);
+              $('p.cf7-field-type textarea', $area).val(match[3]);
+              $('p.cf7-field-tip input', $area).val(match[4]);
+              //hide the textarea
+              $('textarea.grid-input', $area).hide();
+            }else{
+              $('p.cf7-field-inner', $area).remove();
+            }
+          }
           $(this).children().remove();
           $(this).text('');
         }
@@ -124,14 +157,14 @@
         $textareaSelected.html($textareaSelected.val()); //set its inner html
         $textareaSelected = $(this).attr('id','wpcf7-form');
       });
-
+      if(cf7grid.ui){
+        $('p.cf7-field-label input', $grid).trigger('change');
+        $('p.cf7-field-type textarea', $grid).trigger('change');
+        $('p.cf7-field-tip input', $grid).trigger('change');
+      }
     } //end buildGridForm()
 
-    //initial construction of grid form
-    buildGridForm();
-    $grid.on('build-grid', function(){
-      buildGridForm();
-    });
+
     //make columns sortable
     $('.row', $grid).sortable({
       placeholder: "ui-state-highlight",
@@ -317,23 +350,34 @@
       }else{
         $parentColumn = $target.closest('.columns');
       }
+      //let's close any column controls if the event is not from a control box
+      if(0===$target.closest('.grid-controls').length ){
+        $('.grid-controls', $grid).hide();
+        $('.column-control.dashicons-no-alt', $grid).hide();
+        $('.column-control.dashicons-edit', $grid).show();
+        //close any ui fields if any
+        if(cf7grid.ui && !$target.is('.cf7-field-inner *')){
+          $('.grid-column .cf7-field-inner span.dashicons').trigger('click');
+        }
+      }
       //verify which target was clicked
       if( $target.is('.dashicons-edit.column-control') ){ //------------------show controls
-        //hide any other controls that might be open
-        $('.grid-controls', $grid).hide();
-        $('.dashicons-no-alt', $grid).hide();
-        $('.dashicons-edit', $grid).show();
         //now show this control
         $target.siblings('.grid-controls').show().filterColumnControls();
         $target.hide();
         $target.siblings('.dashicons-no-alt').show();
       }else if( $target.is('.dashicons-no-alt.column-control') ) { //----------------hide controls
-        $target.siblings('.grid-controls').hide();
-        $target.hide();
-        $target.siblings('.dashicons-edit').show();
+        //do nothing since already closed
+        // $target.siblings('.grid-controls').hide();
+        // $target.hide();
+        // $target.siblings('.dashicons-edit').show();
       }else if($target.is('.dashicons-trash.column-control') ){ //-------------------delete column
+
         $parentColumn.remove();
+        //refilter
+        //$target.siblings('.grid-controls').filterColumnControls();
       }else if( $target.is('.make-grid') ){ //--------------------add row/convert column to grid
+
         //close the grid-control box
         $target.parent().hide();
         $target.parent().siblings('.dashicons-no-alt').hide();
@@ -410,21 +454,171 @@
         }
         //add the new column
         $newColumn.append( $( $('#grid-col').html() ) );
+        if(cf7grid.ui){
+          $('textarea.grid-input' ,$newColumn).hide();
+        }else{
+          $('p.cf7-field-inner', $newColumn).hide();
+        }
         $newColumn.changeColumnSize('',columnsizes[newSize]);
         $parentColumn.after($newColumn);
       }
     });
+    /*
+     Column UI fields
+    */
+    var wpcf7Value = '';
+    if(cf7grid.ui){
+      $grid.on('click', 'p.cf7-field-inner', function(event){
+        var $target = $(event.target);
+        if($target.is('.cf7-field-inner span.content')){
+          $target.siblings('span.dashicons').show();
+          $target.parent().toggleSiblingUIFields();
+          $target.hide();
+          var $input = $target.siblings(':input');
+          $input.show().focus();
+          if($input.is('textarea')){
+            $input.attr('id', 'wpcf7-form');
+            wpcf7Value = $input.val();
+          }else{
+            changeTextarea();
+          }
+        }else if($target.is('.cf7-field-inner span.dashicons')){
+          $target.hide();
+          if($target.parent().is('.cf7-field-type')) changeTextarea();
+          $target.siblings(':input').hide().attr('id', '');
+          $target.siblings('span.content').show();
+        }
+      });
+      $grid.on('change', 'p.cf7-field-inner', function(event){
+        var $target = $(event.target);
+        if($target.is('textarea')){
+          var label = $target.scanCF7Tag();
+          $target.siblings('span.content').text(label).show();
+          $target.parent().siblings('textarea.grid-input').updateGridForm();
+        }else if($target.is('input')){
+          $target.siblings('span.content').text($target.val());
+          $target.parent().siblings('textarea.grid-input').updateGridForm();
+        }
+      });
+      // capture tab and move to the next field
+      $grid.keydown('p.cf7-field-inner', function(event){
+        if(9 !== event.which ){//tab
+          return;
+        }
+        $target = $(event.target);
+        if($target.is('p.cf7-field-inner :input')){
+          $target.siblings('span.dashicons').trigger('click');
+          var $next = $target.parent().next('p.cf7-field-inner');
+          if($next.length>0){
+            $next.find('span.content').trigger('click');
+            event.preventDefault();
+          }
+        }
+      });
+
+    }
     //general inputs into the textareas will trigger form change event
     $grid.on('input selectionchange propertychange', 'textarea', function(event){
       var $target = $(event.target);
-      if($target.is('textarea')){
+      if($target.is('.cf7-field-type textarea')){
+        return false; //form change trigger will happen after this
+      }else if($target.is('textarea')){
         $('#contact-form-editor').trigger('cf7sg-form-change');
       }
+    });
+    //before grid editor is closed, update the form with the last textarea
+    //event 'cf7grid-tab-finalise' is fired in cf7-grid-codemirror.js file
+    $grid.on('cf7grid-form-finalise', function(){
+      if(cf7grid.ui){
+        changeTextarea(true);
+        $('#wpcf7-form').parent().siblings('textarea.grid-input').on('change', function(){
+          $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
+        });
+      }else{
+        var $txta = $('textarea#wpcf7-form');
+        $txta.html($txta.val()+'\n');
+        $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
+      }
+    });
+    //trigger a change on the textarea#wpcf7-form field if its value has changed
+    function changeTextarea(finalise = false){
+      if(cf7grid.ui){
+        var $lastTA = $('#wpcf7-form');
+        if($lastTA.length >0 && wpcf7Value !== $lastTA.val()){
+          wpcf7Value = '';
+          $lastTA.trigger('change');
+        }else if(finalise){
+          $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
+        }
+      }
+    }
+    //initial construction of grid form
+    buildGridForm();
+    $grid.on('build-grid', function(){
+      buildGridForm();
     });
     //grid is ready
     $wpcf7Editor.trigger('grid-ready');
   });
   /* some function definitions...*/
+  $.fn.scanCF7Tag = function(){
+    var $this = $(this);
+    if(!$this.is('textarea')){
+      return '';
+    }
+    var $parent = $this.parent();
+    var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"slug:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"slug:)[^\[]*)\]/img;
+    var search = $this.val();
+    var match = cf7TagRegexp.exec(search);
+    var label='';
+    var isRequired = false;
+    var type = [];
+    while (match != null) {
+      label+='['+match[1]+' '+match[2]+']';
+      type[type.length] = match[1].replace('*','');
+      if('*' === match[1][match[1].length -1]){
+        isRequired = true;
+      }
+      match = cf7TagRegexp.exec(search); //get the next match.
+    }
+    var classes = $('#grid-col p.cf7-field-type').attr('class');
+    classes += " "+ type.join(' ');
+    // $parent.removeClass('required');
+    if(isRequired) classes += ' required';//$parent.addClass('required');
+    $parent.attr('class',classes);
+    return label;
+  }
+  $.fn.updateGridForm = function(){
+    if(!$(this).is('textarea.grid-input')){
+      return $(this);
+    }
+    //label
+    var label = $(this).siblings('p.cf7-field-label').find('span.content').text();
+    //field
+    var field = $(this).siblings('p.cf7-field-type').find('textarea').val();
+    if($(this).siblings('p.cf7-field-type').is('.required')){
+      label += cf7grid.requiredHTML;
+    }
+    //tip
+    var tip = $(this).siblings('p.cf7-field-tip').find('span.content').text();
+    var $cell = $('<div>').append( cf7grid.preHTML + field + cf7grid.postHTML );
+    $('label', $cell).text(label);
+    $('.info-tip', $cell).text(tip);
+    //update grid input and trigger change to udpate form
+    $(this).html($cell.html()+'\n').trigger('change');
+    return $(this);
+  };
+
+  $.fn.toggleSiblingUIFields = function(){
+    if(!$(this).is('p.cf7-field-inner')){
+      return $(this);
+    }
+    $(this).siblings('p.cf7-field-inner').each(function(){
+      $('span.content', $(this)).show();
+      $(':input', $(this)).hide().attr('id','');
+      $('span.dashicons', $(this)).hide()
+    });
+  }
   $.fn.getRowSize = function(){
     var size, off, idx, foundSize, classList;
     var total = 0;
@@ -456,15 +650,26 @@
     var off, foundSize, size = 0;
     var total = 0;
     var classList = $(this).attr('class').split(/\s+/);
+    var $sizes = $(this).find('.grid-column select.column-size');
+    var $offsets = $(this).find('.grid-column select.column-offset');
+    $offsets.val('');
+    $sizes.val('one');
     foundSize = false;
-    for(idx=0;idx<classList.length; idx++){
-      size = $.inArray(classList[idx], columnsizes);
-      off = $.inArray(classList[idx], offsets);
-      if(size > -1){
-        foundSize = true;
-        total += size + 1;
+    for(var idx=0;idx<classList.length; idx++){
+      if(!foundSize){
+        size = $.inArray(classList[idx], columnsizes);
+        if(size > -1){
+          foundSize = true;
+          total += size + 1;
+          //reset select
+          $sizes.val(classList[idx]);
+        }
       }
-      if(off > -1) total += off+1;
+      off = $.inArray(classList[idx], offsets);
+      if(off > -1){
+        total += off+1;
+        $offsets.val(classList[idx]);
+      }
     }
     if(!foundSize){ //by default a colum which is not set set is treated as 1
       size = 0; //by default a colum which is not set set is treated as 1
@@ -490,8 +695,11 @@
     $(this).addClass(newSize);
     $('.column-size option[value="'+newSize+'"]', $(this) ).prop('selected', true);
   }
-
+  //$target.closest('.grid-controls').filterColumnControls();
   $.fn.filterColumnControls = function(){
+    if(!$(this).is('.grid-controls')){
+      return $(this);
+    }
     //enable all options
     $('.column-size option', $(this) ).prop('disabled', false);
     $('.column-offset option', $(this) ).prop('disabled', false);
@@ -511,6 +719,7 @@
         $('.column-offset option[value="'+offsets[idx]+'"]', $(this) ).prop('disabled', true);
       }
     }
+    return $(this);
   }
 
 })( jQuery );

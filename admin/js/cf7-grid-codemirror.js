@@ -80,24 +80,26 @@
         beforeActivate: function (event, ui){
           //update the codemirror panel
           if('#cf7-codemirror' == ui.newPanel.selector){
-            var $txta = $('textarea#wpcf7-form');
-            $txta.html($txta.val()+'\n');
-            var code = html_beautify(
-              $grid.CF7FormHTML(),
-              {
-                'indent_size': 2,
-                'wrap_line_length': 0
-              }
-            );
-            cmEditor.setValue(code);
-            //reset the codemirror change flag
-            codemirrorUpdated = false;
-            //remove id from textarea
-            $('textarea#wpcf7-form').attr('id', '');
-            //change the wpcf7 textarea
-            $('textarea.codemirror-cf7-update', $codemirror).attr('id', 'wpcf7-form');
-            //setup the form code in the hidden textarea
-            $wpcf7Editor.html(code);
+						//finalise any changes in the grid form editor
+            $grid.on('cf7grid-form-ready', function(){
+	            var code = html_beautify(
+	              $grid.CF7FormHTML(),
+	              {
+	                'indent_size': 2,
+	                'wrap_line_length': 0
+	              }
+	            );
+	            cmEditor.setValue(code);
+	            //reset the codemirror change flag
+	            codemirrorUpdated = false;
+	            //remove id from textarea
+	            $('textarea#wpcf7-form').attr('id', '');
+	            //change the wpcf7 textarea
+	            $('textarea.codemirror-cf7-update', $codemirror).attr('id', 'wpcf7-form');
+	            //setup the form code in the hidden textarea
+	            $wpcf7Editor.html(code);
+						});
+						$grid.trigger('cf7grid-form-finalise');
           }else{
             //remove id from textarea
             $('textarea#wpcf7-form').attr('id', '');

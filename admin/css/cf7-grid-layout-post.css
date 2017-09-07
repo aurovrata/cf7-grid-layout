@@ -268,4 +268,36 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 #grid-form .two .grid-column .dashicons-move {
     margin-left: -2px;
-  }
+}
+#grid-form  p.cf7-field-inner input,
+#grid-form  p.cf7-field-inner textarea,
+#grid-form  p.cf7-field-inner span.dashicons {
+    display: none;
+}
+#grid-form  p.cf7-field-inner span.dashicons {
+  position:absolute;
+  margin-top: 2px;
+  background: #a5a5a5;
+  padding: 3px 0 0px 0;
+
+}
+#grid-form  p.cf7-field-inner {
+  padding: 0px 10px;
+  background: #fff;
+  margin: 0;
+}
+#grid-form  p.cf7-field-tip .content {
+    font-size: 90%;
+    color: grey;
+}
+#grid-form p.cf7-field-type .content {
+    border: solid 1px;
+    width: 100%;
+    display: block;
+    padding: 3px 0px 3px 3px;
+    border-radius: 2px;
+}
+#grid-form p.cf7-field-inner input,
+#grid-form p.cf7-field-inner textarea {
+    width: calc(100% - 20px);
+}

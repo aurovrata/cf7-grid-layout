@@ -94,6 +94,7 @@ class Cf7_Grid_Layout_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts($page) {
+		global $post;
 
     //debug_msg($screen, $this->custom_type );
     $plugin_dir = plugin_dir_url( __DIR__ );
@@ -111,13 +112,6 @@ class Cf7_Grid_Layout_Admin {
         $this->setup_cf7_object();
         //enqueue the cf7 scripts.
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
-        //force cf7 script
-        // wp_enqueue_script( 'wpcf7-admin-js',
-      	// 	wpcf7_plugin_url( 'admin/js/scripts.js' ),
-      	// 	array( 'jquery', 'jquery-ui-tabs' ),
-      	// 	WPCF7_VERSION, true );
-        // wp_enqueue_script('wpcf7-admin-tag-js', wpcf7_plugin_url( 'admin/js/tag-generator.js' ),
-    		// array( 'jquery', 'thickbox', 'wpcf7-admin' ), WPCF7_VERSION, true);
 
         wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs' ), $this->version, false );
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable', 'jquery-ui-draggable' ), $this->version, false );
@@ -125,9 +119,12 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
         wp_localize_script(
           $this->plugin_name,
-          'cf7_grid_ajaxData',
+          'cf7grid',
           array(
-            'url' => admin_url( 'admin-ajax.php' )
+            'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', '<div class="field"><label></label>', $post->name),
+						'postHTML' => apply_filters('cf7sg_post_cf7_field_html', '<p class="info-tip"></p></div>', $post->name),
+						'requiredHTML' => apply_filters('cf7sg_required_cf7_field_html', '<em>*</em>', $post->name),
+						'ui' => apply_filters('cf7sg_grid_ui', true, $post->name)
           )
         );
 
