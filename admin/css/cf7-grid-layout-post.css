@@ -269,35 +269,51 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #grid-form .two .grid-column .dashicons-move {
     margin-left: -2px;
 }
-#grid-form  p.cf7-field-inner input,
-#grid-form  p.cf7-field-inner textarea,
-#grid-form  p.cf7-field-inner span.dashicons {
+#grid-form  .cf7-field-inner input,
+#grid-form  .cf7-field-inner textarea,
+#grid-form  .cf7-field-inner span.dashicons {
     display: none;
 }
-#grid-form  p.cf7-field-inner span.dashicons {
+#grid-form  .cf7-field-inner span.dashicons {
   position:absolute;
   margin-top: 2px;
   background: #a5a5a5;
   padding: 3px 0 0px 0;
-
+  top: 0;
+  right: 0;
 }
-#grid-form  p.cf7-field-inner {
+#grid-form  .cf7-field-inner {
   padding: 0px 10px;
-  background: #fff;
+  background: #ededed;
   margin: 0;
+  position: relative;
 }
-#grid-form  p.cf7-field-tip .content {
+#grid-form  .cf7-field-tip .content {
     font-size: 90%;
-    color: grey;
+    color: #727272;
+    font-style: italic;
 }
-#grid-form p.cf7-field-type .content {
+#grid-form .cf7-field-type .content {
     border: solid 1px;
     width: 100%;
     display: block;
     padding: 3px 0px 3px 3px;
     border-radius: 2px;
+    text-align: center;
+    color: #999;
 }
-#grid-form p.cf7-field-inner input,
-#grid-form p.cf7-field-inner textarea {
-    width: calc(100% - 20px);
+#grid-form .cf7-field-inner input,
+#grid-form .cf7-field-inner textarea {
+    width: calc(100% - 10px);
+}
+#grid-form .cf7-field-type.textarea p.content {
+    padding: 35px 0;
+}
+#grid-form  .cf7-field-inner p {
+    margin: 0;
+    min-height: 20px;
+}
+#grid-form  .grid-column.submit-field .cf7-field-label,
+#grid-form  .grid-column.submit-field .cf7-field-tip {
+    display: none;
 }

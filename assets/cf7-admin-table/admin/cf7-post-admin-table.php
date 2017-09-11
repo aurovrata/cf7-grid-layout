@@ -369,7 +369,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
      * @var int $status the html redirect status code
      */
      public function filter_cf7_redirect($location, $status){
-       debug_msg($status, 'redirecting ...'.$location);
+       //debug_msg($status, 'redirecting ...'.$location);
 
        if( self::is_cf7_admin_page() || self::is_cf7_edit_page() ){
          if( 'delete' == wpcf7_current_action()){
