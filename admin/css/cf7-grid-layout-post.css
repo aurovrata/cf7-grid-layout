@@ -302,6 +302,10 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     text-align: center;
     color: #999;
 }
+#grid-form p.content:hover {
+    cursor: pointer;
+    color: blue;
+}
 #grid-form .cf7-field-inner input,
 #grid-form .cf7-field-inner textarea {
     width: calc(100% - 10px);
@@ -316,4 +320,29 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #grid-form  .grid-column.submit-field .cf7-field-label,
 #grid-form  .grid-column.submit-field .cf7-field-tip {
     display: none;
+}
+#grid-form  .cf7-field-type.select .content::after,
+#grid-form  .cf7-field-type.dynamic-select .content::after {
+    content: '\25BC';
+    position: absolute;
+    right: 13px;
+    font-size: 2em;
+    line-height: 1px;
+    top: 12px;
+}
+#grid-form  .cf7-field-type.radio .content::after {
+  content: '\25c9';
+  position: absolute;
+  left: 23px;
+  font-size: 1.3em;
+  line-height: 1px;
+  top: 12px;
+}
+#grid-form  .cf7-field-type.checkbox .content::after {
+  content: '\25a1';
+  position: absolute;
+  left: 23px;
+  font-size: 1.3em;
+  line-height: 1px;
+  top: 12px;
 }

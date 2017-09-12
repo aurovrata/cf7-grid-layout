@@ -491,6 +491,17 @@ class Cf7_Grid_Layout_Admin {
     $has_tables = ( 'true' === $_POST['cf7sg-has-tables']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tables', $has_tables);
   }
+	/**
+	* Filters the default form loaded when a new CF7 form is created
+    * @since 1.0
+    * @param string $template  the html string for the form tempalte
+    * @param string $prop  the template property required.
+	*/
+	public function default_cf7_form($template, $prop){
+		if($prop !== 'form') return $template;
+		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-default-form.php');
+        return $template;
+	}
   /**
    * Ajax function to return the content of a cf7 form
    * Hooked on 'wp_ajax_get_cf7_content'
