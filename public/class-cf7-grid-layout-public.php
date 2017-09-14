@@ -172,10 +172,11 @@ class Cf7_Grid_Layout_Public {
 
     $class['has-validation']=true;
 
-    if(isset($class['has-select2'])){
+    $class['has-select2'] = true;
+    //if(isset($class['has-select2'])){
       wp_enqueue_script('jquery-select2');
       wp_enqueue_style('select2-style');
-    }
+    //}
     $class['has-accordion']=true;
     wp_enqueue_script('jquery-ui-accordion');
 
@@ -194,11 +195,11 @@ class Cf7_Grid_Layout_Public {
     }
     $class['has-effects']=true;
     wp_enqueue_script('jquery-effects-core');
-
-    if(isset($class['has-nice-select'])){
+		$class['has-nice-select'] = true;
+    //if(isset($class['has-nice-select'])){
       wp_enqueue_script('jquery-nice-select');
       wp_enqueue_style('jquery-nice-select-css');
-    }
+    //}
     $class['has-toggles']=true;
     wp_enqueue_script('jquery-toggles');
     wp_enqueue_style('jquery-toggles-css');
@@ -217,6 +218,8 @@ class Cf7_Grid_Layout_Public {
       wp_enqueue_script('js-cf7sg-benchmarking');
     }
 
+    $class['has-date']=true;
+    wp_enqueue_script('jquery-ui-datepicker');
     //get the key
     $cf7post = get_post($cf7_id);
     $cf7_key = $cf7post->post_name;
@@ -276,7 +279,7 @@ class Cf7_Grid_Layout_Public {
     //form id
     $css_id = apply_filters('cf7_smart_grid_form_id', $cf7_key, $attr);
     $classes = implode(' ', array_keys($class));
-    $output = '<div id="cf7sg-form-' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div>';
+    $output = '<div id="cf7sg-container"><div id="cf7sg-form-' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
     return $output;
   }
 

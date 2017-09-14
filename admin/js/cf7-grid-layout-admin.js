@@ -496,7 +496,7 @@
         var $target = $(event.target);
         if($target.is('textarea')){
           var label = $target.scanCF7Tag();
-          $target.siblings('p.content').html(label).show();
+          $target.siblings('p.content').html(label);//.show();
           $target.parent().siblings('textarea.grid-input').updateGridForm();
         }else if($target.is('input')){
           $target.siblings('p.content').html($target.val());
@@ -622,6 +622,13 @@
         case 'save':
           tag +='-button';
           isSubmit = true;
+          break;
+        case 'textarea':
+          if( match[0].search(/\s[0-9]{0,3}x[0-9]{1,3}\s?/ig) <0){
+            var cf7sc = match[0].replace(']',' x5]');
+            cf7sc = search.replace(match[0], cf7sc);
+            $this.val(cf7sc);
+          }
           break;
       }
       type[type.length] = tag;

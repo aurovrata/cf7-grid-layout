@@ -160,7 +160,7 @@
             $('.cf7sg-dynamic-dropdown.ui-select:enabled', $(this)).each(function(){
               $(this).niceSelect();
             });
-            $('.cf7sg-dynamic-dropdown.nice-select:enabled', $(this)).each(function(){
+            $('.wpcf7-form-control.nice-select:enabled', $(this)).each(function(){
               $(this).niceSelect();
             });
             $(this).trigger('sgNiceSelect');
@@ -172,7 +172,7 @@
         $('.cf7sg-dynamic-dropdown.ui-select:enabled', $(this)).each(function(){
           $(this).niceSelect();
         });
-        $('.cf7sg-dynamic-dropdown.nice-select:enabled', $(this)).each(function(){
+        $('.wpcf7-form-control.nice-select:enabled', $(this)).each(function(){
           $(this).niceSelect();
         });
         $(this).trigger('sgNiceSelect');
@@ -186,7 +186,7 @@
         var nonceID = $(this).closest('div.cf7_2_post').attr('id');
         if(nonceID.length>0){
           $(this).on(nonceID, function(){
-            $('select.wpcf7-dynamic_select.select2:enabled', $(this)).each(function(){
+            $('select.wpcf7-form-control.select2:enabled', $(this)).each(function(){
               $(this).select2({
                 tags: $(this).is('.tags')
               });
@@ -197,7 +197,7 @@
       });
       //for non cf7 2 post forms, just enable the nice select
       cf7Form_select2.not('div.cf7_2_post form.wpcf7-form').each(function(){
-        $('select.wpcf7-dynamic_select.select2:enabled', $(this)).each(function(){
+        $('select.wpcf7-form-control.select2:enabled', $(this)).each(function(){
           $(this).select2({
             tags: $(this).is('.tags')
           });
@@ -205,7 +205,74 @@
         $(this).trigger('sgSelect2');
       });
     }
-
+		//enable datepicker
+		var cf7Form_datepicker = $('div.has-date form.wpcf7-form');
+		if(cf7Form_datepicker.length > 0){
+			//check if this is a mapped cf7-2-post form
+			cf7Form_datepicker.filter('div.cf7_2_post form.wpcf7-form').each(function(){
+				var nonceID = $(this).closest('div.cf7_2_post').attr('id');
+				if(nonceID.length>0){
+					$(this).on(nonceID, function(){
+						//.wpcf7-form-control.wpcf7-date.wpcf7-validates-as-required.wpcf7-validates-as-date
+						$('input.wpcf7-date:enabled', $(this)).each(function(){
+							var id = $(this).attr('id');
+							if(typeof id == 'undefined'){
+		            id = randString(6);
+		            $(this).attr('id', id); //assign a random id
+		          }
+              $(this).setupDatePicker();
+						});
+					});
+				}
+			});
+			//for non cf7 2 post forms, just enable the nice select
+			cf7Form_datepicker.not('div.cf7_2_post form.wpcf7-form').each(function(){
+				$('input.wpcf7-date:enabled', $(this)).each(function(){
+					var id = $(this).attr('id');
+					if(typeof id == 'undefined'){
+						id = randString(6);
+						$(this).attr('id', id); //assign a random id
+					}
+          $(this).setupDatePicker();
+				});
+			});
+		}
+    $.fn.setupDatePicker = function(){
+      if(!$(this).is('.wpcf7-date:enabled')){
+        return $(this);
+      }
+      var miny='';
+      var maxy='' ;
+      var min = $(this).attr('min');
+      if(typeof min == 'undefined'){
+        min = null;
+      }else{
+        min = new Date(min);
+        miny = min.getFullYear();
+      }
+      var max = $(this).attr('max');
+      if(typeof max == 'undefined'){
+        max = null;
+      }else{
+        max = new Date(max);
+        maxy = max.getFullYear();
+      }
+      $(this).datepicker({//defaultDate: '-20y',
+        dateFormat: "yy-mm-dd",
+        minDate: min,
+        maxDate: max,
+        changeMonth:true,
+        changeYear: true
+      });
+      if(miny>0 && maxy>0){
+        $(this).datepicker('option','yearRange',miny+':'+maxy);
+      }else if(miny>0){
+        $(this).datepicker('option','yearRange',miny+':c+20');
+      }else if(maxy>0){
+        $(this).datepicker('option','yearRange','c-20:'+maxy);
+      }
+      return $(this);
+    }
     //enable collapsible rows
     var cf7Form_accordion = $('div.has-accordion form.wpcf7-form');
     if(cf7Form_accordion.length>0){

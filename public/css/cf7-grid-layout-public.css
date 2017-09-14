@@ -91,6 +91,7 @@ div.field span.wpcf7-not-valid-tip {
     padding: 3px 10px;
     border-radius: 3px;
     min-width: 195px;
+    line-height: 1.2em;
 }
 span.cf7sg-validation-warning {
     display: block;
@@ -116,4 +117,37 @@ input.select2-search__field{
 .cf7sg-collapsible .row.ui-accordion-content {
     min-height: 200px;
     overflow: unset;
+}
+.cf7-smart-grid.has-grid .field .wpcf7-form-control {
+    max-width: 100%;
+    min-width: 100%;
+}
+.cf7-smart-grid.has-grid .field > label {
+    display: block;
+    margin-bottom: 0;
+}
+.cf7-smart-grid.has-grid .field > label em {
+    color: red;
+}
+.cf7-smart-grid.has-grid .info-tip {
+    margin-bottom: 5px;
+    font-size: 90%;
+    font-style: italic;
+    color: grey;
+}
+.cf7-smart-grid.has-grid .wpcf7-form-control {
+    min-height: 34px;
+}
+.cf7-smart-grid.has-grid .wpcf7-form-control-wrap .select2-selection__arrow {
+    min-height: 34px;
+}
+.cf7-smart-grid.has-grid .wpcf7-form-control-wrap .select2-selection--single .select2-selection__rendered {
+    line-height: 34px;
+}
+.cf7-smart-grid.has-grid .wpcf7-form-control-wrap .select2-selection.select2-selection--single {
+    min-height: 34px;
+}
+.cf7-smart-grid.has-grid .wpcf7-form-control.wpcf7-radio,
+.cf7-smart-grid.has-grid .wpcf7-form-control.wpcf7-checkbox {
+    display: inline-block;
 }

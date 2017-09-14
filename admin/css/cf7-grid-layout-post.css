@@ -292,6 +292,9 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     font-size: 90%;
     color: #727272;
     font-style: italic;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 #grid-form .cf7-field-type .content {
     border: solid 1px;
@@ -301,6 +304,9 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     border-radius: 2px;
     text-align: center;
     color: #999;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 #grid-form p.content:hover {
     cursor: pointer;

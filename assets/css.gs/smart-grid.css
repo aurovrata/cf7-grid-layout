@@ -1,25 +1,26 @@
 /*! css-smart-grid 5.1.4 | MIT License | http://css.gd */
 
-.container {
+#cf7sg-container .cf7-smart-grid.has-grid .container {
     max-width: 940px;
     padding: 0 1.06383%;
-    margin: 0 auto
+    margin: 0 auto;
+    width:100%;
 }
 
-.container,
+#cf7sg-container .cf7-smart-grid.has-grid .container,
 .row {
     zoom: 1
 }
 
-.container:before,
-.container:after,
+#cf7sg-container .cf7-smart-grid.has-grid .container:before,
+#cf7sg-container .cf7-smart-grid.has-grid .container:after,
 .row:before,
 .row:after {
     content: "";
     display: table
 }
 
-.container:after,
+#cf7sg-container .cf7-smart-grid.has-grid .container:after,
 .row:after {
     clear: both
 }
