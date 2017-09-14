@@ -1,4 +1,4 @@
-=== Contact Form 7 Smart Grid ===
+=== CF7 Grid Layout ===
 Contributors: aurovrata
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DVAJJLS8548QY
 Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout

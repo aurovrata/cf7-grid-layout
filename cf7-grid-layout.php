@@ -13,7 +13,7 @@
  * @package           Cf7_Grid_Layout
  *
  * @wordpress-plugin
- * Plugin Name:       Contact Form 7 Grid Module
+ * Plugin Name:       CF7 Grid Layout 
  * Plugin URI:        http://wordpress.syllogic.in
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
