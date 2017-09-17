@@ -62,7 +62,8 @@ You also have the option to select a dynamic filter, and then the plugin will ho
 
 
 == Changelog ==
-
+=1.0.1=
+* cf7-form shortcode bug fix
 = 1.0 =
 * A change since the previous version.
 * Another change.

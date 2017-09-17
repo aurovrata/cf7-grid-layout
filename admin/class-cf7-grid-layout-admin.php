@@ -441,29 +441,29 @@ class Cf7_Grid_Layout_Admin {
 
     //debug_msg($_POST, 'submitted ');
     $args = $_REQUEST;
-		$args['id'] = $post_id;
+	$args['id'] = $post_id;
 
-		$args['title'] = isset( $_POST['post_title'] )
-			? $_POST['post_title'] : null;
+	$args['title'] = isset( $_POST['post_title'] )
+		? $_POST['post_title'] : null;
 
-		$args['locale'] = isset( $_POST['wpcf7-locale'] )
-			? $_POST['wpcf7-locale'] : null;
+	$args['locale'] = isset( $_POST['wpcf7-locale'] )
+		? $_POST['wpcf7-locale'] : null;
 
-		$args['form'] = isset( $_POST['wpcf7-form'] )
-			? $_POST['wpcf7-form'] : '';
+	$args['form'] = isset( $_POST['wpcf7-form'] )
+		? $_POST['wpcf7-form'] : '';
 
-		$args['mail'] = isset( $_POST['wpcf7-mail'] )
-			? wpcf7_sanitize_mail( $_POST['wpcf7-mail'] )
-			: array();
+	$args['mail'] = isset( $_POST['wpcf7-mail'] )
+		? wpcf7_sanitize_mail( $_POST['wpcf7-mail'] )
+		: array();
 
-		$args['mail_2'] = isset( $_POST['wpcf7-mail-2'] )
-			? wpcf7_sanitize_mail( $_POST['wpcf7-mail-2'] )
-			: array();
+	$args['mail_2'] = isset( $_POST['wpcf7-mail-2'] )
+		? wpcf7_sanitize_mail( $_POST['wpcf7-mail-2'] )
+		: array();
 
-		$args['messages'] = isset( $_POST['wpcf7-messages'] )
-			? $_POST['wpcf7-messages'] : array();
+	$args['messages'] = isset( $_POST['wpcf7-messages'] )
+		? $_POST['wpcf7-messages'] : array();
 
-		$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] )
+	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] )
 			? $_POST['wpcf7-additional-settings'] : '';
 
     //need to unhook this function so as not to loop infinitely
@@ -491,17 +491,18 @@ class Cf7_Grid_Layout_Admin {
     $has_tables = ( 'true' === $_POST['cf7sg-has-tables']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tables', $has_tables);
   }
-	/**
-	* Filters the default form loaded when a new CF7 form is created
+  /**
+    * Filters the default form loaded when a new CF7 form is created
+    * Hooked on 
     * @since 1.0
     * @param string $template  the html string for the form tempalte
     * @param string $prop  the template property required.
-	*/
-	public function default_cf7_form($template, $prop){
-		if($prop !== 'form') return $template;
-		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-default-form.php');
-        return $template;
-	}
+    */
+  public function default_cf7_form($template, $prop){
+	if($prop !== 'form') return $template;
+    include( plugin_dir_path( __FILE__ ) . '/partials/cf7-default-form.php');
+    return $template;
+  }
   /**
    * Ajax function to return the content of a cf7 form
    * Hooked on 'wp_ajax_get_cf7_content'
