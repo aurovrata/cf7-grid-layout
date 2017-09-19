@@ -504,7 +504,7 @@ class Cf7_Grid_Layout_Public {
     foreach($tags as $tag){
       if( isset($grid_fields[$tag['name']]) ){
         //setup wpcf7 validation filters for arrays prior to cf7 default filters so as not to get array conversion errors.
-        ///debug_msg('validation:'.$tag["name"].'(wpcf7_validate_'.$tag["type"].')');
+        //debug_msg('validation:'.$tag["name"].'(wpcf7_validate_'.$tag["type"].')');
         add_filter("wpcf7_validate_{$tag['type']}", array($this, 'validate_array_values'), 5,2);
       }
     }
