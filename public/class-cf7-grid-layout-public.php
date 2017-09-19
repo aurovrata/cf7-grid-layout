@@ -409,7 +409,6 @@ class Cf7_Grid_Layout_Public {
    * @since 1.0.0
    * @param      mixed    $class    array of classes or string to set class for form and dependency loading .
    * @param      Object    $cf7_form    cf7 post id against which set the c$lass .
-   * @return     string    $p2     .
   **/
   public function update_form_classes($class, $cf7_id=null){
     if(empty($cf7_id)){
@@ -454,13 +453,25 @@ class Cf7_Grid_Layout_Public {
       wp_die();
     }
 
-    if(isset($_POST['tabs_fields'])){
+    if(isset($_POST['tabs_fields']) && isset($_POST['table_fields'])){
       $tabs_fields =  json_decode(stripslashes($_POST['tabs_fields']));
+      if(empty($tabs_fields)) $tabs_fields = array();
+      if(!is_array($tabs_fields)) $tabs_fields = array($tabs_fields);
+			//validate each field name as text,
+			$sanitised_tab_fields = array();
+			foreach($tabs_fields as $field){
+				$sanitised_tab_fields[] = sanitize_text_field($field);
+			}
       $table_fields =  json_decode(stripslashes($_POST['table_fields']));
-
+      if(empty($table_fields)) $table_fields = array();
+      if(!is_array($table_fields)) $table_fields = array($table_fields);
+			$sanitised_table_fields = array();
+			foreach($table_fields as $field){
+				$sanitised_table_fields[] = sanitize_text_field($field);
+			}
       //debug_msg($grid_fields, $cf7_id);
-      update_post_meta($cf7_id, '_cf7sg_grid_tabs_names', $tabs_fields);
-      update_post_meta($cf7_id, '_cf7sg_grid_table_names', $table_fields);
+      update_post_meta($cf7_id, '_cf7sg_grid_tabs_names', $sanitised_tab_fields);
+      update_post_meta($cf7_id, '_cf7sg_grid_table_names', $sanitised_table_fields);
       wp_send_json_success(array('message'=>'saved fields'));
     }else{
       wp_send_json_error(array('message'=>'no data received'));
@@ -493,6 +504,7 @@ class Cf7_Grid_Layout_Public {
     foreach($tags as $tag){
       if( isset($grid_fields[$tag['name']]) ){
         //setup wpcf7 validation filters for arrays prior to cf7 default filters so as not to get array conversion errors.
+        ///debug_msg('validation:'.$tag["name"].'(wpcf7_validate_'.$tag["type"].')');
         add_filter("wpcf7_validate_{$tag['type']}", array($this, 'validate_array_values'), 5,2);
       }
     }
@@ -542,8 +554,7 @@ class Cf7_Grid_Layout_Public {
 
     $name = $tag->name;
   	$value = isset( $_POST[$name] )
-  		? trim( strtr( (string) $_POST[$name], "\n", " " ) )
-  		: '';
+  		? trim( strtr( (string) $_POST[$name], "\n", " " ) ): '';
 
 
   	if ( $tag->is_required() && '' == $value ) {

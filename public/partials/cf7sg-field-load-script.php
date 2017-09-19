@@ -1,29 +1,49 @@
-if(<?echo $json_value?> !== undefined && <?echo $json_value?> instanceof Array){
-  var $field = $('span.<?echo $field ?>', <? echo $js_form ?>);
+<?php
+/*
+This file outputs javascript to enable the form loading of grid fiels (tabs and tables)
+*/
+?>
+if(<?= $json_value?> !== undefined && <?= $json_value?> instanceof Array){
+  var $field = $('span.<?= $field ?>', <?= $js_form ?>);
   var $container;
 <?php
 switch($grid){
-  case 'table':?>
+  case 'table':
+?>
   $container = $field.closest('.container.cf7-sg-table');
-<?  break;
-  case 'tabs':?>
+<?php
+    break;
+  case 'tabs':
+?>
   $container = $field.closest('.cf7-sg-tabs');
-<?  break;
-}?>
-  var idx=0;
-  for(idx = 0; idx<<?echo $json_value?>.length; idx++){
-    $(':input', $field).val(<?echo $json_value?>[idx]);
-    $field = $('span.<?echo $field ?>_'+(idx+1), <? echo $js_form ?>);
-    if(0 == $field.length && (idx+1) < <?echo $json_value?>.length){
-<?php switch($grid){
-        case 'table':?>
-      $container.cf7sgCloneRow();
-<?        break;
-        case 'tabs':?>
+<?php
+    break;
+}
+?>
+  for(var idx = 0; idx<<?= $json_value?>.length; idx++){
+    var $input = $(':input', $field).val(<?= $json_value?>[idx]);
+    if( $input.is('select')){
+      $input.get(0).value = <?= $json_value?>[idx];
+      $('option[value="'+<?= $json_value?>[idx]+'"]', $input).attr('selected', true);
+    }
+    //$('.cf7sg-<?= $field ?>').eq(idx).val(<?= $json_value?>[idx]);
+    $field = $('span.<?= $field ?>_'+(idx+1), <?= $js_form ?>);
+    if(0 == $field.length && (idx+1) < <?= $json_value?>.length){
+<?php
+switch($grid){
+  case 'table':
+?>
+       $container.cf7sgCloneRow();
+<?php
+    break;
+  case 'tabs':
+?>
       $container.cf7sgCloneTab();
-<?        break;
-      }?>
-      $field = $('span.<?echo $field ?>_'+(idx+1), <? echo $js_form ?>);
+<?php
+    break;
+}
+?>
+      $field = $('span.<?= $field ?>_'+(idx+1), <?= $js_form ?>);
     }
   }
 }

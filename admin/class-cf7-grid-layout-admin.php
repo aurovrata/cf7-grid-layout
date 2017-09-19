@@ -441,30 +441,15 @@ class Cf7_Grid_Layout_Admin {
 
     //debug_msg($_POST, 'submitted ');
     $args = $_REQUEST;
-	$args['id'] = $post_id;
+  	$args['id'] = $post_id;
 
-	$args['title'] = isset( $_POST['post_title'] )
-		? $_POST['post_title'] : null;
-
-	$args['locale'] = isset( $_POST['wpcf7-locale'] )
-		? $_POST['wpcf7-locale'] : null;
-
-	$args['form'] = isset( $_POST['wpcf7-form'] )
-		? $_POST['wpcf7-form'] : '';
-
-	$args['mail'] = isset( $_POST['wpcf7-mail'] )
-		? wpcf7_sanitize_mail( $_POST['wpcf7-mail'] )
-		: array();
-
-	$args['mail_2'] = isset( $_POST['wpcf7-mail-2'] )
-		? wpcf7_sanitize_mail( $_POST['wpcf7-mail-2'] )
-		: array();
-
-	$args['messages'] = isset( $_POST['wpcf7-messages'] )
-		? $_POST['wpcf7-messages'] : array();
-
-	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] )
-			? $_POST['wpcf7-additional-settings'] : '';
+  	$args['title'] = isset( $_POST['post_title'] ) ? sanitize_title($_POST['post_title'], 'Contact Form', 'save') : null;
+  	$args['locale'] = isset( $_POST['wpcf7-locale'] ) ? $_POST['wpcf7-locale'] : null;
+  	$args['form'] = isset( $_POST['wpcf7-form'] ) ? $_POST['wpcf7-form'] : '';
+  	$args['mail'] = isset( $_POST['wpcf7-mail'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail'] ): array();
+  	$args['mail_2'] = isset( $_POST['wpcf7-mail-2'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail-2'] ): array();
+  	$args['messages'] = isset( $_POST['wpcf7-messages'] ) ? $_POST['wpcf7-messages'] : array();
+  	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] ) ? $_POST['wpcf7-additional-settings'] : '';
 
     //need to unhook this function so as not to loop infinitely
     //debug_msg($args, 'saving cf7 posts');
@@ -476,15 +461,30 @@ class Cf7_Grid_Layout_Admin {
     //save sub-forms if any
     $sub_forms = json_decode(stripslashes($_POST['cf7sg-embeded-forms']));
     if(empty($sub_forms)) $sub_forms = array();
-    update_post_meta($post_id, '_cf7sg_sub_forms', $sub_forms);
+    if(!is_array($sub_forms)) $sub_forms = array($sub_forms);
+    $sanitised_sub_forms = array();
+  	foreach($sub_forms as $field){
+      $sanitised_sub_forms[] = sanitize_text_field($field);
+	}
+    update_post_meta($post_id, '_cf7sg_sub_forms', $sanitised_sub_forms);
     //save form fields which are in tabs or tables.
     $tt_fields = json_decode(stripslashes($_POST['cf7sg-table-fields']));
     if(empty($tt_fields)) $tt_fields = array();
-    update_post_meta($post_id, '_cf7sg_grid_table_names', $tt_fields);
+    if(!is_array($tt_fields)) $tt_fields = array($tt_fields);
+  	$sanitised_table_fields = array();
+  	foreach($tt_fields as $table_field){
+  	  $sanitised_table_fields[] = sanitize_text_field($table_field);
+  	}
+    update_post_meta($post_id, '_cf7sg_grid_table_names', $sanitised_table_fields);
     //tabs
     $tt_fields = json_decode(stripslashes($_POST['cf7sg-tabs-fields']));
     if(empty($tt_fields)) $tt_fields = array();
-    update_post_meta($post_id, '_cf7sg_grid_tabs_names', $tt_fields);
+    if(!is_array($tt_fields)) $tt_fields = array($tt_fields);
+  	$sanitised_tab_fields = array();
+  	foreach($tt_fields as $tab_field){
+      $sanitised_tab_fields[] = sanitize_text_field($tab_field);
+  	}
+    update_post_meta($post_id, '_cf7sg_grid_tabs_names', $sanitised_tab_fields);
     //flag tab & tables for more efficient front-end display.
     $has_tabs =  ( 'true' === $_POST['cf7sg-has-tabs']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tabs', $has_tabs);
@@ -493,7 +493,7 @@ class Cf7_Grid_Layout_Admin {
   }
   /**
     * Filters the default form loaded when a new CF7 form is created
-    * Hooked on 
+    * Hooked on
     * @since 1.0
     * @param string $template  the html string for the form tempalte
     * @param string $prop  the template property required.

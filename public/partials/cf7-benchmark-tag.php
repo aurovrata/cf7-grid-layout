@@ -44,7 +44,8 @@ $input_type = 'number';
 
  }
  //debug_msg($tag->name." input:".'<input '.$id.' name="'. $tag->name .'" class="'. $class.'" '. $data_limit.' '. $data_warn.' type="'. $input_type .'" />');
+ $tag_name = sanitize_html_class( $tag->name );
 ?>
-<span class="wpcf7-form-control-wrap <? echo sanitize_html_class( $tag->name ) ?>">
+<span class="wpcf7-form-control-wrap <?= $tag_name ?>">
   <input <?= $id?> name="<?= $tag->name ?>" class="<?= $class?>" <?= $data_limit?> <?= $data_warn?> type="<?= $input_type ?>" />
 </span>

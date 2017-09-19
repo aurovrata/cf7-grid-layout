@@ -160,26 +160,27 @@
 
 
     //make columns sortable
-    $('.row', $grid).sortable({
-      placeholder: "ui-state-highlight",
-      handle:'.grid-column .dashicons-move',
-      container:'.row',
-      items: '> .columns'
-    });
+    // $('.row', $grid).sortable({
+    //   //placeholder: "ui-state-highlight",
+    //   handle:'.grid-column .dashicons-move',
+    //   containment:'.row',
+    //   items: '> .columns'
+    // });
     //make rows sortable
-    $grid.sortable({
-      placeholder: "ui-state-highlight",
-      handle:'.row-controls .dashicons-move',
-      container:$grid,
-      items: '> .container'
-    });
+    // $('.container', $grid).sortable({
+    //   //placeholder: "ui-state-highlight",
+    //   handle:'.row-controls .dashicons-move',
+    //   containment:'parent',
+    //   items: '> .container'
+    // });
+
     //make rows with columns sortable
-    $('.columns').sortable({
-      placeholder: "ui-state-highlight",
-      handle:'.row-controls .dashicons-move',
-      container:$grid,
-      items: '> .container'
-    });
+    // $('.row .columns').sortable({
+    //   //placeholder: "ui-state-highlight",
+    //   handle:'.row-controls .dashicons-move',
+    //   containment:'parent',
+    //   items: '> .container'
+    // });
 
     //offset/size change using event delegation
     /*---------------------------------------------------------------------------- ui menus */
@@ -348,9 +349,9 @@
       }
       //let's close any column controls if the event is not from a control box
       if(0===$target.closest('.grid-controls').length ){
-        $('.grid-controls', $grid).hide();
-        $('.column-control.dashicons-no-alt', $grid).hide();
-        $('.column-control.dashicons-edit', $grid).show();
+        $('.grid-column .grid-controls', $grid).hide();
+        $('.grid-column .column-control.dashicons-no-alt', $grid).hide();
+        $('.grid-column .column-control.dashicons-edit', $grid).show();
         //close any ui fields if any
         if(cf7grid.ui && !$target.is('.cf7-field-inner *')){
           $('.grid-column .cf7-field-inner span.dashicons').trigger('click');
@@ -614,7 +615,9 @@
     var type = [];
     var tag='';
     var isSubmit = false;
+    var count =0;
     while (match != null) {
+      count++;
       label+='['+match[1]+' '+match[2]+']';
       tag = match[1].replace('*','');
       switch(tag){
@@ -641,6 +644,7 @@
     classes += " "+ type.join(' ');
     // $parent.removeClass('required');
     if(isRequired) classes += ' required';//$parent.addClass('required');
+    if(count>1) classes += ' cf7-tags-'+count;
     $parent.attr('class',classes);
     if(isSubmit){
       $parent.parent().addClass('submit-field');

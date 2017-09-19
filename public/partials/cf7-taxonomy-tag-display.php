@@ -74,14 +74,15 @@ $cf7_key = Cf7_WP_Post_Table::form_key($cf7_form->id());
      $options = apply_filters('cf7sg_dynamic_dropdown_custom_options', $options, $tag->name, $cf7_key);
    }
  }
+ $tag_name = sanitize_html_class( $tag->name );
 ?>
-<span class="wpcf7-form-control-wrap <? echo sanitize_html_class( $tag->name ) ?>">
-<select id="<?php echo $id?>" name="<?php echo $tag->name ?>" class="<?php echo $class?>">
+<span class="wpcf7-form-control-wrap <?= $tag_name ?>">
+<select id="<?= $id?>" name="<?= $tag->name ?>" class="<?= $class?>">
 <?php
 $default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $source, $tag->name, $cf7_key);
 if(!is_null($default_value)):
 ?>
-  <option value=""><?php echo $default_value ?></option>
+  <option value=""><?= $default_value ?></option>
 <?php
 endif;
 foreach($options as $value=>$name){

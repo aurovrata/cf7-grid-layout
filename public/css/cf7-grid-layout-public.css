@@ -118,9 +118,20 @@ input.select2-search__field{
     min-height: 200px;
     overflow: unset;
 }
+.cf7-smart-grid.has-grid .field {
+    max-width: 100%;
+}
 .cf7-smart-grid.has-grid .field .wpcf7-form-control {
     max-width: 100%;
     min-width: 100%;
+}
+.cf7-smart-grid.has-grid .field .wpcf7-form-control-wrap{
+  display: inline-block;
+  max-width: 100%;
+}
+.cf7-smart-grid.has-grid .field .wpcf7-form-control-wrap + .wpcf7-form-control-wrap {
+    max-width: 50%;
+    vertical-align: middle;
 }
 .cf7-smart-grid.has-grid .field > label {
     display: block;
