@@ -55,18 +55,9 @@ class Cf7_Grid_Layout_Public {
    *
    * @since    1.0.0
    * @access   private
-   * @var      Array    $array_tabs_fields    The form fields which were converted to arrays by the plugin.
+   * @var      Array    $array_grid_fields    The form fields which were converted to arrays by the plugin.
    */
-  private $array_tabs_fields;
-
-  /**
-   * The cf7 array fields.
-   *
-   * @since    1.0.0
-   * @access   private
-   * @var      Array    $array_table_fields    The form fields which were converted to arrays by the plugin.
-   */
-  private $array_table_fields;
+  private $array_grid_fields;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -80,7 +71,27 @@ class Cf7_Grid_Layout_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
     $this->submitted_data = array();
+    $this->array_grid_fields = array();
 	}
+  /**
+  *
+  *
+  * @since 1.0.0
+  * @param string $field field name to check
+  * @param string $form_id form id for which to check the
+  * @return string 'singular' for non-grid fields, 'tab' for tabbed fields, 'table' for tablled fields, 'both' for fields in tables in tabs.
+  */
+  protected function field_type($field, $form_id){
+    if(!isset($this->array_grid_fields[$form_id])){
+      //try to load the fields.
+			$this->get_grid_fields($form_id);
+    }
+    if(isset($this->array_grid_fields[$form_id][$field])){
+      return $this->array_grid_fields[$form_id][$field];
+    }else{
+      return 'singular';
+    }
+  }
 
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
@@ -320,28 +331,18 @@ class Cf7_Grid_Layout_Public {
    * @return boolean  false to print a custom script from the called function, true for the default script printed by this plugin.
   **/
   public function load_tabs_table_field($default_script, $post_id,  $field, $type, $json_value, $js_form){
-    if(!isset($this->array_tabs_fields)){
-      $this->array_tabs_fields = get_post_meta($post_id, '_cf7sg_grid_tabs_names', true);
-      $this->array_table_fields = get_post_meta($post_id, '_cf7sg_grid_table_names', true);
-      $sub_forms = get_post_meta($post_id, '_cf7sg_sub_forms', true);
-      foreach($sub_forms as $form_key){
-        $form_id = Cf7_WP_Post_Table::form_id($form_key);
-        $this->array_table_fields += get_post_meta($form_id, '_cf7sg_grid_table_names', true);
-        $this->array_tabs_fields += get_post_meta($form_id, '_cf7sg_grid_tabs_names', true);
-      }
+    $grid = $this->field_type($field, $post_id);
+    switch($grid){
+      case 'tab':
+      case 'table':
+      case 'both':
+        include( plugin_dir_path( __FILE__ ) . '/partials/cf7sg-field-load-script.php');
+        $default_script = false;
+        break;
+      default:
+        break;
     }
-    $grid='';
-    if(false === array_search($field, $this->array_table_fields )){
-      if(false === array_search($field, $this->array_tabs_fields )){
-        return $default_script;
-      }else{
-        $grid = 'tabs';
-      }
-    }else{
-      $grid = 'table';
-    }
-    include( plugin_dir_path( __FILE__ ) . '/partials/cf7sg-field-load-script.php');
-    return false;
+    return $default_script;
   }
   /**
    * Register a [save] shortcode with CF7.
@@ -479,14 +480,13 @@ class Cf7_Grid_Layout_Public {
     wp_die();
   }
   /**
-   *  Use this function to setup validations filters for the submitted form.
+   *  This function filters submitted data and consolidates grid field values into arrays.
    * Funciton hooked on 'wpcf7_posted_data'
    * @since 1.0.0
    * @param   Array    $data    unvalidated submitted data.
    * @return  Array    filtered submitted data.
   **/
-  public function setup_tag_filters($data){
-    //TODO: validate with sfgrid form nonce.
+  public function setup_grid_values($data){
     $cf7form = WPCF7_ContactForm::get_current();
     if(empty($cf7form) ){
       debug_msg("Unable to load submitted form");
@@ -497,38 +497,48 @@ class Cf7_Grid_Layout_Public {
         $cf7form = WPCF7_ContactForm::get_instance($cf7_id);
       }
     }
-		$grid_fields = self::get_grid_fields($cf7_id);
-
 		//debug_msg($grid_fields, 'grid fields...');
     $tags = $cf7form->scan_form_tags();
     foreach($tags as $tag){
-      if( isset($grid_fields[$tag['name']]) ){
-        //setup wpcf7 validation filters for arrays prior to cf7 default filters so as not to get array conversion errors.
-        //debug_msg('validation:'.$tag["name"].'(wpcf7_validate_'.$tag["type"].')');
-        add_filter("wpcf7_validate_{$tag['type']}", array($this, 'validate_array_values'), 5,2);
+      $field_type = $this->field_type($tag['name'], $cf7_id);
+      switch($field_type){
+        case 'tab':
+        case 'table':
+        case 'both':
+        // the $data array is passed by reference and will be consolidated.
+        $this->consolidate_grid_submissions($tag['name'], $field_type, $data);
+        break;
       }
     }
-
     return $data;
   }
 	/**
-	 * function returns an array of fields which are eitehr tabs or tables
+	 * function returns an array of fields as keys and value which are eitehr 'tab' or 'table', or 'both'.
 	 *
 	 * @since 1.0.0
 	 * @param      string    $form_id     form id for which to return fields.
 	 * @return     array    empty array if no fields found..
 	**/
-	static function get_grid_fields($form_id){
+	public function get_grid_fields($form_id){
+    if(isset($this->array_grid_fields[$form_id])){
+      return $this->array_grid_fields[$form_id];
+    }
 		$grid_fields = array();
-		//tabs
-		$fields = get_post_meta($form_id , '_cf7sg_grid_tabs_names', true);
-		if(!empty($fields)){
-			$grid_fields += array_fill_keys($fields, 'tab');
-		}
 		//tables
     $fields = get_post_meta($form_id , '_cf7sg_grid_table_names', true);
 		if(!empty($fields)){
 			$grid_fields += array_fill_keys($fields, 'table');
+		}
+    //tabs
+		$fields = get_post_meta($form_id , '_cf7sg_grid_tabs_names', true);
+		if(!empty($fields)){
+      foreach($fields as $field){
+        if(isset($grid_fields[$field])){
+          $grid_fields[$field] = 'both';
+        }else{
+          $grid_fields[$field] = 'tab';
+        }
+      }
 		}
 		$subform_keys = get_post_meta($form_id, '_cf7sg_sub_forms', true);
 
@@ -536,11 +546,119 @@ class Cf7_Grid_Layout_Public {
 
 		foreach($subform_keys as $cf7Key){
 			$post_id = Cf7_WP_Post_Table::form_id($cf7Key);
-			$grid_fields += self::get_grid_fields($post_id);
+			$grid_fields += $this->get_grid_fields($post_id);
 		}
-
+    $this->array_grid_fields[$form_id]=$grid_fields;
 		return $grid_fields;
 	}
+  /**
+  *
+  *
+  *@since 1.0.0
+  *@param string $field_name a cf7 form field name which is part of tabs or table grid section.
+  *@param array $type field type, should be 'tab'/'table'/'both'.
+  *@param array $data cf7 form submissed data passed by reference as consolidated grid values will be removed and the original field value replaced with an array.
+  *@return array  a filtered array of $index_suffix=>$value pairs for tabs or rows fields, The index suffix is '.row-<index>' for tables and '.tab-<index>' for tabs. This method returns a 2 dimensional array for fields which are both within rowns and tabs.  The 2 dimensional array will list [<tab_suffix>][<row_suffix>]=>$value.  The original field name that was submitted can be reconstructed as $field_name.$index_suffix.  The first field will have an empty string as its $index_suffix.
+  */
+  private function consolidate_grid_submissions($field_name, $type, &$data){
+    $values = array();
+    if(!isset($data[$field_name])){
+      return $values;
+    }
+    $regex = '';
+    $submitted_fields=array();
+    switch($type){
+      case 'table':
+        $index_suffix = '_row-';
+        $regex = '/^'.preg_quote($field_name).'_row-[0-9]+$/';
+        $values['']=$data[$field_name];
+        //extract all relevant fields
+        $submitted_fields = preg_grep($regex, array_keys($data));
+        break;
+      case 'tab':
+        $index_suffix = '_tab-';
+        $regex = '/^'.preg_quote($field_name).'_tab-[0-9]+$/';
+        $values['']=$data[$field_name];
+        //extract all relevant fields
+        $submitted_fields = preg_grep($regex, array_keys($data));
+        break;
+      case 'both':
+        $regex = '/^'.preg_quote($field_name);
+        $values[''] = array(); //init multi-dimensional array
+        $values[''][''] = $data[$field_name];
+        //extract all relevant fields
+        $submitted_fields = preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($data));
+        //we also need the rows with tab index=0
+        $submitted_fields += preg_grep($regex.'_row-[0-9]+$/', array_keys($data));
+        //.. and tabs with row index=0
+        $submitted_fields += preg_grep($regex.'_tab-[0-9]+$/', array_keys($data));
+        //if('other-rm-qty'==$field_name){
+          // debug_msg($submitted_fields, 'Found fields '.$field_name);
+        //}
+        break;
+    }
+
+    $row_idx=1; //[0][0] already set above is this is tab table field
+    $tab_idx=0;
+    $error_loop=false;
+    $loop_counter_limit = apply_filters('cf7sg_set_max_tabs_limit', 10, $data['_wpcf7_key'], $data['_wpcf7']);
+    for($idx=1; ($idx <= sizeof($submitted_fields) && !$error_loop); $idx++){
+      switch($type){
+        case 'table':
+        case 'tab':
+          if(!isset($data[$field_name.$index_suffix.$idx])){
+            debug_msg('CF7SG ERROR: Missing grid field '.$field_name.$index_suffix.$idx);
+            continue;
+          }
+          $values[$index_suffix.$idx] = $data[$field_name.$index_suffix.$idx];
+          break;
+        case 'both':
+          //first attempt to look for the frist tab rows
+          $row_suffix = ($row_idx>0)?'_row-'.$row_idx:'';
+          $tab_suffix = ($tab_idx>0)?'_tab-'.$tab_idx:'';
+          //if('other-rm-qty'==$field_name){
+            // debug_msg($idx.'Looking for: '.$field_name.$tab_suffix.$row_suffix);
+          //}
+          if(isset($data[$field_name.$tab_suffix.$row_suffix])){
+            $values[$tab_suffix][$row_suffix] = $data[$field_name.$tab_suffix.$row_suffix];
+            //next loop, look for the next row within the same tab,
+            $row_idx +=1;
+          }else{
+            $loop_counter=$tab_idx;
+						$loop = true;
+            do{//move to next tab, and reset the row counter
+              // debug_msg('loop:'.$loop_counter.', max: '.$loop_counter_limit);
+              $loop_counter +=1;
+              if($loop_counter > $loop_counter_limit) $error_loop=true;
+              $tab_idx +=1;
+              $row_idx = 0;
+              $row_suffix = '';
+              $tab_suffix = '_tab-'.$tab_idx;
+              //init new tab row values array
+              $values[$tab_suffix] = array();
+              //keep looking for next tab if we don't find a value;
+              //if('other-rm-qty'==$field_name){
+                // debug_msg($idx.'Searching in next tab: '.$field_name.$tab_suffix.$row_suffix);
+              //}
+							$loop = !isset($data[$field_name.$tab_suffix.$row_suffix]) && !$error_loop;
+            }while($loop);
+            if(!$error_loop) {
+              $values[$tab_suffix][$row_suffix] = $data[$field_name.$tab_suffix.$row_suffix];
+              $row_idx +=1; //next loop, keep searching in thsi tab.
+            }else{
+              debug_msg($submitted_fields, 'CF7SG ERROR: Reached max tabs search loop for table field '.$field_name.' (cannot find any new rows above tab '.$tab_idx.' therefor abandoning search for remaining '.sizeof($submitted_fields)-$idx.' regex match in preg_grep result array listed below)');
+              //for loop will end here
+            }
+          }
+          break;
+      }//end switch.
+    }//end for loop preg_grep array.
+    if(!$error_loop){
+      $data = array_diff_assoc($data, $submitted_fields); //this will remove all the surplus fields
+      $data[$field_name] = $values;
+    }
+    return $values;
+  }
   /**
    * Validates required benchmark and dynamic_select tags
    *
@@ -569,31 +687,31 @@ class Cf7_Grid_Layout_Public {
    * @param Array $tags   an array of cf7 tag used in this form
    * @return WPCF7_Validation  validation result
 	 */
-  public function validate_array_values($results, $tag){
-    /*
-    TODO: see if $resutls[name] can be replaced from field bame to <field-name>-<index> so that error msg insertion can take place accurately on the front end.
-    This woudl also require that the js file that builds array fields (tabs/tables) also replaces the class in teh outer span with an indexed one,
-    span.wpcf7-form-control-wrap.<field-name> to span.wpcf7-form-control-wrap.<field-name>-<index>
-    */
-    $tag_obj = new WPCF7_FormTag( $tag );
-
-  	$name = $tag_obj->name;
-    //reset the $_POST data as cf7 expect single value
-    if( isset($_POST[$name]) && is_array($_POST[$name]) ){
-      $values = $_POST[$name];
-      $_POST[$name] = $values[0];
-      //temporarily remove this filter
-      remove_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
-      for($idx=1; $idx<sizeof($values); $idx++){
-        $_POST[$name.'_'.$idx] =$values[$idx];
-        $tag['name'] = $name.'_'.$idx;
-        apply_filters("wpcf7_validate_{$tag_obj->type}", $results, $tag);
-      }
-      //reapply this filter
-      add_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
-    }
-    return $results;
-  }
+  // public function validate_array_values($results, $tag){
+  //   /*
+  //   TODO: see if $resutls[name] can be replaced from field name to <field-name>-<index> so that error msg insertion can take place accurately on the front end.
+  //   This woudl also require that the js file that builds array fields (tabs/tables) also replaces the class in teh outer span with an indexed one,
+  //   span.wpcf7-form-control-wrap.<field-name> to span.wpcf7-form-control-wrap.<field-name>-<index>
+  //   */
+  //   $tag_obj = new WPCF7_FormTag( $tag );
+  //
+  // 	$name = $tag_obj->name;
+  //   //reset the $_POST data as cf7 expect single value
+  //   if( isset($_POST[$name]) && is_array($_POST[$name]) ){
+  //     $values = $_POST[$name];
+  //     $_POST[$name] = $values[0];
+  //     //temporarily remove this filter
+  //     remove_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
+  //     for($idx=1; $idx<sizeof($values); $idx++){
+  //       $_POST[$name.'_'.$idx] =$values[$idx];
+  //       $tag['name'] = $name.'_'.$idx;
+  //       apply_filters("wpcf7_validate_{$tag_obj->type}", $results, $tag);
+  //     }
+  //     //reapply this filter
+  //     add_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
+  //   }
+  //   return $results;
+  // }
   /**
    * Final validation with all values submitted for inter dependent validation
    * Hooked to filter 'wpcf7_validate', sets up the final $results object
@@ -603,13 +721,36 @@ class Cf7_Grid_Layout_Public {
    * @return WPCF7_Validation  validation result
   **/
   public function filter_wpcf7_validate($results, $tags){
-    //TODO: validate with sfgrid form nonce.
     //get the submitted values
+    $cf7form = WPCF7_ContactForm::get_current();
     $submitted = WPCF7_Submission::get_instance();
     $data = $submitted->get_posted_data();
+    $tags = $cf7form->scan_form_tags();
     $tag_types = array();
     foreach($tags as $tag){
       $tag_types[$tag['name']] = $tag['type'];
+      $field_type = $this->field_type($tag['name'], $cf7form->id());
+      switch($field_type){
+        case 'tab':
+        case 'table':
+        case 'both':
+          // the $data array is passed by reference and will be consolidated.
+          $values =  $data[$tag['name']];
+          foreach($values as $index=>$value){
+            if(is_array($value)){
+              foreach($value as $row=>$row_value){
+                $sg_field_tag = $tag;
+                $sg_field_tag['name'] = $tag['name'].$index.$row;
+                $results = apply_filters("wpcf7_validate_{$tag['type']}", $results, $sg_field_tag);
+              }
+            }else{
+              $sg_field_tag = $tag;
+              $sg_field_tag['name'] = $tag['name'].$index;
+              $results = apply_filters("wpcf7_validate_{$tag['type']}", $results, $sg_field_tag);
+            }
+          }
+          break;
+      }
     }
     $validation = array();
     $form_key = '';
@@ -620,11 +761,12 @@ class Cf7_Grid_Layout_Public {
     * filter to validate the entire submission and check interdependency of fields
     * @since 1.0.0
     * @param Array  $validation  intially an empty array
-    * @param Array  $data   submitted data, $field_name => $value pairs ($value can be an array).
+    * @param Array  $data   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs).
     * @param String  $form_key  unique form key to identify current form.
+    * @param int  $form_id  cf7 form post ID.
     * @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
     */
-    $validation = apply_filters('cf7sg_validate_submission', $validation, $data, $form_key);
+    $validation = apply_filters('cf7sg_validate_submission', $validation, $data, $form_key, $data['_wpcf7']);
     if(!empty($validation)){
       foreach($validation as $name=>$msg){
         if(is_array($data[$name]) ) {

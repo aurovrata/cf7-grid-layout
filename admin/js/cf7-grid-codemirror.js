@@ -181,7 +181,8 @@
         var search = $(this).html();
         var match = cf7TagRegexp.exec(search);
         while (match != null) {
-          if( -1 === tableFields.indexOf(match[2]) ) tabFields[tabFields.length] = match[2];
+          //if( -1 === tableFields.indexOf(match[2]) ) /*removed as now want to idenify fields which are both tabs and table fields*/
+          tabFields[tabFields.length] = match[2];
           //ttFields[match[2]] = match[1];
           match = cf7TagRegexp.exec(search); //get the next match.
         }
