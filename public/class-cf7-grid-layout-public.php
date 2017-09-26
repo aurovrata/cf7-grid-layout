@@ -42,22 +42,13 @@ class Cf7_Grid_Layout_Public {
 	private $version;
 
   /**
-	 * The cf7 submitted data.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      Array    $submitted_data    The cf7 submitted data.
-	 */
-	private $submitted_data;
-
-  /**
    * The cf7 array fields.
    *
    * @since    1.0.0
    * @access   private
    * @var      Array    $array_grid_fields    The form fields which were converted to arrays by the plugin.
    */
-  private $array_grid_fields;
+  static private $array_grid_fields = array();
 
 	/**
 	 * Initialize the class and set its properties.
@@ -70,8 +61,6 @@ class Cf7_Grid_Layout_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-    $this->submitted_data = array();
-    $this->array_grid_fields = array();
 	}
   /**
   *
@@ -81,13 +70,13 @@ class Cf7_Grid_Layout_Public {
   * @param string $form_id form id for which to check the
   * @return string 'singular' for non-grid fields, 'tab' for tabbed fields, 'table' for tablled fields, 'both' for fields in tables in tabs.
   */
-  protected function field_type($field, $form_id){
-    if(!isset($this->array_grid_fields[$form_id])){
+  static public function field_type($field, $form_id){
+    if(!isset(self::$array_grid_fields[$form_id])){
       //try to load the fields.
-			$this->get_grid_fields($form_id);
+			self::get_grid_fields($form_id);
     }
-    if(isset($this->array_grid_fields[$form_id][$field])){
-      return $this->array_grid_fields[$form_id][$field];
+    if(isset(self::$array_grid_fields[$form_id][$field])){
+      return self::$array_grid_fields[$form_id][$field];
     }else{
       return 'singular';
     }
@@ -331,7 +320,7 @@ class Cf7_Grid_Layout_Public {
    * @return boolean  false to print a custom script from the called function, true for the default script printed by this plugin.
   **/
   public function load_tabs_table_field($default_script, $post_id,  $field, $type, $json_value, $js_form){
-    $grid = $this->field_type($field, $post_id);
+    $grid = self::field_type($field, $post_id);
     switch($grid){
       case 'tab':
       case 'table':
@@ -500,7 +489,7 @@ class Cf7_Grid_Layout_Public {
 		//debug_msg($grid_fields, 'grid fields...');
     $tags = $cf7form->scan_form_tags();
     foreach($tags as $tag){
-      $field_type = $this->field_type($tag['name'], $cf7_id);
+      $field_type = self::field_type($tag['name'], $cf7_id);
       switch($field_type){
         case 'tab':
         case 'table':
@@ -519,9 +508,9 @@ class Cf7_Grid_Layout_Public {
 	 * @param      string    $form_id     form id for which to return fields.
 	 * @return     array    empty array if no fields found..
 	**/
-	public function get_grid_fields($form_id){
-    if(isset($this->array_grid_fields[$form_id])){
-      return $this->array_grid_fields[$form_id];
+	static public function get_grid_fields($form_id){
+    if(isset(self::$array_grid_fields[$form_id])){
+      return self::$array_grid_fields[$form_id];
     }
 		$grid_fields = array();
 		//tables
@@ -542,13 +531,11 @@ class Cf7_Grid_Layout_Public {
 		}
 		$subform_keys = get_post_meta($form_id, '_cf7sg_sub_forms', true);
 
-		if(empty($subform_keys)) return $grid_fields;
-
 		foreach($subform_keys as $cf7Key){
 			$post_id = Cf7_WP_Post_Table::form_id($cf7Key);
-			$grid_fields += $this->get_grid_fields($post_id);
+			$grid_fields += self::get_grid_fields($post_id);
 		}
-    $this->array_grid_fields[$form_id]=$grid_fields;
+    self::$array_grid_fields[$form_id]=$grid_fields;
 		return $grid_fields;
 	}
   /**
@@ -729,7 +716,7 @@ class Cf7_Grid_Layout_Public {
     $tag_types = array();
     foreach($tags as $tag){
       $tag_types[$tag['name']] = $tag['type'];
-      $field_type = $this->field_type($tag['name'], $cf7form->id());
+      $field_type = self::field_type($tag['name'], $cf7form->id());
       switch($field_type){
         case 'tab':
         case 'table':
