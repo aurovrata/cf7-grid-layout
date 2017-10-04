@@ -121,13 +121,15 @@ input.select2-search__field{
 .cf7-smart-grid.has-grid .field {
     max-width: 100%;
 }
-.cf7-smart-grid.has-grid .field .wpcf7-form-control {
+.cf7-smart-grid.has-grid .wpcf7-form-control {
+    width: inherit;
+}
+.cf7-smart-grid.has-grid .select2 {
     max-width: 100%;
-    min-width: 100%;
 }
 .cf7-smart-grid.has-grid .field .wpcf7-form-control-wrap{
   display: inline-block;
-  max-width: 100%;
+  width: 100%;
 }
 .cf7-smart-grid.has-grid .field .wpcf7-form-control-wrap + .wpcf7-form-control-wrap {
     max-width: 50%;
@@ -161,4 +163,22 @@ input.select2-search__field{
 .cf7-smart-grid.has-grid .wpcf7-form-control.wpcf7-radio,
 .cf7-smart-grid.has-grid .wpcf7-form-control.wpcf7-checkbox {
     display: inline-block;
+}
+.cf7sg-collapsible.ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+    right: .5em;
+    left: unset;
+}
+.cf7sg-collapsible .ui-state-default {
+    background: transparent;
+}
+.cf7-smart-grid.has-grid .wpcf7-submit {
+    background: #383838;
+    border: solid 1px #383838;
+    border-radius: 3px;
+    font-size: 110%;
+    font-weight: bold;
+}
+.cf7-smart-grid.has-grid .wpcf7-save {
+    background: transparent;
+    color: #383838;
 }

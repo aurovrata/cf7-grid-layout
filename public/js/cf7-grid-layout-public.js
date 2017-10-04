@@ -15,8 +15,13 @@
         var label = $row.data('button');
         //change the input and select fields to arrays for storage
         var trackFields = false;
-      //  if($cf7Form_table.is('div.has-update form.wpcf7-form')) trackFields = 'table';
-      //  $row.fields2arrays(trackFields);
+        //  if($cf7Form_table.is('div.has-update form.wpcf7-form')) trackFields = 'table';
+        $row.find(':input').each(function(){
+          var name = $(this).attr('name');
+          if(name.length>0){
+            $(this).addClass('cf7sg-'+name);
+          }
+        });
         //add a button at the end of the $table to add new rows
         var $footer = $table.next('.container.cf7-sg-table-footer');
         if($footer.length>0){
@@ -100,22 +105,15 @@
           $list.after('<ul class="cf7sg-add-tab ui-tabs-nav"><li class="ui-state-default ui-corner-top"><a class="cf7sg-add-tab ui-tabs-anchor"><span class="cf7sg-add-tab dashicons dashicons-plus"></span></a></li></ul>');
           //clone the tab
           var $panel = $(this).children('.cf7-sg-tabs-panel').first();
-          //convert all fields to arrays
-        //  var trackFields = false;
-        //  if($cf7Form_tabs.is('div.has-update form.wpcf7-form')) trackFields = 'tabs';
-        //  $panel.fields2arrays(trackFields);
-          //handle tables within tabs
-          // $('.container.cf7-sg-table', $panel ).each(function(){
-          //   //get the first field name in the table
-          //   var iname = $(this).find(':input').first().attr('name');
-          //   if(iname.lastIndexOf('[]') > 0){
-          //     iname = iname.replace('[]','_cf7sg_tab_ext[]');
-          //   }else{
-          //     iname = iname + '_cf7sg_tab_ext[]';
-          //   }
-          //   //add a hidden field for storing tab id
-          //   $(this).parent().children('.cf7-sg-table-button').append($('<input type="hidden" name="'+iname+'" class=".cf7sg-tabs-table-hidden"/>'))
-          // });
+          //add class to all fields
+          $panel.find(':input').each(function(){
+            if($(this).is('.cf7-sg-table :input')) return;
+            var name = $(this).attr('name');
+            if(name.length>0){
+              $(this).addClass('cf7sg-'+name);
+            }
+          });
+
           //finally store a clone of the paenl to be able to add new tabs
           var $clonedP = $('<div>').append($panel.clone());
           //disable all inputs in the cloned panel so they don't get submitted.
@@ -237,42 +235,7 @@
 				});
 			});
 		}
-    $.fn.setupDatePicker = function(){
-      if(!$(this).is('.wpcf7-date:enabled')){
-        return $(this);
-      }
-      var miny='';
-      var maxy='' ;
-      var min = $(this).attr('min');
-      if(typeof min == 'undefined'){
-        min = null;
-      }else{
-        min = new Date(min);
-        miny = min.getFullYear();
-      }
-      var max = $(this).attr('max');
-      if(typeof max == 'undefined'){
-        max = null;
-      }else{
-        max = new Date(max);
-        maxy = max.getFullYear();
-      }
-      $(this).datepicker({//defaultDate: '-20y',
-        dateFormat: "yy-mm-dd",
-        minDate: min,
-        maxDate: max,
-        changeMonth:true,
-        changeYear: true
-      });
-      if(miny>0 && maxy>0){
-        $(this).datepicker('option','yearRange',miny+':'+maxy);
-      }else if(miny>0){
-        $(this).datepicker('option','yearRange',miny+':c+20');
-      }else if(maxy>0){
-        $(this).datepicker('option','yearRange','c-20:'+maxy);
-      }
-      return $(this);
-    }
+
     //enable collapsible rows
     var cf7Form_accordion = $('div.has-accordion form.wpcf7-form');
     if(cf7Form_accordion.length>0){
@@ -381,6 +344,43 @@
   /*
     jQuery extended functions
   */
+	//datepicker for date fields
+	$.fn.setupDatePicker = function(){
+		if(!$(this).is('.wpcf7-date:enabled')){
+			return $(this);
+		}
+		var miny='';
+		var maxy='' ;
+		var min = $(this).attr('min');
+		if(typeof min == 'undefined'){
+			min = null;
+		}else{
+			min = new Date(min);
+			miny = min.getFullYear();
+		}
+		var max = $(this).attr('max');
+		if(typeof max == 'undefined'){
+			max = null;
+		}else{
+			max = new Date(max);
+			maxy = max.getFullYear();
+		}
+		$(this).datepicker({//defaultDate: '-20y',
+			dateFormat: "yy-mm-dd",
+			minDate: min,
+			maxDate: max,
+			changeMonth:true,
+			changeYear: true
+		});
+		if(miny>0 && maxy>0){
+			$(this).datepicker('option','yearRange',miny+':'+maxy);
+		}else if(miny>0){
+			$(this).datepicker('option','yearRange',miny+':c+20');
+		}else if(maxy>0){
+			$(this).datepicker('option','yearRange','c-20:'+maxy);
+		}
+		return $(this);
+	}
   //clone table row
   $.fn.cf7sgCloneRow = function(initSelect = true){
     var $table = $(this);
@@ -407,7 +407,7 @@
         name = name.replace('[]','');
         suffix = '[]';
       }
-      $(this).attr('name', name+'_row-'+rowIdx+suffix);
+      $(this).attr('name', name+'_row-'+rowIdx+suffix);//.addClass('cf7sg-'+name);
       $(this).parent('span').removeClass(name).addClass(name+'_row-'+rowIdx);
       //finally enabled the nice select dropdown.
       if($(this).is('select.ui-select') && initSelect){
@@ -466,7 +466,7 @@
         fields in additional rows in tables will be suffixed with .row-[0-9]+
         fields in additional rows in tables that are in additional tabs will be suffixed with .tab-[0-9]+.row-[0-9]+
       */
-      $(this).attr('name', name+'_tab-'+(tabCount-1)+suffix);
+      $(this).attr('name', name+'_tab-'+(tabCount-1)+suffix);//.addClass('cf7sg-'+name);
       $(this).parent('span').removeClass(name).addClass(name + '_tab-' + (tabCount-1));
       //enable nice select on the dropdown.
       if(!isCloneRow && $(this).is('select.ui-select') && initSelect){
