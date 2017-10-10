@@ -5,7 +5,26 @@
   var trackTableFields = []; //to keep track of fields that are converted to arrays.
   var panels = {}; //object to store cloned panels
 
+  /*warning messages used for in-form validation*/
+  $.fn.cf7sgWarning = function(msg){
+    if(!$(this).is(':input')){
+      return $(this);
+    }
+    var $warning = $('<span class="cf7sg-validation-warning">'+msg+'<span class="confirm-button">ok</span></span>');
+    $(this).after($warning);
+    $warning.delay(5000).fadeOut('slow', function(){
+      $(this).remove();
+    });
+  }
+
   $(document).ready( function(){
+    //click delegation for warning windows
+    $('form.wpcf7-form').on('click','.confirm-button', function(event){
+      var $target = $(event.target);
+      if($target.is('.cf7sg-validation-warning .confirm-button')){
+        $target.parent().remove();
+      }
+    })
     //.cf7-sg-table structure
     var $cf7Form_table = $('div.has-table form.wpcf7-form');
     if($cf7Form_table.length){
@@ -22,20 +41,23 @@
             $(this).addClass('cf7sg-'+name);
           }
         });
+
         //add a button at the end of the $table to add new rows
-        var $footer = $table.next('.container.cf7-sg-table-footer');
+        var $footer = $('.container.cf7-sg-table-footer',$table);
         if($footer.length>0){
+          $footer.detach();
+          $table.after($footer);
           $footer.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="ui-button">'+label+'</a></div>');
         }else{
           $table.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="ui-button">'+label+'</a></div>');
         }
         //append a hidden clone of the first row which we can use to add
         $row = $row.clone().addClass('cf7-sg-cloned-table-row');
+        $table.append($row.hide());
         //disable all inputs from the clone row
         $(':input', $row).prop('disabled', true);
         //add controls to the row to delete
         $row.append('<span class="row-control"><span class="dashicons dashicons-no-alt"></span></span>');
-        $table.append($row.hide());
         //trigger table ready event for custom scripts to change the button text
         $table.trigger('sgTableReady');
 
@@ -46,6 +68,7 @@
         if( $button.is('div.cf7-sg-table-button a') ){ //----------add a row
           $button = $button.parent();
           var $table = $button.prev('.container');
+          if($table.is('.cf7-sg-table-footer')) $table = $table.prev('.container');
           $table.cf7sgCloneRow();
         }else if($button.is('.cf7-sg-table .row-control .dashicons')){ //---------- delete the row, delete button only on last row
           $button.closest('.row.cf7-sg-table').remove();
@@ -86,7 +109,7 @@
             warning=true;
         }
         if(warning){
-          $field.next('span.cf7sg-validation-warning').delay(3000).fadeOut('slow');
+          $field.next('span.cf7sg-validation-warning').delay(3000).fadeOut('slow').remove();
         }
       });
     }//end validation
@@ -384,8 +407,10 @@
   //clone table row
   $.fn.cf7sgCloneRow = function(initSelect = true){
     var $table = $(this);
+    var $footer='';
     if($table.is('.cf7-sg-table-footer')){
-      $table = $table.prev('.container.cf7-sg-table');
+      $footer = $table;
+      $table = $table.closest('.container.cf7-sg-table');
     }
     //if not a table let's exit.
     if(!$table.is('.container.cf7-sg-table')){
@@ -396,7 +421,11 @@
     var $row = $cloneRow.clone();
     $row.removeClass('cf7-sg-cloned-table-row');
     //show row so select2 init properly
-    $cloneRow.before($row.show());
+    if($footer.length>0){
+      $footer.before($row.show());
+    }else{
+      $cloneRow.before($row.show());
+    }
     //add input name as class to parent span
     $(':input', $row).each(function(){
       //enable inputs

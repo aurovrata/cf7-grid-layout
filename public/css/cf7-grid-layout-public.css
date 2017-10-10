@@ -92,6 +92,7 @@ div.field span.wpcf7-not-valid-tip {
     border-radius: 3px;
     min-width: 195px;
     line-height: 1.2em;
+    z-index: 7777;
 }
 span.cf7sg-validation-warning {
     display: block;
@@ -107,6 +108,20 @@ span.cf7sg-validation-warning {
     background: #f2f2f2;
     margin-right: -70px;
     z-index:999;
+    padding: 2px 3px;
+}
+.cf7sg-validation-warning .confirm-button {
+    position: absolute;
+    bottom: -13px;
+    right: -19px;
+    background: white;
+    padding: 1px 5px;
+    border: #989898 solid 2px;
+    border-radius: 5px;
+    color: #8f0000;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    cursor:pointer;
 }
 input.select2-search__field{
   background-image: url('search.png');
@@ -119,7 +134,7 @@ input.select2-search__field{
     overflow: unset;
 }
 .cf7-smart-grid.has-grid .field {
-    max-width: 100%;
+    width: 100%;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control {
     width: inherit;

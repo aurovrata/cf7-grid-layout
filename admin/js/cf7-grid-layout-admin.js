@@ -15,6 +15,7 @@
   $pattern.find('.info-tip').text('(.*\\s*)');
   // console.log('p:'+$pattern.html());
   var templateRegex = new RegExp($pattern.html(), 'ig');
+  var wpcf7Value = '';
 
 	$(document).ready( function(){
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
@@ -50,7 +51,7 @@
     		});
       });
       //replace columns content with textareas
-      /*--------------------------------------------------- convrt columns */
+      /*--------------------------------------------------- convert columns */
       $('div.columns', $form).each(function(){
         var $area =  $($('#grid-col').html());
         if($(this).children().is('.container')){
@@ -68,7 +69,7 @@
       $('div.row', $form).each(function(){
         $(this).append( $('#grid-row .row-controls').clone() );
       });
-      /*--------------------------------------------------- convrt collapsible sections  */
+      /*--------------------------------------------------- convert collapsible sections  */
       $('div.container.cf7sg-collapsible', $form).each(function(){
         var text = $(this).children('.cf7sg-collapsible-title').text();
         var $toggle = $('.toggle', $(this).children('.cf7sg-collapsible-title'));
@@ -88,7 +89,7 @@
         //toggle disable the sibling input
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
       });
-      /*--------------------------------------------------- convrt tables */
+      /*--------------------------------------------------- convert tables */
       $('div.container.cf7-sg-table', $form).each(function(){
         var $ctrl = $(this).find('.row.cf7-sg-table > .row-controls' ).first().find('.table-row-label');
         $('input', $ctrl).prop('checked', true);
@@ -110,7 +111,7 @@
         }
       });
       //tabs
-      /*--------------------------------------------------- convrt tabs */
+      /*--------------------------------------------------- convert tabs */
       $('ul.cf7-sg-tabs-list li', $form).each(function(){
         var text = $(this).children('a').text();
         $(this).append($('#grid-tabs ul li label').clone());
@@ -184,7 +185,7 @@
 
     //offset/size change using event delegation
     /*---------------------------------------------------------------------------- ui menus */
-    $grid.on('change', $('select'), function(event){
+    $grid.on('change', function(event){
       var $target = $(event.target);
       if($target.is('.column-setting')){ //----------- column size/offset settings
         var validation = ['dummy'];
@@ -221,14 +222,50 @@
     			$('.cf7sg-external-form-content', $container).attr('id','cf7sg-form-'+$target.val()).html(response);
     		});
       }
+      /*
+        Collapsible / tabs rows input changes
+      */
+      if($target.is('.cf7sg-collapsible-title label input[type="text"]')){ //------- Collapsible title
+        $target.siblings('input[type="hidden"]').val($target.val());
+      }else if( $target.is('.cf7sg-collapsible-title label input[type="checkbox"]')){ //------- Collapsible title toggled
+        var $title = $target.closest('.cf7sg-collapsible-title');
+        if($target.is(':checked')){
+          $title.append($('#grid-collapsible-with-toggle').html());
+          $title.closest('.container.cf7sg-collapsible').addClass('with-toggle');
+        }else{
+          $('.toggle', $title).remove();
+          $title.closest('.container.cf7sg-collapsible').removeClass('with-toggle');
+        }
+      }else if($target.is('ul.cf7-sg-tabs-list li label input[type="text"]')){ //------- Tabs title
+        $target.parent().siblings('a').text($target.val());
+      }else if($target.is('label.table-row-button input')){
+        $target.closest('.row.cf7-sg-table').attr('data-button',$target.val());
+      }
+      if(cf7grid.ui){
+        if($target.is('.cf7-field-inner textarea')){
+          var label = $target.scanCF7Tag();
+          $target.siblings('p.content').html(label);//.show();
+          $target.parent().siblings('textarea.grid-input').updateGridForm();
+        }else if($target.is('.cf7-field-inner input')){
+          $target.siblings('p.content').html($target.val());
+          $target.parent().siblings('textarea.grid-input').updateGridForm();
+        }
+      }
     });
-    //show controls using delegation
-    /*
-      Row controls
-      ----------------------------------------------------------------------------ROW CONTRLS
-    */
-    $grid.on('click', $('.row-control'), function(event){
+
+    //grid click event delegation
+    $grid.on('click', function(event){
       var $target = $(event.target);
+      if($target.is(':input:visible')){
+        return false;
+      }
+      //close any open row/column controls
+      closeAllControls();
+
+      /*
+        Row controls
+        ----------------------------------------------------------------------------ROW CONTRLS
+      */
       var $parentRow;
       if($target.is('.dashicons-trash.row-control')){ //--------TRASH
         var $parentContainer = $target.closest('.container');
@@ -242,16 +279,16 @@
         }
       }else if($target.is('.dashicons-trash.form-control')){ //--------TRASH included form
         $target.closest('.cf7sg-external-form').remove();
-
       }else if($target.is('.dashicons-trash.form-control') ){ //-----------TRASH external form
         $target.closest('cf7sg-external-form').remove();
       }else if($target.is('.dashicons-plus.row-control')){ //-----------ADD
         $target.closest('.container').insertNewRow();
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
         //hide any other controls that might be open
-        $('.grid-controls', $grid).hide();
-        $('.dashicons-no-alt', $grid).hide();
-        $('.dashicons-edit', $grid).show();
+        //taken care by closeAllControls
+        // $('.grid-controls', $grid).hide();
+        // $('.dashicons-no-alt', $grid).hide();
+        // $('.dashicons-edit', $grid).show();
         //now show this control
         $target.siblings('.grid-controls').show();
         $target.hide();
@@ -261,9 +298,10 @@
         possibly introduce a boolean to check if filter has been run already on this row
         */
       }else if( $target.is('.dashicons-no-alt.row-control') ) { //----------------hide controls
-        $target.siblings('.grid-controls').hide();
-        $target.hide();
-        $target.siblings('.dashicons-edit').show();
+        //take care by closeAllControls
+        // $target.siblings('.grid-controls').hide();
+        // $target.hide();
+        // $target.siblings('.dashicons-edit').show();
       }else if($target.is('input.collapsible-row')){ //-------------checkbox collapsible row
         var $container = $target.closest('.container');
         if($target.is(':checked')){
@@ -313,50 +351,27 @@
         }
       }
 
-    });
-    /*
-      Collapsible / tabs rows
-    */
-    $grid.change('input', function(event){
-      var $target = $(event.target);
-      if($target.is('.cf7sg-collapsible-title label input[type="text"]')){ //------- Collapsible title
-        $target.siblings('input[type="hidden"]').val($target.val());
-      }else if( $target.is('.cf7sg-collapsible-title label input[type="checkbox"]')){ //------- Collapsible title toggled
-        var $title = $target.closest('.cf7sg-collapsible-title');
-        if($target.is(':checked')){
-          $title.append($('#grid-collapsible-with-toggle').html());
-          $title.closest('.container.cf7sg-collapsible').addClass('with-toggle');
-        }else{
-          $('.toggle', $title).remove();
-          $title.closest('.container.cf7sg-collapsible').removeClass('with-toggle');
-        }
-      }else if($target.is('ul.cf7-sg-tabs-list li label input[type="text"]')){ //------- Tabs title
-        $target.parent().siblings('a').text($target.val());
-      }else if($target.is('label.table-row-button input')){
-        $target.closest('.row.cf7-sg-table').attr('data-button',$target.val());
-      }
-    });
-    /*
-      Column controls, show/hide contols, add column, and refresh select dropdowns for colum size on addition
-    */
-    $grid.on('click', $('.column-control'), function(event){
-      var $target = $(event.target);
+
+      /*
+        Column controls, show/hide contols, add column, and refresh select dropdowns for colum size on addition
+      */
+
       var $parentColumn ;
       if( $target.is('.columns')){
         $parentColumn = $target;
       }else{
         $parentColumn = $target.closest('.columns');
       }
-      //let's close any column controls if the event is not from a control box
-      if(0===$target.closest('.grid-controls').length ){
-        $('.grid-column .grid-controls', $grid).hide();
-        $('.grid-column .column-control.dashicons-no-alt', $grid).hide();
-        $('.grid-column .column-control.dashicons-edit', $grid).show();
-        //close any ui fields if any
-        if(cf7grid.ui && !$target.is('.cf7-field-inner *')){
-          $('.grid-column .cf7-field-inner span.dashicons').trigger('click');
-        }
-      }
+      //let's close any column controls : taken care by closeAllControls
+      // if(0===$target.closest('.grid-controls').length ){
+      //   $('.grid-column .grid-controls', $grid).hide();
+      //   $('.grid-column .column-control.dashicons-no-alt', $grid).hide();
+      //   $('.grid-column .column-control.dashicons-edit', $grid).show();
+      //   //close any ui fields if any
+      //   if(cf7grid.ui && !$target.is('.cf7-field-inner *')){
+      //     $('.grid-column .cf7-field-inner span.dashicons').trigger('click');
+      //   }
+      // }
       //verify which target was clicked
       if( $target.is('.dashicons-edit.column-control') ){ //------------------show controls
         //now show this control
@@ -464,58 +479,35 @@
         $newColumn.changeColumnSize('',columnsizes[newSize]);
         $parentColumn.after($newColumn);
       }
-    });
-    /*
-     Column UI fields
-    */
-    var wpcf7Value = '';
-    if(cf7grid.ui){
-      $grid.on('click', 'div.cf7-field-inner', function(event){
-        var $target = $(event.target);
+      /*
+       Column UI fields
+      */
+      if(cf7grid.ui){
+        //close any open ui fields
+        closeAlluiFields();
         if($target.is('.cf7-field-inner p.content')){
-          $target.siblings('span.dashicons').show();
-          $target.hide();
-          var $input = $target.siblings(':input');
-          $input.show().focus();
-          if($input.is('textarea')){
-            $input.attr('id', 'wpcf7-form');
-            wpcf7Value = $input.val();
-          }else{
-            changeTextarea();
-          }
-          $target.parent().toggleSiblingUIFields();
+          $target.parent().showUIfield();
         }else if($target.is('.cf7-field-inner span.dashicons')){
-          $target.hide();
-          if($target.parent().is('.cf7-field-type')) changeTextarea();
-          $target.siblings(':input').hide().attr('id', '');
-          $target.siblings('p.content').show();
+          //field will be closed by closeAlluiFields
         }else if('none'!==$('#wpcf7-form').css('display') && !$target.is('#wpcf7-form')){
           changeTextarea();
         }
-      });
-      $grid.on('change', 'div.cf7-field-inner', function(event){
-        var $target = $(event.target);
-        if($target.is('textarea')){
-          var label = $target.scanCF7Tag();
-          $target.siblings('p.content').html(label);//.show();
-          $target.parent().siblings('textarea.grid-input').updateGridForm();
-        }else if($target.is('input')){
-          $target.siblings('p.content').html($target.val());
-          $target.parent().siblings('textarea.grid-input').updateGridForm();
-        }
-      });
-      // capture tab and move to the next field
+      }
+    });
+
+    // capture tab and move to the next field
+    if(cf7grid.ui){
       $grid.keydown('div.cf7-field-inner', function(event){
         if(9 !== event.which ){//tab
           return;
         }
         $target = $(event.target);
         if($target.is('div.cf7-field-inner :input')){
-          $target.siblings('span.dashicons').trigger('click');
+          $target.closeUIfield();
           var $next = $target.parent().next('div.cf7-field-inner');
           if($next.length>0){
-            $next.find('p.content').trigger('click');
-            event.preventDefault();
+            $next.showUIfield();
+            event.preventDefault(); //stop tab focus on this element.
           }
         }
       });
@@ -544,18 +536,7 @@
         $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
       }
     });
-    //trigger a change on the textarea#wpcf7-form field if its value has changed
-    function changeTextarea(finalise = false){
-      if(cf7grid.ui){
-        var $lastTA = $('#wpcf7-form');
-        if($lastTA.length >0 && wpcf7Value !== $lastTA.val()){
-          wpcf7Value = '';
-          $lastTA.trigger('change');
-        }else if(finalise){
-          $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
-        }
-      }
-    }
+
     //initial construction of grid form
     buildGridForm();
     $grid.on('build-grid', function(){
@@ -563,8 +544,60 @@
     });
     //grid is ready
     $wpcf7Editor.trigger('grid-ready');
-  });
+  }); //end document ready
+  //function to close any ui fields
+  function closeAlluiFields(){
+    $('.cf7-field-inner :input:visible').each(function(){
+      $(this).closeUIfield();
+    });
+  }
+  //close controls row/column
+  function closeAllControls(){
+    $('.grid-controls:visible', $grid).each(function(){
+      $(this).hide();
+      $(this).siblings('.dashicons-no-alt').hide();
+      $(this).siblings('.dashicons-edit').show();
+    });
+  }
+  //trigger a change on the textarea#wpcf7-form field if its value has changed
+  function changeTextarea(finalise = false){
+    if(cf7grid.ui){
+      var $lastTA = $('#wpcf7-form');
+      if($lastTA.length >0 && wpcf7Value !== $lastTA.val()){
+        wpcf7Value = '';
+        $lastTA.trigger('change');
+      }else if(finalise){
+        $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
+      }
+    }
+  }
   /* some function definitions...*/
+  $.fn.closeUIfield = function(){
+    if(!$(this).is('.cf7-field-inner :input:visible')){
+      return $(this);
+    }
+    if($(this).parent().is('.cf7-field-type')) changeTextarea();
+    $(this).hide().attr('id', '');
+    $(this).siblings('.dashicons-no-alt').hide();
+    $(this).siblings('.content').show();
+    return $(this);
+  }
+  $.fn.showUIfield = function(){
+    if(!$(this).is('.cf7-field-inner')){
+      return $(this);
+    }
+    $(this).find('p.content').hide();
+    $(this).find('span.dashicons').show();
+    var $input = $(':input', $(this)).show();
+    $input.focus();
+    if($input.is('textarea')){
+      $input.attr('id', 'wpcf7-form');
+      wpcf7Value = $input.val();
+    }else{
+      changeTextarea();
+    }
+    return $(this);
+  }
   $.fn.html2gui = function(html=''){
     if(html.length === 0){
       //get the fields from the textarea
