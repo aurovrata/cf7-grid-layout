@@ -8,7 +8,7 @@
   var columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
   var $wpcf7Editor,$grid,$rowControl = null;
   //graphics UI template pattern
-  var $pattern = $('<div>').html(cf7grid.preHTML+'\\s*(\\[.*\\s*\\])+\\s*'+cf7grid.postHTML);
+  var $pattern = $('<div>').html(cf7grid.preHTML+'\\s*(\\[.*\\s*\\].*\\s*)+\\s*'+cf7grid.postHTML);
   var required = cf7grid.requiredHTML.replace('*', '\\*');
   // console.log('r:'+required);
   $pattern.find('label').html('((\\s*.*)('+required+'){1}|(\\s*.*))');
@@ -22,8 +22,8 @@
     $grid = $('#grid-form');
     $rowControl = $('#top-grid-controls');
 
-    /*Build grid from existing form
-     ----------------------------------------------------------- BUILD UI FORM
+    /*
+    Build grid from existing form------------------------- BUILD UI FORM
     */
     function buildGridForm(){
       var formhtml = $wpcf7Editor.text();
@@ -676,12 +676,22 @@
     var classes = $('#grid-col div.cf7-field-type').attr('class');
     classes += " "+ type.join(' ');
     // $parent.removeClass('required');
-    if(isRequired) classes += ' required';//$parent.addClass('required');
-    if(count>1) classes += ' cf7-tags-'+count;
+    if(isRequired) classes += ' required';//$parent.addClass('required').
+    var $parentColumn = $parent.closest('.columns');
+    if($parentColumn.is('[class*="cf7-tags-"]')){
+      $parentColumn.removeClass(function (index, className) {
+        return (className.match (/(^|\s)cf7-tags-\S+/g) || []).join(' ');
+      });
+    }
+    if(count>1){
+      classes += ' cf7-tags-'+count;
+      $parentColumn.addClass('cf7-tags-'+count);
+    }
     $parent.attr('class',classes);
     if(isSubmit){
       $parent.parent().addClass('submit-field');
     }
+
     return label;
   }
   $.fn.updateGridForm = function(){

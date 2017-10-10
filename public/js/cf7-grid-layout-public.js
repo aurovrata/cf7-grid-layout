@@ -12,9 +12,9 @@
     }
     var $warning = $('<span class="cf7sg-validation-warning">'+msg+'<span class="confirm-button">ok</span></span>');
     $(this).after($warning);
-    $warning.delay(5000).fadeOut('slow', function(){
-      $(this).remove();
-    });
+    // $warning.delay(5000).fadeOut('slow', function(){
+    //   $(this).remove();
+    // });
   }
 
   $(document).ready( function(){
