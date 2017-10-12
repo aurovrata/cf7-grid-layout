@@ -256,8 +256,12 @@
     //grid click event delegation
     $grid.on('click', function(event){
       var $target = $(event.target);
-      if($target.is(':input:visible')){
-        return false;
+      switch(true){
+        case $target.is('input[type="text"]:visible'):
+        case $target.is('textarea:visible'): //click on a field.
+        case $target.is('select:visible'):
+          return true;
+          break;
       }
       //close any open row/column controls
       closeAllControls();

@@ -202,6 +202,7 @@ input.select2-search__field{
     border-radius: 3px;
     font-size: 110%;
     font-weight: bold;
+    color: white;
 }
 .cf7-smart-grid.has-grid .wpcf7-save {
     background: transparent;
