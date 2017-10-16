@@ -176,8 +176,11 @@ textarea.grid-input {
 #grid-form .row-controls .dashicons {
     margin-top: 3px;
 }
-#grid-form > .container .row:first-child > .columns:first-child > .grid-column .dashicons-trash.column-control{
+#grid-form .row > div:nth-last-child(2) > .grid-column .dashicons-trash.column-control {
     display: none;
+}
+#grid-form .row .columns + .columns > .grid-column .dashicons-trash.column-control {
+    display: inline-block;
 }
 #grid-form > .container > .row:first-child > .columns:first-child .dashicons-move.column-control {
     margin-left: calc(50% - 45px);

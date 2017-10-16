@@ -13,7 +13,7 @@
  * @package           Cf7_Grid_Layout
  *
  * @wordpress-plugin
- * Plugin Name:       CF7 Grid Layout 
+ * Plugin Name:       CF7 Grid Layout
  * Plugin URI:        http://wordpress.syllogic.in
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
@@ -30,6 +30,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 define('WPCF7_AUTOP', false);
+define( 'CF7_GRID_VERSION', '1.0.0' );
 
 /**
  * The code that runs during plugin activation.
@@ -68,7 +69,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-cf7-grid-layout.php';
  * @since    1.0.0
  */
 function run_cf7_grid_layout() {
-	$plugin = new Cf7_Grid_Layout();
+	$plugin = new Cf7_Grid_Layout(CF7_GRID_VERSION);
 	$plugin->run();
 
 }
