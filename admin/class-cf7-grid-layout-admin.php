@@ -444,12 +444,15 @@ class Cf7_Grid_Layout_Admin {
   	$args['id'] = $post_id;
 
   	$args['title'] = isset( $_POST['post_title'] ) ? sanitize_title($_POST['post_title'], 'Contact Form', 'save') : null;
-  	$args['locale'] = isset( $_POST['wpcf7-locale'] ) ? $_POST['wpcf7-locale'] : null;
-  	$args['form'] = isset( $_POST['wpcf7-form'] ) ? $_POST['wpcf7-form'] : '';
+  	$args['locale'] = isset( $_POST['wpcf7-locale'] ) ? sanitize_text_field($_POST['wpcf7-locale']) : null;
+  	$args['form'] = isset( $_POST['wpcf7-form'] ) ? sanitize_textarea_field($_POST['wpcf7-form']) : '';
   	$args['mail'] = isset( $_POST['wpcf7-mail'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail'] ): array();
   	$args['mail_2'] = isset( $_POST['wpcf7-mail-2'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail-2'] ): array();
   	$args['messages'] = isset( $_POST['wpcf7-messages'] ) ? $_POST['wpcf7-messages'] : array();
-  	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] ) ? $_POST['wpcf7-additional-settings'] : '';
+	foreach($args['messages'] as $key=>$value){
+		$args['messages'][$key] = sanitize_text_field($value);
+	}
+  	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] ) ? sanitize_textarea_field($_POST['wpcf7-additional-settings']) : '';
 
     //need to unhook this function so as not to loop infinitely
     //debug_msg($args, 'saving cf7 posts');
@@ -519,14 +522,15 @@ class Cf7_Grid_Layout_Admin {
       wp_die();
     }
 
-    $cf7_key = $_POST['cf7_key'];
+    $cf7_key = sanitize_text_field($_POST['cf7_key']);
     $sub_forms = get_posts(array(
       'post_type' => 'wpcf7_contact_form',
       'post_name__in' => array($cf7_key)
     ));
     if(!empty($sub_forms)){
       if(isset($_POST['update'])){
-        $parent = get_post($_POST['id']);
+        $id = sanitize_text_field($_POST['id']);
+        $parent = get_post($id);
         if( strtotime($parent->post_modified) < strtotime($sub_forms[0]->post_modified) ){
           $form = get_post_meta($sub_forms[0]->ID, '_form', true);;
           echo $form;
@@ -604,7 +608,7 @@ class Cf7_Grid_Layout_Admin {
    * Hooked on 'wpcf7_save_contact_form'
    * @since 1.0.0
    * @param  WPCF7_Contact_Form $cf7_form  cf7 form object
-  **/
+  */
   public function save_factory_metas($cf7_form){
     $cf7_post_id = $cf7_form->id();
     //get the tags used in this form
@@ -615,6 +619,11 @@ class Cf7_Grid_Layout_Admin {
         $taxonomies = array();
       }
       foreach($taxonomies as $taxonomy){
+        //sanitize fields before saving into the DB.
+        foreach($taxonomy as $key=>$value){
+          $key = sanitize_key($key);
+          $taxonomy[$key] =  sanitize_text_field($value);
+        }
         $created_taxonomies[$taxonomy['slug']] = $taxonomy;
       }
       //debug_msg($created_taxonomies);

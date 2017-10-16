@@ -436,7 +436,7 @@ class Cf7_Grid_Layout_Public {
       wp_send_json_error(array('message'=>'nonce failed'));
       wp_die();
     }
-    $cf7_id = $_POST['id'];
+    $cf7_id = sanitize_text_field($_POST['id']);
 
     if(!wpcf7_verify_nonce($_POST['nonce'], $cf7_id)){
       wp_send_json_error(array('message'=>'nonce failed'));
@@ -447,7 +447,7 @@ class Cf7_Grid_Layout_Public {
       $tabs_fields =  json_decode(stripslashes($_POST['tabs_fields']));
       if(empty($tabs_fields)) $tabs_fields = array();
       if(!is_array($tabs_fields)) $tabs_fields = array($tabs_fields);
-			//validate each field name as text,
+			//validate each field name as text, sanitize.
 			$sanitised_tab_fields = array();
 			foreach($tabs_fields as $field){
 				$sanitised_tab_fields[] = sanitize_text_field($field);
@@ -659,7 +659,7 @@ class Cf7_Grid_Layout_Public {
 
     $name = $tag->name;
   	$value = isset( $_POST[$name] )
-  		? trim( strtr( (string) $_POST[$name], "\n", " " ) ): '';
+  		? trim( strtr( (string) sanitize_text_field($_POST[$name]), "\n", " " ) ): '';
 
 
   	if ( $tag->is_required() && '' == $value ) {
@@ -667,38 +667,7 @@ class Cf7_Grid_Layout_Public {
     }
     return $result;
   }
-  /**
-	 * Filter the validation results of cf7 plugin. Resets the results for array fields
-	 * @since 1.0.0
-   * @param WPCF7_Validation $results   validation object
-   * @param Array $tags   an array of cf7 tag used in this form
-   * @return WPCF7_Validation  validation result
-	 */
-  // public function validate_array_values($results, $tag){
-  //   /*
-  //   TODO: see if $resutls[name] can be replaced from field name to <field-name>-<index> so that error msg insertion can take place accurately on the front end.
-  //   This woudl also require that the js file that builds array fields (tabs/tables) also replaces the class in teh outer span with an indexed one,
-  //   span.wpcf7-form-control-wrap.<field-name> to span.wpcf7-form-control-wrap.<field-name>-<index>
-  //   */
-  //   $tag_obj = new WPCF7_FormTag( $tag );
-  //
-  // 	$name = $tag_obj->name;
-  //   //reset the $_POST data as cf7 expect single value
-  //   if( isset($_POST[$name]) && is_array($_POST[$name]) ){
-  //     $values = $_POST[$name];
-  //     $_POST[$name] = $values[0];
-  //     //temporarily remove this filter
-  //     remove_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
-  //     for($idx=1; $idx<sizeof($values); $idx++){
-  //       $_POST[$name.'_'.$idx] =$values[$idx];
-  //       $tag['name'] = $name.'_'.$idx;
-  //       apply_filters("wpcf7_validate_{$tag_obj->type}", $results, $tag);
-  //     }
-  //     //reapply this filter
-  //     add_filter("wpcf7_validate_{$tag_obj->type}", array($this, 'validate_array_values'), 5,2);
-  //   }
-  //   return $results;
-  // }
+
   /**
    * Final validation with all values submitted for inter dependent validation
    * Hooked to filter 'wpcf7_validate', sets up the final $results object
