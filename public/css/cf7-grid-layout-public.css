@@ -172,6 +172,10 @@ input.select2-search__field{
 .cf7-smart-grid.has-grid .wpcf7-form-control {
     min-height: 34px;
 }
+.cf7-smart-grid.has-grid .wpcf7-form-control.nice-select {
+    line-height: 32px;
+    height: 34px;
+}
 .cf7-smart-grid.has-grid .wpcf7-form-control-wrap .select2-selection__arrow {
     min-height: 34px;
 }

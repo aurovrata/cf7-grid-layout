@@ -539,7 +539,7 @@ class Cf7_Grid_Layout_Public {
 		return $grid_fields;
 	}
   /**
-  *
+  * Consolidates submitted data from table and tab fields into arrays.
   *
   *@since 1.0.0
   *@param string $field_name a cf7 form field name which is part of tabs or table grid section.
@@ -695,12 +695,12 @@ class Cf7_Grid_Layout_Public {
           foreach($values as $index=>$value){
             if(is_array($value)){
               foreach($value as $row=>$row_value){
-                $sg_field_tag = $tag;
+                $sg_field_tag = clone $tag;
                 $sg_field_tag['name'] = $tag['name'].$index.$row;
                 $results = apply_filters("wpcf7_validate_{$tag['type']}", $results, $sg_field_tag);
               }
             }else{
-              $sg_field_tag = $tag;
+              $sg_field_tag = clone $tag;
               $sg_field_tag['name'] = $tag['name'].$index;
               $results = apply_filters("wpcf7_validate_{$tag['type']}", $results, $sg_field_tag);
             }

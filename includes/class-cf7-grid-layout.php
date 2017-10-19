@@ -166,13 +166,15 @@ class Cf7_Grid_Layout {
     //add some metabox to the wpcf7_contact_form post type
     $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'main_editor_meta_box' );
     $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'info_meta_box' );
+    $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'helper_meta_box');
     //save the post
     $this->loader->add_action('save_post_wpcf7_contact_form', $plugin_admin, 'save_post', 10,3);
     //ajax load cf7 form content
     $this->loader->add_action('wp_ajax_get_cf7_content', $plugin_admin, 'get_cf7_content');
     //hook for adding fields to sumit action metabox
     $this->loader->add_filter('post_submitbox_misc_actions', $plugin_admin, 'cf7_post_submit_action' ,10);
-
+    //cusotm sanitation rules for forms
+    $this->loader->add_filter('wp_kses_allowed_html', $plugin_admin, 'custom_kses_rules' ,10, 2);
     /*
     CF7 Hooks
     */
