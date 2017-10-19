@@ -405,6 +405,30 @@ class Cf7_Grid_Layout_Admin {
   	require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-info-metabox-display.php';
   }
   /**
+  * Function to add the metabox to the cf7 post edit screen
+  * This adds the helper, hooked on 'add_meta_boxes'
+  * @since 1.1.0
+  */
+  public function helper_meta_box() {
+    //add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args).
+    if(class_exists('WPCF7_ContactForm') &&  post_type_exists( WPCF7_ContactForm::post_type ) ) {
+      add_meta_box( 'meta-box-cf7sg-helper',
+        __( 'Actions & Filters', 'cf7-grid-layout' ),
+        array($this , 'helper_metabox_display'),
+        WPCF7_ContactForm::post_type,
+        'side',
+        'low'
+      );
+    }
+  }
+  /**
+  * Callback function to disolay the helper meta box
+  * @since 1.0.0
+  */
+  public function helper_metabox_display($post){
+    require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-helper-metabox-display.php';
+  }
+  /**
    * Display the editor panels (wpcf7 / codemirror / grid)
    *
    * @since 1.0.0
@@ -443,13 +467,20 @@ class Cf7_Grid_Layout_Admin {
     $args = $_REQUEST;
   	$args['id'] = $post_id;
 
-  	$args['title'] = isset( $_POST['post_title'] ) ? sanitize_title($_POST['post_title'], 'Contact Form', 'save') : null;
-  	$args['locale'] = isset( $_POST['wpcf7-locale'] ) ? $_POST['wpcf7-locale'] : null;
-  	$args['form'] = isset( $_POST['wpcf7-form'] ) ? $_POST['wpcf7-form'] : '';
+  	$args['title'] = isset( $_POST['post_title'] ) ? sanitize_text_field($_POST['post_title'], 'Contact Form', 'save') : null;
+  	$args['locale'] = isset( $_POST['wpcf7-locale'] ) ? sanitize_text_field($_POST['wpcf7-locale']) : null;
+  	$args['form'] = '';
+    $allowed_tags = wp_kses_allowed_html( 'post' ); //filtered in function below.
+    if(isset( $_POST['wpcf7-form'] )){
+      $args['form'] = wp_kses($_POST['wpcf7-form'], $allowed_tags);
+    }
   	$args['mail'] = isset( $_POST['wpcf7-mail'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail'] ): array();
   	$args['mail_2'] = isset( $_POST['wpcf7-mail-2'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail-2'] ): array();
   	$args['messages'] = isset( $_POST['wpcf7-messages'] ) ? $_POST['wpcf7-messages'] : array();
-  	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] ) ? $_POST['wpcf7-additional-settings'] : '';
+	foreach($args['messages'] as $key=>$value){
+		$args['messages'][$key] = sanitize_text_field($value);
+	}
+  	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] ) ? sanitize_textarea_field($_POST['wpcf7-additional-settings']) : '';
 
     //need to unhook this function so as not to loop infinitely
     //debug_msg($args, 'saving cf7 posts');
@@ -492,6 +523,27 @@ class Cf7_Grid_Layout_Admin {
     update_post_meta($post_id, '_cf7sg_has_tables', $has_tables);
   }
   /**
+  * Filtered allowed html tags & attributes, add data-button to div tags to ensure forms are saved properly.
+  * Hooked on 'wp_kses_allowed_html'
+  *@since 1.0.0
+  *@param array $allowed array of allowed tags and attributes.
+  *@param mixed $context  context in which content is filtered.
+  *@return array  allowed tags and ttribtues.
+  */
+  public function custom_kses_rules($allowed, $context){
+    if(is_array($context)){
+      return $allowed;
+    }
+    if('post'===$context){
+       $allowed['div']['data-button'] = true; //table buttons.
+       $allowed['div']['data-form'] = true; //sub-forms.
+       $allowed['div']['data-on'] = true; //toggles.
+       $allowed['div']['data-off'] = true; //toggles.
+       $allowed['div']['data-config-field'] = true; //cf7 plugin.
+    }
+    return $allowed;
+  }
+  /**
     * Filters the default form loaded when a new CF7 form is created
     * Hooked on
     * @since 1.0
@@ -519,14 +571,15 @@ class Cf7_Grid_Layout_Admin {
       wp_die();
     }
 
-    $cf7_key = $_POST['cf7_key'];
+    $cf7_key = sanitize_text_field($_POST['cf7_key']);
     $sub_forms = get_posts(array(
       'post_type' => 'wpcf7_contact_form',
       'post_name__in' => array($cf7_key)
     ));
     if(!empty($sub_forms)){
       if(isset($_POST['update'])){
-        $parent = get_post($_POST['id']);
+        $id = sanitize_text_field($_POST['id']);
+        $parent = get_post($id);
         if( strtotime($parent->post_modified) < strtotime($sub_forms[0]->post_modified) ){
           $form = get_post_meta($sub_forms[0]->ID, '_form', true);;
           echo $form;
@@ -604,7 +657,7 @@ class Cf7_Grid_Layout_Admin {
    * Hooked on 'wpcf7_save_contact_form'
    * @since 1.0.0
    * @param  WPCF7_Contact_Form $cf7_form  cf7 form object
-  **/
+  */
   public function save_factory_metas($cf7_form){
     $cf7_post_id = $cf7_form->id();
     //get the tags used in this form
@@ -615,6 +668,11 @@ class Cf7_Grid_Layout_Admin {
         $taxonomies = array();
       }
       foreach($taxonomies as $taxonomy){
+        //sanitize fields before saving into the DB.
+        foreach($taxonomy as $key=>$value){
+          $key = sanitize_key($key);
+          $taxonomy[$key] =  sanitize_text_field($value);
+        }
         $created_taxonomies[$taxonomy['slug']] = $taxonomy;
       }
       //debug_msg($created_taxonomies);

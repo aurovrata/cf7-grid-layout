@@ -66,10 +66,10 @@ class Cf7_Grid_Layout {
 	 *
 	 * @since    1.0.0
 	 */
-	public function __construct() {
+	public function __construct($version) {
 
 		$this->plugin_name = 'cf7-grid-layout';
-		$this->version = '1.0.0';
+		$this->version = $version;
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -166,13 +166,15 @@ class Cf7_Grid_Layout {
     //add some metabox to the wpcf7_contact_form post type
     $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'main_editor_meta_box' );
     $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'info_meta_box' );
+    $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'helper_meta_box');
     //save the post
     $this->loader->add_action('save_post_wpcf7_contact_form', $plugin_admin, 'save_post', 10,3);
     //ajax load cf7 form content
     $this->loader->add_action('wp_ajax_get_cf7_content', $plugin_admin, 'get_cf7_content');
     //hook for adding fields to sumit action metabox
     $this->loader->add_filter('post_submitbox_misc_actions', $plugin_admin, 'cf7_post_submit_action' ,10);
-
+    //cusotm sanitation rules for forms
+    $this->loader->add_filter('wp_kses_allowed_html', $plugin_admin, 'custom_kses_rules' ,10, 2);
     /*
     CF7 Hooks
     */
@@ -219,7 +221,7 @@ class Cf7_Grid_Layout {
     //instroduced a dynamic taxonomy droppdown tag for forms
     $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_cf7_shortcode' );
     //setup individual tag filers
-    $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_tag_filters', 10, 1 );
+    $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_grid_values', 5, 1 );
     //filter cf7 validation
     $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 30, 2 );
     //benchmark validation

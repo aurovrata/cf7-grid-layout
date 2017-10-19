@@ -162,14 +162,16 @@
       $('#cf7sg-embeded-forms').val(JSON.stringify(embeds));
       //scan and submit tabs & tables fields.
       var tableFields = [];
-      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)\s*(.[^\[]*)\]/img;
+      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img;
       var hasTables = false;
       $('.row.cf7-sg-table', $formNoEmbeds).each(function(){
         var search = $(this).html();
         var match = cf7TagRegexp.exec(search);
+        //console.log('search:'+search);
         while (match != null) {
           //ttFields[ match[2] ] = match[1];
           tableFields[tableFields.length] = match[2];
+          //console.log('match'+match[2]);
           match = cf7TagRegexp.exec(search); //get the next match.
         }
         hasTables = true;
@@ -181,7 +183,8 @@
         var search = $(this).html();
         var match = cf7TagRegexp.exec(search);
         while (match != null) {
-          if( -1 === tableFields.indexOf(match[2]) ) tabFields[tabFields.length] = match[2];
+          //if( -1 === tableFields.indexOf(match[2]) ) /*removed as now want to idenify fields which are both tabs and table fields*/
+          tabFields[tabFields.length] = match[2];
           //ttFields[match[2]] = match[1];
           match = cf7TagRegexp.exec(search); //get the next match.
         }
