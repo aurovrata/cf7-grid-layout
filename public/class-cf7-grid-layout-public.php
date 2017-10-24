@@ -277,9 +277,9 @@ class Cf7_Grid_Layout_Public {
     //allow custom script print
     do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
     //form id
-    $css_id = apply_filters('cf7_smart_grid_form_id', $cf7_key, $attr);
+    $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
     $classes = implode(' ', array_keys($class));
-    $output = '<div id="cf7sg-container"><div id="cf7sg-form-' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
+    $output = '<div id="cf7sg-container"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
     return $output;
   }
 
@@ -747,7 +747,7 @@ class Cf7_Grid_Layout_Public {
   }
   /**
    * Function to save custom options values added to tagged select2 fields.
-   * Hooked 'cf7_2_post_form_posted'
+   * Hooks action 'cf7_2_post_form_posted'
    * @since 1.0.0
    * @param      string    $key     form unique key.
    * @param     Array    $submitted_data    array of field-name=>value pairs submitted in form
@@ -825,8 +825,9 @@ class Cf7_Grid_Layout_Public {
              * @param  string  $title  new value being submitted for a new post title.
              * @param  string $post_type  the post type from which this dropdown was built
              * @param  array  $args  an array of additional parameters that was set in the tag, for example the taxonomy and terms from which to filter the posts for the dynamic list.
+             * @param  array  $submitted_data  array of other submitted $field=>$value pairs.
              */
-             $value[$idx] = apply_filters('cf7sg_dynamic_dropdown_new_post', $post_name, $field_name, $title, $post_type, $args);
+             $value[$idx] = apply_filters('cf7sg_dynamic_dropdown_new_post', $post_name, $field_name, $title, $post_type, $args, $submitted_data);
            }
            $idx++;
          }
@@ -839,8 +840,9 @@ class Cf7_Grid_Layout_Public {
           * Return updated values if any are custom values so that saved/draft submissions will reflect the correct value saved in the DB,
           * @param  array  $values  an array submitted values (several values can be submitted in the case of a tabbed/table input field).
           * @param  string  $field_name the name of the form field.
+          * @param  array  $submitted_data  array of other submitted $field=>$value pairs.
           */
-          $value = apply_filters('cf7sg_dynamic_dropdown_filter_select2_submission', $values, $field_name);
+          $value = apply_filters('cf7sg_dynamic_dropdown_filter_select2_submission', $values, $field_name, $submitted_data);
           break;
       }
       //Save the modified value, find which post field the field is mapped to
