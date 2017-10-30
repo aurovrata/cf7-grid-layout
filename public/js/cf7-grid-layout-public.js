@@ -3,7 +3,7 @@
 
   var trackTabsFields = []; //to keep track of fields that are converted to arrays.
   var trackTableFields = []; //to keep track of fields that are converted to arrays.
-  var panels = {}; //object to store cloned panels
+  var cf7sgPanels = {}; //object to store cloned panels
 
   /*warning messages used for in-form validation*/
   $.fn.cf7sgWarning = function(msg){
@@ -119,7 +119,7 @@
     //enable the tabs
     var $cf7Form_tabs = $('div.has-tabs form.wpcf7-form');
     if($cf7Form_tabs.length){
-      panels = {}; //object to store cloned panels
+      cf7sgPanels = {}; //object to store cloned panels
       $( ".cf7-sg-tabs",  $cf7Form_tabs).each(function(){
         $(this).tabs();
         //add a button to create more tabs
@@ -137,11 +137,11 @@
             }
           });
 
-          //finally store a clone of the paenl to be able to add new tabs
+          //finally store a clone of the panel to be able to add new tabs
           var $clonedP = $('<div>').append($panel.clone());
           //disable all inputs in the cloned panel so they don't get submitted.
           $(':input', $clonedP).prop('disabled', true);
-          panels[$panel.attr('id')] = $clonedP.html();
+          cf7sgPanels[$panel.attr('id')] = $clonedP.html();
         }
       });
       //trigger tabs ready event
@@ -361,8 +361,19 @@
     /*
      Smart Grid is now ready
     */
-    $('div.cf7-smart-grid form.wpcf7-form').trigger("cf7SmartGridReady");
-
+    var $form = $('div.cf7-smart-grid form.wpcf7-form');
+    $form.trigger("cf7SmartGridReady");
+    /**
+    * listen for cf7 submit invalid field event, and open parent sections and tabs.
+    *@since 1.1.0
+    */
+    $form.on('wpcf7:invalid', '.wpcf7-not-valid', function(e){
+      var $target = $(e.target);
+      if($target.is('.wpcf7-not-valid')){
+        var $section = $target.closest('.cf7sg-collapsible');
+        $section.accordion("option","active",0); //activate.
+      }
+    });
   });
   /*
     jQuery extended functions
@@ -475,7 +486,7 @@
     //append tab to list
     $tabList.append( $newTab );
     //new panel
-    var $newPanel = $( panels[firstTabId] );
+    var $newPanel = $( cf7sgPanels[firstTabId] );
     $newPanel.attr('id', panelId);
     //append new panel
     $(this).append($newPanel);
