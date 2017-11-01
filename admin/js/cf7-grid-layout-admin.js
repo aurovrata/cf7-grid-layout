@@ -97,7 +97,7 @@
         var text = $('.row.cf7-sg-table', $(this)).data('button');
         if(typeof text  == 'undefined'){
           text = 'Add Row';
-          $('.row.cf7-sg-table', $(this)).attr('data-button',text);
+          $(this).attr('data-button',text);
         }
         $ctrl.next('.table-row-button').children('input').val(text);
         //toggle disable the sibling input
@@ -239,7 +239,7 @@
       }else if($target.is('ul.cf7-sg-tabs-list li label input[type="text"]')){ //------- Tabs title
         $target.parent().siblings('a').text($target.val());
       }else if($target.is('label.table-row-button input')){
-        $target.closest('.row.cf7-sg-table').attr('data-button',$target.val());
+        $target.closest('.container.cf7-sg-table').attr('data-button',$target.val());
       }
       if(cf7grid.ui){
         if($target.is('.cf7-field-inner textarea')){

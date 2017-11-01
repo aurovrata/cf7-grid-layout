@@ -31,7 +31,16 @@
       $('.container.cf7-sg-table', $cf7Form_table).each(function(){
         var $table = $(this);
         var $row = $('.row.cf7-sg-table', $table);
-        var label = $row.data('button');
+        var label = 'Add Row';
+        //get label for button.
+        switch(true){
+          case $table[0].hasAttribute('data-row'):
+            label = $table.data('button');
+            break;
+          case $row[0].hasAttribute('data-row'): //bw compatibility.
+            label = $row.data('button');
+            break;
+        }
         //change the input and select fields to arrays for storage
         var trackFields = false;
         //  if($cf7Form_table.is('div.has-update form.wpcf7-form')) trackFields = 'table';
@@ -52,7 +61,9 @@
           $table.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="ui-button">'+label+'</a></div>');
         }
         //append a hidden clone of the first row which we can use to add
+        $row.attr('data-row','0');
         $row = $row.clone().addClass('cf7-sg-cloned-table-row');
+        $row.attr('data-row','-1');
         $table.append($row.hide());
         //disable all inputs from the clone row
         $(':input', $row).prop('disabled', true);
@@ -430,7 +441,7 @@
     var rowIdx = $table.children( '.row.cf7-sg-table').length - 1; //minus hidden row.
     var $cloneRow = $('.cf7-sg-cloned-table-row', $table);
     var $row = $cloneRow.clone();
-    $row.removeClass('cf7-sg-cloned-table-row');
+    $row.removeClass('cf7-sg-cloned-table-row').attr('data-row',rowIdx);
     //show row so select2 init properly
     if($footer.length>0){
       $footer.before($row.show());
@@ -465,7 +476,7 @@
     });
     //when the button is clicked, trigger a content increase for accordions to refresh
     $table.trigger('sgContentIncrease');
-    $table.trigger('sgRowAdded');
+    $table.trigger('sgRowAdded',rowIdx);
     return $(this);
   }
   //clone tabs, called on a div.cf7-sg-tabs
