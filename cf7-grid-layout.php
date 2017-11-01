@@ -16,7 +16,7 @@
  * Plugin Name:       CF7 Grid Layout
  * Plugin URI:        http://wordpress.syllogic.in
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Aurovrata V.
  * Author URI:        http://syllogic.in
  * License:           GPL-2.0+
