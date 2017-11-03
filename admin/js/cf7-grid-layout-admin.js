@@ -13,8 +13,19 @@
   // console.log('r:'+required);
   $pattern.find('label').html('((\\s*.*)('+required+'){1}|(\\s*.*))');
   $pattern.find('.info-tip').text('(.*\\s*)');
-  // console.log('p:'+$pattern.html());
+  console.log('p:'+$pattern.html());
   var templateRegex = new RegExp($pattern.html(), 'ig');
+  var seekTemplate = false;
+  var cssTemplate = 'div.field';
+  var $template = $('<div id="cf7sg-dummy">').append(cf7grid.preHTML+cf7grid.postHTML);
+  $template = $template.children();
+  if(1==$template.length && $template.find('label').length>0){
+    seekTemplate = true;
+    cssTemplate = $template.prop('nodeName');
+    if($template.prop('class').length>0){
+      cssTemplate += '.'+$template.attr('class').split(' ').join('.');
+    }
+  }
   var wpcf7Value = '';
 
 	$(document).ready( function(){
@@ -611,32 +622,38 @@
         return $(this);
       }
     }
+    var singleField = true;
+    var search = $('<div>').append(html);
 
-     var lines = html.split(/\r\n|\r|\n/g);
-     var search = '';
-     for(var i=0; i<lines.length; i++){
+    if(seekTemplate && 1==search.children(cssTemplate).length){
+      var lines = html.split(/\r\n|\r|\n/g);
+      search = '';
+      for(var i=0; i<lines.length; i++){
        search += lines[i].trim();
-     }
-     var match = templateRegex.exec(search);
-     if(null !== match){
-       //populate the fields
-       var $field = $('div.cf7-field-label', $(this));
-       $('input', $field).val(match[1]);
-       $('p.content', $field).html(match[1]);
-       $field = $('div.cf7-field-type', $(this));
-       var tag = $('textarea', $field).val(match[5]).scanCF7Tag();
-       $('p.content', $field).html(tag);
-       $field = $('div.cf7-field-tip', $(this));
-       $('input', $field).val(match[6]);
-       $('p.content', $field).html(match[6]);
-       //hide the textarea
-       $('textarea.grid-input', $(this)).hide();
-       //reset global regex
-       templateRegex.lastIndex = 0;
-     }else{ //this html does not match our templates
-       $('div.cf7-field-inner', $(this)).remove();
-     }
-   }
+      }
+      var match = templateRegex.exec(search);
+      if(null !== match){
+        //populate the fields
+        var $field = $('div.cf7-field-label', $(this));
+        $('input', $field).val(match[1]);
+        $('p.content', $field).html(match[1]);
+        $field = $('div.cf7-field-type', $(this));
+        var tag = $('textarea', $field).val(match[5]).scanCF7Tag();
+        $('p.content', $field).html(tag);
+        $field = $('div.cf7-field-tip', $(this));
+        $('input', $field).val(match[6]);
+        $('p.content', $field).html(match[6]);
+        //hide the textarea
+        $('textarea.grid-input', $(this)).hide();
+        //reset global regex
+        templateRegex.lastIndex = 0;
+      }else{ //this html does not match our templates
+        $('div.cf7-field-inner', $(this)).remove();
+      }
+    }else{//this html does not match our templates
+     $('div.cf7-field-inner', $(this)).remove();
+    }
+  }
 
   $.fn.scanCF7Tag = function(){
     var $this = $(this);
