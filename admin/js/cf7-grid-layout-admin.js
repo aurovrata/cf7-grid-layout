@@ -13,7 +13,7 @@
   // console.log('r:'+required);
   $pattern.find('label').html('((\\s*.*)('+required+'){1}|(\\s*.*))');
   $pattern.find('.info-tip').text('(.*\\s*)');
-  console.log('p:'+$pattern.html());
+  //console.log('p:'+$pattern.html());
   var templateRegex = new RegExp($pattern.html(), 'ig');
   var seekTemplate = false;
   var cssTemplate = 'div.field';

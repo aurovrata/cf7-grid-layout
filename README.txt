@@ -145,6 +145,8 @@ Similarly you can create a `css` subfolder in your theme folder and create a fil
 
 
 == Changelog ==
+= 1.0.2=
+* bug fix on double field entries.
 = 1.0.1 =
 * minor bug fix
 = 1.0 =
