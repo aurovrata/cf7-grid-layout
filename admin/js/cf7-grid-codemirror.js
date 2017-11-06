@@ -146,7 +146,7 @@
         );
         $('textarea#wpcf7-form-hidden').html(code);
         $formNoEmbeds = $('<div>').append(code);
-      }else if(codemirrorUpdated){
+      }else{//we are in text mode.
         $('textarea#wpcf7-form-hidden').html(cmEditor.getValue());
         $formNoEmbeds = $('<div>').append(cmEditor.getValue());
       }

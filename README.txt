@@ -145,6 +145,9 @@ Similarly you can create a `css` subfolder in your theme folder and create a fil
 
 
 == Changelog ==
+= 1.0.3=
+* bug fix on mixed grid ui mode.
+* bug fix on saving form from text mode with no changes.
 = 1.0.2=
 * bug fix on double field entries.
 = 1.0.1 =

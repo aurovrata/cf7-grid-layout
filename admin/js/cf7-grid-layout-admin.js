@@ -152,6 +152,7 @@
         $(this).html($(this).val());
       });
       /*--------------------------------------------------- if ui mode, then convert to gui template */
+      var $textareaSelected='';
       if(cf7grid.ui){
         $('div.columns', $grid).each(function(){
           if($(this).children().is('.container')) return true;
@@ -159,15 +160,20 @@
         });
       }else{
         //set the first textarea as our default tag consumer
-        var $textareaSelected = $('textarea', $grid).first();
+        $textareaSelected = $('textarea', $grid).first();
         $textareaSelected.attr('id', 'wpcf7-form');
+      }
         //change this to whichever is live
         $('textarea', $grid).live('focus', function(){
-          $textareaSelected.attr('id','');
-          $textareaSelected.html($textareaSelected.val()); //set its inner html
-          $textareaSelected = $(this).attr('id','wpcf7-form');
+          if($textareaSelected.length>0 && $textareaSelected.is('#wpcf7-form')){
+            $textareaSelected.attr('id','');
+            $textareaSelected.html($textareaSelected.val()); //set its inner html
+          }
+          if($(this).is('.grid-input')){
+            $textareaSelected = $(this).attr('id','wpcf7-form');
+          }
         });
-      }
+      //}
     } //end buildGridForm()
 
 
