@@ -139,16 +139,17 @@ class Cf7_Grid_Layout_Public {
     wp_dequeue_style('contact-form-7');
   }
   /**
-   * Add the cf7 key to the hiddend fields so as not to have to load it after each submission.
-   * Hooked to
+   * Add the cf7 key to the hidden fields so as not to have to load it after each submission.
+   * Hooked to 'wpcf7_form_hidden_fields'
    * @since 1.0.0
    * @param      Array    $hidden     hidden fields to add to cf7 form.
    * @return      Array    $hidden     hidden fields to add to cf7 form.
   **/
-  public function set_hidden_key($hidden){
+  public function add_hidden_fields($hidden){
     $form = wpcf7_get_current_contact_form();
     $post = get_post($form->id());
     $hidden['_wpcf7_key'] = $post->post_name;
+    $hidden['_cf7sg_toggles'] = '';
     return $hidden;
   }
   /**
@@ -157,6 +158,7 @@ class Cf7_Grid_Layout_Public {
    * @since 1.0.0
   **/
   public function cf7_shortcode_request($output, $tag, $attr){
+
     if('contact-form-7' != $tag){
       return $output;
     }
@@ -168,7 +170,7 @@ class Cf7_Grid_Layout_Public {
 
     wp_enqueue_script('contact-form-7');
     wp_enqueue_script($this->plugin_name);
-    wp_localize_script( $this->plugin_name, 'cf7sg_ajaxData', array('url' => admin_url( 'admin-ajax.php' )));
+    wp_localize_script($this->plugin_name, 'cf7sg',array('url' => admin_url( 'admin-ajax.php' )));
 
     $class['has-validation']=true;
 
@@ -282,7 +284,30 @@ class Cf7_Grid_Layout_Public {
     $output = '<div id="cf7sg-container"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
     return $output;
   }
-
+  /**
+  * Function hooked on 'cf7_2_post_form_values' to load toggle status for saed submissions
+  *
+  *@since 1.1.0
+  *@param string $post_id saved submission post ID
+  */
+  public function load_saved_toggled_status($field_values){
+    if(!isset($field_values['map_post_id']) || empty($field_values['map_post_id'])){
+      return $field_values;
+    }
+    $post_id = $field_values['map_post_id'];
+    $toggles = get_post_meta($post_id, 'cf7sg_toggles_status', true);
+    //debug_msg($toggles, $post_id.' status ');
+    if(empty($toggles)) $toggles = array();
+    wp_enqueue_script($this->plugin_name);
+    wp_localize_script(
+      $this->plugin_name, 'cf7sg',
+      array(
+        'url' => admin_url( 'admin-ajax.php' ),
+        'toggles_status' => $toggles
+      )
+    );
+    return $field_values;
+  }
   /**
    * Update sub-forms in cf7 forms
    * Hooked to 'do_shortcode'
@@ -476,6 +501,7 @@ class Cf7_Grid_Layout_Public {
    * @return  Array    filtered submitted data.
   **/
   public function setup_grid_values($data){
+    //debug_msg($data, 'submitted');
     $cf7form = WPCF7_ContactForm::get_current();
     if(empty($cf7form) ){
       debug_msg("Unable to load submitted form");
@@ -499,6 +525,7 @@ class Cf7_Grid_Layout_Public {
         break;
       }
     }
+    debug_msg($data, 'consolidated data...');
     return $data;
   }
 	/**
@@ -549,11 +576,13 @@ class Cf7_Grid_Layout_Public {
   */
   private function consolidate_grid_submissions($field_name, $type, &$data){
     $values = array();
-    if(!isset($data[$field_name])){
-      return $values;
-    }
+    // if(!isset($data[$field_name])){
+    //   return $values;
+    // }
     $regex = '';
     $submitted_fields=array();
+    $max_fields =0;
+    $purge_fields=array();
     switch($type){
       case 'table':
         $index_suffix = '_row-';
@@ -561,6 +590,7 @@ class Cf7_Grid_Layout_Public {
         $values['']=$data[$field_name];
         //extract all relevant fields
         $submitted_fields = preg_grep($regex, array_keys($data));
+        $max_fields = sizeof($submitted_fields);
         break;
       case 'tab':
         $index_suffix = '_tab-';
@@ -568,11 +598,19 @@ class Cf7_Grid_Layout_Public {
         $values['']=$data[$field_name];
         //extract all relevant fields
         $submitted_fields = preg_grep($regex, array_keys($data));
+        foreach($submitted_fields as $field){
+          $idx = 1.0 * str_replace($field_name.'_tab-', '', $field);
+          if($max_fields < $idx)  $max_fields = $idx;
+        }
         break;
       case 'both':
         $regex = '/^'.preg_quote($field_name);
         $values[''] = array(); //init multi-dimensional array
-        $values[''][''] = $data[$field_name];
+        if(isset($data[$field_name])){
+          $values[''][''] = $data[$field_name];
+        }else{
+          $values[''][''] = null;
+        }
         //extract all relevant fields
         $submitted_fields = preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($data));
         //we also need the rows with tab index=0
@@ -582,6 +620,7 @@ class Cf7_Grid_Layout_Public {
         //if('other-rm-qty'==$field_name){
           // debug_msg($submitted_fields, 'Found fields '.$field_name);
         //}
+        $max_fields = sizeof($submitted_fields);
         break;
     }
 
@@ -589,15 +628,20 @@ class Cf7_Grid_Layout_Public {
     $tab_idx=0;
     $error_loop=false;
     $loop_counter_limit = apply_filters('cf7sg_set_max_tabs_limit', 10, $data['_wpcf7_key'], $data['_wpcf7']);
-    for($idx=1; ($idx <= sizeof($submitted_fields) && !$error_loop); $idx++){
+    for($idx=1; ($idx <= $max_fields && !$error_loop); $idx++){
       switch($type){
         case 'table':
         case 'tab':
           if(!isset($data[$field_name.$index_suffix.$idx])){
-            debug_msg('CF7SG ERROR: Missing grid field '.$field_name.$index_suffix.$idx);
-            continue;
+            /**
+            *assuming this field was not submitted as it was disabled, hence set to null.
+            * @since 1.0.0
+            */
+            $values[$index_suffix.$idx] = null;
+          }else{
+            $values[$index_suffix.$idx] = $data[$field_name.$index_suffix.$idx];
+            $purge_fields[$field_name.$index_suffix.$idx] = true;
           }
-          $values[$index_suffix.$idx] = $data[$field_name.$index_suffix.$idx];
           break;
         case 'both':
           //first attempt to look for the frist tab rows
@@ -608,9 +652,11 @@ class Cf7_Grid_Layout_Public {
           //}
           if(isset($data[$field_name.$tab_suffix.$row_suffix])){
             $values[$tab_suffix][$row_suffix] = $data[$field_name.$tab_suffix.$row_suffix];
+            $purge_fields[$field_name.$tab_suffix.$row_suffix] = true;
             //next loop, look for the next row within the same tab,
             $row_idx +=1;
           }else{
+
             $loop_counter=$tab_idx;
 						$loop = true;
             do{//move to next tab, and reset the row counter
@@ -624,13 +670,17 @@ class Cf7_Grid_Layout_Public {
               //init new tab row values array
               $values[$tab_suffix] = array();
               //keep looking for next tab if we don't find a value;
-              //if('other-rm-qty'==$field_name){
-                // debug_msg($idx.'Searching in next tab: '.$field_name.$tab_suffix.$row_suffix);
-              //}
+              /**
+              *if the frist row is not submitted then this may be in a toggled section which has been disabled.
+              * but we still need to keep looking for values in other tabs.
+              *@since 1.1.0
+              */
+              $values[$tab_suffix][$row_suffix] = null;
 							$loop = !isset($data[$field_name.$tab_suffix.$row_suffix]) && !$error_loop;
             }while($loop);
             if(!$error_loop) {
               $values[$tab_suffix][$row_suffix] = $data[$field_name.$tab_suffix.$row_suffix];
+              $purge_fields[$field_name.$tab_suffix.$row_suffix] = true;
               $row_idx +=1; //next loop, keep searching in thsi tab.
             }else{
               debug_msg($submitted_fields, 'CF7SG ERROR: Reached max tabs search loop for table field '.$field_name.' (cannot find any new rows above tab '.$tab_idx.' therefor abandoning search for remaining '.sizeof($submitted_fields)-$idx.' regex match in preg_grep result array listed below)');
@@ -641,7 +691,12 @@ class Cf7_Grid_Layout_Public {
       }//end switch.
     }//end for loop preg_grep array.
     if(!$error_loop){
-      $data = array_diff_assoc($data, $submitted_fields); //this will remove all the surplus fields
+      //debug_msg($purge_fields, 'purging ');
+      //debug_msg($data);
+      $data = array_udiff_uassoc($data, $purge_fields, function($a, $b){return 0;}, function($a, $b){
+        if ($a === $b) return 0;
+        return ($a > $b)? 1:-1;
+      }); //this will remove all the surplus fields
       $data[$field_name] = $values;
     }
     return $values;
@@ -655,6 +710,9 @@ class Cf7_Grid_Layout_Public {
    * @return WPCF7_Validation  validation result
   **/
   public function validate_required($result, $tag){
+    if(!isset( $_POST[$tag->name] )){
+      return $result; //not submitted hence disabled.
+    }
     $tag = new WPCF7_FormTag( $tag );
 
     $name = $tag->name;
@@ -670,15 +728,32 @@ class Cf7_Grid_Layout_Public {
 
   /**
    * Final validation with all values submitted for inter dependent validation
-   * Hooked to filter 'wpcf7_validate', sets up the final $results object
+   * Hooked to filter 'wpcf7_validate', sets up the final $result object
    * @since 1.0.0
-   * @param WPCF7_Validation $results   validation object
+   * @param WPCF7_Validation $result   validation object
    * @param Array $tags   an array of cf7 tag used in this form
    * @return WPCF7_Validation  validation result
   **/
-  public function filter_wpcf7_validate($results, $tags){
-    //get the submitted values
+  public function filter_wpcf7_validate($result, $tags){
+    /**
+    *@since 1.1.0
+    *reset the validatino result.
+    * this is required to dynamically disable required form fields & stop their validation.
+    * Disabled fields are not submitted but CF7 forces their values to empty and therefore flags requried fields as invalid at submission even if they are disabled.
+    * this bug was reported in the cf7 support forum:
+    * https://wordpress.org/support/topic/bug-javascript-disabled-fields-flagged-as-invalid/
+    **/
+    //debug_msg($result);
+    $result = new WPCF7_Validation();
+    //rebuild the default vaidation result.
     $cf7form = WPCF7_ContactForm::get_current();
+    $tags = $cf7form->scan_form_tags();
+		foreach ( $tags as $tag ) {
+      if(!isset($_POST[$tag['name']])) continue;//not submitted==disabled.
+			$type = $tag['type'];
+			$result = apply_filters( "wpcf7_validate_{$type}", $result, $tag );
+		}
+
     $submitted = WPCF7_Submission::get_instance();
     $data = $submitted->get_posted_data();
     $tags = $cf7form->scan_form_tags();
@@ -695,14 +770,20 @@ class Cf7_Grid_Layout_Public {
           foreach($values as $index=>$value){
             if(is_array($value)){
               foreach($value as $row=>$row_value){
+                if(!isset($_POST[$tag['name'].$index.$row])){
+                   continue;//not submitted==disabled.  @since 1.1.0
+                 }
                 $sg_field_tag = clone $tag;
                 $sg_field_tag['name'] = $tag['name'].$index.$row;
-                $results = apply_filters("wpcf7_validate_{$tag['type']}", $results, $sg_field_tag);
+                $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag);
               }
             }else{
+              if(!isset($_POST[$tag['name'].$index])){
+                continue; //not submitted==disabled. @since 1.1.0
+              }
               $sg_field_tag = clone $tag;
               $sg_field_tag['name'] = $tag['name'].$index;
-              $results = apply_filters("wpcf7_validate_{$tag['type']}", $results, $sg_field_tag);
+              $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag);
             }
           }
           break;
@@ -717,7 +798,7 @@ class Cf7_Grid_Layout_Public {
     * filter to validate the entire submission and check interdependency of fields
     * @since 1.0.0
     * @param Array  $validation  intially an empty array
-    * @param Array  $data   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs).
+    * @param Array  $data   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs) null values are fields which have not been disabled and not submitted such as those in toggled sections.
     * @param String  $form_key  unique form key to identify current form.
     * @param int  $form_id  cf7 form post ID.
     * @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
@@ -743,7 +824,30 @@ class Cf7_Grid_Layout_Public {
       }
     }
     //debug_msg
-    return $results;
+    return $result;
+  }
+  /**
+  * Function to save toggled collapsible sections status to open them up again for draft forms.
+  * Hooks action 'cf7_2_post_form_posted'
+  * @since 1.0.0
+  * @param      string    $key     form unique key.
+  * @param     Array    $submitted_data    array of field-name=>value pairs submitted in form
+  *@since 1.1.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function save_toggle_status($post_id, $key, $post_fields, $post_meta_fields, $submitted_data){
+    if(isset($submitted_data['_cf7sg_toggles'])){
+      $toggles = json_decode( stripslashes( $submitted_data['_cf7sg_toggles'] ) );
+      $toggles_array = array();
+      if(!empty($toggles)){
+        foreach($toggles as $key=>$value){
+          $toggles_array[$key] = sanitize_text_field($value);
+        }
+      }
+      //debug_msg($toggles_array, 'toggles status saved, ');
+      update_post_meta($post_id, 'cf7sg_toggles_status', $toggles_array);
+    }
   }
   /**
    * Function to save custom options values added to tagged select2 fields.
@@ -874,7 +978,7 @@ class Cf7_Grid_Layout_Public {
     }
   }
 	/**
-	 * Function to retrive dynamic-dropdown attributes
+	 * Function to retrieve dynamic-dropdown attributes
 	 *
 	 * @since 1.0.0
 	 * @param      WPCF7_FormTag    $tag     cf7 tag object of basetype dynamic_select.

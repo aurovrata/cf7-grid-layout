@@ -212,3 +212,22 @@ input.select2-search__field{
     background: transparent;
     color: #383838;
 }
+.cf7sg-collapsible .toggle {
+  /*max-width: 55px;*/
+  display: inline-block;
+  vertical-align: middle;
+  float: right;
+}
+.cf7sg-collapsible .toggle-light .toggle-on,
+.cf7sg-collapsible .toggle-light .toggle-off {
+  font-size: 0.75em;
+}
+.cf7sg-external-form {
+    margin-bottom: 5px;
+}
+#cf7sg-container .cf7-smart-grid.has-grid .container {
+    margin-bottom: 5px;
+}
+#cf7sg-container .cf7-smart-grid.has-grid .container:last-child {
+    margin-bottom: 0;
+}

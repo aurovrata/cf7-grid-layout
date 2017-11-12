@@ -204,8 +204,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_scripts' );
     $this->loader->add_action( 'wp_print_scripts', $plugin_public, 'dequeue_cf7_scripts',100 );
 		$this->loader->add_action( 'wp_print_styles', $plugin_public, 'dequeue_cf7_styles',100 );
-    $this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'cf7_shortcode_request',10,3 );
-
+    $this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'cf7_shortcode_request',5,3 );
     //save grid fields
     $this->loader->add_action( 'wp_ajax_nopriv_save_grid_fields', $plugin_public, 'save_grid_fields' );
     $this->loader->add_action( 'wp_ajax_save_grid_fields', $plugin_public, 'save_grid_fields' );
@@ -217,7 +216,8 @@ class Cf7_Grid_Layout {
     //disable autloading of cf7 plugin scripts
     //add_filter( 'wpcf7_load_js',  '__return_false' );
     //add_filter( 'wpcf7_load_css', '__return_false' );
-
+    //add hidden toggle status field when form loads
+    $this->loader->add_filter( 'wpcf7_form_hidden_fields',  $plugin_public, 'add_hidden_fields' );
     //instroduced a dynamic taxonomy droppdown tag for forms
     $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_cf7_shortcode' );
     //setup individual tag filers
@@ -227,11 +227,14 @@ class Cf7_Grid_Layout {
     //benchmark validation
     $this->loader->add_filter( 'wpcf7_validate_dynamic_select*', $plugin_public, 'validate_required', 30, 2 );
     $this->loader->add_filter( 'wpcf7_validate_benchmark*', $plugin_public, 'validate_required', 30, 2 );
-    //setup hidden key field in cf7 forms.
-    $this->loader->add_filter( 'wpcf7_form_hidden_fields', $plugin_public, 'set_hidden_key' );
     //Post My CF7 Form hooks
     $this->loader->add_filter('cf7_2_post_echo_field_mapping_script', $plugin_public, 'load_tabs_table_field', 10, 6 );
     $this->loader->add_action('cf7_2_post_form_posted', $plugin_public, 'save_select2_custom_options', 10, 5 );
+		//load the saved toggled status for saved submissions.
+		$this->loader->add_filter( 'cf7_2_post_form_values', $plugin_public, 'load_saved_toggled_status' );
+		/** track toggles
+		*@since 1.1.0  */
+		$this->loader->add_action('cf7_2_post_form_posted', $plugin_public, 'save_toggle_status', 10, 5 );
 	}
 
 	/**

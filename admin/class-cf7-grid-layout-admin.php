@@ -539,6 +539,8 @@ class Cf7_Grid_Layout_Admin {
        $allowed['div']['data-form'] = true; //sub-forms.
        $allowed['div']['data-on'] = true; //toggles.
        $allowed['div']['data-off'] = true; //toggles.
+       $allowed['div']['data-open'] = true; //accordion.
+       $allowed['div']['data-group'] = true; //accordion.
        $allowed['div']['data-config-field'] = true; //cf7 plugin.
     }
     return $allowed;

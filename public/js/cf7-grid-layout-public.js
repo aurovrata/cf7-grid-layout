@@ -47,7 +47,7 @@
         $row.find(':input').each(function(){
           var name = $(this).attr('name');
           if(name.length>0){
-            $(this).addClass('cf7sg-'+name);
+            $(this).addClass('cf7sg-'+name.replace('[]',''));
           }
         });
 
@@ -144,7 +144,7 @@
             if($(this).is('.cf7-sg-table :input')) return;
             var name = $(this).attr('name');
             if(name.length>0){
-              $(this).addClass('cf7sg-'+name);
+              $(this).addClass('cf7sg-'+name.replace('[]',''));
             }
           });
 
@@ -188,7 +188,7 @@
       cf7Form_niceSelect.filter('div.cf7_2_post form.wpcf7-form').each(function(){
         var nonceID = $(this).closest('div.cf7_2_post').attr('id');
         if(nonceID.length>0){
-          $(this).on(nonceID, function(){
+          $(this).on(nonceID, function(event){
             $('.cf7sg-dynamic-dropdown.ui-select:enabled', $(this)).each(function(){
               $(this).niceSelect();
             });
@@ -217,7 +217,7 @@
       cf7Form_select2.filter('div.cf7_2_post form.wpcf7-form').each(function(){
         var nonceID = $(this).closest('div.cf7_2_post').attr('id');
         if(nonceID.length>0){
-          $(this).on(nonceID, function(){
+          $(this).on(nonceID, function(event){
             $('select.wpcf7-form-control.select2:enabled', $(this)).each(function(){
               $(this).select2({
                 tags: $(this).is('.tags')
@@ -244,7 +244,7 @@
 			cf7Form_datepicker.filter('div.cf7_2_post form.wpcf7-form').each(function(){
 				var nonceID = $(this).closest('div.cf7_2_post').attr('id');
 				if(nonceID.length>0){
-					$(this).on(nonceID, function(){
+					$(this).on(nonceID, function(event){
 						//.wpcf7-form-control.wpcf7-date.wpcf7-validates-as-required.wpcf7-validates-as-date
 						$('input.wpcf7-date:enabled', $(this)).each(function(){
 							var id = $(this).attr('id');
@@ -283,13 +283,20 @@
             cssId = randString(6);
             $(this).attr('id', cssId); //assign a random id
           }
-          var state = $(this).data('active');
+          var state = $(this).data('open');
+          var toggled = false;
           if(typeof state == 'undefined'){
             state = false;
+          }else{
+            switch(state){
+              case true:
+                state = 0;
+                toggled = true;
+                break;
+            }
           }
           //setup the toggle button
-          $(this).children('.cf7sg-collapsible-title').children('.toggle').setupToggle(state);
-
+          $(this).children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled);
           //enable the accordion
           $('#'+cssId).accordion({
             collapsible:true,
@@ -301,26 +308,72 @@
               $(this).trigger('sgContentIncrease');
             }
           });
+          // if(!toggled){ //disable fields within a closed toggled section.
+          //   $('.row.ui-accordion-content :input', $(this)).prop('disabled', true);
+          // }
           //listen for new content added to this accordion
           toggled_accordion.on('sgContentIncrease', function(){
             $(this).accordion("refresh");
           });
           //event delegation on the header click to sync the toggle state
          form.click(toggled_accordion, function(event){
-            var header=$(this).find('.cf7sg-collapsible-title');
-            if($(event.target).is('.toggle-on') || $(event.target).is('.toggle-off')){
-              header = $(event.target).closest('.cf7sg-collapsible-title');
-            }else if($(event.target).parent().is('.cf7sg-collapsible.with-toggle') ){
-              header = $(event.target);
+            var $header;
+            var $target =  $(event.target);
+            if($target.is('.toggle-on') || $target.is('.toggle-off')){
+              $header = $target.closest('.cf7sg-collapsible-title');
+            }else if($target.parent().is('.cf7sg-collapsible.with-toggle') ){
+              $header = $target;
             }else{
               return;
             }
-            var toggleSwitch = header.children('.toggle').data('toggles');
-            if( header.hasClass('ui-state-active') ){
+            var id = $header.closest('.container.cf7sg-collapsible').attr('id');
+            /**
+            * @since 1.1.0 track toggle status using toggle ids.
+            */
+            var toggleStatus = '';
+            var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $(this));
+            var trackToggle = false;
+            if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
+              if($toggleHiddenStatus.val().length>0){
+                toggleStatus = JSON.parse($toggleHiddenStatus.val());
+              }else toggleStatus = {};
+              trackToggle = true;
+            }
+            //close other toggled sections if we have a group.
+            var group = $header.parent().data('group');
+            if(group){
+              $('.cf7sg-collapsible.with-toggle[data-group="'+group+'"]', form).each(function(){
+                var cid = $(this).attr('id');
+                if(id === cid) return; //current toggle.
+                if(0===$(this).accordion('option','active')){
+                  $(this).accordion('option','active',false);
+                  $('.toggle', $(this)).data('toggles').toggle(false);
+                  $('.row.ui-accordion-content :input', $(this)).prop('disabled', true);
+                  if(trackToggle && toggleStatus.hasOwnProperty(cid)) delete toggleStatus[cid];
+                }
+              });
+            }
+
+            var toggleSwitch = $header.children('.toggle').data('toggles');
+            if( $header.hasClass('ui-state-active') ){
               toggleSwitch.toggle(true);
+              $('.row.ui-accordion-content :input', $header.parent()).prop('disabled', false);
+              if(trackToggle){
+                var $text = $header.clone();
+                $text.children('.toggle').remove();
+                toggleStatus[id] = $text.text().trim() + "|" + $header.children('.toggle').data('on');
+              }
+
             }else{
               toggleSwitch.toggle(false);
+              $('.row.ui-accordion-content :input', $header.parent()).prop('disabled', true);
+              if(trackToggle && toggleStatus.hasOwnProperty(id)) delete toggleStatus[id];
             }
+            //store the toggle status in the hidden field.
+            if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
+              $toggleHiddenStatus.val(JSON.stringify(toggleStatus));
+            }
+
           });
         });
       });
@@ -333,11 +386,17 @@
             cssId = randString(6);
             $(this).attr('id', cssId); //assign a random id
           }
-          var state = $(this).data('active');
-          if(typeof state == 'undefined' || state.length > 0){
+          var state = $(this).data('open');
+          if(typeof state == 'undefined'){
             state = false;
           }else{
-            state = 0;
+            switch(state){
+              case 'true':
+                state = 0;
+                break;
+              case 'false':
+                state = false;
+            }
           }
           $('#'+cssId).accordion({
             collapsible:true,
@@ -363,26 +422,49 @@
           n = 5;
       }
       var text = '';
-      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
       for(var i=0; i < n; i++){
           text += possible.charAt(Math.floor(Math.random() * possible.length));
       }
       return text;
     }
+    /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
+    *@since 1.1.0
+    */
+    $('div.cf7_2_post div.has-toggles form.wpcf7-form').each(function(){
+      var nonceID = $(this).closest('div.cf7_2_post').attr('id');
+      if(nonceID.length>0){
+        $(this).on(nonceID, function(event){
+          $('.cf7sg-collapsible.with-toggle', $(this)).each(function(){
+            var id = $(this).attr('id');
+            if('undefined' == typeof cf7sg.toggles_status[id]){
+              $('.row.ui-accordion-content :input', $(this)).prop('disabled', true);
+            }else{
+              var toggle = $(this).children('.cf7sg-collapsible-title');
+              toggle.trigger('click');
+            }
+          });
+        });
+      }
+    });
     /*
      Smart Grid is now ready
     */
-    var $form = $('div.cf7-smart-grid form.wpcf7-form');
-    $form.trigger("cf7SmartGridReady");
+    $('div.cf7-smart-grid form.wpcf7-form').trigger("cf7SmartGridReady");
+
     /**
     * listen for cf7 submit invalid field event, and open parent sections and tabs.
     *@since 1.1.0
     */
-    $form.on('wpcf7:invalid', '.wpcf7-not-valid', function(e){
-      var $target = $(e.target);
-      if($target.is('.wpcf7-not-valid')){
-        var $section = $target.closest('.cf7sg-collapsible');
-        $section.accordion("option","active",0); //activate.
+    $('div.cf7-smart-grid').on('wpcf7:invalid', '.wpcf7', function(event, invalids){
+      var $target = $(event.target);
+      for(var idx in invalids.inputs){
+        var name = invalids.inputs[idx].name;
+        var $input = $(':input[name="'+name+'"]');
+        var $section = $input.closest('.cf7sg-collapsible');
+        if($section.length>0){
+          $section.accordion("option","active",0); //activate.
+        }
       }
     });
   });
@@ -459,7 +541,7 @@
         suffix = '[]';
       }
       $(this).attr('name', name+'_row-'+rowIdx+suffix);//.addClass('cf7sg-'+name);
-      $(this).parent('span').removeClass(name).addClass(name+'_row-'+rowIdx);
+      $(this).closest('span.wpcf7-form-control-wrap').removeClass(name).addClass(name+'_row-'+rowIdx);
       //finally enabled the nice select dropdown.
       if($(this).is('select.ui-select') && initSelect){
         $(this).niceSelect();
@@ -481,6 +563,8 @@
   }
   //clone tabs, called on a div.cf7-sg-tabs
   $.fn.cf7sgCloneTab = function(initSelect = true){
+    /*initSelect is false if called from cf7_2_post field loading script,
+    else if true whehn triggered from the front-end user event.*/
     if(!$(this).is('div.cf7-sg-tabs')){
       return $(this);
     }
@@ -518,7 +602,7 @@
         fields in additional rows in tables that are in additional tabs will be suffixed with .tab-[0-9]+.row-[0-9]+
       */
       $(this).attr('name', name+'_tab-'+(tabCount-1)+suffix);//.addClass('cf7sg-'+name);
-      $(this).parent('span').removeClass(name).addClass(name + '_tab-' + (tabCount-1));
+      $(this).closest('span.wpcf7-form-control-wrap').removeClass(name).addClass(name + '_tab-' + (tabCount-1));
       //enable nice select on the dropdown.
       if(!isCloneRow && $(this).is('select.ui-select') && initSelect){
         $(this).niceSelect();
@@ -549,38 +633,51 @@
     $( '.cf7-sg-tabs', $newPanel ).each(function(){
       $(this).tabs();
     });
+
     //enable the collapsible titles & toggle buttons
-    $('.cf7sg-collapsible.with-toggle .toggle', $newPanel).setupToggle();
-    $('.cf7sg-collapsible', $newPanel).accordion({
-      collapsible:true,
-      icons:false,
-      active:false,header:'> div.cf7sg-collapsible-title',
-      heightStyle: "content",
-      activate: function(event, ui){
-        $(this).trigger('sgContentIncrease');
+    $('.cf7sg-collapsible.with-toggle', $newPanel).each(function(){
+      /**
+      * @since 1.1.0 grouped toggles/disabled inputs.
+      */
+      var id = $(this).attr('id')+'_tab-'+(tabCount-1);
+      $(this).attr('id',id);//reset unique id.
+      var group = $(this).data('group');
+      if(group){
+        group = group+'_tab-'+(tabCount-1);
+        $(this).attr('data-group', group);
       }
-    });
-    $('.cf7sg-collapsible.with-toggle', $newPanel).on('click',function(){
-      var toggle = $(this).find('.toggle').data('toggles');
-      if($(this).find('.cf7sg-collapsible-title').hasClass('ui-state-active') ){
-        toggle.toggle(true);
+      var state = $(this).data('open');
+      var toggled = false;
+      if(typeof state == 'undefined'){
+        state = false;
       }else{
-        toggle.toggle(false);
+        switch(state){
+          case true:
+            state = 0;
+            toggled=true;
+            break;
+        }
+      }
+      $('.toggle', $(this)).setupToggle(toggled);
+      $('.cf7sg-collapsible', $newPanel).accordion({
+        collapsible:true,
+        icons:false,
+        active:state,
+        header:'> div.cf7sg-collapsible-title',
+        heightStyle: "content",
+        activate: function(event, ui){
+          $(this).trigger('sgContentIncrease');
+        }
+      });
+      if(!toggled && initSelect){
+        /*disable fields within a closed toggled section.
+        * if toggled, then it is open. if initselect, it is triggered from user event.
+        * else it is triggered from the cf7_2_post script and we need to wait for field values to be filled.
+        */
+        $('.row.ui-accordion-content :input', $(this)).prop('disabled', true);
       }
     });
-    //rename table fields in new panel
-    // $('.container.cf7-sg-table', $newPanel).each(function(){
-    //   //hiden field is in the button which is a sibbling to this table container
-    //   $('.cf7sg-tabs-table-hidden', $(this).parent()).val('_'+tabCount);
-    //   //rename all fields
-    //   $(':input', $(this)).each(function(){
-    //       var iname = $(this).attr('name');
-    //       if(iname.lastIndexOf('[]') > 0){
-    //         iname = iname.replace('[]','_'+tabCount+'[]');
-    //         $(this).attr('name', iname);
-    //       }
-    //   });
-    // });
+
 
     $(this).tabs( "refresh" );
     $(this).tabs( "option", "active", -1 );
@@ -635,7 +732,7 @@
     var $form = $(this);
     var serverRequest = $.ajax({
       type: 'POST',
-      url: cf7sg_ajaxData.url,
+      url: cf7sg.url,
       dataType: 'json',
       data: {
         'action':'save_grid_fields',

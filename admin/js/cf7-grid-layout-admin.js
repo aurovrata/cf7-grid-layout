@@ -82,6 +82,11 @@
       });
       /*--------------------------------------------------- convert collapsible sections  */
       $('div.container.cf7sg-collapsible', $form).each(function(){
+        var id = $(this).attr('id');
+        if(typeof id == 'undefined'){
+          id = randString(6);
+          $(this).attr('id', id); //assign a random id
+        }
         var text = $(this).children('.cf7sg-collapsible-title').text();
         var $toggle = $('.toggle', $(this).children('.cf7sg-collapsible-title'));
         if($toggle.length>0){
@@ -248,10 +253,10 @@
         var $title = $target.closest('.cf7sg-collapsible-title');
         if($target.is(':checked')){
           $title.append($('#grid-collapsible-with-toggle').html());
-          $title.closest('.container.cf7sg-collapsible').addClass('with-toggle');
+          $title.closest('.container.cf7sg-collapsible').addClass('with-toggle').attr('data-group','');
         }else{
           $('.toggle', $title).remove();
-          $title.closest('.container.cf7sg-collapsible').removeClass('with-toggle');
+          $title.closest('.container.cf7sg-collapsible').removeClass('with-toggle').removeAttr( 'data-group');
         }
       }else if($target.is('ul.cf7-sg-tabs-list li label input[type="text"]')){ //------- Tabs title
         $target.parent().siblings('a').text($target.val());
@@ -327,6 +332,11 @@
         var $container = $target.closest('.container');
         if($target.is(':checked')){
           $container.addClass('cf7sg-collapsible');
+          var id = $container.attr('id');
+          if(typeof id == 'undefined'){
+            id = randString(6);
+            $container.attr('id', id); //assign a random id
+          }
           $container.prepend($('#grid-collapsible').html());
         }else{
           $container.removeClass('cf7sg-collapsible');
@@ -566,6 +576,18 @@
     //grid is ready
     $wpcf7Editor.trigger('grid-ready');
   }); //end document ready
+  //random id function.
+  function randString(n){
+    if(!n){
+        n = 5;
+    }
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+    for(var i=0; i < n; i++){
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
   //function to close any ui fields
   function closeAlluiFields(){
     $('.cf7-field-inner :input:visible').each(function(){
