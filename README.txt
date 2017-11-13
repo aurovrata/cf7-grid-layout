@@ -19,6 +19,7 @@ In addition the plugin also introduces multiple smart input functionalities, suc
 * **tabled input sections**: these allows you to group several input fields as table rows, the plugin will automatically add an 'Add Row' button to your front end form, giving your users the ability to add multiple rows of your grouped fields.
 * **tabbed sections**: with this plugin you can build tabbed sections of fields, allowing your users to add additional tabs.  It is a similar concept to the tabled input section above, but in a tabbed layout insead.
 * **collapsible sections**: for long and complex forms you can now group your front-end fields into collapsible sections, making it easier for user to see the big picture.
+* **toggled collapsible sections** for optional sections.  A toggle with a default Yes/No value is inserted, allowing your users to submit optional fields which within the section can be set to required in your design (See FAQ section for more info). 
 * **reusable sub-forms**: if you have fields which repeat across multiple forms, you can now build a sub-form which you can include in your form, saving you the trouble of redesigning the form each time, but also making large forms much easier to maintain.
 * **form categories**: the plugin introduces form taxonomy to classify your forms for the use of online registration where users may need to be associated with a given set of forms to access.
 * **dynamic dropdown fields**: these are special select fields which you can populate with either existing post titles, or managed lists such as units, or even using a custom filter.  This makes dynamic interlinking of existing CMS data in your dashboard a piece of cake, giving you a very powerful tool for data capture.
@@ -122,6 +123,14 @@ The plugin will look for a javascript file `js/{$cf7key}.js` from the base of yo
 
 Similarly you can create a `css` subfolder in your theme folder and create a file in it called '<cf7key>.css' and place your custom styling for your form.  The plugin will then load this css file on the page where your form is displayed.
 
+= Can I have required fields in toggled sections? =
+Yes, as of v1.1 of this plugin, toggled sections input fields are disabled when collapsed/unused, and therefore any fields within these sections are not submitted.  So you can design fields to be required when toggled sections are used, and the fields will be validated accordingly too.
+
+Please note that in the back-end, these fields which are listed in the form layout but are not submitted are set eventually set as null in the filtered submitted data.  So if you hook a functionality post the form-submission, be aware that you also need to test submitted values for `NULL` as opposed to empty.
+
+= Can I group toggled sections so as to have either/or sections ?=
+Yes, with v1.1 you can the `data-group` attribute which by default is empty to regroup toggled sections and therefore ensure that only 1 of these grouped sections is used by a user.  Edit your form in the html editor (Text tab) and fill the `data-group` attribute with the same value (no spaces) for each toggled section (`div.container.with-toggle`) you wish to re-group.
+
 == Screenshots ==
 
 1. This plugin replaces the CF7 post table page and post edit pages with WordPress core post edit and post pages.  This means that other plugins that build on WordPress standards for custom admin dashboard functionality should now play nicely with CF7.  One out-of-the-box improvement is the ability to customise the CF7 form table columns being displayed.
@@ -144,6 +153,11 @@ Similarly you can create a `css` subfolder in your theme folder and create a fil
 
 
 == Changelog ==
+=1.1.0=
+* minor bug fix for post-my-cf7-form compatibility
+* introduction of grouped toggled sections
+* disabling of all fields in closed toggled sections
+* validation of dynamic forms with toggled sections.
 = 1.0.3=
 * bug fix on mixed grid ui mode.
 * bug fix on saving form from text mode with no changes.
