@@ -19,7 +19,7 @@ In addition the plugin also introduces multiple smart input functionalities, suc
 * **tabled input sections**: these allows you to group several input fields as table rows, the plugin will automatically add an 'Add Row' button to your front end form, giving your users the ability to add multiple rows of your grouped fields.
 * **tabbed sections**: with this plugin you can build tabbed sections of fields, allowing your users to add additional tabs.  It is a similar concept to the tabled input section above, but in a tabbed layout insead.
 * **collapsible sections**: for long and complex forms you can now group your front-end fields into collapsible sections, making it easier for user to see the big picture.
-* **toggled collapsible sections** for optional sections.  A toggle with a default Yes/No value is inserted, allowing your users to submit optional fields which within the section can be set to required in your design (See FAQ section for more info). 
+* **toggled collapsible sections** for optional sections.  A toggle with a default Yes/No value is inserted, allowing your users to submit optional fields which within the section can be set to required in your design (See FAQ section for more info).
 * **reusable sub-forms**: if you have fields which repeat across multiple forms, you can now build a sub-form which you can include in your form, saving you the trouble of redesigning the form each time, but also making large forms much easier to maintain.
 * **form categories**: the plugin introduces form taxonomy to classify your forms for the use of online registration where users may need to be associated with a given set of forms to access.
 * **dynamic dropdown fields**: these are special select fields which you can populate with either existing post titles, or managed lists such as units, or even using a custom filter.  This makes dynamic interlinking of existing CMS data in your dashboard a piece of cake, giving you a very powerful tool for data capture.
@@ -153,6 +153,8 @@ Yes, with v1.1 you can the `data-group` attribute which by default is empty to r
 
 
 == Changelog ==
+= 1.1.1=
+* bug fix table button label.
 =1.1.0=
 * minor bug fix for post-my-cf7-form compatibility
 * introduction of grouped toggled sections

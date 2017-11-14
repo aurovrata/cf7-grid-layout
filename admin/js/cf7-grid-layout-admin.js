@@ -110,7 +110,7 @@
         var $ctrl = $(this).find('.row.cf7-sg-table > .row-controls' ).first().find('.table-row-label');
         $('input', $ctrl).prop('checked', true);
         //set button label
-        var text = $('.row.cf7-sg-table', $(this)).data('button');
+        var text = $(this).data('button');
         if(typeof text  == 'undefined'){
           text = 'Add Row';
           $(this).attr('data-button',text);
