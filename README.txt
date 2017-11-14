@@ -71,6 +71,12 @@ This plugin would not have been possible without the following open-source effor
 
 == Frequently Asked Questions ==
 
+= How do I drag and sort columns in the grid editor ? =
+
+Columns can be rearranged within a row by simply dragging and dropping using the handled icon in the columns head.  You can also drag and drop a column into another row, if the target row has sufficient space to receive the column, else a warning msg will appear.  In that case, make some room in the target row and/or resize the column so as to ensure it will fit in the row.
+
+Similarly you can re-organise your rows within a given grid.  Your initial form is grid.  You can convert an existing column into a grid.   
+
 = How do I create a dynamic dropdown list ?=
 
 simply create a new dynamic dropdown field using the added tag in the list of available tags and select the type of dynamic list you want to populate with.  You create a list which will appear in the Information metabox in your edit page once you save your form.  It uses the taxonomy management functionality of WordPress but is not associated with any posts as such.  Simply edit the list by adding new terms to your list.  These will appear in your dropdown field.
@@ -153,6 +159,9 @@ Yes, with v1.1 you can the `data-group` attribute which by default is empty to r
 
 
 == Changelog ==
+=1.2.0=
+* enable sortable drag and drop columns.
+* enable sortable rows.
 = 1.1.1=
 * bug fix table button label.
 =1.1.0=

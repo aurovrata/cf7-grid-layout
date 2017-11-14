@@ -355,3 +355,21 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   line-height: 1px;
   top: 12px;
 }
+.row-controls .dashicons-move.row-control {
+    visibility: hidden;
+}
+.container + .container > .row > .row-controls .dashicons-move {
+    visibility: visible;
+}
+.cf7sg-warning {
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 50px;
+    background: white;
+    padding: 10px 20px;
+    border: 2px solid grey;
+    border-radius: 3px;
+    font-size: 1.2em;
+    margin-top: 50px;
+}

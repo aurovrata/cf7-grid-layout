@@ -181,30 +181,6 @@
       //}
     } //end buildGridForm()
 
-
-    //make columns sortable
-    // $('.row', $grid).sortable({
-    //   //placeholder: "ui-state-highlight",
-    //   handle:'.grid-column .dashicons-move',
-    //   containment:'.row',
-    //   items: '> .columns'
-    // });
-    //make rows sortable
-    // $('.container', $grid).sortable({
-    //   //placeholder: "ui-state-highlight",
-    //   handle:'.row-controls .dashicons-move',
-    //   containment:'parent',
-    //   items: '> .container'
-    // });
-
-    //make rows with columns sortable
-    // $('.row .columns').sortable({
-    //   //placeholder: "ui-state-highlight",
-    //   handle:'.row-controls .dashicons-move',
-    //   containment:'parent',
-    //   items: '> .container'
-    // });
-
     //offset/size change using event delegation
     /*---------------------------------------------------------------------------- ui menus */
     $grid.on('change', function(event){
@@ -573,6 +549,58 @@
     $grid.on('build-grid', function(){
       buildGridForm();
     });
+    //make columns sortable
+    $('.row', $grid).sortable({
+      //placeholder: "ui-state-highlight",
+      //containment:'.row',
+      handle:'.grid-column > .dashicons-move',
+      connectWith: '.row',
+      helper:'clone',
+      items: '> .columns',
+      receive: function( event, ui ) {
+        //ui.item validate column size relative to new row columns.
+        //ui.sender original row. cnacel if column does not fit in new row.
+        //$targetRow has more than 12 columns then cancel.
+        var $targetRow = $(event.target);//receiving row
+        var row = $targetRow.getRowSize();
+        //var total = row.length;
+        //var sizes = row.cols;
+        //var columns = sizes.length;
+        if( row.length > 12){
+          ui.sender.sortable('cancel');
+          var $warning = $('<span class="cf7sg-warning">Not enough space in this row to add column</span>');
+          $targetRow.after($warning);
+          $warning.delay(2000).fadeOut('slow', function(){
+            $(this).remove();
+          });
+        }else{
+          //make sure the row controls is at the end.
+          var control = $targetRow.children('.row-controls').remove();
+          $targetRow.append(control);
+        }
+        //if($target)
+
+        //console.log(ui);
+        //console.log($target);
+      }
+    });
+    //make rows sortable
+    $('.columns, #grid-form').sortable({
+      //placeholder: "ui-state-highlight",
+      handle:'.row-controls > .dashicons-move',
+      axis: 'y',
+      //containment:'parent',
+      items: '> .container',
+      helper:'clone'
+    });
+
+    //make rows with columns sortable
+    // $('.row .columns').sortable({
+    //   //placeholder: "ui-state-highlight",
+    //   handle:'.row-controls .dashicons-move',
+    //   containment:'parent',
+    //   items: '> .container'
+    // });
     //grid is ready
     $wpcf7Editor.trigger('grid-ready');
   }); //end document ready

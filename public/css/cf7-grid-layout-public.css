@@ -2,7 +2,7 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
- .ui-button {
+ .cf7-smart-grid.has-grid .ui-button {
     border-radius: 3px;
 }
 /*
@@ -82,7 +82,7 @@ ul.cf7-sg-tabs-list {
     border: solid 1px #b9b9b9;
     color: #848484;
 }
-div.field span.wpcf7-not-valid-tip {
+.cf7-smart-grid.has-grid div.field span.wpcf7-not-valid-tip {
     display: inherit;
     position: absolute;
     left: 0;
@@ -123,7 +123,7 @@ span.cf7sg-validation-warning {
     font-size: 0.9em;
     cursor:pointer;
 }
-input.select2-search__field{
+.cf7-smart-grid.has-grid input.select2-search__field{
   background-image: url('search.png');
   background-repeat: no-repeat;
   background-position-x: calc(100% - 5px);
