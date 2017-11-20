@@ -72,6 +72,15 @@
 
       cmEditor.on('changes', function(){
         codemirrorUpdated = true;
+        var disabled = $('#form-editor-tabs').tabs('option','disabled');
+
+        if(true===disabled){
+          var changes = $('<div>').append(cmEditor.getValue());
+          if(0===changes.children().length || changes.children('.container').length>0){
+            $('#form-editor-tabs').tabs('option',{disabled:false});
+          }
+        }
+
         $('#contact-form-editor').trigger('cf7sg-form-change');
       });
 
@@ -117,6 +126,11 @@
           }
         }
       });
+      /*@since 1.1.1 disable grid editor for existing cf7 forms*/
+      if(0==$grid.children('.container').length){
+        $('#form-editor-tabs').tabs('option',{ active:1, disabled:true});
+      }
+
       //update the codemirror when tags are inserted
       $('form.tag-generator-panel .button.insert-tag').on('click', function(){
         var $textarea = $('textarea#wpcf7-form');

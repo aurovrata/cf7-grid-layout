@@ -89,6 +89,8 @@ if( metadata_exists( 'post', $form_post->id(), 'cf7_grid_form' )){ //grid form
       ?>
       </select>
       <div class="row-controls">
+        <span class="dashicons dashicons-move form-control"></span>
+        <span class="dashicons dashicons-plus form-control"></span>
         <span class="dashicons dashicons-trash form-control"></span>
       </div>
     </div>

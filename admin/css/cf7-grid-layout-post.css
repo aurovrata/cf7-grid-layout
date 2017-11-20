@@ -73,7 +73,7 @@ grid layout
 }
 #grid-form .form-controls {
     position: relative;
-    padding: 1em;
+    padding: 22px;
 }
 #grid-form .cf7sg-external-form {
     border: solid 1px #777;
@@ -158,7 +158,7 @@ textarea.grid-input {
 #grid-form  .row-controls .dashicons{
   color: #ddd;
 }
-.dashicons.dashicons-plus.row-control::before {
+.dashicons.dashicons-plus.row-control::before, .dashicons.dashicons-plus.form-control::before {
     position: relative;
     top: 1px;
 }
@@ -185,7 +185,8 @@ textarea.grid-input {
 #grid-form > .container > .row:first-child > .columns:first-child .dashicons-move.column-control {
     margin-left: calc(50% - 45px);
 }
-#grid-form > .container:first-child >.row:first-child > .row-controls  .dashicons-trash {
+#grid-form > .container:first-child >.row:first-child > .row-controls  .dashicons-trash,
+#grid-form > .cf7sg-external-form:first-child > .form-controls  .dashicons-trash {
   visibility:hidden;
 }
 .CodeMirror-wrap .cm-shortcode {
@@ -355,10 +356,12 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   line-height: 1px;
   top: 12px;
 }
-.row-controls .dashicons-move.row-control {
+.row-controls .dashicons-move.row-control,  .row-controls .dashicons-move.form-control{
     visibility: hidden;
 }
-.container + .container > .row > .row-controls .dashicons-move {
+.container + .container > .row > .row-controls .dashicons-move,
+.container + .cf7sg-external-form > .form-controls .dashicons-move,
+.cf7sg-external-form + .container > .row > .row-controls .dashicons-move {
     visibility: visible;
 }
 .cf7sg-warning {

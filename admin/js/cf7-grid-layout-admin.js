@@ -42,25 +42,15 @@
         formhtml = '<div class="container"><div class="row"><div class="columns full"></div></div></div>';
       }
       var $form = $('<div>').append( formhtml );
+      var isGrid = true; //return value.
+      if(0===$form.children('.container')){
+        isGrid = true;
+      }
       //remove the external forms
-      var external = {};
-      $('.cf7sg-external-form', $form).each(function(){
-        var id = $(this).data('form');
-        external[id] = $(this).children('.cf7sg-external-form-content').remove();
-        //check for form update.
-        var data = {
-    			'action' : 'get_cf7_content',
-          'id': $('#post_ID').val(),
-          'nonce'  : $('#_wpcf7nonce').val(),
-    			'cf7_key' : id,
-          'update'  :true
-    		};
-        $.post(ajaxurl, data, function(response) {
-          if(response.length > 0){
-            external[id] = $('<div class="cf7sg-external-form-content">').append(response);
-          }
-    		});
-      });
+      $('.cf7sg-external-form .cf7sg-external-form-content', $form).remove();
+      // .each(function(){
+      //   var id = $(this).data('form');
+      // });
       //replace columns content with textareas
       /*--------------------------------------------------- convert columns */
       $('div.columns', $form).each(function(){
@@ -140,14 +130,27 @@
       });
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
-        var id = $(this).data('form');
+        var $extform = $(this);
+        $extform.append($( $('#grid-cf7-forms .cf7sg-external-form').html() ) );
+        var id = $extform.data('form');
         if($('#grid-cf7-forms .form-select option[value="'+id+'"]' ).length > 0 ){
           //add controls
-          $(this).append($('#grid-cf7-forms .form-controls').clone());
-          $('.form-controls .form-select', $(this)).val(id);
-          $(this).append( external[id] );
-        }else{
-          $(this).append($( $('#grid-cf7-forms .cf7sg-external-form').html() ) );
+          //$extform.append($('#grid-cf7-forms .form-controls').clone());
+          $('.form-controls .form-select', $extform).val(id);
+          //check for form update.
+          var data = {
+      			'action' : 'get_cf7_content',
+            'id': $('#post_ID').val(),
+            'nonce'  : $('#_wpcf7nonce').val(),
+      			'cf7_key' : id,
+            'update'  :true
+      		};
+          $.post(ajaxurl, data, function(response) {
+            if(response.length > 0){
+              $('.cf7sg-external-form-content', $extform).append( response );
+            }//TODO if error insert a msg.
+      		});
+
         }
       });
       //add the form to the grid
@@ -168,17 +171,17 @@
         $textareaSelected = $('textarea', $grid).first();
         $textareaSelected.attr('id', 'wpcf7-form');
       }
-        //change this to whichever is live
-        $('textarea', $grid).live('focus', function(){
-          if($textareaSelected.length>0 && $textareaSelected.is('#wpcf7-form')){
-            $textareaSelected.attr('id','');
-            $textareaSelected.html($textareaSelected.val()); //set its inner html
-          }
-          if($(this).is('.grid-input')){
-            $textareaSelected = $(this).attr('id','wpcf7-form');
-          }
-        });
-      //}
+      //change this to whichever is live
+      $('textarea', $grid).live('focus', function(){
+        if($textareaSelected.length>0 && $textareaSelected.is('#wpcf7-form')){
+          $textareaSelected.attr('id','');
+          $textareaSelected.html($textareaSelected.val()); //set its inner html
+        }
+        if($(this).is('.grid-input')){
+          $textareaSelected = $(this).attr('id','wpcf7-form');
+        }
+      });
+      return isGrid;
     } //end buildGridForm()
 
     //offset/size change using event delegation
@@ -208,8 +211,6 @@
       }else if($target.is('.form-select')){ //-------------- external form selection
         var $container = $target.closest('.cf7sg-external-form');
         $container.attr('data-form', $target.val());
-        //TODO: disable the selected options
-        //ajax get form content
         var data = {
     			'action' : 'get_cf7_content',
           'id': $('#post_ID').val(),
@@ -269,7 +270,11 @@
         ----------------------------------------------------------------------------ROW CONTRLS
       */
       var $parentRow;
-      if($target.is('.dashicons-trash.row-control')){ //--------TRASH
+      if($target.is('.dashicons-trash.form-control')){ //--------TRASH included form
+        $target.closest('.cf7sg-external-form').remove();
+      }else if($target.is('.dashicons-plus.form-control') ){ //---ADD external form
+        $target.closest('.cf7sg-external-form').insertNewRow();
+      }else if($target.is('.dashicons-trash.row-control')){ //--------TRASH
         var $parentContainer = $target.closest('.container');
         var $parent = $parentContainer.parent();
         $parentContainer.remove();
@@ -279,10 +284,6 @@
             $parent.children('.grid-column').append('<textarea class="grid-input"></textarea>');
           }
         }
-      }else if($target.is('.dashicons-trash.form-control')){ //--------TRASH included form
-        $target.closest('.cf7sg-external-form').remove();
-      }else if($target.is('.dashicons-trash.form-control') ){ //-----------TRASH external form
-        $target.closest('cf7sg-external-form').remove();
       }else if($target.is('.dashicons-plus.row-control')){ //-----------ADD
         $target.closest('.container').insertNewRow();
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
@@ -547,7 +548,10 @@
     //initial construction of grid form
     buildGridForm();
     $grid.on('build-grid', function(){
-      buildGridForm();
+      if(!buildGridForm()){
+        $('#form-editor-tabs').tabs('option',{ active:1, disabled:true});
+      }
+
     });
     //make columns sortable
     $('.row', $grid).sortable({
@@ -590,7 +594,7 @@
       handle:'.row-controls > .dashicons-move',
       axis: 'y',
       //containment:'parent',
-      items: '> .container',
+      items: '> .container, > .cf7sg-external-form',
       helper:'clone'
     });
 
@@ -866,7 +870,7 @@
     var append=true;
     if( $(this).is('.columns') || $(this).is($grid)){
       append=true;
-    }else if($(this).is('.container') ){
+    }else if($(this).is('.container') || $(this).is('.cf7sg-external-form') ){
       append=false;
     }else{
       return $(this);

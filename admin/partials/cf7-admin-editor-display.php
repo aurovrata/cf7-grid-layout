@@ -89,18 +89,7 @@
   $(document).ready(function() {
     <?php
     $slugs = array();
-    // foreach($show_dropdown as $slug => $taxonomy){
-    //   if( $taxonomy['hierarchical'] ){
-    //     $hide_id = $slug.'div';
-    //   }else{
-    //     $hide_id = 'tagsdiv-'.$slug;
-    //   }
-    //   //debug_msg($taxonomy['slug']);
-    //   $slugs[$slug] = $slug; //to make sure it is not overwritten.
-    //   echo '$("#' . $hide_id . ' button.tagcloud-link").trigger("click");'.PHP_EOL;
-    //   echo '$("#' . $hide_id . '").addClass("cf7sg-dynamic-list");'.PHP_EOL;
-    //   echo '$("#' . $hide_id . '").show();'.PHP_EOL;
-    // }
+
     foreach($dropdowns as $id => $all_lists){
       //if($id == $post_id) continue;
       foreach($all_lists as $slug => $taxonomy){
@@ -112,9 +101,7 @@
         }else{
           $hide_id = 'tagsdiv-'.$slug;
         }
-        //debug_msg($taxonomy['slug']);
-        // echo '$("#' . $hide_id . ' button.tagcloud-link").trigger("click");'.PHP_EOL;
-        // echo '$("#' . $hide_id . '").addClass("cf7sg-dynamic-list");'.PHP_EOL;
+        
         echo '$("#' . $hide_id . '").hide();'.PHP_EOL;
       }
     }

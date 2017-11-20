@@ -572,28 +572,15 @@ class Cf7_Grid_Layout_Admin {
       echo 'error, nonce failed, try to reload the page.';
       wp_die();
     }
-
     $cf7_key = sanitize_text_field($_POST['cf7_key']);
     $sub_forms = get_posts(array(
       'post_type' => 'wpcf7_contact_form',
       'post_name__in' => array($cf7_key)
     ));
+    $form='';
     if(!empty($sub_forms)){
-      if(isset($_POST['update'])){
-        $id = sanitize_text_field($_POST['id']);
-        $parent = get_post($id);
-        if( strtotime($parent->post_modified) < strtotime($sub_forms[0]->post_modified) ){
-          $form = get_post_meta($sub_forms[0]->ID, '_form', true);;
-          echo $form;
-        }else{
-          echo '';
-        }
-      }else{
-        $form = get_post_meta($sub_forms[0]->ID, '_form', true);;
-        echo $form;
-      }
-      //$cf7_form = wpcf7_contact_form($post[0]->ID);
-      //echo $cf7_form->prop( 'form' );
+      $form = get_post_meta($sub_forms[0]->ID, '_form', true);
+      echo $form;
     }else{
       echo 'unable to find form '.$cf7_key;
     }

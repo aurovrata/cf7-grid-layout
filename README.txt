@@ -75,7 +75,7 @@ This plugin would not have been possible without the following open-source effor
 
 Columns can be rearranged within a row by simply dragging and dropping using the handled icon in the columns head.  You can also drag and drop a column into another row, if the target row has sufficient space to receive the column, else a warning msg will appear.  In that case, make some room in the target row and/or resize the column so as to ensure it will fit in the row.
 
-Similarly you can re-organise your rows within a given grid.  Your initial form is grid.  You can convert an existing column into a grid.   
+Similarly you can re-organise your rows within a given grid.  Your initial form is grid.  You can convert an existing column into a grid.
 
 = How do I create a dynamic dropdown list ?=
 
@@ -159,6 +159,8 @@ Yes, with v1.1 you can the `data-group` attribute which by default is empty to r
 
 
 == Changelog ==
+=1.2.1=
+* bug fix sorting external form rows.
 =1.2.0=
 * enable sortable drag and drop columns.
 * enable sortable rows.

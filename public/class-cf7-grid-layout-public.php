@@ -158,7 +158,7 @@ class Cf7_Grid_Layout_Public {
    * @since 1.0.0
   **/
   public function cf7_shortcode_request($output, $tag, $attr){
-
+    /*If cf7 plugin default shortcode, let's skip this.*/
     if('contact-form-7' != $tag){
       return $output;
     }
@@ -525,7 +525,6 @@ class Cf7_Grid_Layout_Public {
         break;
       }
     }
-    debug_msg($data, 'consolidated data...');
     return $data;
   }
 	/**
@@ -576,9 +575,6 @@ class Cf7_Grid_Layout_Public {
   */
   private function consolidate_grid_submissions($field_name, $type, &$data){
     $values = array();
-    // if(!isset($data[$field_name])){
-    //   return $values;
-    // }
     $regex = '';
     $submitted_fields=array();
     $max_fields =0;
@@ -737,7 +733,7 @@ class Cf7_Grid_Layout_Public {
   public function filter_wpcf7_validate($result, $tags){
     /**
     *@since 1.1.0
-    *reset the validatino result.
+    *reset the validation result.
     * this is required to dynamically disable required form fields & stop their validation.
     * Disabled fields are not submitted but CF7 forces their values to empty and therefore flags requried fields as invalid at submission even if they are disabled.
     * this bug was reported in the cf7 support forum:
