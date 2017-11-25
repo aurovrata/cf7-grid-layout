@@ -211,17 +211,23 @@ function dynamic_select2_filter_values($values, $field, $cf7_key, $submitted_dat
 })(jQuery)
 </script>
 <style>
-.helper-list .helper:hover::before {
-    content: 'click to copy!';
-    background: #3e3e3e;
-    color: white;
+.helper-list li{
+  position: relative;
+}
+.helper-list li .helper::before {
+    content: 'Click to copy!';
+    display: none;
     position: absolute;
-    top: -20px;
-    left: 30px;
-    width: 76px;
+    top: -22px;
+    left: 10px;
+    background: #323232;
+    color: white;
     padding: 2px 5px;
-    font-weight: bold;
     border-radius: 3px;
+    font-weight: bold;
+}
+.helper-list li .helper:hover::before {
+    display: inline-block;
 }
 .helper-list li.no-post-my-form{
   display: none;

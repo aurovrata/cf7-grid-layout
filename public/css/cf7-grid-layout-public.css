@@ -147,13 +147,13 @@ span.cf7sg-validation-warning {
   width: 100%;
 }
 .cf7-smart-grid.has-grid .cf7-tags-2 .field .wpcf7-form-control-wrap {
-    width: 50%;
+  max-width: 200px;
+  width: 50%;
 }
 #cf7sg-container .cf7-smart-grid.has-grid .row.cf7-sg-table > .columns > .container > .container {
     padding: 0;
 }
 .cf7-smart-grid.has-grid .field .wpcf7-form-control-wrap + .wpcf7-form-control-wrap {
-    max-width: 50%;
     vertical-align: middle;
 }
 .cf7-smart-grid.has-grid .field > label {

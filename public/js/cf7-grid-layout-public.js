@@ -357,7 +357,7 @@
             var toggleSwitch = $header.children('.toggle').data('toggles');
             if( $header.hasClass('ui-state-active') ){
               toggleSwitch.toggle(true);
-              $('.row.ui-accordion-content :input', $header.parent()).prop('disabled', false);
+              $('.row.ui-accordion-content :input', $header.parent()).not('.cf7-sg-cloned-table-row :input').prop('disabled', false);
               if(trackToggle){
                 var $text = $header.clone();
                 $text.children('.toggle').remove();
@@ -558,7 +558,7 @@
     });
     //when the button is clicked, trigger a content increase for accordions to refresh
     $table.trigger('sgContentIncrease');
-    $table.trigger('sgRowAdded',rowIdx);
+    $row.trigger('sgRowAdded',rowIdx);
     return $(this);
   }
   //clone tabs, called on a div.cf7-sg-tabs
@@ -625,10 +625,6 @@
       var $innerPanel = $(this).closest('ul.ui-tabs-nav').siblings('div'+panelId);
       $innerPanel.attr( 'id' , panelId.substring(1)+'-'+tabCount );
     });
-    // //setup nice select in the new panel
-    // $('select.ui-select:enabled', $newPanel).each(function(){
-    //   $(this).niceSelect();
-    // });
     //enable tabs in the new panel
     $( '.cf7-sg-tabs', $newPanel ).each(function(){
       $(this).tabs();
@@ -681,7 +677,9 @@
 
     $(this).tabs( "refresh" );
     $(this).tabs( "option", "active", -1 );
-    //$tabList.after($addButton);
+    /** @since 1.2.2 */
+    //trigger new tab event for custom js.
+    $newPanel.trigger('sgTabAdded',tabCount);
     return $(this);
   }
 

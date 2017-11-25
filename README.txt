@@ -159,6 +159,8 @@ Yes, with v1.1 you can the `data-group` attribute which by default is empty to r
 
 
 == Changelog ==
+=1.2.2=
+* copy-to-click css for helper hooks.
 =1.2.1=
 * bug fix sorting external form rows.
 =1.2.0=
