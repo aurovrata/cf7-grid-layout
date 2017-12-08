@@ -75,8 +75,28 @@ class Cf7_Grid_Layout {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
+    $stored_version = get_option('_cf7sg_version', '1.2.2');
+    if('1.2.2' === $stored_version){
+      $this->upgrade_db();
+    }
+    update_option('_cf7sg_version', $version);
 	}
+  /**
+  *Function to update the DB for v1.2.3 to ensure cf7sg managed forms are properly tagged as such.
+  *
+  *@since 1.2.3
+  */
+  private function upgrade_db(){
+    global $wpdb;
+    $rows = $wpdb->get_results(
+      "SELECT post_id
+      FROM $wpdb->postmeta
+      WHERE meta_key LIKE '_cf7sg_has_tables'"
+    );
+    foreach($rows as $row){
+      update_post_meta($row->post_id, '_cf7sg_managed_form', true);
+    }
+  }
 
 	/**
 	 * Load the required dependencies for this plugin.

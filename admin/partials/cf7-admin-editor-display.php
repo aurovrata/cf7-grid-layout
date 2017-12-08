@@ -14,6 +14,7 @@
 ?>
 <?php do_action( 'wpcf7_admin_warnings' ); ?>
 <?php do_action( 'wpcf7_admin_notices' ); ?>
+<input type="hidden" id="is-cf7sg-form" name="is_cf7sg_form" value="true" />
 <input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
 <input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />
 <?php wp_nonce_field( 'wpcf7-save-contact-form_' .  $post_id, '_wpcf7nonce' ); ?>
@@ -101,7 +102,7 @@
         }else{
           $hide_id = 'tagsdiv-'.$slug;
         }
-        
+
         echo '$("#' . $hide_id . '").hide();'.PHP_EOL;
       }
     }

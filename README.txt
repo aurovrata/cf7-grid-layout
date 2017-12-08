@@ -159,6 +159,9 @@ Yes, with v1.1 you can the `data-group` attribute which by default is empty to r
 
 
 == Changelog ==
+=1.2.3=
+* bug fix no plugin css/js for existing cf7 forms.
+* bug fix sortable columns in new rows.
 =1.2.2=
 * copy-to-click css for helper hooks.
 =1.2.1=

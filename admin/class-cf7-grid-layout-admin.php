@@ -521,6 +521,11 @@ class Cf7_Grid_Layout_Admin {
     update_post_meta($post_id, '_cf7sg_has_tabs', $has_tabs);
     $has_tables = ( 'true' === $_POST['cf7sg-has-tables']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tables', $has_tables);
+    /**
+    * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
+    */
+    $is_cf7sg = ( 'true' === $_POST['is_cf7sg_form']) ? true : false;
+    update_post_meta($post_id, '_cf7sg_managed_form', $is_cf7sg);
   }
   /**
   * Filtered allowed html tags & attributes, add data-button to div tags to ensure forms are saved properly.

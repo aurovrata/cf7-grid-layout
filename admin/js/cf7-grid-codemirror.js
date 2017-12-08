@@ -78,6 +78,10 @@
           var changes = $('<div>').append(cmEditor.getValue());
           if(0===changes.children().length || changes.children('.container').length>0){
             $('#form-editor-tabs').tabs('option',{disabled:false});
+            /**
+            * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
+            */
+            $('#is-cf7sg-form').val('true');
           }
         }
 
@@ -129,6 +133,10 @@
       /*@since 1.1.1 disable grid editor for existing cf7 forms*/
       if(0==$grid.children('.container').length){
         $('#form-editor-tabs').tabs('option',{ active:1, disabled:true});
+        /**
+        * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
+        */
+        $('#is-cf7sg-form').val('false');
       }
 
       //update the codemirror when tags are inserted
