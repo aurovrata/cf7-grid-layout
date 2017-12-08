@@ -159,9 +159,11 @@ class Cf7_Grid_Layout_Public {
   **/
   public function cf7_shortcode_request($output, $tag, $attr){
     /*If cf7 plugin default shortcode, let's skip this.*/
-    if('contact-form-7' != $tag){
+    debug_msg($tag);
+    if('contact-form-7' === $tag){
       return $output;
     }
+    debug_msg('cf7-grid');
     $cf7_id = $attr['id'];
     $class = get_post_meta($cf7_id, '_cf7sg_classes', true);
     if(empty($class)){
@@ -495,7 +497,7 @@ class Cf7_Grid_Layout_Public {
   }
   /**
    *  This function filters submitted data and consolidates grid field values into arrays.
-   * Funciton hooked on 'wpcf7_posted_data'
+   * Function hooked on 'wpcf7_posted_data'
    * @since 1.0.0
    * @param   Array    $data    unvalidated submitted data.
    * @return  Array    filtered submitted data.

@@ -168,6 +168,8 @@
 
       //setup sub-forms hidden field.
       var embeds = [];
+      var hasTables = false;
+      var hasTabs = false;
       if($embdedForms.length>0){
         $embdedForms.each(function(){
           embeds[embeds.length] = $(this).data('form');
@@ -177,7 +179,6 @@
       //scan and submit tabs & tables fields.
       var tableFields = [];
       var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img;
-      var hasTables = false;
       $('.row.cf7-sg-table', $formNoEmbeds).each(function(){
         var search = $(this).html();
         var match = cf7TagRegexp.exec(search);
@@ -192,7 +193,6 @@
       });
       //var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)\s*(.[^\[]*)\]/img;
       var tabFields = [];
-      var hasTabs = false;
       $('.container.cf7-sg-tabs-panel', $formNoEmbeds).each(function(){
         var search = $(this).html();
         var match = cf7TagRegexp.exec(search);
@@ -207,6 +207,8 @@
       //append hidden fields
       $(this).append('<input type="hidden" name="cf7sg-has-tabs" value="'+hasTabs+'" /> ');
       $(this).append('<input type="hidden" name="cf7sg-has-tables" value="'+hasTables+'" /> ');
+      var disabled = $('#form-editor-tabs').tabs('option','disabled');
+      $(this).append('<input type="hidden" name="cf7sg-has-grid" value="'+disabled+'" /> ');
       /*
       TODO: check for nice-select/select2, effects, toggles, accordion, validation to reduce script loads on front end.
       */
