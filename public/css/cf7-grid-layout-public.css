@@ -130,7 +130,7 @@ span.cf7sg-validation-warning {
   background-position-y: 50%;
 }
 .cf7sg-collapsible .row.ui-accordion-content {
-    min-height: 200px;
+    min-height: 120px;
     overflow: unset;
 }
 .cf7-smart-grid.has-grid .field {

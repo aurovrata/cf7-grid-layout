@@ -46,6 +46,7 @@
         autofocus:false,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
       });
+
       /*  TODO: enable shortcode edit at a future date
       $('.cm-shortcode',$codemirror).each(function(){
         $(this).append('<span class="dashicons dashicons-edit"></span>');
@@ -69,6 +70,9 @@
         cmEditor.setCursor(cmEditor.firstLine(),0);
       }
       $codemirror.beautify();
+
+      //var cur = cmEditor.getCursor();
+      //cmEditor.setCursor(99, cur.ch);
 
       cmEditor.on('changes', function(){
         codemirrorUpdated = true;

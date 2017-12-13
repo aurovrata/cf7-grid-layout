@@ -76,6 +76,8 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_style( "codemirror-css", $plugin_dir . 'assets/codemirror/codemirror.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-theme-css", $plugin_dir . 'assets/codemirror/theme/paraiso-light.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-foldgutter-css", $plugin_dir . 'assets/codemirror/addon/fold/foldgutter.css', array(), $this->version, 'all' );
+        wp_enqueue_style( "codemirror-dialog-css", $plugin_dir . 'assets/codemirror/addon/dialog/dialog.css', array(), $this->version, 'all' );
+        wp_enqueue_style( "codemirror-matchesonscrollbar-css", $plugin_dir . 'assets/codemirror/addon/search/matchesonscrollbar.css', array(), $this->version, 'all' );
         wp_enqueue_style( 'smart-grid-css', $plugin_dir . 'assets/css.gs/smart-grid.min.css', array(), $this->version, 'all');
         wp_enqueue_style('dashicons');
         wp_enqueue_style('select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), $this->version, 'all' );
@@ -177,6 +179,34 @@ class Cf7_Grid_Layout_Admin {
         //overlay for shortcode highligh
         wp_enqueue_script( 'codemirror-overlay-js',
           $plugin_dir . 'assets/codemirror/addon/mode/overlay.js',
+          array('codemirror-js'), $this->version, false
+        );
+        /**
+        * @since 1.3.0 enable search codemirror
+        */
+        //overlay for shortcode highligh
+        wp_enqueue_script( 'codemirror-search-js',
+          $plugin_dir . 'assets/codemirror/addon/search/search.js',
+          array('codemirror-js'), $this->version, false
+        );
+        wp_enqueue_script( 'codemirror-jumptoline-js',
+          $plugin_dir . 'assets/codemirror/addon/search/jump-to-line.js',
+          array('codemirror-js'), $this->version, false
+        );
+        wp_enqueue_script( 'codemirror-matchesonscrollbar-js',
+          $plugin_dir . 'assets/codemirror/addon/search/matchesonscrollbar.js',
+          array('codemirror-js'), $this->version, false
+        );
+        wp_enqueue_script( 'codemirror-searchcursor-js',
+          $plugin_dir . 'assets/codemirror/addon/search/searchcursor.js',
+          array('codemirror-js'), $this->version, false
+        );
+        wp_enqueue_script( 'codemirror-annotatescrollbar-js',
+          $plugin_dir . 'assets/codemirror/addon/scroll/annotatescrollbar.js',
+          array('codemirror-js'), $this->version, false
+        );
+        wp_enqueue_script( 'codemirror-dialog-js',
+          $plugin_dir . 'assets/codemirror/addon/dialog/dialog.js',
           array('codemirror-js'), $this->version, false
         );
         //js beautify
