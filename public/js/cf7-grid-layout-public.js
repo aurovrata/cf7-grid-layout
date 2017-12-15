@@ -34,10 +34,10 @@
         var label = 'Add Row';
         //get label for button.
         switch(true){
-          case $table[0].hasAttribute('data-row'):
+          case $table[0].hasAttribute('data-button'):
             label = $table.data('button');
             break;
-          case $row[0].hasAttribute('data-row'): //bw compatibility.
+          case $row[0].hasAttribute('data-button'): //bw compatibility.
             label = $row.data('button');
             break;
         }
@@ -52,7 +52,7 @@
         });
 
         //add a button at the end of the $table to add new rows
-        var $footer = $('.container.cf7-sg-table-footer',$table);
+        var $footer = $table.next('.container.cf7-sg-table-footer');
         if($footer.length>0){
           $footer.detach();
           $table.after($footer);

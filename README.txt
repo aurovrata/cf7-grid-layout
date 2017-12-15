@@ -137,6 +137,21 @@ Please note that in the back-end, these fields which are listed in the form layo
 = Can I group toggled sections so as to have either/or sections ?=
 Yes, with v1.1 you can the `data-group` attribute which by default is empty to regroup toggled sections and therefore ensure that only 1 of these grouped sections is used by a user.  Edit your form in the html editor (Text tab) and fill the `data-group` attribute with the same value (no spaces) for each toggled section (`div.container.with-toggle`) you wish to re-group.
 
+= I am using Post My CF7 Form plugin, how are toggles status saved in the database? =
+When you install Post My CF7 Form plugin to map your form submissions to posts in the dashboard, this plugin will automatically save the toggle status, so that draft forms can be re-loaded as well accessing the data for later use.  The status of the toggle is saved to the custom meta-field `cf7sg_toggles_status`,
+`
+$toggles = get_post_meta($post->ID, 'cf7sg_toggles_status', true);
+`
+this will retrieve an array with the following `key=>value` pairs,
+`
+<toggle-element-id>=>""<toggle-label>|Yes"
+`
+the key is the unique id of your toggle `.container` element.  If you navigate to the element in the text editor you will notice that a random 'id' attribute has already been set, you can change this to something more meaningful.
+The value of the array if set at the text string comprised of the toggle label (which you filled in), followed by the positive selection string (toggle open status) which is 'Yes' by default, and separated by the '|' (pipe) character.  If the toggle has not been opened, no key/value pairs will be saved in the array for that toggle.
+
+= How can I navigate/search the text editor? =
+As of v1.3 a search functionality has been introduced.  Click anywhere in the text editor and press your search key combination (for example 'Ctrl+F' on windows/linux), you will see a search box at the top of the editor.  This is useful if you want to edit a specific field, so once you have added a new cf7 field tag with the name say 'your-email', you can then search for it on the text editor to locate the code.
+
 == Screenshots ==
 
 1. This plugin replaces the CF7 post table page and post edit pages with WordPress core post edit and post pages.  This means that other plugins that build on WordPress standards for custom admin dashboard functionality should now play nicely with CF7.  One out-of-the-box improvement is the ability to customise the CF7 form table columns being displayed.
@@ -159,6 +174,9 @@ Yes, with v1.1 you can the `data-group` attribute which by default is empty to r
 
 
 == Changelog ==
+=1.3.0=
+* updated CodeMirror editor to v5.32
+* enabled search functionality in the editor.
 =1.2.4=
 * fix WP_GURUS_DEBUG constant warning.
 =1.2.3=

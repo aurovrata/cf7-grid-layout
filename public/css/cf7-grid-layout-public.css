@@ -231,3 +231,7 @@ span.cf7sg-validation-warning {
 #cf7sg-container .cf7-smart-grid.has-grid .container:last-child {
     margin-bottom: 0;
 }
+.cf7-smart-grid.has-grid .nice-select ul.list {
+    max-height: 300px;
+    overflow-y: auto;
+}
