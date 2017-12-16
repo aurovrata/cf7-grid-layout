@@ -43,6 +43,15 @@ $cf7_key = Cf7_WP_Post_Table::form_key($cf7_form->id());
          $options[$term->slug] = $term->name;
        }
      }
+     /**
+     * Allow filtering of options populated by posts or taxonomies.
+     * @param array $options an array of $value=>$name pairs which will be used for populating select options.
+     * @param string $name the field name being populated.
+     * @param string $cf7_key  the form unique key.
+     * @return array array of $value=>$name pairs which will be used for populating select options.
+     * @since 1.4.0
+     */
+     $options = apply_filters('cf7sg_dynamic_dropdown_filter_options', $options, $tag->name, $cf7_key);
    }else if('post' == $source['source']){
       $args = array(
        'post_type' => $source['post'],
@@ -70,6 +79,15 @@ $cf7_key = Cf7_WP_Post_Table::form_key($cf7_form->id());
          $options[$post->post_name] = $post->post_title;
        }
      }
+     /**
+     * Allow filtering of options populated by posts or taxonomies.
+     * @param array $options an array of $value=>$name pairs which will be used for populating select options.
+     * @param string $name the field name being populated.
+     * @param string $cf7_key  the form unique key.
+     * @return array array of $value=>$name pairs which will be used for populating select options.
+     * @since 1.4.0
+     */
+     $options = apply_filters('cf7sg_dynamic_dropdown_filter_options', $options, $tag->name, $cf7_key);
    }else if('filter' == $source['source']){
      $options = apply_filters('cf7sg_dynamic_dropdown_custom_options', $options, $tag->name, $cf7_key);
    }

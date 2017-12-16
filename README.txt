@@ -174,32 +174,34 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 
 
 == Changelog ==
-=1.3.0=
+= 1.4.0 =
+* added filter cf7sg_dynamic_dropdown_filter_options
+= 1.3.0 =
 * updated CodeMirror editor to v5.32
 * enabled search functionality in the editor.
-=1.2.4=
+= 1.2.4 =
 * fix WP_GURUS_DEBUG constant warning.
-=1.2.3=
+= 1.2.3 =
 * bug fix no plugin css/js for existing cf7 forms.
 * bug fix sortable columns in new rows.
-=1.2.2=
+= 1.2.2 =
 * copy-to-click css for helper hooks.
-=1.2.1=
+= 1.2.1 =
 * bug fix sorting external form rows.
-=1.2.0=
+= 1.2.0 =
 * enable sortable drag and drop columns.
 * enable sortable rows.
-= 1.1.1=
+= 1.1.1 =
 * bug fix table button label.
-=1.1.0=
+= 1.1.0 =
 * minor bug fix for post-my-cf7-form compatibility
 * introduction of grouped toggled sections
 * disabling of all fields in closed toggled sections
 * validation of dynamic forms with toggled sections.
-= 1.0.3=
+= 1.0.3 =
 * bug fix on mixed grid ui mode.
 * bug fix on saving form from text mode with no changes.
-= 1.0.2=
+= 1.0.2 =
 * bug fix on double field entries.
 = 1.0.1 =
 * minor bug fix

@@ -111,6 +111,28 @@ function dynamic_dropdown_posts($query_args, $field, $cf7_key){
 }" href="javascript:void(0);">Filter</a> query arguments to retrieve posts for dynamic dropdown.
       </li>
       <li>
+        <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_filter_options', 'filter_dropdown_options', 10,3);
+/**
+* Allow filtering of options populated by posts or taxonomies. This is useful when you are using hooks to register saved posts with taxonomy terms.  It allows you to build more custom option lists which you can then interpret in your form submission hoooks. 
+* @param array $options an array of $value=>$name pairs which will be used for populating select options.
+* @param string $name the field name being populated.
+* @param string $cf7_key  the form unique key.
+* @return array array of $value=>$name pairs which will be used for populating select options.
+*/
+function filter_dropdown_options($options, $field, $cf7_key){
+  if('{$form_key}'!==$cf7_key ){
+    if($field === 'my-custom-options'){
+      $filtered = array();
+      foreach($options as $value=>$label){
+        $filtered[$value.'|<some-additional-data>'] = $label;
+      }
+      $options = $filtered;
+    }
+  }
+  return $options;
+}" href="javascript:void(0);">Filter</a> the taxonomy/post dynamic dropdown options.
+      </li>
+      <li>
         <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_custom_options','dynamic_dropdown_filter',10,3);
 function dynamic_dropdown_filter($options, $field, $cf7_key){
   //if you have a dynamic dropdown field with custom filter as list source.
@@ -167,7 +189,7 @@ function dynamic_select2_newpost($post_name, $field, $title, $post_type, $args, 
     return $post_name;
   }
   return $default;
-}" href="javascript:void(0);">Filter</a> the default value of a dynamic dropdown field.
+}" href="javascript:void(0);">Filter</a> user added option of a dynamic dropdown post field.
       </li>
       <li class="<?=$post_my_form_only?>">
         <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_filter_select2_submission','dynamic_select2_filter_values',10,3);
@@ -188,7 +210,7 @@ function dynamic_select2_filter_values($values, $field, $cf7_key, $submitted_dat
     return $values;
   }
   return $default;
-}" href="javascript:void(0);">Filter</a> submitted values of a dynamic select2 dropdown with custom options.
+}" href="javascript:void(0);">Filter</a> user added option of a dynamic select2 dropdown with custom options.
       </li>
     </ul>
   </div>
