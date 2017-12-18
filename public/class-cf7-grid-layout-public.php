@@ -94,9 +94,17 @@ class Cf7_Grid_Layout_Public {
     wp_register_style( $this->plugin_name, $plugin_dir . 'public/css/cf7-grid-layout-public.css', array(), $this->version, 'all' );
     wp_register_style( 'cf7-benchmark-css', $plugin_dir . 'public/css/cf7-benchmark.css', array('dashicons'), $this->version, 'all' );
     //others
-    wp_register_style( 'cf7-jquery-ui', $plugin_dir . 'assets/jquery-ui/jquery-ui.min.css', array(), '1.12.1', 'all');
-    wp_register_style( 'cf7-jquery-ui-theme', $plugin_dir . 'assets/jquery-ui/jquery-ui.theme.min.css', array(), '1.12.1', 'all');
-    wp_register_style( 'cf7-jquery-ui-structure', $plugin_dir . 'assets/jquery-ui/jquery-ui.structure.min.css', array(), '1.12.1', 'all');
+    // get registered script object for jquery-ui
+    global $wp_scripts;
+    $ui = $wp_scripts->query('jquery-ui-core');
+
+    // tell WordPress to load the Smoothness theme from Google CDN
+    $protocol = is_ssl() ? 'https' : 'http';
+    $url_path = "$protocol://cdnjs.cloudflare.com/ajax/libs/jqueryui/{$ui->ver}/";
+    wp_register_style('cf7-jquery-ui', $url_path . 'themes/smoothness/jquery-ui.min.css', array(), $ui->ver , 'all');
+
+    wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui->ver, 'all');
+    wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui->ver, 'all');
 		wp_register_style( 'smart-grid', $plugin_dir . 'assets/css.gs/smart-grid.css', array(), $this->version, 'all' );
     wp_register_style('select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), $this->version, 'all' );
     wp_register_style('jquery-nice-select-css', $plugin_dir . 'assets/jquery-nice-select/css/nice-select.css', array(), $this->version, 'all' );
@@ -114,7 +122,7 @@ class Cf7_Grid_Layout_Public {
 	 */
 	public function register_scripts() {
 
-		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-public.js', array( 'jquery' ), $this->version, true );
+		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-public.js', array( 'jquery','contact-form-7' ), $this->version, true );
     wp_register_script('jquery-select2', plugin_dir_url( __DIR__ ) . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('jquery-nice-select', plugin_dir_url( __DIR__ ) . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('jquery-toggles', plugin_dir_url( __DIR__ ) . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
@@ -235,10 +243,10 @@ class Cf7_Grid_Layout_Public {
     $themepath = get_stylesheet_directory();
     $themeuri = get_stylesheet_directory_uri();
     if( file_exists($themepath.'/css/'.$cf7_key.'.css') ){
-      wp_enqueue_style( $cf7_key , $themeuri.'/css/'.$cf7_key.'.css', array($this->plugin_name), null, 'all');
+      wp_enqueue_style( $cf7_key.'-css' , $themeuri.'/css/'.$cf7_key.'.css', array($this->plugin_name), null, 'all');
     }
     if( file_exists($themepath.'/js/'.$cf7_key.'.js') ){
-      wp_enqueue_script( $cf7_key , $themeuri.'/js/'.$cf7_key.'.js', array($this->plugin_name), null, true);
+      wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', array($this->plugin_name), null, true);
     }
 
     $form_time = strtotime($cf7post->post_modified);

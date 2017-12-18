@@ -238,6 +238,9 @@
       });
     }
 		//enable datepicker
+    var input = document.createElement( 'input' );
+    input.setAttribute('type','date');
+    var html5date = (input.type == 'date');
 		var cf7Form_datepicker = $('div.has-date form.wpcf7-form');
 		if(cf7Form_datepicker.length > 0){
 			//check if this is a mapped cf7-2-post form
@@ -252,7 +255,9 @@
 		            id = randString(6);
 		            $(this).attr('id', id); //assign a random id
 		          }
-              $(this).setupDatePicker();
+              if(!html5date){
+                $(this).setupDatePicker();
+              }
 						});
 					});
 				}
@@ -265,7 +270,9 @@
 						id = randString(6);
 						$(this).attr('id', id); //assign a random id
 					}
-          $(this).setupDatePicker();
+          if(!html5date){
+            $(this).setupDatePicker();
+          }
 				});
 			});
 		}
@@ -492,13 +499,16 @@
 			max = new Date(max);
 			maxy = max.getFullYear();
 		}
-		$(this).datepicker({//defaultDate: '-20y',
-			dateFormat: "yy-mm-dd",
-			minDate: min,
-			maxDate: max,
-			changeMonth:true,
-			changeYear: true
-		});
+    $(this).datepicker('destroy'); //in case some other plugin is setting up a datepicker.
+		$(this).datepicker({
+      defaultDate: $(this).val(),
+      dateFormat: 'yy-mm-dd',
+      minDate: min,
+      maxDate:max,
+      changeMonth: true,
+      changeYear: true
+    });
+
 		if(miny>0 && maxy>0){
 			$(this).datepicker('option','yearRange',miny+':'+maxy);
 		}else if(miny>0){
