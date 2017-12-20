@@ -174,6 +174,9 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 
 
 == Changelog ==
+= 1.4.1 =
+* removed jquery-ui styling, loading from cloudflare.
+* use of html5 datepicker is browser supports.
 = 1.4.0 =
 * added filter cf7sg_dynamic_dropdown_filter_options
 = 1.3.0 =
