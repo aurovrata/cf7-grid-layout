@@ -8,12 +8,12 @@
   var columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
   var $wpcf7Editor,$grid,$rowControl = null;
   //graphics UI template pattern
-  var $pattern = $('<div>').html(cf7grid.preHTML+'\\s*(\\[.*\\s*\\].*\\s*)+\\s*'+cf7grid.postHTML);
+  var $pattern = $('<div>').html(cf7grid.preHTML+'\\s*(\\[.*\\s*\\].*\\s*){0,}\\s*'+cf7grid.postHTML);
   var required = cf7grid.requiredHTML.replace('*', '\\*');
   // console.log('r:'+required);
   $pattern.find('label').html('((\\s*.*)('+required+'){1}|(\\s*.*))');
   $pattern.find('.info-tip').text('(.*\\s*)');
-  //console.log('p:'+$pattern.html());
+  console.log('p:'+$pattern.html());
   var templateRegex = new RegExp($pattern.html(), 'ig');
   var seekTemplate = false;
   var cssTemplate = 'div.field';
@@ -411,10 +411,12 @@
             //keep the textarea and remove from the column
             if(cf7grid.ui){
               text = $('textarea.grid-input', $parentColumn).remove().text();
+              $('div.cf7-field-inner', $parentColumn).remove();
             }else{
               text = $('textarea.grid-input', $parentColumn).remove().val();
             }
-            if(cf7grid.ui) $('div.cf7-field-inner', $parentColumn).remove();
+          }else{
+            text = $parentColumn.children('.container').remove();
           }
           $parentColumn.insertNewRow(text);
         }else{ //add to the main container
@@ -884,13 +886,20 @@
     //append the new row to the column or container
     if(append) $(this).append($newRow);
     else $(this).after($newRow);
-    //add the code to the textarea
-    if(cf7grid.ui){
-      $('textarea.grid-input',$newRow).html(areaCode).hide();//.trigger('change');
-      $newRow.html2gui(areaCode);
+    //is areaCode text or jQuery object?
+    if(areaCode instanceof jQuery){
+      $('.cf7-field-inner', $newRow).remove();
+      $('textarea.grid-input',$newRow).remove();
+      $('.columns', $newRow).append(areaCode);
     }else{
-      $('textarea.grid-input',$newRow).val(areaCode);//.trigger('change');
-      $('div.cf7-field-inner', $newRow).hide();
+      //add the code to the textarea
+      if(cf7grid.ui){
+        $('textarea.grid-input',$newRow).html(areaCode).hide();//.trigger('change');
+        $newRow.html2gui(areaCode);
+      }else{
+        $('textarea.grid-input',$newRow).val(areaCode);//.trigger('change');
+        $('div.cf7-field-inner', $newRow).hide();
+      }
     }
     //make new row's columns sortable.
     sortableRows($newRow);
