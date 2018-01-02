@@ -247,6 +247,7 @@ class Cf7_Grid_Layout_Public {
     }
     if( file_exists($themepath.'/js/'.$cf7_key.'.js') ){
       wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', array($this->plugin_name), null, true);
+      do_action('smart_grid_register_custom_script', $cf7_key);
     }
 
     $form_time = strtotime($cf7post->post_modified);

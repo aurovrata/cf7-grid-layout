@@ -529,6 +529,7 @@
       if($target.is('.cf7-field-type textarea')){
         return false; //form change trigger will happen after this
       }else if($target.is('textarea')){
+	      $target.html($target.val()+'\n'); //ensure changes are capture in the codemirror editor
         $('#contact-form-editor').trigger('cf7sg-form-change');
       }
     });
@@ -536,10 +537,13 @@
     //event 'cf7grid-tab-finalise' is fired in cf7-grid-codemirror.js file
     $grid.on('cf7grid-form-finalise', function(){
       if(cf7grid.ui){
-        changeTextarea(true);
         $('#wpcf7-form').parent().siblings('textarea.grid-input').on('change', function(){
           $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
         });
+        $('textarea.grid-input#wpcf7-form').on('change', function(){ //special case for custom code in cf7ui mode
+          $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
+        });
+        changeTextarea(true);
       }else{
         var $txta = $('textarea#wpcf7-form');
         $txta.html($txta.val()+'\n');
