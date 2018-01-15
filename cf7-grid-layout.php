@@ -16,7 +16,7 @@
  * Plugin Name:       CF7 Smart Grid Design Extension
  * Plugin URI:        http://wordpress.syllogic.in
  * Description:       Enabled responsive grid layout designs for Contact Form 7 forms.
- * Version:           1.4.2
+ * Version:           1.4.3
  * Author:            Aurovrata V.
  * Author URI:        http://syllogic.in
  * License:           GPL-2.0+
@@ -30,7 +30,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 define('WPCF7_AUTOP', false);
-define( 'CF7_GRID_VERSION', '1.4.2' );
+define( 'CF7_GRID_VERSION', '1.4.3' );
 
 /**
  * The code that runs during plugin activation.
