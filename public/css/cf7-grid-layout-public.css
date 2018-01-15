@@ -171,6 +171,7 @@ span.cf7sg-validation-warning {
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control {
     min-height: 34px;
+    border-radius: 3px;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control.nice-select {
     line-height: 32px;

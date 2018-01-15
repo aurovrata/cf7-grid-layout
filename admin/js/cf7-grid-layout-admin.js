@@ -147,7 +147,7 @@
       		};
           $.post(ajaxurl, data, function(response) {
             if(response.length > 0){
-              $('.cf7sg-external-form-content', $extform).append( response );
+              $('.cf7sg-external-form-content', $extform).attr('id','cf7sg-form-'+id).append( response );
             }//TODO if error insert a msg.
       		});
 

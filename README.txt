@@ -176,7 +176,7 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 == Changelog ==
 = 1.4.2 =
 * bug fix on converting columns to grids.
-
+* bug fix on editing custom code in grid mode.
 = 1.4.1 =
 * removed jquery-ui styling, loading from cloudflare.
 * use of html5 datepicker is browser supports.
