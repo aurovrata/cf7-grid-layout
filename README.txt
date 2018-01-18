@@ -174,6 +174,8 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 
 
 == Changelog ==
+= 1.4.4 =
+* toggle status js error fix.
 = 1.4.3 =
 * bug fix on sub-form updates.
 * select2 search icon.
