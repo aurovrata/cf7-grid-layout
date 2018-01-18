@@ -444,7 +444,7 @@
         $(this).on(nonceID, function(event){
           $('.cf7sg-collapsible.with-toggle', $(this)).each(function(){
             var id = $(this).attr('id');
-            if('undefined' == typeof cf7sg.toggles_status[id]){
+            if('undefined' == typeof cf7sg.toggles_status || 'undefined' == typeof cf7sg.toggles_status[id]){
               $('.row.ui-accordion-content :input', $(this)).prop('disabled', true);
             }else{
               var toggle = $(this).children('.cf7sg-collapsible-title');
