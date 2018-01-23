@@ -154,7 +154,7 @@
         }
       });
       //add the form to the grid
-      $grid.html($form.children());
+      $grid.html($form.html());
       //set the value of each textarea as inner text
       $('textarea', $grid).each(function(){
         $(this).html($(this).val());

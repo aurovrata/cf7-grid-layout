@@ -99,13 +99,14 @@
           if('#cf7-codemirror' == ui.newPanel.selector){
 						//finalise any changes in the grid form editor
             $grid.on('cf7grid-form-ready', function(){
-	            var code = html_beautify(
-	              $grid.CF7FormHTML(),
-	              {
-	                'indent_size': 2,
-	                'wrap_line_length': 0
-	              }
-	            );
+                var code = $grid.CF7FormHTML();
+                if($grid.children('.container').length > 0){ //beautify.
+	              code = html_beautify(code ,
+    	              {
+    	                'indent_size': 2,
+    	                'wrap_line_length': 0
+    	              });
+                }
 	            cmEditor.setValue(code);
 	            //reset the codemirror change flag
 	            codemirrorUpdated = false;
@@ -230,7 +231,9 @@
       // continue the submit unbind preventDefault.
       $(this).unbind('submit').submit();
    });
-
+   /*
+   Function to convert the UI form into its html final form for editing in the codemirror and/or saving to the CF7 plugin.
+   */
     $.fn.CF7FormHTML = function(){
       if( !$(this).is('#grid-form') ){
         return '';
@@ -274,9 +277,11 @@
         $(this).append( external[id] );
       });
       text = $form.html();
-      text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gm, "");
+      if($grid.children('.container').length > 0){ //strip tabs/newlines
+          text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gm, "");
+      }
       return text;
     }
-  });
+});//dcoument ready end
 
 })( jQuery );
