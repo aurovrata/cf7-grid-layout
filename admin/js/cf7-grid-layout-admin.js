@@ -13,7 +13,7 @@
   // console.log('r:'+required);
   $pattern.find('label').html('((\\s*.*)('+required+'){1}|(\\s*.*))');
   $pattern.find('.info-tip').text('(.*\\s*)');
-  console.log('p:'+$pattern.html());
+  //console.log('p:'+$pattern.html());
   var templateRegex = new RegExp($pattern.html(), 'ig');
   var seekTemplate = false;
   var cssTemplate = 'div.field';
@@ -154,7 +154,11 @@
         }
       });
       //add the form to the grid
-      $grid.html($form.html());
+      if($form.children('.container').length >0 || $form.children('.cf7sg-external-form').length>0){
+        $grid.append($form.children());
+      }else{ //this is not a cf7sg form.
+        $grid.html($form.html());
+      }
       //set the value of each textarea as inner text
       $('textarea', $grid).each(function(){
         $(this).html($(this).val());

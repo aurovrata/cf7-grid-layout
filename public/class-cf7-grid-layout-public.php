@@ -269,7 +269,7 @@ class Cf7_Grid_Layout_Public {
             $form_raw = $cf7_form->prop( 'form' );
           }
           $form_raw = $this->update_sub_form($form_raw, $post_obj);
-          debug_msg($form_raw, 'new form---------------- ');
+          //debug_msg($form_raw, 'new form---------------- ');
         }
         //check if sub-forms needs tabs|tablevalidate_beanchmark
         if(!$has_tables && get_post_meta($post_obj->ID, '_cf7sg_has_tables', true)){
@@ -336,7 +336,7 @@ class Cf7_Grid_Layout_Public {
     //Create a new DOM document
     $cf7_key = $sub_form_post->post_name;
     $sub_form_raw = get_post_meta($sub_form_post->ID, '_form', true);
-    debug_msg($sub_form_raw, 'new subform');
+    //debug_msg($sub_form_raw, 'new subform');
     //PHP DOM plugin.
     require_once plugin_dir_path(  __DIR__  ) . 'assets/php-query/phpQuery.php';
     $doc = phpQuery::newDocument($form_raw);

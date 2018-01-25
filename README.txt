@@ -26,6 +26,9 @@ In addition the plugin also introduces multiple smart input functionalities, suc
 * **plays nice with Post My CF7 Form plugin**: and best of all you can map all your forms to custom posts using the now stable [Post My CF7 Form](https://wordpress.org/plugins/post-my-contact-form-7/) plugin.
 * **redesign the form editor**: this plugin now uses the WordPress default post editor page to edit/build forms, therefore making it easier for developer to plugin their functionality on top, while preserving all the hooks of Contact Form 7.
 
+**Looking for Collaborators**
+Are you a WordPress developer or an HTML/Javascript master?  Want to collaborate on this plugin?  There are some really great pieces of functionality that are in the roadmap for this plugin, but I just don't have the time or resources to get them all on file in a timely manner.  So join me on [GitHub](https://github.com/aurovrata/cf7-grid-layout/wiki/Roadmap) if you want to collaborate.
+
 = Checkout our other CF7 plugin extensions =
 
 * [CF7 Polylang Module](https://wordpress.org/plugins/cf7-polylang/) - this plugin allows you to create forms in different languages for a multi-language website.  The plugin requires the [Polylang](https://wordpress.org/plugins/polylang/) plugin to be installed in order to manage translations.
@@ -174,6 +177,8 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 
 
 == Changelog ==
+= 1.4.6 =
+* bug fix on subform inclusion in UI grid.
 = 1.4.5 =
 * bug fix on editor content for non sg forms.
 = 1.4.4 =
