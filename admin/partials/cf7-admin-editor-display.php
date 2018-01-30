@@ -11,9 +11,15 @@
  * @package    Cf7_Grid_Layout
  * @subpackage Cf7_Grid_Layout/admin/partials
  */
+ $screen = get_current_screen();
 ?>
 <?php do_action( 'wpcf7_admin_warnings' ); ?>
 <?php do_action( 'wpcf7_admin_notices' ); ?>
+<?php
+if('add' == $screen->action) do_action( 'load-contact_page_wpcf7-new' );
+else do_action( 'load-toplevel_page_wpcf7' );
+?>
+
 <input type="hidden" id="is-cf7sg-form" name="is_cf7sg_form" value="true" />
 <input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
 <input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />

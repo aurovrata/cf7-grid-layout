@@ -21,38 +21,63 @@
  * @author     Aurovrata V. <vrata@syllogic.in>
  */
 class Cf7_Grid_Layout_Admin {
+  /**
+  * The ID of this plugin.
+  *
+  * @since    1.0.0
+  * @access   private
+  * @var      string    $plugin_name    The ID of this plugin.
+  */
+  private $plugin_name;
+  /**
+  * The version of this plugin.
+  *
+  * @since    1.0.0
+  * @access   private
+  * @var      string    $version    The current version of this plugin.
+  */
+  private $version;
+  /**
+   * Initialize the class and set its properties.
+   *
+   * @since    1.0.0
+   * @param      string    $plugin_name       The name of this plugin.
+   * @param      string    $version    The version of this plugin.
+   */
+  public function __construct( $plugin_name, $version ) {
+    $this->plugin_name = $plugin_name;
+    $this->version = $version;
+  }
+  /**
+  * Hack to add scripts/styles to edit page.
+  * Hooked on 'admin_enqueue_scripts'.
+  *@since 1.5.0
+  */
+  public function popular_extentions_scripts(){
+    $screen = get_current_screen();
+    if (empty($screen) || 'wpcf7_contact_form' != $screen->post_type){
+      return;
+    }
+    $plugin_dir = plugin_dir_url( __DIR__ );
+    switch( $screen->base ){
+      case 'post':
+        $page_hook = '';
+        if('add' == $screen->action) $page_hook = 'contact_page_wpcf7-new';
+        else $page_hook = 'toplevel_page_wpcf7';
+        global $plugin_page;
+        $plugin_page = 'wpcf7';
+        //unhook this function.
+        remove_action('admin_enqueue_scripts', array($this, 'popular_extentions_scripts'),999,0);
+        do_action('admin_enqueue_scripts', $page_hook);
+        $plugin_page ='';
+        add_action('admin_enqueue_scripts', array($this, 'popular_extentions_scripts'),999,0);
+        break;
+      case 'edit': //table.
+        break;
+    }
+  }
 
-	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
-	 */
-	private $plugin_name;
 
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
-	 */
-	private $version;
-
-	/**
-	 * Initialize the class and set its properties.
-	 *
-	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
-	 */
-	public function __construct( $plugin_name, $version ) {
-
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-
-	}
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -60,8 +85,8 @@ class Cf7_Grid_Layout_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-    $screen = get_current_screen();
-    if ('wpcf7_contact_form' != $screen->post_type){
+      $screen = get_current_screen();
+    if (empty($screen) || 'wpcf7_contact_form' != $screen->post_type){
       return;
     }
     $plugin_dir = plugin_dir_url( __DIR__ );
@@ -82,7 +107,7 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_style('dashicons');
         wp_enqueue_style('select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), $this->version, 'all' );
         break;
-      case 'edit':
+      case 'edit': //table.
         wp_enqueue_style( $this->plugin_name, $plugin_dir . 'admin/css/cf7-grid-layout-admin.css', array(), $this->version, 'all' );
 
         break;

@@ -177,6 +177,9 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 
 
 == Changelog ==
+= 1.5.0 =
+* fix js/css script loading issue for other cf7 extensions.
+
 = 1.4.6 =
 * bug fix on subform inclusion in UI grid.
 = 1.4.5 =
