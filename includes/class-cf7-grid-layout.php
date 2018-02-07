@@ -177,6 +177,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
     // @since 1.5.0 hack to enqueue js/css for other cf7 extensions.
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'popular_extentions_scripts', 999,0);
+    $this->loader->add_action( 'admin_print_scripts', $plugin_admin, 'print_extentions_scripts', 1,0);
     //add new sub-menu
     $this->loader->add_action('admin_menu', $plugin_admin,  'add_cf7_sub_menu' );
     $this->loader->add_filter( 'custom_menu_order', $plugin_admin, 'change_cf7_submenu_order' );

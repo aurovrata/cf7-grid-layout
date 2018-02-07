@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 4.9
+Tested up to: 4.9.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -177,9 +177,10 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 
 
 == Changelog ==
+= 1.5.1 =
+* fix js/css script loading issue for other cf7 extensions that use global page_plugin.
 = 1.5.0 =
 * fix js/css script loading issue for other cf7 extensions.
-
 = 1.4.6 =
 * bug fix on subform inclusion in UI grid.
 = 1.4.5 =

@@ -64,8 +64,6 @@ class Cf7_Grid_Layout_Admin {
         $page_hook = '';
         if('add' == $screen->action) $page_hook = 'contact_page_wpcf7-new';
         else $page_hook = 'toplevel_page_wpcf7';
-        global $plugin_page;
-        $plugin_page = 'wpcf7';
         //unhook this function.
         remove_action('admin_enqueue_scripts', array($this, 'popular_extentions_scripts'),999,0);
         do_action('admin_enqueue_scripts', $page_hook);
@@ -76,7 +74,19 @@ class Cf7_Grid_Layout_Admin {
         break;
     }
   }
-
+  /**
+  * Function to spoof the wpcf7 plugin admin scripts loading for extensions
+  * Hooked on 'admin_print_scripts' and used to fix the issue with the mailchimp ext.
+  *@since 1.5.1
+  */
+  public function print_extentions_scripts(){
+    $screen = get_current_screen();
+    if (empty($screen) || 'wpcf7_contact_form' != $screen->post_type){
+      return;
+    }
+    global $plugin_page;
+    $plugin_page = 'wpcf7';
+  }
 
 
 	/**
