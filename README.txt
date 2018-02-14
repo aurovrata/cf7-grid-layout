@@ -177,6 +177,8 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 
 
 == Changelog ==
+= 1.5.2 =
+* fix bug on sub-forms grid fields.
 = 1.5.1 =
 * fix js/css script loading issue for other cf7 extensions that use global page_plugin.
 = 1.5.0 =

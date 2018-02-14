@@ -572,11 +572,12 @@ class Cf7_Grid_Layout_Public {
       }
 		}
 		$subform_keys = get_post_meta($form_id, '_cf7sg_sub_forms', true);
-
-		foreach($subform_keys as $cf7Key){
-			$post_id = Cf7_WP_Post_Table::form_id($cf7Key);
-			$grid_fields += self::get_grid_fields($post_id);
-		}
+    if(!empty($subform_keys)){
+  		foreach($subform_keys as $cf7Key){
+  			$post_id = Cf7_WP_Post_Table::form_id($cf7Key);
+  			$grid_fields += self::get_grid_fields($post_id);
+  		}
+    }
     self::$array_grid_fields[$form_id]=$grid_fields;
 		return $grid_fields;
 	}
