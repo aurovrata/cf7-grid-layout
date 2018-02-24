@@ -686,7 +686,8 @@
     }
     return $(this);
   }
-  $.fn.html2gui = function(html=''){
+  $.fn.html2gui = function(html){
+    if(typeof html === 'undefined') html ='';
     if(html.length === 0){
       //get the fields from the textarea
       html = $('textarea.grid-input', $(this)).text();
@@ -879,7 +880,8 @@
     return {'length':total, 'size':size};
   }
   //add new rows
-  $.fn.insertNewRow = function(areaCode = ''){
+  $.fn.insertNewRow = function(areaCode){
+    if(typeof areaCode === 'undefined') areaCode ='';
     var append=true;
     if( $(this).is('.columns') || $(this).is($grid)){
       append=true;

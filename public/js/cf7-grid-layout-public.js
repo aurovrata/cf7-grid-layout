@@ -519,7 +519,8 @@
 		return $(this);
 	}
   //clone table row
-  $.fn.cf7sgCloneRow = function(initSelect = true){
+  $.fn.cf7sgCloneRow = function(initSelect){
+    if(typeof initSelect === 'undefined') initSelect =true;
     var $table = $(this);
     var $footer='';
     if($table.is('.cf7-sg-table-footer')){
@@ -572,7 +573,8 @@
     return $(this);
   }
   //clone tabs, called on a div.cf7-sg-tabs
-  $.fn.cf7sgCloneTab = function(initSelect = true){
+  $.fn.cf7sgCloneTab = function(initSelect){
+    if(typeof initSelect === 'undefined') initSelect =true;
     /*initSelect is false if called from cf7_2_post field loading script,
     else if true whehn triggered from the front-end user event.*/
     if(!$(this).is('div.cf7-sg-tabs')){
@@ -694,7 +696,8 @@
   }
 
   //setup toggles
-  $.fn.setupToggle = function(state=false){
+  $.fn.setupToggle = function(state){
+    if(typeof state === 'undefined') state =false;
     if( !$(this).is('.toggle') ){
       return $(this);
     }
@@ -711,30 +714,7 @@
     }
     return $(this);
   }
-  //convert fields to arrays for tables and tabs, trackField is a boolean that is true if this form has an update.
-  // $.fn.fields2arrays = function(trackFields=false){
-  //   $('input, select, textarea', $(this)).each(function(){
-  //     var name = $(this).attr('name');
-  //     if( -1 == name.lastIndexOf('[]') ){
-  //       if('tabs' == trackFields) trackTabsFields[trackTabsFields.length] = $(this).attr('name');
-  //       else if('table' == trackFields) trackTableFields[trackTableFields.length] = $(this).attr('name');
-  //       $(this).attr('name', name+'[]');
-  //       $(this).addClass('cf7sg-'+name);
-  //     }
-  //     /*
-  //      TODO: convert existing arrays to array of arrays, or possibly use objects?
-  //      this will allow for tables within tabs.
-  //      */
-  //     /*
-  //     TODO: limit tabs within tabs and tables within tables.,
-  //     this is currently handled in the grid using css, however we will need to inforce it in the js too
-  //     */
-  //     /*
-  //     TODO: what about radio/checkbox fields, how to handle these if they are arrays?
-  //     */
-  //   });
-  //   return $(this);
-  // }
+
   // if this is an updated form (due to chagen in embeded forms), send grid fields back to server.
   $('div.cf7-smart-grid.has-update form.wpcf7-form').on('cf7SmartGridReady', function(){
     var $form = $(this);

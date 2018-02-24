@@ -616,14 +616,14 @@ class Cf7_Grid_Layout_Admin {
     return $allowed;
   }
   /**
-    * Filters the default form loaded when a new CF7 form is created
-    * Hooked on
-    * @since 1.0
-    * @param string $template  the html string for the form tempalte
-    * @param string $prop  the template property required.
-    */
+  * Filters the default form loaded when a new CF7 form is created
+  * Hooked on 'wpcf7_default_template'
+  * @since 1.0
+  * @param string $template  the html string for the form tempalte
+  * @param string $prop  the template property required.
+  */
   public function default_cf7_form($template, $prop){
-	if($prop !== 'form') return $template;
+	  if($prop !== 'form') return $template;
     include( plugin_dir_path( __FILE__ ) . '/partials/cf7-default-form.php');
     return $template;
   }

@@ -1,6 +1,4 @@
-<?php
-$template = sprintf(
-			'
+<?php ob_start(); ?>
 <div class="container" style="">
   <div class="row">
     <div class="columns one-half">
@@ -54,7 +52,9 @@ $template = sprintf(
     </div>
   </div>
 </div>
-',
+<?php
+$template = ob_get_clean(); 
+$template = sprintf( $template,
 __( 'Name', 'cf7-grid-layout' ),
   __( 'Enter your full name', 'cf7-grid-layout' ),
   __( 'Email', 'cf7-grid-layout' ),

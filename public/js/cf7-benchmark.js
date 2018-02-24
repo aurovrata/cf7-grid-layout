@@ -23,7 +23,8 @@
       }
     });
   });
-  $.fn.cf7sgBenchmark = function(warn=false){
+  $.fn.cf7sgBenchmark = function(warn){
+    if(typeof warn === 'undefined') warn =false;
     if(!$(this).is('input.cf7sg-benchmark')){
       return $(this);
     }
