@@ -177,6 +177,12 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 
 
 == Changelog ==
+= 1.6.0 =
+* fix legacy cf7 form editor bug.
+* clear text editor resets form grid to single row/single column fixed.
+* optimise jquery objects.
+* fix required field label.
+
 = 1.5.3 =
 * fix javascript issue for non-ECMAS2015 compliant browsers.
 = 1.5.2 =

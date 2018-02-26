@@ -157,6 +157,7 @@
     }); //-----------end codemirror editor setup
 
     $('form#post').submit(function(event) {
+      var $this = $(this);
       $( window ).off( 'beforeunload' ); //remove event to stop cf7 script from warning on save
       event.preventDefault(); //this will prevent the default submit
       var $embdedForms = '';
@@ -218,10 +219,10 @@
         hasTabs = true;
       });
       //append hidden fields
-      $(this).append('<input type="hidden" name="cf7sg-has-tabs" value="'+hasTabs+'" /> ');
-      $(this).append('<input type="hidden" name="cf7sg-has-tables" value="'+hasTables+'" /> ');
+      $this.append('<input type="hidden" name="cf7sg-has-tabs" value="'+hasTabs+'" /> ');
+      $this.append('<input type="hidden" name="cf7sg-has-tables" value="'+hasTables+'" /> ');
       var disabled = $('#form-editor-tabs').tabs('option','disabled');
-      $(this).append('<input type="hidden" name="cf7sg-has-grid" value="'+disabled+'" /> ');
+      $this.append('<input type="hidden" name="cf7sg-has-grid" value="'+disabled+'" /> ');
       /*
       TODO: check for nice-select/select2, effects, toggles, accordion, validation to reduce script loads on front end.
       */
@@ -229,23 +230,25 @@
       $('#cf7sg-table-fields').val(JSON.stringify(tableFields));
       //alert(ttFields);
       // continue the submit unbind preventDefault.
-      $(this).unbind('submit').submit();
+      $this.unbind('submit').submit();
    });
    /*
    Function to convert the UI form into its html final form for editing in the codemirror and/or saving to the CF7 plugin.
    */
     $.fn.CF7FormHTML = function(){
-      if( !$(this).is('#grid-form') ){
+      var $this = $(this);
+      if( !$this.is('#grid-form') ){
         return '';
       }
-      var $form = $('<div>').append(  $(this).html() );
+      var $form = $('<div>').append(  $this.html() );
       var text='';
       //remove the external forms
       var external = {};
       $('.cf7sg-external-form', $form).each(function(){
-        var id = $(this).data('form');
-        external[id] = $(this).children('.cf7sg-external-form-content').remove();
-        $(this).children('.form-controls').remove();
+        var $exform = $(this);
+        var id = $exform.data('form');
+        external[id] = $exform.children('.cf7sg-external-form-content').remove();
+        $exform.children('.form-controls').remove();
       });
       //remove the row controls
       $('.row', $form).removeClass('ui-sortable').children('.row-controls').remove();
@@ -262,19 +265,21 @@
       $('ul.cf7-sg-tabs-list li label', $form).remove();
       //remove texarea and embed its content
       $('.columns', $form).each(function(){
-        $(this).removeClass('ui-sortable');
-        var $gridCol = $(this).children('.grid-column');
+        var $this = $(this);
+        $this.removeClass('ui-sortable');
+        var $gridCol = $this.children('.grid-column');
         var $text = $('textarea.grid-input', $gridCol);
         if($text.length>0){
           text = $text.text();
-          $(this).html('\n'+text);
+          $this.html('\n'+text);
         }//else this column is a grid.
         $gridCol.remove();
       });
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
-        var id = $(this).data('form');
-        $(this).append( external[id] );
+        var $this = $(this);
+        var id = $this.data('form');
+        $this.append( external[id] );
       });
       text = $form.html();
       if($grid.children('.container').length > 0){ //strip tabs/newlines

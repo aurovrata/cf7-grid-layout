@@ -43,73 +43,74 @@
       }
       var $form = $('<div>').append( formhtml );
       var isGrid = true; //return value.
-      if(0===$form.children('.container')){
-        isGrid = true;
+      $grid.html(''); //empty the grid.
+      if(0===$form.children('.container').length){
+        isGrid = false;
       }
       //remove the external forms
       $('.cf7sg-external-form .cf7sg-external-form-content', $form).remove();
-      // .each(function(){
-      //   var id = $(this).data('form');
-      // });
       //replace columns content with textareas
       /*--------------------------------------------------- convert columns */
       $('div.columns', $form).each(function(){
+        var $this = $(this);
         var $area =  $($('#grid-col').html());
-        if($(this).children().is('.container')){
+        if($this.children().is('.container')){
           $('textarea.grid-input', $area).remove();
           $('div.cf7-field-inner', $area).remove();
         }else{
-          if(cf7grid.ui) $('textarea.grid-input', $area).html($(this).html().trim());
-          else $('textarea.grid-input', $area).val($(this).html().trim());
+          if(cf7grid.ui) $('textarea.grid-input', $area).html($this.html().trim());
+          else $('textarea.grid-input', $area).val($this.html().trim());
 
-          $(this).children().remove();
-          $(this).text('');
+          $this.children().remove();
+          $this.text('');
         }
-        $(this).prepend($area);
+        $this.prepend($area);
       });
       $('div.row', $form).each(function(){
         $(this).append( $('#grid-row .row-controls').clone() );
       });
       /*--------------------------------------------------- convert collapsible sections  */
       $('div.container.cf7sg-collapsible', $form).each(function(){
-        var id = $(this).attr('id');
+        var $this = $(this);
+        var id = $this.attr('id');
         if(typeof id == 'undefined'){
           id = randString(6);
-          $(this).attr('id', id); //assign a random id
+          $this.attr('id', id); //assign a random id
         }
-        var text = $(this).children('.cf7sg-collapsible-title').text();
-        var $toggle = $('.toggle', $(this).children('.cf7sg-collapsible-title'));
+        var text = $this.children('.cf7sg-collapsible-title').text();
+        var $toggle = $('.toggle', $this.children('.cf7sg-collapsible-title'));
         if($toggle.length>0){
           $toggle = $toggle.clone();
         }
 
-        $(this).children('.cf7sg-collapsible-title').remove();
-        $(this).prepend( $('#grid-collapsible').html());
-        $('input', $(this).children('.cf7sg-collapsible-title')).not('[type="checkbox"]').val(text);
+        $this.children('.cf7sg-collapsible-title').remove();
+        $this.prepend( $('#grid-collapsible').html());
+        $('input', $this.children('.cf7sg-collapsible-title')).not('[type="checkbox"]').val(text);
         if($toggle.length>0){
-          $(this).children('.cf7sg-collapsible-title').append($toggle);
-          $('input[type="checkbox"]', $(this).children('.cf7sg-collapsible-title') ).prop('checked', true);
+          $this.children('.cf7sg-collapsible-title').append($toggle);
+          $('input[type="checkbox"]', $this.children('.cf7sg-collapsible-title') ).prop('checked', true);
         }
-        var $ctrl = $(this).children('.row').children('.row-controls').find('.collapsible-row-label');
+        var $ctrl = $this.children('.row').children('.row-controls').find('.collapsible-row-label');
         $('input', $ctrl).prop('checked', true);
         //toggle disable the sibling input
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
       });
       /*--------------------------------------------------- convert tables */
       $('div.container.cf7-sg-table', $form).each(function(){
-        var $ctrl = $(this).find('.row.cf7-sg-table > .row-controls' ).first().find('.table-row-label');
+        var $this = $(this);
+        var $ctrl = $this.find('.row.cf7-sg-table > .row-controls' ).first().find('.table-row-label');
         $('input', $ctrl).prop('checked', true);
         //set button label
-        var text = $(this).data('button');
+        var text = $this.data('button');
         if(typeof text  == 'undefined'){
           text = 'Add Row';
-          $(this).attr('data-button',text);
+          $this.attr('data-button',text);
         }
         $ctrl.next('.table-row-button').children('input').val(text);
         //toggle disable the sibling input
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
         //toggle footer row
-        var $footer = $(this).next();
+        var $footer = $this.next();
         if($footer.is('.cf7-sg-table-footer')){
           $ctrl = $footer.children('.row').first().find('.row-controls .footer-row-label');
           $('input.footer-row', $ctrl).prop('checked', true);
@@ -119,11 +120,12 @@
       //tabs
       /*--------------------------------------------------- convert tabs */
       $('ul.cf7-sg-tabs-list li', $form).each(function(){
-        var text = $(this).children('a').text();
-        $(this).append($('#grid-tabs ul li label').clone());
-        $('label input', $(this)).val(text);
+        var $this = $(this);
+        var text = $this.children('a').text();
+        $this.append($('#grid-tabs ul li label').clone());
+        $('label input', $this).val(text);
         //setup checkbox
-        var $ctrl = $(this).parent().siblings('.cf7-sg-tabs-panel');
+        var $ctrl = $this.parent().siblings('.cf7-sg-tabs-panel');
         $ctrl = $ctrl.children('.row').find('.row-controls' ).first().find('.tabs-row-label');
         $('input.tabs-row', $ctrl).prop('checked', true);
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
@@ -161,14 +163,16 @@
       }
       //set the value of each textarea as inner text
       $('textarea', $grid).each(function(){
-        $(this).html($(this).val());
+        var $this = $(this);
+        $this.html($this.val());
       });
       /*--------------------------------------------------- if ui mode, then convert to gui template */
       var $textareaSelected='';
       if(cf7grid.ui){
         $('div.columns', $grid).each(function(){
-          if($(this).children().is('.container')) return true;
-          $(this).html2gui();
+          var $this = $(this);
+          if($this.children().is('.container')) return true;
+          $this.html2gui();
         });
       }else{
         //set the first textarea as our default tag consumer
@@ -177,12 +181,13 @@
       }
       //change this to whichever is live
       $('textarea', $grid).live('focus', function(){
+        var $this = $(this);
         if($textareaSelected.length>0 && $textareaSelected.is('#wpcf7-form')){
           $textareaSelected.attr('id','');
           $textareaSelected.html($textareaSelected.val()); //set its inner html
         }
-        if($(this).is('.grid-input')){
-          $textareaSelected = $(this).attr('id','wpcf7-form');
+        if($this.is('.grid-input')){
+          $textareaSelected = $this.attr('id','wpcf7-form');
         }
       });
       return isGrid;
@@ -558,7 +563,7 @@
     //initial construction of grid form
     buildGridForm();
     $grid.on('build-grid', function(){
-      if(!buildGridForm()){
+      if( !buildGridForm() ){
         $('#form-editor-tabs').tabs('option',{ active:1, disabled:true});
       }
 
@@ -574,14 +579,6 @@
       items: '> .container, > .cf7sg-external-form',
       helper:'clone'
     });
-
-    //make rows with columns sortable
-    // $('.row .columns').sortable({
-    //   //placeholder: "ui-state-highlight",
-    //   handle:'.row-controls .dashicons-move',
-    //   containment:'parent',
-    //   items: '> .container'
-    // });
     //grid is ready
     $wpcf7Editor.trigger('grid-ready');
   }); //end document ready
@@ -607,9 +604,10 @@
   //close controls row/column
   function closeAllControls(){
     $('.grid-controls:visible', $grid).each(function(){
-      $(this).hide();
-      $(this).siblings('.dashicons-no-alt').hide();
-      $(this).siblings('.dashicons-edit').show();
+      var $this = $(this);
+      $this.hide();
+      $this.siblings('.dashicons-no-alt').hide();
+      $this.siblings('.dashicons-edit').show();
     });
   }
   //trigger a change on the textarea#wpcf7-form field if its value has changed
@@ -661,22 +659,24 @@
   }
   /* some function definitions...*/
   $.fn.closeUIfield = function(){
-    if(!$(this).is('.cf7-field-inner :input:visible')){
-      return $(this);
+    var $this = $(this);
+    if(!$this.is('.cf7-field-inner :input:visible')){
+      return $this;
     }
-    if($(this).parent().is('.cf7-field-type')) changeTextarea();
-    $(this).hide().attr('id', '');
-    $(this).siblings('.dashicons-no-alt').hide();
-    $(this).siblings('.content').show();
-    return $(this);
+    if($this.parent().is('.cf7-field-type')) changeTextarea();
+    $this.hide().attr('id', '');
+    $this.siblings('.dashicons-no-alt').hide();
+    $this.siblings('.content').show();
+    return $this;
   }
   $.fn.showUIfield = function(){
-    if(!$(this).is('.cf7-field-inner')){
-      return $(this);
+    var $this = $(this);
+    if(!$this.is('.cf7-field-inner')){
+      return $this;
     }
-    $(this).find('p.content').hide();
-    $(this).find('span.dashicons').show();
-    var $input = $(':input', $(this)).show();
+    $this.find('p.content').hide();
+    $this.find('span.dashicons').show();
+    var $input = $(':input', $this).show();
     $input.focus();
     if($input.is('textarea')){
       $input.attr('id', 'wpcf7-form');
@@ -684,16 +684,17 @@
     }else{
       changeTextarea();
     }
-    return $(this);
+    return $this;
   }
   $.fn.html2gui = function(html){
+    var $this = $(this);
     if(typeof html === 'undefined') html ='';
     if(html.length === 0){
       //get the fields from the textarea
-      html = $('textarea.grid-input', $(this)).text();
+      html = $('textarea.grid-input', $this).text();
       if(html.length === 0){
-        $('textarea.grid-input', $(this)).hide();
-        return $(this);
+        $('textarea.grid-input', $this).hide();
+        return $this;
       }
     }
     var singleField = true;
@@ -708,24 +709,24 @@
       var match = templateRegex.exec(search);
       if(null !== match){
         //populate the fields
-        var $field = $('div.cf7-field-label', $(this));
+        var $field = $('div.cf7-field-label', $this);
         $('input', $field).val(match[1]);
         $('p.content', $field).html(match[1]);
-        $field = $('div.cf7-field-type', $(this));
+        $field = $('div.cf7-field-type', $this);
         var tag = $('textarea', $field).val(match[5]).scanCF7Tag();
         $('p.content', $field).html(tag);
-        $field = $('div.cf7-field-tip', $(this));
+        $field = $('div.cf7-field-tip', $this);
         $('input', $field).val(match[6]);
         $('p.content', $field).html(match[6]);
         //hide the textarea
-        $('textarea.grid-input', $(this)).hide();
+        $('textarea.grid-input', $this).hide();
         //reset global regex
         templateRegex.lastIndex = 0;
       }else{ //this html does not match our templates
-        $('div.cf7-field-inner', $(this)).remove();
+        $('div.cf7-field-inner', $this).remove();
       }
     }else{//this html does not match our templates
-     $('div.cf7-field-inner', $(this)).remove();
+     $('div.cf7-field-inner', $this).remove();
     }
   }
 
@@ -790,35 +791,50 @@
     return label;
   }
   $.fn.updateGridForm = function(){
-    if(!$(this).is('textarea.grid-input')){
-      return $(this);
+    var $this = $(this);
+    if(!$this.is('textarea.grid-input')){
+      return $this;
     }
     //label
-    var label = $(this).siblings('div.cf7-field-label').find(':input').val();
+    var $label = $this.siblings('div.cf7-field-label').find(':input');
+    var label = $label.val();
     //field
-    var field = $(this).siblings('div.cf7-field-type').find('textarea').val();
-    if($(this).siblings('div.cf7-field-type').is('.required')){
-      if(label.indexOf(cf7grid.requiredHTML)<0) label += cf7grid.requiredHTML;
+    var field = $this.siblings('div.cf7-field-type').find('textarea').val();
+    var idx = label.indexOf(cf7grid.requiredHTML)
+    if($this.siblings('div.cf7-field-type').is('.required')){
+      if(idx<0){
+        label += cf7grid.requiredHTML;
+        $label.val(label);//input field.
+        $label.siblings('p.content').html(label);
+      }
+    }else{
+      if(idx>=0){
+        label = label.replace(cf7grid.requiredHTML, '');
+        $label.val(label);//input field.
+        $label.siblings('p.content').html(label);
+      }
     }
     //tip
-    var tip = $(this).siblings('div.cf7-field-tip').find(':input').val();
+    var tip = $this.siblings('div.cf7-field-tip').find(':input').val();
     var $cell = $('<div>').append( cf7grid.preHTML + field + cf7grid.postHTML );
-    $('label', $cell).text(label);
-    $('.info-tip', $cell).text(tip);
+    $('label', $cell).html(label);
+    $('.info-tip', $cell).html(tip);
     //update grid input and trigger change to udpate form
-    if(cf7grid.ui) $(this).html($cell.html()+'\n').trigger('change');
-    else $(this).val($cell.html()).trigger('change');
-    return $(this);
+    if(cf7grid.ui) $this.html($cell.html()+'\n').trigger('change');
+    else $this.val($cell.html()).trigger('change');
+    return $this;
   };
 
   $.fn.toggleSiblingUIFields = function(){
-    if(!$(this).is('div.cf7-field-inner')){
-      return $(this);
+    var $this = $(this);
+    if(!$this.is('div.cf7-field-inner')){
+      return $this;
     }
-    $(this).siblings('div.cf7-field-inner').each(function(){
-      $('p.content', $(this)).show();
-      $(':input', $(this)).hide().attr('id','');
-      $('span.dashicons', $(this)).hide()
+    $this.siblings('div.cf7-field-inner').each(function(){
+      var $this = $(this);
+      $('p.content', $this).show();
+      $(':input', $this).hide().attr('id','');
+      $('span.dashicons', $this).hide();
     });
   }
   $.fn.getRowSize = function(){
@@ -846,14 +862,15 @@
     return {'length':total, 'cols':sizes};
   }
   $.fn.getColumnTotalSize = function(){
-    if(! $(this).is('.columns')){
+    var $this = $(this);
+    if(! $this.is('.columns')){
       return 0;
     }
     var off, foundSize, size = 0;
     var total = 0;
-    var classList = $(this).attr('class').split(/\s+/);
-    var $sizes = $(this).find('.grid-column select.column-size');
-    var $offsets = $(this).find('.grid-column select.column-offset');
+    var classList = $this.attr('class').split(/\s+/);
+    var $sizes = $this.find('.grid-column select.column-size');
+    var $offsets = $this.find('.grid-column select.column-offset');
     $offsets.val('');
     $sizes.val('one');
     foundSize = false;
@@ -881,21 +898,22 @@
   }
   //add new rows
   $.fn.insertNewRow = function(areaCode){
+    var $this = $(this);
     if(typeof areaCode === 'undefined') areaCode ='';
     var append=true;
-    if( $(this).is('.columns') || $(this).is($grid)){
+    if( $this.is('.columns') || $this.is($grid)){
       append=true;
-    }else if($(this).is('.container') || $(this).is('.cf7sg-external-form') ){
+    }else if($this.is('.container') || $this.is('.cf7sg-external-form') ){
       append=false;
     }else{
-      return $(this);
+      return $this;
     }
     var $newRow = $( $('#grid-row').html() );
     //append the column controls and textarea
     $('.columns', $newRow).append( $($('#grid-col').html()) );
     //append the new row to the column or container
-    if(append) $(this).append($newRow);
-    else $(this).after($newRow);
+    if(append) $this.append($newRow);
+    else $this.after($newRow);
     //is areaCode text or jQuery object?
     if(areaCode instanceof jQuery){
       $('.cf7-field-inner', $newRow).remove();
@@ -913,39 +931,41 @@
     }
     //make new row's columns sortable.
     sortableRows($newRow);
-    return $(this);
+    return $this;
   }
   //refresh controls select
   $.fn.changeColumnSize = function(oldSize, newSize){
-    if(oldSize.length > 0) $(this).removeClass(oldSize);
-    $(this).addClass(newSize);
-    $('.column-size option[value="'+newSize+'"]', $(this) ).prop('selected', true);
+    var $this = $(this);
+    if(oldSize.length > 0) $this.removeClass(oldSize);
+    $this.addClass(newSize);
+    $('.column-size option[value="'+newSize+'"]', $this ).prop('selected', true);
   }
   //$target.closest('.grid-controls').filterColumnControls();
   $.fn.filterColumnControls = function(){
-    if(!$(this).is('.grid-controls')){
-      return $(this);
+    var $this = $(this);
+    if(!$this.is('.grid-controls')){
+      return $this;
     }
     //enable all options
-    $('.column-size option', $(this) ).prop('disabled', false);
-    $('.column-offset option', $(this) ).prop('disabled', false);
-    var $parentRow = $(this).closest('.row');
-    var $parentColumn = $(this).closest('.columns');
+    $('.column-size option', $this ).prop('disabled', false);
+    $('.column-offset option', $this ).prop('disabled', false);
+    var $parentRow = $this.closest('.row');
+    var $parentColumn = $this.closest('.columns');
     var row = $parentRow.getRowSize();
     var col = $parentColumn.getColumnTotalSize();
     var idx, start, free = 0;
     if(row.length < 12) free = (12 - row.length);
     for(idx = start = col.size+1; idx < columnsizes.length; idx++){
       if( idx > (free + start - 1) ){
-        $('.column-size option[value="'+columnsizes[idx]+'"]', $(this) ).prop('disabled', true);
+        $('.column-size option[value="'+columnsizes[idx]+'"]', $this ).prop('disabled', true);
       }
     }
     for(idx = start = col.length - col.size - 1 ;idx< offsets.length; idx++){
       if( idx > (free + start - 1) ){
-        $('.column-offset option[value="'+offsets[idx]+'"]', $(this) ).prop('disabled', true);
+        $('.column-offset option[value="'+offsets[idx]+'"]', $this ).prop('disabled', true);
       }
     }
-    return $(this);
+    return $this;
   }
 
 })( jQuery );
