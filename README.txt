@@ -169,6 +169,14 @@ The value of the array if set at the text string comprised of the toggle label (
 = 12.How can I navigate/search the text editor? =
 As of v1.3 a search functionality has been introduced.  Click anywhere in the text editor and press your search key combination (for example 'Ctrl+F' on windows/linux), you will see a search box at the top of the editor.  This is useful if you want to edit a specific field, so once you have added a new cf7 field tag with the name say 'your-email', you can then search for it on the text editor to locate the code.
 
+= 13. Can the text editor highlighting be turned off? =
+yes, you can use the following filters to either switch off only the shortcode highlighting, (add the following line to your functions.php file)
+
+`add_filter('cf7sg_admin_editor_mode', function($mode, $form_key){return '';}, 10, 2);`
+
+and you can also turn off highlight altogether by inserting this additional line to your functions.php file,
+`add_filter('cf7sg_admin_editor_theme', function($theme, $form_key){return '';}, 10, 2);`
+
 == Screenshots ==
 
 1. This plugin replaces the CF7 post table page and post edit pages with WordPress core post edit and post pages.  This means that other plugins that build on WordPress standards for custom admin dashboard functionality should now play nicely with CF7.  One out-of-the-box improvement is the ability to customise the CF7 form table columns being displayed.
@@ -191,12 +199,15 @@ As of v1.3 a search functionality has been introduced.  Click anywhere in the te
 
 
 == Changelog ==
+= 1.7.0 =
+* hide grid tab for non-grid forms.
+* ensure custom css/js load for non-grid forms.
+* added filter 'cf7sg_admin_editor_mode' and 'cf7sg_admin_editor_theme' to switch off editor highlighting.
 = 1.6.0 =
 * fix legacy cf7 form editor bug.
 * clear text editor resets form grid to single row/single column fixed.
 * optimise jquery objects.
 * fix required field label.
-
 = 1.5.3 =
 * fix javascript issue for non-ECMAS2015 compliant browsers.
 = 1.5.2 =

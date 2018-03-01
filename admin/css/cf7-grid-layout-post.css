@@ -8,6 +8,9 @@
     min-width: 100%;
     text-align: right;
 }
+#form-editor-tabs ul li.ui-state-disabled:first-child {
+    display: none;
+}
 #form-editor-tabs ul.ui-tabs-nav > li {
     display: inline-block;
     border: solid 1px #ddd;

@@ -151,9 +151,15 @@ class Cf7_Grid_Layout_Admin {
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
         wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs' ), $this->version, false );
-        wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, false ); //'jquery-ui-draggable'
-        wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
-        wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
+        wp_localize_script(
+          'cf7-grid-codemirror-js',
+          'cf7sgeditor',
+          array(
+            'mode' => apply_filters('cf7sg_admin_editor_mode', 'shortcode', $post->name),
+						'theme' => apply_filters('cf7sg_admin_editor_theme', 'paraiso-light', $post->name),
+          )
+        );
+        wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, false );
         wp_localize_script(
           $this->plugin_name,
           'cf7grid',
@@ -164,6 +170,10 @@ class Cf7_Grid_Layout_Admin {
 						'ui' => apply_filters('cf7sg_grid_ui', true, $post->name)
           )
         );
+        wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
+        wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
+
+
 
         //codemirror script
         wp_enqueue_script( 'codemirror-js',

@@ -132,7 +132,7 @@ class Cf7_Grid_Layout_Public {
 	}
   /**
    * Dequeue script 'contact-form-7'
-   * hooked on 'wp_print_scripts', this canbe re0enqeued on specific cf7 shortcode calls
+   * hooked on 'wp_print_scripts', this canbe re-enqeued on specific cf7 shortcode calls
    * @since 1.0.0
   **/
   public function dequeue_cf7_scripts(){
@@ -140,7 +140,7 @@ class Cf7_Grid_Layout_Public {
   }
   /**
    * Dequeue script 'contact-form-7'
-   * hooked on 'wp_print_style', this canbe re0enqeued on specific cf7 shortcode calls
+   * hooked on 'wp_print_style', this canbe re-enqeued on specific cf7 shortcode calls
    * @since 1.0.0
   **/
   public function dequeue_cf7_styles(){
@@ -166,15 +166,32 @@ class Cf7_Grid_Layout_Public {
    * @since 1.0.0
   **/
   public function cf7_shortcode_request($output, $tag, $attr){
+    //if not a cf7 shortcode, then exit.
     if('contact-form-7' !== $tag){
       return $output;
     }
+    wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
+
     $cf7_id = $attr['id'];
+    //get the key
+    $cf7post = get_post($cf7_id);
+    $cf7_key = $cf7post->post_name;
+    //load custom css/js script from theme css folder.
+    $themepath = get_stylesheet_directory();
+    $themeuri = get_stylesheet_directory_uri();
+    if( file_exists($themepath.'/css/'.$cf7_key.'.css') ){
+      wp_enqueue_style( $cf7_key.'-css' , $themeuri.'/css/'.$cf7_key.'.css', array($this->plugin_name), null, 'all');
+    }
+    if( file_exists($themepath.'/js/'.$cf7_key.'.js') ){
+      wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', array($this->plugin_name), null, true);
+      do_action('smart_grid_register_custom_script', $cf7_key);
+    }
     /**
     * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
     */
     $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
     if(''===$is_form || !$is_form){
+      wp_enqueue_style('contact-form-7'); //default cf7 plugin css.
       return $output;
     }
     $class = get_post_meta($cf7_id, '_cf7sg_classes', true);
@@ -182,7 +199,6 @@ class Cf7_Grid_Layout_Public {
       $class = array();
     }
 
-    wp_enqueue_script('contact-form-7');
     wp_enqueue_script($this->plugin_name);
     wp_localize_script($this->plugin_name, 'cf7sg',array('url' => admin_url( 'admin-ajax.php' )));
 
@@ -236,19 +252,6 @@ class Cf7_Grid_Layout_Public {
 
     $class['has-date']=true;
     wp_enqueue_script('jquery-ui-datepicker');
-    //get the key
-    $cf7post = get_post($cf7_id);
-    $cf7_key = $cf7post->post_name;
-    //load custom css/js script from theme css folder
-    $themepath = get_stylesheet_directory();
-    $themeuri = get_stylesheet_directory_uri();
-    if( file_exists($themepath.'/css/'.$cf7_key.'.css') ){
-      wp_enqueue_style( $cf7_key.'-css' , $themeuri.'/css/'.$cf7_key.'.css', array($this->plugin_name), null, 'all');
-    }
-    if( file_exists($themepath.'/js/'.$cf7_key.'.js') ){
-      wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', array($this->plugin_name), null, true);
-      do_action('smart_grid_register_custom_script', $cf7_key);
-    }
 
     $form_time = strtotime($cf7post->post_modified);
     //check if there are any recently updated sub-forms.

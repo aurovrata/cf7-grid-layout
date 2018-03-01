@@ -4,7 +4,7 @@
 */
 (function( $ ) {
 
-	$(document).ready( function(){
+  $(document).ready( function(){
     var $codemirror = $('#cf7-codemirror');
     var $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     var codemirrorUpdated = false;
@@ -31,21 +31,29 @@
         };
         return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), cf7Overlay);
       });
-      cmEditor = CodeMirror( $codemirror.get(0), {
+      var cmConfig =  {
         value: $wpcf7Editor.text(),
         extraKeys: {"Ctrl-Space": "autocomplete"},
-        mode:  "shortcode",
         lineNumbers: true,
         styleActiveLine: true,
         matchBrackets: true,
-        theme: "paraiso-light",
         tabSize:2,
+        mode: 'htmlmixed',
         lineWrapping: true,
         addModeClass: true,
         foldGutter: true,
         autofocus:false,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-      });
+      }
+      if(cf7sgeditor.mode.length>0){
+        console.log('addind mode');
+        cmConfig['mode']=cf7sgeditor.mode;
+      }
+      if(cf7sgeditor.theme.length>0){
+        cmConfig['theme']=cf7sgeditor.theme;
+      }
+      console.log(cmConfig);
+      cmEditor = CodeMirror( $codemirror.get(0), cmConfig);
 
       /*  TODO: enable shortcode edit at a future date
       $('.cm-shortcode',$codemirror).each(function(){
@@ -287,6 +295,6 @@
       }
       return text;
     }
-});//dcoument ready end
+  });//dcoument ready end
 
 })( jQuery );
