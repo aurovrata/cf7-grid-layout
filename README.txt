@@ -199,6 +199,8 @@ and you can also turn off highlight altogether by inserting this additional line
 
 
 == Changelog ==
+= 1.7.1 =
+* js bug fix on front-end rows.
 = 1.7.0 =
 * hide grid tab for non-grid forms.
 * ensure custom css/js load for non-grid forms.

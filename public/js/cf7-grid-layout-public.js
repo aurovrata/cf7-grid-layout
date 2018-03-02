@@ -240,13 +240,14 @@
       });
       //for non cf7 2 post forms, just enable the nice select
       cf7Form_select2.not('div.cf7_2_post form.wpcf7-form').each(function(){
-        $('select.wpcf7-form-control.select2:enabled', $(this)).each(function(){
+        var $this = $(this);
+        $('select.wpcf7-form-control.select2:enabled', $this).each(function(){
           var $select2 = $(this);
           $select2.select2({
             tags: $select2.is('.tags')
           });
         });
-        $(this).trigger('sgSelect2');
+        $this.trigger('sgSelect2');
       });
     }
 		//enable datepicker
@@ -405,7 +406,7 @@
       cf7Form_accordion.each(function(){
         var rows = $('.cf7sg-collapsible', $(this)).not('.cf7sg-collapsible.with-toggle');
         rows.each(function(){
-          var $row = $row;
+          var $row = $(this);
           var cssId = $row.attr('id');
           if(typeof cssId == 'undefined'){
             cssId = randString(6);
