@@ -286,12 +286,17 @@
       $('.row', $form).removeClass('ui-sortable').children('.row-controls').remove();
       //remove the collapsible input
       $('.container.cf7sg-collapsible', $form).each(function(){
-        var $title = $(this).children('.cf7sg-collapsible-title');
-        text = $title.children('label').children('input[type="hidden"]').val();
+        var $this = $(this);
+        var $title = $this.children('.cf7sg-collapsible-title');
+        var text = $title.children('label').children('input[type="hidden"]').val();
         $title.children('label').remove();
-        //text = $('input', $title).val();
+        var toggle = '';
+        if($this.is('.with-toggle')){
+          toggle=' toggled';
+        }
+        text = '<span class="cf7sg-title'+toggle+'">'+text+'</span>';
         $title.html(text + $title.html());
-        //TODO check if we have a toggle
+
       });
       //remove tabs inputs
       $('ul.cf7-sg-tabs-list li label', $form).remove();

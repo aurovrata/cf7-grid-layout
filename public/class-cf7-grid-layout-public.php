@@ -764,8 +764,13 @@ class Cf7_Grid_Layout_Public {
     //rebuild the default vaidation result.
     $cf7form = WPCF7_ContactForm::get_current();
     $tags = $cf7form->scan_form_tags();
+    $cf7_posted_data = WPCF7_Submission::get_instance()->get_posted_data();
 		foreach ( $tags as $tag ) {
       if(!isset($_POST[$tag['name']])) continue;//not submitted==disabled.
+      /**
+      *@since 1.9.0 fix issue with Conditional Field plugin.
+      */
+      if(!isset($cf7_posted_data[$tag['name']])) continue; //it was removed by some plugin.
 			$type = $tag['type'];
 			$result = apply_filters( "wpcf7_validate_{$type}", $result, $tag );
 		}
@@ -839,7 +844,6 @@ class Cf7_Grid_Layout_Public {
         }
       }
     }
-    //debug_msg
     return $result;
   }
   /**

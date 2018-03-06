@@ -1,6 +1,6 @@
 <?php
 /*
-This file outputs javascript to enable the form loading of grid fiels (tabs and tables)
+This file outputs javascript to enable the form loading of grid fields (tabs and tables)
 */
 ?>
 if(<?= $json_value?> !== undefined && <?= $json_value?> instanceof Object){
@@ -34,7 +34,7 @@ switch($grid){
     if(idx>0) $field = $('span.wpcf7-form-control-wrap.<?= $field ?>'+key, $container);
     idx++;
     if(<?= $json_value?>[key]) {
-      $(':input', $field).val(<?= $json_value?>[key]);
+      $(':input', $field).val(<?= $json_value?>[key]).trigger('change');
     }
     if(count < keys && idx < keys){
       <?= $add_string?>
@@ -60,7 +60,7 @@ switch($grid){
     for(var row in table){
       if(rIdx>0) $field = $('span.wpcf7-form-control-wrap.<?= $field ?>'+tab+row, $rowContainer);
       rIdx++;
-      if(table[row]) $(':input', $field).val(table[row]);
+      if(table[row]) $(':input', $field).val(table[row]).trigger('change');
       if(eRows < rows && rIdx < rows){
         $rowContainer.cf7sgCloneRow(false); //add another row
       }

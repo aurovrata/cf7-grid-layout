@@ -64,6 +64,9 @@ ul.cf7-sg-tabs-list {
 .row.cf7-sg-table .row-control {
     position: absolute;
     height: 100%;
+    top: 0;
+    right: 0;
+    margin-right: -15px;
     border: solid 1px #b9b9b9;
     border-left: none;
     width: 5px;
@@ -82,6 +85,7 @@ ul.cf7-sg-tabs-list {
     border: solid 1px #b9b9b9;
     color: #848484;
 }
+
 .cf7-smart-grid.has-grid div.field span.wpcf7-not-valid-tip {
     display: inherit;
     position: absolute;
@@ -214,10 +218,26 @@ span.cf7sg-validation-warning {
     color: #383838;
 }
 .cf7sg-collapsible .toggle {
-  /*max-width: 55px;*/
   display: inline-block;
   vertical-align: middle;
   float: right;
+}
+@media (min-width: 481px) {}
+.cf7sg-collapsible .cf7sg-title+.toggle {
+    float: none;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    margin-top: -10px;
+}
+.cf7sg-title.toggled {
+    max-width: calc(100% - 60px);
+    display: inline-block;
+    vertical-align: middle;
+}
+/*smomehow the icon accordion have a larger left padding*/
+.ui-accordion .ui-accordion-icons {
+    padding-left: .7em;
 }
 .cf7sg-collapsible .toggle-light .toggle-on,
 .cf7sg-collapsible .toggle-light .toggle-off {

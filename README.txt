@@ -200,6 +200,10 @@ and you can also turn off highlight altogether by inserting this additional line
 
 
 == Changelog ==
+= 1.9.0 =
+* improvements to responsive layout style.
+* trigger change events on grid fields preloaded in Post My CF7 Form plugin.
+* skip over any fields removed from cf7 posted data array on submission. 
 = 1.8.0 =
 * code icon link to jump to code in text editor for that cell.
 = 1.7.1 =

@@ -77,7 +77,10 @@
           id = randString(6);
           $this.attr('id', id); //assign a random id
         }
-        var text = $this.children('.cf7sg-collapsible-title').text();
+        var text = $this.children('.cf7sg-collapsible-title span.cf7sg-title').text();
+        if(0==text.length){ //pre v1.8 title?.
+          text = $this.children('.cf7sg-collapsible-title').text();
+        }
         var $toggle = $('.toggle', $this.children('.cf7sg-collapsible-title'));
         if($toggle.length>0){
           $toggle = $toggle.clone();
