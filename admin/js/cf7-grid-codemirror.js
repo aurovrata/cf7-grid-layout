@@ -52,7 +52,7 @@
       if(cf7sgeditor.theme.length>0){
         cmConfig['theme']=cf7sgeditor.theme;
       }
-      console.log(cmConfig);
+      //console.log(cmConfig);
       cmEditor = CodeMirror( $codemirror.get(0), cmConfig);
 
       /*  TODO: enable shortcode edit at a future date
@@ -63,7 +63,7 @@
         alert('shortcode '+ $(this).parent().text());
       });
       */
-      $.fn.beautify = function(){
+      $.fn.beautify = function(cursor){
         cmEditor.setSelection({
           'line':cmEditor.firstLine(),
           'ch':0,
@@ -76,6 +76,12 @@
         {scroll: false});
         cmEditor.indentSelection("smart");
         cmEditor.setCursor(cmEditor.firstLine(),0);
+        if('undefined' != typeof cursor && cursor.find(false)){
+          var from = cursor.from();
+          var to = cursor.to();
+          cmEditor.setSelection(CodeMirror.Pos(from.line, 0), to);
+          cmEditor.scrollIntoView({from: from, to: CodeMirror.Pos(to.line + 10, 0)});
+        }
       }
       $codemirror.beautify();
 
@@ -133,13 +139,29 @@
         },
         activate: function( event, ui ) {
           gridTab = ui.newPanel.selector;
-          if('#cf7-editor-grid' == ui.newPanel.selector  && codemirrorUpdated){
-            //update the hidden textarea
-            $wpcf7Editor.text(cmEditor.getValue());
-            //trigger rebuild grid event
-            $grid.trigger('build-grid');
+          if('#cf7-editor-grid' == ui.newPanel.selector){
+            if(codemirrorUpdated){
+              //update the hidden textarea
+              $wpcf7Editor.text(cmEditor.getValue());
+              //trigger rebuild grid event
+              $grid.trigger('build-grid');
+            }else{ //try to set the focus on the 'cf7sgfocus element'
+              var $focus = $('.cf7sgfocus', $grid);
+              if($focus.length>0){
+                var scrollPos = $focus.offset().top - $(window).height()/2 + $focus.height()/2;
+                //console.log(scrollPos);
+                $(window).scrollTop(scrollPos);
+                $focus.removeClass('cf7sgfocus');
+              }
+            }
           }else if('#cf7-codemirror' == ui.newPanel.selector){
-            $codemirror.beautify();
+            var cursor = cmEditor.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cmEditor.firstLine(), 0), {caseFold: true, multiline: true});
+
+            $codemirror.beautify(cursor);
+
+
+            var scrollPos = $('#form-panel').offset().top;
+            $(window).scrollTop(scrollPos);
           }
         }
       });
@@ -186,6 +208,8 @@
         $('textarea#wpcf7-form-hidden').html(cmEditor.getValue());
         $formNoEmbeds = $('<div>').append(cmEditor.getValue());
       }
+      //since 1.8 remove cf7sgfocus class if present.
+      $('.cf7sgfocus', $formNoEmbeds).removeClass('cf7sgfocus');
       $embdedForms = $formNoEmbeds.find('.cf7sg-external-form').remove();
 
       //setup sub-forms hidden field.

@@ -196,9 +196,12 @@ and you can also turn off highlight altogether by inserting this additional line
 15. A column can be converted into an entire existing cf7 form by editing the column ('pencil' button) and selecting the option 'Insert Form'.  This will convert the column into a dropdown field from which you can select an existing form that you have previously designed.  This makes for modular design of forms.
 16. This plugin introduces dynamic dropdowns, which allow you to manage dropdown field options using various content managed in your WordPress dashboard.  For example you can use taxonomy terms as options, or you can use existing post types' allowing your users to select/link existing content from your WordPress CMS managed data to their submission.  The dynamic dropdown can also be programmatically populated using a hook filter with the last option 'Custom'.
 17. A benchmark field is available which allows you to display warning when certain input values breach the benchmark limit.  The benchmark field also emits a javascript event when the limit is breached so that custom javascript action can be executed.
+18. Click on the code icon in any given column cell of the grid UI editor and it will take you to the equivalent code lines in the text editor.
 
 
 == Changelog ==
+= 1.8.0 =
+* code icon link to jump to code in text editor for that cell.
 = 1.7.1 =
 * js bug fix on front-end rows.
 = 1.7.0 =

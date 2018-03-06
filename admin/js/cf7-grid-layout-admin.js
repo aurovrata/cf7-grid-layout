@@ -400,6 +400,17 @@
         // $target.siblings('.grid-controls').hide();
         // $target.hide();
         // $target.siblings('.dashicons-edit').show();
+      }else if($target.is('.icon-code.column-control') ){
+        var $focus = $target.closest('.columns');
+        //toggle cf7sgfocus class on inner field to focus on.
+        if($focus.is('.cf7sgfocus')){
+          $focus.removeClass('cf7sgfocus');
+        }else{
+          $('.cf7sgfocus', $grid).removeClass('cf7sgfocus');
+          $focus.addClass('cf7sgfocus');
+        }
+        //move to text editor.
+        $('#form-editor-tabs').tabs('option',{ active:1});
       }else if($target.is('.dashicons-trash.column-control') ){ //-------------------delete column
 
         $parentColumn.remove();
@@ -565,6 +576,14 @@
     $grid.on('build-grid', function(){
       if( !buildGridForm() ){
         $('#form-editor-tabs').tabs('option',{ active:1, disabled:true});
+      }else{
+        var $focus = $('.cf7sgfocus', $grid);
+        if($focus.length>0){
+          var scrollPos = $focus.offset().top - $(window).height()/2 + $focus.height()/2;
+          //console.log(scrollPos);
+          $(window).scrollTop(scrollPos);
+          $focus.removeClass('cf7sgfocus');
+        }
       }
 
     });

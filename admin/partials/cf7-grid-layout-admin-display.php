@@ -115,6 +115,7 @@ if( metadata_exists( 'post', $form_post->id(), 'cf7_grid_form' )){ //grid form
     <span class="dashicons dashicons-plus column-control"></span>
     <span class="dashicons dashicons-trash column-control"></span>
     <span class="dashicons dashicons-move column-control"></span>
+    <span class="icon-code column-control"></span>
     <div class="grid-controls">
       Column offset:<br />
       <select class="column-offset select2 column-setting">

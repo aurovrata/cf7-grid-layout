@@ -171,6 +171,19 @@ textarea.grid-input {
 #grid-form .columns.one .grid-column .dashicons-move {
     margin-left: 0;
 }
+#grid-form .grid-column .icon-code.column-control {
+    float: right;
+    margin-right: 5px;
+    background: url('image/code-sprite.png') 0px 0px;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-size: auto 20px;
+}
+#grid-form .grid-column .icon-code.column-control:hover {
+    background-position: -20px 0px;
+    cursor: pointer;
+}
 /*limit inner tables/tabs within tables/tabs */
 #grid-form .container.cf7-sg-table .container .row-controls span.dashicons-edit,
 #grid-form .container.cf7-sg-tabs-panel .row .row label.tabs-row-label {
