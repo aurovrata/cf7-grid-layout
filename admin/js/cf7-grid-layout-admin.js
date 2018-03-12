@@ -653,6 +653,8 @@
       $this.siblings('.dashicons-no-alt').hide();
       $this.siblings('.dashicons-edit').show();
     });
+    //close helper popups.
+    $('.dashicons-controls-repeat.column-control+.helper-popup').remove();
   }
   //trigger a change on the textarea#wpcf7-form field if its value has changed
   function changeTextarea(finalise = false){
@@ -780,6 +782,17 @@
       return '';
     }
     var $parent = $this.parent(); //.cf7-field-type.
+    var $helper = $parent.siblings('.dashicons-controls-repeat');
+    $helper.each(function(index){
+      if(index>0){
+        $(this).remove();
+        return;
+      }
+      $(this).removeAttr('data-field').removeAttr('data-tag').removeAttr('data-search');
+    });
+    //reset helper.
+    $helper = $parent.siblings('.dashicons-controls-repeat');
+
     var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"source:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"source:)[^\[]*)\]/img;
     var search = $this.val();
     var match = cf7TagRegexp.exec(search);
@@ -858,7 +871,6 @@
     * setup fields for tag specific filters/actions.
     */
     //for each tag get corresponding set of filters.
-    var $helper = $parent.siblings('.dashicons-controls-repeat');
     var helperUsed = false;
     for (var i = 0, len = type.length; i < len; i++) {
       var search = '';
@@ -870,11 +882,12 @@
       if($( search ,$('#fieldhelperdiv')).length>0){
         //this tag has soem filters.
         if(helperUsed){
-          $helper.after($helper.clone());
-          $helper = $helper.next('.dashicons-controls-repeat');
+          var $clone = $helper.clone();
+          $helper.after($clone);
+          $helper = $clone;
         }
         helperUsed = true;
-        $helper.attr('data-field', field);
+        $helper.attr('data-field', fields[i]);
         $helper.attr('data-tag', type[i]);
         $helper.attr('data-search', search);
         $helper.show();

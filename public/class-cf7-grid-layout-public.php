@@ -978,8 +978,9 @@ class Cf7_Grid_Layout_Public {
           * @param  array  $values  an array submitted values (several values can be submitted in the case of a tabbed/table input field).
           * @param  string  $field_name the name of the form field.
           * @param  array  $submitted_data  array of other submitted $field=>$value pairs.
+          * @param string $key  the form unique key.
           */
-          $value = apply_filters('cf7sg_dynamic_dropdown_filter_select2_submission', $values, $field_name, $submitted_data);
+          $value = apply_filters('cf7sg_dynamic_dropdown_filter_select2_submission', $values, $field_name, $submitted_data, $key);
           break;
       }
       //Save the modified value, find which post field the field is mapped to

@@ -19,7 +19,7 @@ function {$field_name_slug}_dynamic_list($query_args, $field, $cf7_key){
 }" href="javascript:void(0);">Filter</a> query arguments to retrieve posts for dynamic dropdown.
 </li>
 <li class="cf7sg-tag-dynamic_select-taxonomy">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_label','{$field_name_slug}_dynamic_option_label',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_label','{$field_name_slug}_dynamic_option_label',10,4);
 /**
 * Filter dropdown options label for dynamic drodpwn list of taxonomy terms.
 * @param string $label option label value.
@@ -37,7 +37,7 @@ function {$field_name_slug}_dynamic_option_label($label, $term, $name, $cf7_key)
 }" href="javascript:void(0);">Filter</a> the option label.
 </li>
 <li class="cf7sg-tag-dynamic_select-taxonomy">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_attributes','{$field_name_slug}_dynamic_option_attributes',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_attributes','{$field_name_slug}_dynamic_option_attributes',10,4);
 /**
 * Filter dropdown options  attributes.
 * @param array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
@@ -57,7 +57,7 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $term, $name,
 }" href="javascript:void(0);">Filter</a> the option attributes.
 </li>
 <li class="cf7sg-tag-dynamic_select-post">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_label','{$field_name_slug}_dynamic_option_label',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_label','{$field_name_slug}_dynamic_option_label',10,4);
 /**
 * Filter dropdown options label for dynamic drodpwn list of existing posts.
 * @param string $label option label value.
@@ -75,7 +75,7 @@ function {$field_name_slug}_dynamic_option_label($label, $post, $name, $cf7_key)
 }" href="javascript:void(0);">Filter</a> the option label.
 </li>
 <li class="cf7sg-tag-dynamic_select-post">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_attributes','{$field_name_slug}_dynamic_option_attributes',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_attributes','{$field_name_slug}_dynamic_option_attributes',10,4);
 /**
 * Filter dropdown options  attributes.
 * @param array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
@@ -113,7 +113,20 @@ function {$field_name_slug}_dynamic_default_option($default, $field, $cf7_key){
 </li>
 <li class="cf7sg-tag-dynamic_select-post-tags <?=$post_my_form_only?>">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_new_post','{$field_name_slug}_select2_newpost',10,7);
-function {$field_name_slug}_select2_newpost($post_name, $field, $title, $post_type, $args, $cf7_key, $submitted_data){
+/**
+* Filter custom options from tag enabled select2 dynamic-dropdown fields
+* where the source of options come from post titles.  Filter is fired when a new value is submitted.
+* This plugin does not take any further action, ie no post of $post_type will be created. It is upto you to do so and return the slug of the newly created post.
+* @param  string  $post_name the new post slug.
+* @param  string  $field_name the name of the form field.
+* @param  string  $title  new value being submitted for a new post title.
+* @param  string $post_type  the post type from which this dropdown was built
+* @param  array  $args  an array of additional parameters that was set in the tag, for example the taxonomy and terms from which to filter the posts for the dynamic list.
+* @param  array  $submitted_data  array of other submitted $field=>$value pairs.
+* @param string $key  the form unique key.
+* @return string value to be stored for this field.
+*/
+function {$field_name_slug}_select2_newpost($post_name, $field, $title, $post_type, $args, $submitted_data, $cf7_key){
   /*
   Filter active when saving forms using Post My CF7 Form plugin.
   select2 dynamic dropdowns can have an option for custom user values to be selected/inserted.
@@ -137,8 +150,18 @@ function {$field_name_slug}_select2_newpost($post_name, $field, $title, $post_ty
 }" href="javascript:void(0);">Filter</a> user added option.
 </li>
 <li class="cf7sg-tag-dynamic_select-filter <?=$post_my_form_only?>">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_filter_select2_submission','{$field_name_slug}_select2_filter_values',10,3);
-function {$field_name_slug}_select2_filter_values($values, $field, $cf7_key, $submitted_data){
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_filter_select2_submission','{$field_name_slug}_select2_filter_values',10,4);
+/**
+* Filter custom otions from tag enabled select2 dynamic-dropdown fields
+* where the source of options come from a filter.  Filter is fired when values are submitted.
+* Return updated values if any are custom values so that saved/draft submissions will reflect the correct value saved in the DB,
+* @param  array  $values  an array submitted values (several values can be submitted in the case of a tabbed/table input field).
+* @param  string  $field_name the name of the form field.
+* @param  array  $submitted_data  array of other submitted $field=>$value pairs.
+* @param string $key  the form unique key.
+* @return string value to be saved for this field.
+*/
+function {$field_name_slug}_select2_filter_values($values, $field, $submitted_data, $cf7_key){
   /*
   Filter active when saving forms using Post My CF7 Form plugin.
   For a dynamic dropdown with custom option list set by a filter, you need to hook this filter which is fired when a user has submitted select2 field value(s). You can return the filtered selected value(s) which will be stored in the mapped post.

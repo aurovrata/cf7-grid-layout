@@ -201,6 +201,9 @@ and you can also turn off highlight altogether by inserting this additional line
 
 
 == Changelog ==
+= 2.0.1 =
+* bug fix inline helper for multiple tags in single cell.
+* inline helper cleanup.
 = 2.0.0 =
 * cleanup of helpers.
 * added dynamic dropdown field filter 'cf7sg_dynamic_dropdown_option_attributes'.

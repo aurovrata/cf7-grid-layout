@@ -111,6 +111,7 @@ if( metadata_exists( 'post', $form_post->id(), 'cf7_grid_form' )){ //grid form
 <div id="grid-helper">
   <span class="dashicons dashicons-no-alt"></span>
   <span class="copy-helper">Click to copy!</span>
+  <p>Click-to-copy &amp; paste in your <em>functions.php</em> file.</p>
   <ul class="cf7sg-helper-list"></ul>
 </div>
 <div id="grid-col">
