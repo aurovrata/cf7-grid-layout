@@ -140,7 +140,7 @@
         }
         break;
       case 'filter':
-        values = ' source:filter';
+        values = ' "source:filter"';
         break;
     }
     //select type

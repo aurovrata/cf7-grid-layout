@@ -896,6 +896,18 @@ class Cf7_Grid_Layout_Public {
           $idx=0;
           foreach($value as $term){
             if(!term_exists($term, $taxonomy)){
+              /**
+              * Filter custom options from tag enabled select2 dynamic-dropdown fields
+              * where the source of options come from taxonomy terms.  Filter is fired when a new value is submitted. The pluign inserts a new term by default as per submitted value.
+              * @param  string  $term the new term submitted by the user.
+              * @param  string  $field_name the name of the form field.
+              * @param  string $taxonomy  the taxonomy to which this is added.
+              * @param  array  $submitted_data  array of other submitted $field=>$value pairs.
+              * @param string $key  the form unique key.
+              * @return string the new term name to insert.
+              * @since 2.0.0
+              */
+              $term = apply_filters('cf7sg_dynamic_dropdown_new_term', $term, $field_name, $taxonomy, $submitted_data, $key);
               $new_term = wp_insert_term($term, $taxonomy);
               if(!is_wp_error($new_term)){
                 $new_term = get_term($new_term['term_id'], $taxonomy);
@@ -925,7 +937,7 @@ class Cf7_Grid_Layout_Public {
             }
             $args['tax_query'] = $tax;
          }
-         $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name, $cf7_key);
+         $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name, $key);
          $posts = get_posts($args);
          $options = array();
          if(!empty($posts)){
@@ -950,8 +962,9 @@ class Cf7_Grid_Layout_Public {
              * @param  string $post_type  the post type from which this dropdown was built
              * @param  array  $args  an array of additional parameters that was set in the tag, for example the taxonomy and terms from which to filter the posts for the dynamic list.
              * @param  array  $submitted_data  array of other submitted $field=>$value pairs.
+             * @param string $key  the form unique key.
              */
-             $value[$idx] = apply_filters('cf7sg_dynamic_dropdown_new_post', $post_name, $field_name, $title, $post_type, $args, $submitted_data);
+             $value[$idx] = apply_filters('cf7sg_dynamic_dropdown_new_post', $post_name, $field_name, $title, $post_type, $args, $submitted_data, $key);
            }
            $idx++;
          }

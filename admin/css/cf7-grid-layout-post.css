@@ -58,7 +58,7 @@ grid layout
 #html-script, #grid-col,
 #grid-form .grid-controls,
 #grid-form .row-controls .dashicons-no-alt,
-#grid-form .grid-column .dashicons-no-alt,
+#grid-form .grid-column > .dashicons-no-alt,
 #grid-row, #grid-collapsible, #grid-tabs, .cf7-sg-hidden,
 #grid-collapsible-with-toggle,
 #grid-cf7-forms,
@@ -151,6 +151,50 @@ textarea.grid-input {
     top: 20px;
     right: 0px;
     text-align: right;
+}
+#grid-form .cf7sg-tag-dynamic_select:last-child {
+    margin: 0;
+}
+#grid-form .cf7sg-helper-list {
+    margin: 0;
+}
+#grid-form .dashicons-controls-repeat {
+    position: relative;
+}
+#grid-form .dashicons-controls-repeat + div.helper-popup {
+    position: absolute;
+    z-index: 9;
+    background: white;
+    padding: 8px 5px;
+    border: solid 1px #787878;
+}
+#grid-form .helper-popup .dashicons.dashicons-no-alt {
+    position: absolute;
+    right: -9px;
+    top: -8px;
+    background: white;
+    border-radius: 50%;
+}
+#grid-form .helper-popup .helper{
+  position: relative;
+}
+#grid-form .helper-popup .copy-helper {
+    display: none;
+    position: absolute;
+    top: -22px;
+    left: 20px;
+    background: #323232;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: bold;
+    min-width: 78px;
+}
+#grid-form .helper-popup .helper:hover .copy-helper {
+    display: inline-block;
+}
+#grid-form .helper-popup .no-post-my-form{
+  display: none;
 }
 #grid-form .cf7sg-collapsible-title label {
     padding-left: 4px;

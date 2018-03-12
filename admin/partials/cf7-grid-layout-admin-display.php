@@ -108,11 +108,17 @@ if( metadata_exists( 'post', $form_post->id(), 'cf7_grid_form' )){ //grid form
     <li><a href="" class="cf7-sg-hidden"></a><label>Tab label<input type="text" /></label></li>
   </ul>
 </div>
+<div id="grid-helper">
+  <span class="dashicons dashicons-no-alt"></span>
+  <span class="copy-helper">Click to copy!</span>
+  <ul class="cf7sg-helper-list"></ul>
+</div>
 <div id="grid-col">
   <div class="grid-column">
     <span class="dashicons dashicons-edit column-control"></span>
     <span class="dashicons dashicons-no-alt column-control"></span>
     <span class="dashicons dashicons-plus column-control"></span>
+    <span class="dashicons dashicons-controls-repeat column-control" style="display:none;"></span>
     <span class="dashicons dashicons-trash column-control"></span>
     <span class="dashicons dashicons-move column-control"></span>
     <span class="icon-code column-control"></span>

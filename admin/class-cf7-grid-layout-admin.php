@@ -441,7 +441,7 @@ class Cf7_Grid_Layout_Admin {
     //   $post_id = $post->ID;
     // }
   	require_once WPCF7_PLUGIN_DIR . '/admin/includes/editor.php';
-  	require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-admin-editor-display.php';
+  	require_once plugin_dir_path( __FILE__ )  . 'partials/cf7-admin-editor-display.php';
   }
 
   /**
@@ -477,7 +477,7 @@ class Cf7_Grid_Layout_Admin {
   * @since 1.0.0
   */
   public function info_metabox_display($post){
-  	require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-info-metabox-display.php';
+  	require_once plugin_dir_path( __FILE__ )  . 'partials/cf7-info-metabox-display.php';
   }
   /**
   * Function to add the metabox to the cf7 post edit screen

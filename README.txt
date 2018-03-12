@@ -197,13 +197,19 @@ and you can also turn off highlight altogether by inserting this additional line
 16. This plugin introduces dynamic dropdowns, which allow you to manage dropdown field options using various content managed in your WordPress dashboard.  For example you can use taxonomy terms as options, or you can use existing post types' allowing your users to select/link existing content from your WordPress CMS managed data to their submission.  The dynamic dropdown can also be programmatically populated using a hook filter with the last option 'Custom'.
 17. A benchmark field is available which allows you to display warning when certain input values breach the benchmark limit.  The benchmark field also emits a javascript event when the limit is breached so that custom javascript action can be executed.
 18. Click on the code icon in any given column cell of the grid UI editor and it will take you to the equivalent code lines in the text editor.
+19. v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
 
 
 == Changelog ==
+= 2.0.0 =
+* cleanup of helpers.
+* added dynamic dropdown field filter 'cf7sg_dynamic_dropdown_option_attributes'.
+* added dynamic dropdown field filter 'cf7sg_dynamic_dropdown_option_label'.
+* added dynamic inline filter helpers on grid UI cells.
 = 1.9.0 =
 * improvements to responsive layout style.
 * trigger change events on grid fields preloaded in Post My CF7 Form plugin.
-* skip over any fields removed from cf7 posted data array on submission. 
+* skip over any fields removed from cf7 posted data array on submission.
 = 1.8.0 =
 * code icon link to jump to code in text editor for that cell.
 = 1.7.1 =

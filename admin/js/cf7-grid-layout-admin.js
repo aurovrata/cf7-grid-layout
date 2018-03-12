@@ -398,11 +398,33 @@
         $target.siblings('.grid-controls').show().filterColumnControls();
         $target.hide();
         $target.siblings('.dashicons-no-alt').show();
-      }else if( $target.is('.dashicons-no-alt.column-control') ) { //----------------hide controls
-        //do nothing since already closed
-        // $target.siblings('.grid-controls').hide();
-        // $target.hide();
-        // $target.siblings('.dashicons-edit').show();
+      }else if( $target.is('.dashicons-controls-repeat.column-control') ) { //--------show hooks
+        var $helper =$('<div class="helper-popup">').html( $('#grid-helper').html());
+        $target.after($helper);
+        var $copy = $('.copy-helper', $helper);
+        var field = $target.data('field');
+        var tag = $target.data('tag');
+        var search = $target.data('search');
+        var $hooks = $(search, '#fieldhelperdiv').clone();
+        $('.cf7sg-helper-list', $helper).append($hooks);
+        $('a.helper', $helper).each(function(){
+          new Clipboard($(this)[0], {
+            text: function(trigger) {
+              var $target = $(trigger);
+              var text = $target.data('cf72post');
+              //get post slug
+              var key = $('#post_name').val();
+              text = text.replace(/\{\$form_key\}/gi, key);
+              text = text.replace(/\{\$field_name\}/gi, field);
+              text = text.replace(/\{\$field_name_slug\}/gi, field.replace('-','_'));
+              return text;
+            }
+          });
+          $(this).append($copy.clone());
+        });
+        $helper.click('a.helper, .dashicons-no-alt', function(e){
+          $(this).remove();
+        });
       }else if($target.is('.icon-code.column-control') ){
         var $focus = $target.closest('.columns');
         //toggle cf7sgfocus class on inner field to focus on.
@@ -757,20 +779,26 @@
     if(!$this.is('textarea')){
       return '';
     }
-    var $parent = $this.parent();
-    var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"slug:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"slug:)[^\[]*)\]/img;
+    var $parent = $this.parent(); //.cf7-field-type.
+    var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"source:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"source:)[^\[]*)\]/img;
     var search = $this.val();
     var match = cf7TagRegexp.exec(search);
     var label='';
     var isRequired = false;
     var type = [];
+    var fields = [];
+    var hooks = [];
     var tag='';
     var isSubmit = false;
     var count =0;
+    var field = '';
     while (match != null) {
       count++;
       label+='['+match[1]+' '+match[2]+']';
       tag = match[1].replace('*','');
+      field = match[2];
+      var helpers = ['cf7sg-tag-all'];
+      helpers[helpers.length] = 'cf7sg-tag-'+tag;
       switch(tag){
         case 'submit':
         case 'save':
@@ -784,8 +812,27 @@
             $this.val(cf7sc);
           }
           break;
+        case 'dynamic_select':
+          var source ='';
+          switch(match.length){
+            case 5: //match[4] exists.
+              source = match[4].split(':');
+              source = source[0];
+              helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source;
+            case 4:  //lets deal with match[3]
+              if(match[3].indexOf('class:tags')>-1){
+                helpers[helpers.length] = 'cf7sg-tag-dynamic_select-tags';
+                if(source.length>0){
+                  helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source+'-tags';
+                }
+              }
+              break;
+          }
+          break;
       }
       type[type.length] = tag;
+      fields[fields.length] = field;
+      hooks[hooks.length] = helpers;
       if('*' === match[1][match[1].length -1]){
         isRequired = true;
       }
@@ -793,6 +840,7 @@
     }
     var classes = $('#grid-col div.cf7-field-type').attr('class');
     classes += " "+ type.join(' ');
+    field = fields.join(' ');
     // $parent.removeClass('required');
     if(isRequired) classes += ' required';//$parent.addClass('required').
     var $parentColumn = $parent.closest('.columns');
@@ -806,6 +854,32 @@
       $parentColumn.addClass('cf7-tags-'+count);
     }
     $parent.attr('class',classes);
+    /**@since 2.0.0
+    * setup fields for tag specific filters/actions.
+    */
+    //for each tag get corresponding set of filters.
+    var $helper = $parent.siblings('.dashicons-controls-repeat');
+    var helperUsed = false;
+    for (var i = 0, len = type.length; i < len; i++) {
+      var search = '';
+      var helpers = hooks[i];
+      for (var j=0, jlen = helpers.length; j<jlen; j++){
+        search += 'li.'+helpers[j]+',';
+      }
+      search = search.slice(0,-1); //remove last ','
+      if($( search ,$('#fieldhelperdiv')).length>0){
+        //this tag has soem filters.
+        if(helperUsed){
+          $helper.after($helper.clone());
+          $helper = $helper.next('.dashicons-controls-repeat');
+        }
+        helperUsed = true;
+        $helper.attr('data-field', field);
+        $helper.attr('data-tag', type[i]);
+        $helper.attr('data-search', search);
+        $helper.show();
+      }
+    }
     if(isSubmit){
       $parent.parent().addClass('submit-field');
     }
