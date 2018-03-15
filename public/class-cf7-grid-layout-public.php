@@ -764,22 +764,22 @@ class Cf7_Grid_Layout_Public {
     //rebuild the default vaidation result.
     $cf7form = WPCF7_ContactForm::get_current();
     $tags = $cf7form->scan_form_tags();
-    $cf7_posted_data = WPCF7_Submission::get_instance()->get_posted_data();
+    $submitted = WPCF7_Submission::get_instance();
+    $data = $submitted->get_posted_data();
+    $tag_types = array(); //store all form tags, including cloned tags for array fields.
+    /**
+    *@since 2.1.0 fix issue with Conditional Field plugin.
+    */
+    $data = $this->remove_hidden_fields_from_conditional_plugin($data);
 		foreach ( $tags as $tag ) {
       if(!isset($_POST[$tag['name']])) continue;//not submitted==disabled.
       /**
       *@since 1.9.0 fix issue with Conditional Field plugin.
       */
-      if(!isset($cf7_posted_data[$tag['name']])) continue; //it was removed by some plugin.
+      if(!isset($data[$tag['name']])) continue; //it was removed by some plugin.
 			$type = $tag['type'];
 			$result = apply_filters( "wpcf7_validate_{$type}", $result, $tag );
-		}
-
-    $submitted = WPCF7_Submission::get_instance();
-    $data = $submitted->get_posted_data();
-    $tags = $cf7form->scan_form_tags();
-    $tag_types = array();
-    foreach($tags as $tag){
+		  //check to see if this field is an array (table or tab or both).
       $tag_types[$tag['name']] = $tag['type'];
       $field_type = self::field_type($tag['name'], $cf7form->id());
       switch($field_type){
@@ -1051,4 +1051,86 @@ class Cf7_Grid_Layout_Public {
     }
 		return $source;
 	}
+  /**
+  * Function to temporarily fix the conditional fields plugin issue.
+  * this is is called by the vlidation function 'filter_wpcf7_validate' above.
+  *@since 2.1
+  *@param array $posted_data submitted data
+  *@return array submitted data without fields that remained hidden.
+  */
+  private function remove_hidden_fields_from_conditional_plugin($posted_data){
+    /*code taken from cf7cf.php file in cf7-conditional-fields*/
+    if(!isset($posted_data['_wpcf7cf_hidden_group_fields'])){
+      return $posted_data;
+    }
+    $hidden_fields = json_decode(stripslashes($posted_data['_wpcf7cf_hidden_group_fields']));
+    $conditonal_fields = array();
+    if (is_array($hidden_fields) && count($hidden_fields) > 0) {
+      foreach ($hidden_fields as $field) {
+        if (wpcf7cf_endswith($field, '[]')) {
+          $field = substr($field,0,strlen($field)-2);
+        }
+        unset( $posted_data[$field] );
+      }
+    }
+    return $posted_data;
+  }
+  /**
+  * Filter mail tags which are table or tab fields.
+  * Hooked on 'wpcf7_mail_tag_replaced'.
+  *@since 2.1
+  *@param string $replaced mail tag string to replace.
+  *@param mixed $submitted value of submitted field from cf7 posted data..
+  *@param boolea $html mail if mail body is using html.
+  *@param WPCF7_MailTag $mail_tag mail tag object of field being replaced.
+  *@return string repalcement string.
+  */
+  public function filter_table_tab_mail_tag($replaced, $submitted, $html, $mail_tag ){
+    $cf7form = WPCF7_ContactForm::get_current();
+    $field_type = self::field_type($mail_tag->field_name(), $cf7form->id());
+
+    $label = '';
+    $build = false;
+    switch($field_type){
+      case 'tab':
+        $label='tab';
+        if($html) $build = true;
+        break;
+      case 'table':
+        $label='row';
+        if($html) $build = true;
+        break;
+      case 'both':
+        // build table.
+        $replaced = '';
+        if( is_array($submitted)) {
+          $tab = 0;
+          foreach($submitted as $index=>$value){
+            $tab++;
+            $idx=0;
+            if($html) $replaced .= '<div><span>tab('.$tab.')</span>&nbsp;';
+            else  $replaced .= 'tab('.$tab.') = ';
+            if(is_array($value)){
+              foreach($value as $row=>$row_value){
+                $idx++;
+                if($html) $replaced .='<div><label>row('.$idx.'):</label><span>' . $row_value . '</span></div>';
+                else  $replaced .= $row_value.',';
+              }
+            }
+            if($html) $replaced .='</div>';
+            else  $replaced .= PHP_EOL;
+          }
+        }
+        break;
+    }
+    if($build && is_array($submitted)) {
+      $idx=0;
+      $replaced='';
+      foreach($submitted as $index=>$value){
+        $idx++;
+        $replaced .= '<div><label>'.$label.'('.$idx.'):</label><span>'.$value.'</span></div>';
+      }
+    }
+    return $replaced;
+  }
 }

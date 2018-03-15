@@ -450,6 +450,9 @@ if(!class_exists('Cf7_WP_Post_Table')){
      * @since 1.0.0
     **/
     public function register_cf7_taxonomy(){
+      if(!class_exists('WPCF7_ContactForm')){
+        return;
+      }
       $plural = 'Form Types';
       $name = 'Form Type';
       $is_hierarchical = true;

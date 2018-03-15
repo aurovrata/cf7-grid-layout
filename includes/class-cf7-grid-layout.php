@@ -198,6 +198,9 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter('post_submitbox_misc_actions', $plugin_admin, 'cf7_post_submit_action' ,10);
     //cusotm sanitation rules for forms
     $this->loader->add_filter('wp_kses_allowed_html', $plugin_admin, 'custom_kses_rules' ,10, 2);
+    /**
+    * @since 2.1.0 make sure our dependent plugins exists.*/
+    $this->loader->add_action( 'admin_init', $plugin_admin, 'check_plugin_dependency');
     /*
     CF7 Hooks
     */
@@ -250,6 +253,9 @@ class Cf7_Grid_Layout {
     //benchmark validation
     $this->loader->add_filter( 'wpcf7_validate_dynamic_select*', $plugin_public, 'validate_required', 30, 2 );
     $this->loader->add_filter( 'wpcf7_validate_benchmark*', $plugin_public, 'validate_required', 30, 2 );
+    /**
+    * @since 2.1 filter mail tags for tables and tabs.*/
+    $this->loader->add_filter( 'wpcf7_mail_tag_replaced', $plugin_public, 'filter_table_tab_mail_tag', 30, 4 );
     //Post My CF7 Form hooks
     $this->loader->add_filter('cf7_2_post_echo_field_mapping_script', $plugin_public, 'load_tabs_table_field', 10, 6 );
     $this->loader->add_action('cf7_2_post_form_posted', $plugin_public, 'save_select2_custom_options', 10, 5 );

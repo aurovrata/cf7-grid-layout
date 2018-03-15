@@ -201,6 +201,10 @@ and you can also turn off highlight altogether by inserting this additional line
 
 
 == Changelog ==
+= 2.1.0 =
+* fix grid UI css issue.
+* added hook to deactivate plugin when cf7 plugin is deactivated.
+* improved email tag display for html mails for table and tab field values.
 = 2.0.1 =
 * bug fix inline helper for multiple tags in single cell.
 * inline helper cleanup.

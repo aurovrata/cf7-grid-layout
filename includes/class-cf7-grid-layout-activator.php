@@ -35,7 +35,7 @@ class Cf7_Grid_Layout_Activator {
         exit('Contact Form 7 plugin needs to be activated first. If you have activated it on select sites,
         you will need to activate the Post My CF7 Form plugin on those sites only');
       }
-      exit('This plugin requires the Contact Form 7 plugin to be installed first');
+      exit('This plugin requires the Contact Form 7 plugin to be activated first');
     }
 	}
 
