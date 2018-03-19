@@ -201,6 +201,8 @@ and you can also turn off highlight altogether by inserting this additional line
 
 
 == Changelog ==
+= 2.1.1 =
+* bug fix on helper classes for dynamic dropdowns.
 = 2.1.0 =
 * fix grid UI css issue.
 * added hook to deactivate plugin when cf7 plugin is deactivated.

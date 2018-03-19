@@ -829,10 +829,15 @@
           var source ='';
           switch(match.length){
             case 5: //match[4] exists.
-              source = match[4].split(':');
-              source = source[0];
-              helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source;
+              if('undefined' !== typeof match[4]){
+                source = match[4].split(':');
+                source = source[0];
+                helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source;
+              }
             case 4:  //lets deal with match[3]
+              if(0=== source.length && match[3].indexOf('slug:'>-1)){
+                source = 'taxonomy';
+              }
               if(match[3].indexOf('class:tags')>-1){
                 helpers[helpers.length] = 'cf7sg-tag-dynamic_select-tags';
                 if(source.length>0){
