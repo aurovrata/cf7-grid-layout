@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 4.9.4
+Tested up to: 4.9.5
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -201,6 +201,8 @@ and you can also turn off highlight altogether by inserting this additional line
 
 
 == Changelog ==
+= 2.1.2 =
+* bug fix click event on toggled titles.
 = 2.1.1 =
 * bug fix on helper classes for dynamic dropdowns.
 = 2.1.0 =

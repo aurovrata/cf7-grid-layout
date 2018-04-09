@@ -343,7 +343,7 @@
          form.click(toggled_accordion, function(event){
             var $header;
             var $target =  $(event.target);
-            if($target.is('.toggle-on') || $target.is('.toggle-off')){
+            if($target.is('span.cf7sg-title.toggled') || $target.is('.toggle-on') || $target.is('.toggle-off') ){
               $header = $target.closest('.cf7sg-collapsible-title');
             }else if($target.parent().is('.cf7sg-collapsible.with-toggle') ){
               $header = $target;
