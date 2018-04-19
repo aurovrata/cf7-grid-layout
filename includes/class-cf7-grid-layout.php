@@ -242,8 +242,8 @@ class Cf7_Grid_Layout {
     //disable autloading of cf7 plugin scripts
     //add_filter( 'wpcf7_load_js',  '__return_false' );
     //add_filter( 'wpcf7_load_css', '__return_false' );
-    //add hidden toggle status field when form loads
-    $this->loader->add_filter( 'wpcf7_form_hidden_fields',  $plugin_public, 'add_hidden_fields' );
+    //add hidden toggle status field when form loads, load after postion 10 to overcome Conditional Fields bug.
+    $this->loader->add_filter( 'wpcf7_form_hidden_fields',  $plugin_public, 'add_hidden_fields', 20 );
     //instroduced a dynamic taxonomy droppdown tag for forms
     $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_cf7_shortcode' );
     //setup individual tag filers

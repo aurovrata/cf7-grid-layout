@@ -92,7 +92,7 @@ class Cf7_Grid_Layout_Public {
     $plugin_dir = plugin_dir_url( __DIR__ );
     //default style for cf7 grid forms (row buttons and tables mainly).
     wp_register_style( $this->plugin_name, $plugin_dir . 'public/css/cf7-grid-layout-public.css', array(), $this->version, 'all' );
-    wp_register_style( 'cf7-benchmark-css', $plugin_dir . 'public/css/cf7-benchmark.css', array('dashicons'), $this->version, 'all' );
+    wp_register_style( 'cf7-benchmark-css', $plugin_dir . 'public/css/cf7-benchmark.css', array(), $this->version, 'all' );
     //others
     // get registered script object for jquery-ui
     global $wp_scripts;
@@ -158,6 +158,7 @@ class Cf7_Grid_Layout_Public {
     $post = get_post($form->id());
     $hidden['_wpcf7_key'] = $post->post_name;
     $hidden['_cf7sg_toggles'] = '';
+    debug_msg($hidden, 'hidden ');
     return $hidden;
   }
   /**
@@ -242,6 +243,7 @@ class Cf7_Grid_Layout_Public {
     wp_enqueue_style('contact-form-7');
     wp_enqueue_style($this->plugin_name);
     wp_enqueue_style('smart-grid');
+    wp_enqueue_style('dashicons');
     $class['has-grid']=true;
     wp_enqueue_style('cf7-jquery-ui-theme');
     wp_enqueue_style('cf7-jquery-ui-structure');
@@ -1088,7 +1090,6 @@ class Cf7_Grid_Layout_Public {
   public function filter_table_tab_mail_tag($replaced, $submitted, $html, $mail_tag ){
     $cf7form = WPCF7_ContactForm::get_current();
     $field_type = self::field_type($mail_tag->field_name(), $cf7form->id());
-
     $label = '';
     $build = false;
     switch($field_type){
