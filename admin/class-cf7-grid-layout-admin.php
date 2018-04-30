@@ -417,8 +417,28 @@ class Cf7_Grid_Layout_Admin {
    * @since 1.0.0
   **/
   public function setup_cf7_object(){
-    WPCF7_ContactForm::get_template( array(
-			'locale' => isset( $_GET['locale'] ) ? $_GET['locale'] : null ) );
+    $args = array();
+    /**
+    * Fix locale setup for new forms using polylang.
+    * @since 2.1.4
+    */
+    if(isset($_GET['locale'])){
+      $args['locale'] = $_GET['locale'];
+    }else if(isset($_GET['new_lang'])){
+      //check for polylang
+      $locale = $_GET['new_lang'];
+      if(function_exists('pll_languages_list')){
+        $langs = pll_languages_list();
+        $locales = pll_languages_list(array('fields'=>'locale'));
+        foreach($langs as $idx => $lang){
+          if($lang == $locale){
+            $locale = $locales[$idx];
+          }
+        }
+      }
+      $args['locale'] =$locale;
+    }
+    WPCF7_ContactForm::get_template( $args);
   }
   /**
   * Callback function to disolay the main editor meta box

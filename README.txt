@@ -201,6 +201,8 @@ and you can also turn off highlight altogether by inserting this additional line
 
 
 == Changelog ==
+= 2.1.4 =
+* fix new form template setup for polylang managed translated forms.
 = 2.1.3 =
 * delay loading of cf7 hidden fields to overcome CF7 Conditional Fields plugin [bug](https://wordpress.org/support/topic/bug-plugin-overwrite-cf7-hidden-fields/).
 = 2.1.2 =

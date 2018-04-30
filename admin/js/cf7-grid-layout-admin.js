@@ -805,7 +805,8 @@
     var isSubmit = false;
     var count =0;
     var field = '';
-    while (match != null) {
+    var stopSearch = false;
+    while (match != null && !stopSearch) {
       count++;
       label+='['+match[1]+' '+match[2]+']';
       tag = match[1].replace('*','');
@@ -824,6 +825,9 @@
             cf7sc = search.replace(match[0], cf7sc);
             $this.val(cf7sc);
           }
+          break;
+        case 'acceptance': //special case with closing tag.
+          stopSearch = true;
           break;
         case 'dynamic_select':
           var source ='';
@@ -854,7 +858,7 @@
       if('*' === match[1][match[1].length -1]){
         isRequired = true;
       }
-      match = cf7TagRegexp.exec(search); //get the next match.
+      if(!stopSearch) match = cf7TagRegexp.exec(search); //get the next match.
     }
     var classes = $('#grid-col div.cf7-field-type').attr('class');
     classes += " "+ type.join(' ');
