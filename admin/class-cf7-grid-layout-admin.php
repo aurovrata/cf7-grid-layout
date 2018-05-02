@@ -591,7 +591,7 @@ class Cf7_Grid_Layout_Admin {
     $sanitised_sub_forms = array();
   	foreach($sub_forms as $field){
       $sanitised_sub_forms[] = sanitize_text_field($field);
-	}
+	  }
     update_post_meta($post_id, '_cf7sg_sub_forms', $sanitised_sub_forms);
     //save form fields which are in tabs or tables.
     $tt_fields = json_decode(stripslashes($_POST['cf7sg-table-fields']));

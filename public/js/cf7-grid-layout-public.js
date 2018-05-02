@@ -319,6 +319,15 @@
                 break;
             }
           }
+          /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
+          *@since 1.1.0
+          */
+          var $cf72post = form.closest('div.cf7_2_post');
+          if( 0 == $cf72post.length){ //disable the input fields in toggled sections.
+            if(!toggled){ //disable fields within a closed toggled section.
+              $(':input', $(this).children('.row')).prop('disabled', true);
+            }
+          }//else deal with toggled fields once cf72post plugin has pre-filled sections.
           //setup the toggle button
           $button.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled);
           //enable the accordion
@@ -332,9 +341,7 @@
               $(this).trigger('sgContentIncrease');
             }
           });
-          // if(!toggled){ //disable fields within a closed toggled section.
-          //   $('.row.ui-accordion-content :input', $(this)).prop('disabled', true);
-          // }
+
           //listen for new content added to this accordion
           toggled_accordion.on('sgContentIncrease', function(){
             $(this).accordion("refresh");
@@ -399,8 +406,9 @@
               $toggleHiddenStatus.val(JSON.stringify(toggleStatus));
             }
 
-          });
-        });
+          });//end for toggle click delegation
+
+        }); //end for each toggle section.
       });
       //now enable the other collapsible rows
       cf7Form_accordion.each(function(){
@@ -442,18 +450,6 @@
       cf7Form_accordion.trigger('sgCollapsibleRowsReady')
     }//end collapsible rows
 
-    //random string generator
-    function randString(n){
-      if(!n){
-          n = 5;
-      }
-      var text = '';
-      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-      for(var i=0; i < n; i++){
-          text += possible.charAt(Math.floor(Math.random() * possible.length));
-      }
-      return text;
-    }
     /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
     *@since 1.1.0
     */
@@ -475,6 +471,19 @@
         });
       }
     });
+    //random string generator
+    function randString(n){
+      if(!n){
+          n = 5;
+      }
+      var text = '';
+      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+      for(var i=0; i < n; i++){
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
+    }
+
     /*
      Smart Grid is now ready
     */

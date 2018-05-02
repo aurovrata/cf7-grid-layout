@@ -201,6 +201,9 @@ and you can also turn off highlight altogether by inserting this additional line
 
 
 == Changelog ==
+= 2.1.5 =
+* better tracking of toggled fields to fix checkbox/radio validation bug.
+* fix recaptcha field bug.
 = 2.1.4 =
 * fix new form template setup for polylang managed translated forms.
 = 2.1.3 =

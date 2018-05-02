@@ -829,6 +829,11 @@
         case 'acceptance': //special case with closing tag.
           stopSearch = true;
           break;
+        case 'recaptch':
+        case 'recaptcha': //special case with closing tag.
+          label='[recaptcha]';
+          stopSearch = true;
+          break;
         case 'dynamic_select':
           var source ='';
           switch(match.length){

@@ -222,9 +222,9 @@
         });
       }
       $('#cf7sg-embeded-forms').val(JSON.stringify(embeds));
+      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img;
       //scan and submit tabs & tables fields.
       var tableFields = [];
-      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img;
       $('.row.cf7-sg-table', $formNoEmbeds).each(function(){
         var search = $(this).html();
         var match = cf7TagRegexp.exec(search);
@@ -284,9 +284,11 @@
       });
       //remove the row controls
       $('.row', $form).removeClass('ui-sortable').children('.row-controls').remove();
+
       //remove the collapsible input
       $('.container.cf7sg-collapsible', $form).each(function(){
         var $this = $(this);
+        var cid = $this.attr('id');
         var $title = $this.children('.cf7sg-collapsible-title');
         var text = $title.children('label').children('input[type="hidden"]').val();
         $title.children('label').remove();
@@ -296,11 +298,13 @@
         }
         text = '<span class="cf7sg-title'+toggle+'">'+text+'</span>';
         $title.html(text + $title.html());
-
       });
       //remove tabs inputs
       $('ul.cf7-sg-tabs-list li label', $form).remove();
-      //remove texarea and embed its content
+
+      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img;
+      var cf7sgToggleRegex = /class:cf7sg-toggle-(.[^\s]+)/i;
+      //remove textarea and embed its content
       $('.columns', $form).each(function(){
         var $this = $(this);
         $this.removeClass('ui-sortable');
@@ -308,6 +312,48 @@
         var $text = $('textarea.grid-input', $gridCol);
         if($text.length>0){
           text = $text.text();
+          //verify if this column is within a toggled section.
+          var $toggle = $this.closest('.container.cf7sg-collapsible.with-toggle');
+          if($toggle.length>0){
+            var cid = $toggle.attr('id');
+            /**
+            * track toggled checkbox/radio fields, because they are not submitted when not filled.
+            *@since 2.1.5
+            */
+            var $field = $text.siblings('div.cf7-field-type');
+            var isToggled = false;
+            if($field.length>0){
+              if($field.is('.checkbox.required') || $field.is('.radio')) isToggled = true;
+            }else isToggled = true; //custom column, needs checking.
+            if(isToggled){
+              var search = text;
+              var match = cf7TagRegexp.exec(search);
+              //var hasRadios = false;
+              while (match != null) {
+                switch(match[1]){
+                  case 'checkbox*':
+                  case 'radio':
+                    var options = '';
+                    if(match.length>4){
+                      var tglmatch = cf7sgToggleRegex.exec(match[4]);
+                      if(tglmatch != null){
+                        if(tglmatch[1] == cid) break;
+                        options =match[4].replace(tglmatch[0],'class:cf7sg-toggle-'+cid);
+                      }else{
+                        options = 'class:cf7sg-toggle-'+cid+' '+match[4];
+                      }
+                    }else{
+                      options = 'class:cf7sg-toggle-'+cid;
+                    }
+                    text = text.replace(match[0], '['+match[1]+' '+match[2]+' '+options+']');
+                    //hasRadios = true;
+                    break;
+                }
+                //console.log('match'+match[2]);
+                match = cf7TagRegexp.exec(search); //get the next match.
+              }
+            }//end isToggled.
+          }
           $this.html('\n'+text);
         }//else this column is a grid.
         $gridCol.remove();

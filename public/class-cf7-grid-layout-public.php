@@ -158,7 +158,6 @@ class Cf7_Grid_Layout_Public {
     $post = get_post($form->id());
     $hidden['_wpcf7_key'] = $post->post_name;
     $hidden['_cf7sg_toggles'] = '';
-    debug_msg($hidden, 'hidden ');
     return $hidden;
   }
   /**
@@ -769,12 +768,45 @@ class Cf7_Grid_Layout_Public {
     $submitted = WPCF7_Submission::get_instance();
     $data = $submitted->get_posted_data();
     $tag_types = array(); //store all form tags, including cloned tags for array fields.
+
     /**
     *@since 2.1.0 fix issue with Conditional Field plugin.
     */
     $data = $this->remove_hidden_fields_from_conditional_plugin($data);
+    $toggle_status = '';
+    if(isset($_POST['_cf7sg_toggles'])){
+      $toggle_status = json_decode( stripslashes($_POST['_cf7sg_toggles']));
+    }
 		foreach ( $tags as $tag ) {
-      if(!isset($_POST[$tag['name']])) continue;//not submitted==disabled.
+      /**
+      * @since 2.1.5 fix validaiton of non-toggled checkox/radio.  Toggled fields are now tracked in the tag itself as a class.
+      */
+      if(!isset($_POST[$tag['name']])){
+        $isRequired = false;
+        switch($tag['type']){
+          case 'checkbox*':
+          case 'radio':
+            $isRequired = true;
+            $tag_options = $tag->options;
+            if(empty($tag_options)) break; //break from switch, not toggled, we need to validate.
+            $toggle='';
+            foreach($tag_options as $option){
+              $match = array();
+              preg_match('/class:cf7sg-toggle-(.[^\s]+)/i',$option, $match);
+              if(!empty($match)){
+                $toggle=$match[1];
+                break; //break fromeach loop.
+              }
+            }
+            if(empty($toggle)) break; //break from switch, not toggled, we need to validate.
+            //check if the toggle is open. only open toggles are registered.
+            if(!empty($toggle_status) && property_exists($toggle_status, $toggle)) break; //break from switch, is toggled and in use, we need to validate.
+            //if we reached here, then the checkbox/radio is toggled and not in use, so do not validate.
+            $isRequired = false;
+            break;
+          }
+          if(!$isRequired) continue;//not submitted==disabled, or not used.
+      }
       /**
       *@since 1.9.0 fix issue with Conditional Field plugin.
       */
@@ -812,6 +844,7 @@ class Cf7_Grid_Layout_Public {
           break;
       }
     }
+
     $validation = array();
     $form_key = '';
     if(isset($data['_wpcf7_key'])){
