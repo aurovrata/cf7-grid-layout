@@ -168,7 +168,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
       if(null === self::$forms_key_ids){
         self::$forms_key_ids = array();
       }
-      if(false !== ($key = array_search($id, self::$forms_key_ids))) return self::$forms_key_ids[$key];
+      if(false !== ($key = array_search($id, self::$forms_key_ids))) return $key;
       else{
         $key = null;
         $form = get_post($id);

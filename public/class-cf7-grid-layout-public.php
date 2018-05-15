@@ -779,7 +779,7 @@ class Cf7_Grid_Layout_Public {
     }
 		foreach ( $tags as $tag ) {
       /**
-      * @since 2.1.5 fix validaiton of non-toggled checkox/radio.  Toggled fields are now tracked in the tag itself as a class.
+      * @since 2.1.5 fix validation of non-toggled checkox/radio.  Toggled fields are now tracked in the tag itself as a class.
       */
       if(!isset($_POST[$tag['name']])){
         $isRequired = false;

@@ -1,0 +1,99 @@
+== Changelog ==
+= 2.1.6 =
+* fix bug find form key by id
+= 2.1.5 =
+* better tracking of toggled fields to fix checkbox/radio validation bug.
+* fix recaptcha field bug.
+= 2.1.4 =
+* fix new form template setup for polylang managed translated forms.
+= 2.1.3 =
+* delay loading of cf7 hidden fields to overcome CF7 Conditional Fields plugin [bug](https://wordpress.org/support/topic/bug-plugin-overwrite-cf7-hidden-fields/).
+= 2.1.2 =
+* bug fix click event on toggled titles.
+= 2.1.1 =
+* bug fix on helper classes for dynamic dropdowns.
+= 2.1.0 =
+* fix grid UI css issue.
+* added hook to deactivate plugin when cf7 plugin is deactivated.
+* improved email tag display for html mails for table and tab field values.
+= 2.0.1 =
+* bug fix inline helper for multiple tags in single cell.
+* inline helper cleanup.
+= 2.0.0 =
+* cleanup of helpers.
+* added dynamic dropdown field filter 'cf7sg_dynamic_dropdown_option_attributes'.
+* added dynamic dropdown field filter 'cf7sg_dynamic_dropdown_option_label'.
+* added dynamic inline filter helpers on grid UI cells.
+= 1.9.0 =
+* improvements to responsive layout style.
+* trigger change events on grid fields preloaded in Post My CF7 Form plugin.
+* skip over any fields removed from cf7 posted data array on submission.
+= 1.8.0 =
+* code icon link to jump to code in text editor for that cell.
+= 1.7.1 =
+* js bug fix on front-end rows.
+= 1.7.0 =
+* hide grid tab for non-grid forms.
+* ensure custom css/js load for non-grid forms.
+* added filter 'cf7sg_admin_editor_mode' and 'cf7sg_admin_editor_theme' to switch off editor highlighting.
+= 1.6.0 =
+* fix legacy cf7 form editor bug.
+* clear text editor resets form grid to single row/single column fixed.
+* optimise jquery objects.
+* fix required field label.
+= 1.5.3 =
+* fix javascript issue for non-ECMAS2015 compliant browsers.
+= 1.5.2 =
+* fix bug on sub-forms grid fields.
+= 1.5.1 =
+* fix js/css script loading issue for other cf7 extensions that use global page_plugin.
+= 1.5.0 =
+* fix js/css script loading issue for other cf7 extensions.
+= 1.4.6 =
+* bug fix on subform inclusion in UI grid.
+= 1.4.5 =
+* bug fix on editor content for non sg forms.
+= 1.4.4 =
+* toggle status js error fix.
+= 1.4.3 =
+* bug fix on sub-form updates.
+* select2 search icon.
+= 1.4.2 =
+* bug fix on converting columns to grids.
+* bug fix on editing custom code in grid mode.
+= 1.4.1 =
+* removed jquery-ui styling, loading from cloudflare.
+* use of html5 datepicker is browser supports.
+= 1.4.0 =
+* added filter cf7sg_dynamic_dropdown_filter_options
+= 1.3.0 =
+* updated CodeMirror editor to v5.32
+* enabled search functionality in the editor.
+= 1.2.4 =
+* fix WP_GURUS_DEBUG constant warning.
+= 1.2.3 =
+* bug fix no plugin css/js for existing cf7 forms.
+* bug fix sortable columns in new rows.
+= 1.2.2 =
+* copy-to-click css for helper hooks.
+= 1.2.1 =
+* bug fix sorting external form rows.
+= 1.2.0 =
+* enable sortable drag and drop columns.
+* enable sortable rows.
+= 1.1.1 =
+* bug fix table button label.
+= 1.1.0 =
+* minor bug fix for post-my-cf7-form compatibility
+* introduction of grouped toggled sections
+* disabling of all fields in closed toggled sections
+* validation of dynamic forms with toggled sections.
+= 1.0.3 =
+* bug fix on mixed grid ui mode.
+* bug fix on saving form from text mode with no changes.
+= 1.0.2 =
+* bug fix on double field entries.
+= 1.0.1 =
+* minor bug fix
+= 1.0 =
+* A working plugin that plays nice with Post My CF7 Form plugin.

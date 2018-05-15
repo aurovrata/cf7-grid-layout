@@ -136,7 +136,7 @@ class Cf7_Grid_Layout_Admin {
     //debug_msg($screen, $this->custom_type );
     $plugin_dir = plugin_dir_url( __DIR__ );
     if('toplevel_page_wpcf7' == $page){
-      wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array( 'jquery' ), $this->version, false );
+      wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array( 'jquery' ), $this->version, true );
       return;
     }
     $screen = get_current_screen();
@@ -150,7 +150,7 @@ class Cf7_Grid_Layout_Admin {
         //enqueue the cf7 scripts.
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
-        wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs' ), $this->version, false );
+        wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs' ), $this->version, true );
         wp_localize_script(
           'cf7-grid-codemirror-js',
           'cf7sgeditor',
@@ -159,7 +159,7 @@ class Cf7_Grid_Layout_Admin {
 						'theme' => apply_filters('cf7sg_admin_editor_theme', 'paraiso-light', $post->name),
           )
         );
-        wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, false );
+        wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
         wp_localize_script(
           $this->plugin_name,
           'cf7grid',
