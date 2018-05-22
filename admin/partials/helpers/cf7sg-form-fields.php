@@ -178,3 +178,18 @@ function {$field_name_slug}_select2_filter_values($values, $field, $submitted_da
   return $values;
 }" href="javascript:void(0);">Filter</a> user selection with user added option.
 </li>
+<li class="cf7sg-tag-dynamic_select-filter">
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_custom_options','{$field_name_slug}_dynamic_options',10,3);
+/**
+* Filter dropdown options for dynamic drodpwn list of taxonomy terms.
+* @param mixed $options the opttion to filter.
+* @param string $name the field name being populated.
+* @param string $cf7_key  the form unique key.
+* @return mixed $options return either an array of <option value>=><option label> pairs or a html string of option elements which can be grouped if required.
+*/
+function {$field_name_slug}_dynamic_options($options, $name, $cf7_key){
+  //these are the label users will see when the dropdown opens.
+  $options = '<option>...</option>';
+  return $options;
+}" href="javascript:void(0);">Filter</a> the options.
+</li>

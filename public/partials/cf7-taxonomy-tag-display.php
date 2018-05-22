@@ -163,22 +163,29 @@ $tag_name = sanitize_html_class( $tag->name );
 <select id="<?= $id?>" name="<?= $tag->name ?>" class="<?= $class?>">
 <?php
 /**
-* Filter dynamic dropdown default empty label.
-* @param string $label the label for the default value, this is null by default and not shown.
-* @param string $name the field name being populated.
-* @param string $cf7_key  the form unique key.
-* @return string the label for the default value, returning a non-null value with display this as the first option.
+* @since 2.2 allows custom filtered $options to be an html string.
 */
-$default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $source, $tag->name, $cf7_key);
-if(!is_null($default_value)):
-?>
-  <option value=""><?= $default_value ?></option>
-<?php
-endif;
-foreach($options as $value=>$name){
-  $attribute = '';
-  if(isset($option_attributes[$value])) $attribute = $option_attributes[$value];
-  echo '<option value="'.$value.'"'.$attribute.'>'.$name.'</option>';
+if(is_array( $options )){
+  /**
+  * Filter dynamic dropdown default empty label.
+  * @param string $label the label for the default value, this is null by default and not shown.
+  * @param string $name the field name being populated.
+  * @param string $cf7_key  the form unique key.
+  * @return string the label for the default value, returning a non-null value with display this as the first option.
+  */
+  $default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $source, $tag->name, $cf7_key);
+  if(!is_null($default_value)):
+  ?>
+    <option value=""><?= $default_value ?></option>
+  <?php
+  endif;
+  foreach($options as $value=>$name){
+    $attribute = '';
+    if(isset($option_attributes[$value])) $attribute = $option_attributes[$value];
+    echo '<option value="'.$value.'"'.$attribute.'>'.$name.'</option>';
+  }
+}else{
+  echo $options;
 }
 ?>
 </select>
