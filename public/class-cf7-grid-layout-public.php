@@ -736,7 +736,6 @@ class Cf7_Grid_Layout_Public {
   	$value = isset( $_POST[$name] )
   		? trim( strtr( (string) sanitize_text_field($_POST[$name]), "\n", " " ) ): '';
 
-
   	if ( $tag->is_required() && '' == $value ) {
   		$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
     }
@@ -786,6 +785,7 @@ class Cf7_Grid_Layout_Public {
         switch($tag['type']){
           case 'checkbox*':
           case 'radio':
+          case 'file*': //file will not have any values in $_POST.
             $isRequired = true;
             $tag_options = $tag->options;
             if(empty($tag_options)) break; //break from switch, not toggled, we need to validate.

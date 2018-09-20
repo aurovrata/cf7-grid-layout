@@ -17,11 +17,12 @@
 </div>
 <textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden large-text code" data-config-field="form.body">
 <?php
-if( metadata_exists( 'post', $form_post->id(), 'cf7_grid_form' )){ //grid form
+//if( metadata_exists( 'post', $form_post->id(), 'cf7_grid_form' )){ //grid form
+  //echo esc_textarea( $form_post->prop( 'form' ) );
+//}else{
   echo esc_textarea( $form_post->prop( 'form' ) );
-}else{
-  echo esc_textarea( $form_post->prop( 'form' ) );
-} ?>
+//}
+?>
 </textarea>
 <!-- cf7sg - track embeded sub-forms -->
 <input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms" />

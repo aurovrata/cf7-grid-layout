@@ -201,6 +201,9 @@ class Cf7_Grid_Layout {
     /**
     * @since 2.1.0 make sure our dependent plugins exists.*/
     $this->loader->add_action( 'admin_init', $plugin_admin, 'check_plugin_dependency');
+    /**
+    *@since 2.3.0 redirect post.php for form duplicate*/
+    $this->loader->add_filter('admin_init', $plugin_admin, 'duplicate_cf7_form');
     /*
     CF7 Hooks
     */

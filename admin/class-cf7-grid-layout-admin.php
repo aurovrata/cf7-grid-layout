@@ -583,7 +583,7 @@ class Cf7_Grid_Layout_Admin {
     $contact_form = wpcf7_save_contact_form( $args );
     add_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
     //flag as a grid form
-    update_post_meta($post_id, 'cf7_grid_form', true);
+    //update_post_meta($post_id, 'cf7_grid_form', true); removed since v2.3 as not used.
     //save sub-forms if any
     $sub_forms = json_decode(stripslashes($_POST['cf7sg-embeded-forms']));
     if(empty($sub_forms)) $sub_forms = array();
@@ -621,6 +621,49 @@ class Cf7_Grid_Layout_Admin {
     */
     $is_cf7sg = ( 'true' === $_POST['is_cf7sg_form']) ? true : false;
     update_post_meta($post_id, '_cf7sg_managed_form', $is_cf7sg);
+    /**
+    *@since 2.3.0 the duplicate functionality has been isntored and therefore any new meta fields added to this plugin needs to be added to the duplication properties too.
+    */
+  }
+  /**
+  *
+  *
+  *@since 2.3.0
+  *@param string $new_form_id new form id to duplciate to.
+  *@param string $form_id form id to duplciate.
+  */
+  public function duplicate_form_properties($new_form_id, $form_id){
+    //these properties will be preceded with an '_' by the cf7 plugin before being duplicated.
+    $properties = array('_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form');
+    $properties = apply_filters('cf7sg_duplicate_form_properties', $properties);
+    foreach($properties as $field){
+      $value = get_post_meta($form_id, $field, true);
+      if(!empty($value)) update_post_meta($new_form_id,$field, $value);
+    }
+  }
+  /**
+  * Duplicate form.
+  *
+  *@since 2.3.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function duplicate_cf7_form(){
+    global $pagenow;
+    if($pagenow != 'post.php') return;
+    if(isset($_GET['action']) && 'cf7copy' == $_GET['action']){
+      $action = 'wpcf7-copy-contact-form_' . $_GET['post'];
+      if( !wp_verify_nonce( $_GET['_wpnonce'], $action )){
+        die( 'Security check error: Try to reload the page and try again.' );
+      }
+      if ( $form = wpcf7_contact_form( $_GET['post'] ) ) {
+  			$new_form = $form->copy();
+  			$new_form->save();
+        $this->duplicate_form_properties($new_form->id(), $_GET['post']);
+        wp_safe_redirect( admin_url( '/post.php?post='.$new_form->id().'&action=edit' ));
+        exit;
+  		}
+    }
   }
   /**
   * Filtered allowed html tags & attributes, add data-button to div tags to ensure forms are saved properly.

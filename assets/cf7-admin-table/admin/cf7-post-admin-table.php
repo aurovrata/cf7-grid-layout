@@ -348,7 +348,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
             );
 
             $copy_link = wp_nonce_url(
-              add_query_arg( array( 'action' => 'copy' ), $url ),
+              add_query_arg( array( 'action' => 'cf7copy' ), $url ),
               'wpcf7-copy-contact-form_' . absint( $form->id() )
             );
 

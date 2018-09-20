@@ -64,6 +64,14 @@ This plugin would not have been possible without the following open-source effor
 * [JQuery Toggles](https://simontabor.com/labs/toggles/) - enables pretty toggle switches on collapsible sections.
 * [PHP Query](https://github.com/punkave/phpQuery) - a php class that enables traversing and manipulation of html documents using css selectors like JQuery.  This is used to build the modular functionality of form designs.
 
+= Privacy Notices =
+
+This plugin, in itself, does not:
+
+* track users by stealth;
+* write any user personal data to the database;
+* send any data to external servers;
+* use cookies.
 
 == Installation ==
 
@@ -200,6 +208,9 @@ and you can also turn off highlight altogether by inserting this additional line
 19. v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
 
 == Changelog ==
+= 2.3.0 =
+* enable form duplication.
+* fix radio buttons on tabs.
 = 2.2.0 =
 * allows custom filtered dynamic dropdown options to be html string.
 = 2.1.6 =

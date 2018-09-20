@@ -323,7 +323,7 @@
             var $field = $text.siblings('div.cf7-field-type');
             var isToggled = false;
             if($field.length>0){
-              if($field.is('.checkbox.required') || $field.is('.radio')) isToggled = true;
+              if($field.is('.checkbox.required') || $field.is('.radio') || $field.is('.file.required')) isToggled = true;
             }else isToggled = true; //custom column, needs checking.
             if(isToggled){
               var search = text;
@@ -333,6 +333,7 @@
                 switch(match[1]){
                   case 'checkbox*':
                   case 'radio':
+                  case 'file*':
                     var options = '';
                     if(match.length>4){
                       var tglmatch = cf7sgToggleRegex.exec(match[4]);

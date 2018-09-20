@@ -628,8 +628,6 @@
     //new panel
     var $newPanel = $( cf7sgPanels[firstTabId] );
     $newPanel.attr('id', panelId);
-    //append new panel
-    $tab.append($newPanel);
     //add input name as class to parent span
     $(':input', $newPanel).each(function(){
       var $this = $(this);
@@ -663,6 +661,8 @@
         $this.trigger('sgSelect2');
       }
     });
+    //append new panel
+    $tab.append($newPanel);
     //change all the ids of inner tabs in the new panel
     var $innerTabs = $newPanel.find('ul.ui-tabs-nav li a');
     $innerTabs.each(function(){
