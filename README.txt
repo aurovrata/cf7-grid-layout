@@ -211,6 +211,7 @@ and you can also turn off highlight altogether by inserting this additional line
 = 2.3.0 =
 * enable form duplication.
 * fix radio buttons on tabs.
+* fix required file validation.
 = 2.2.0 =
 * allows custom filtered dynamic dropdown options to be html string.
 = 2.1.6 =
