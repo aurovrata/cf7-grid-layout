@@ -346,69 +346,69 @@
           toggled_accordion.on('sgContentIncrease', function(){
             $(this).accordion("refresh");
           });
-          //event delegation on the header click to sync the toggle state
-         form.click(toggled_accordion, function(event){
-            var $header;
-            var $target =  $(event.target);
-            if($target.is('span.cf7sg-title.toggled') || $target.is('.toggle-on') || $target.is('.toggle-off') ){
-              $header = $target.closest('.cf7sg-collapsible-title');
-            }else if($target.parent().is('.cf7sg-collapsible.with-toggle') ){
-              $header = $target;
-            }else{
-              return;
-            }
-            var id = $header.closest('.container.cf7sg-collapsible').attr('id');
-            /**
-            * @since 1.1.0 track toggle status using toggle ids.
-            */
-            var toggleStatus = '';
-            var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $(this));
-            var trackToggle = false;
-            if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
-              if($toggleHiddenStatus.val().length>0){
-                toggleStatus = JSON.parse($toggleHiddenStatus.val());
-              }else toggleStatus = {};
-              trackToggle = true;
-            }
-            //close other toggled sections if we have a group.
-            var group = $header.parent().data('group');
-            if(group){
-              $('.cf7sg-collapsible.with-toggle[data-group="'+group+'"]', form).each(function(){
-                var $toggled = $(this);
-                var cid = $toggled.attr('id');
-                if(id === cid) return; //current toggle.
-                if(0===$toggled.accordion('option','active')){
-                  $toggled.accordion('option','active',false);
-                  $('.toggle', $toggled).data('toggles').toggle(false);
-                  $('.row.ui-accordion-content :input', $toggled).prop('disabled', true);
-                  if(trackToggle && toggleStatus.hasOwnProperty(cid)) delete toggleStatus[cid];
-                }
-              });
-            }
-
-            var toggleSwitch = $header.children('.toggle').data('toggles');
-            if( $header.hasClass('ui-state-active') ){
-              toggleSwitch.toggle(true);
-              $('.row.ui-accordion-content :input', $header.parent()).not('.cf7-sg-cloned-table-row :input').prop('disabled', false);
-              if(trackToggle){
-                var $text = $header.clone();
-                $text.children('.toggle').remove();
-                toggleStatus[id] = $text.text().trim() + "|" + $header.children('.toggle').data('on');
-              }
-
-            }else{
-              toggleSwitch.toggle(false);
-              $('.row.ui-accordion-content :input', $header.parent()).prop('disabled', true);
-              if(trackToggle && toggleStatus.hasOwnProperty(id)) delete toggleStatus[id];
-            }
-            //store the toggle status in the hidden field.
-            if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
-              $toggleHiddenStatus.val(JSON.stringify(toggleStatus));
-            }
-
-          });//end for toggle click delegation
-
         }); //end for each toggle section.
+
+        //event delegation on the header click to sync the toggle state
+        form.click(toggled_accordion, function(event){
+          var $header;
+          var $target =  $(event.target);
+          if($target.is('span.cf7sg-title.toggled') || $target.is('.toggle-on') || $target.is('.toggle-off') ){
+            $header = $target.closest('.cf7sg-collapsible-title');
+          }else if($target.parent().is('.cf7sg-collapsible.with-toggle') ){
+            $header = $target;
+          }else{
+            return;
+          }
+          var id = $header.closest('.container.cf7sg-collapsible').attr('id');
+          /**
+          * @since 1.1.0 track toggle status using toggle ids.
+          */
+          var toggleStatus = '';
+          var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $(this));
+          var trackToggle = false;
+          if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
+            if($toggleHiddenStatus.val().length>0){
+              toggleStatus = JSON.parse($toggleHiddenStatus.val());
+            }else toggleStatus = {};
+            trackToggle = true;
+          }
+          //close other toggled sections if we have a group.
+          var group = $header.parent().data('group');
+          if(group){
+            $('.cf7sg-collapsible.with-toggle[data-group="'+group+'"]', form).each(function(){
+              var $toggled = $(this);
+              var cid = $toggled.attr('id');
+              if(id === cid) return; //current toggle.
+              if(0===$toggled.accordion('option','active')){
+                $toggled.accordion('option','active',false);
+                $('.toggle', $toggled).data('toggles').toggle(false);
+                $('.row.ui-accordion-content :input', $toggled).prop('disabled', true);
+                if(trackToggle && toggleStatus.hasOwnProperty(cid)) delete toggleStatus[cid];
+              }
+            });
+          }
+
+          var toggleSwitch = $header.children('.toggle').data('toggles');
+          if( $header.hasClass('ui-state-active') ){
+            toggleSwitch.toggle(true);
+            $('.row.ui-accordion-content :input', $header.parent()).not('.cf7-sg-cloned-table-row :input').prop('disabled', false);
+            if(trackToggle){
+              var $text = $header.clone();
+              $text.children('.toggle').remove();
+              toggleStatus[id] = $text.text().trim() + "|" + $header.children('.toggle').data('on');
+            }
+
+          }else{
+            toggleSwitch.toggle(false);
+            $('.row.ui-accordion-content :input', $header.parent()).prop('disabled', true);
+            if(trackToggle && toggleStatus.hasOwnProperty(id)) delete toggleStatus[id];
+          }
+          //store the toggle status in the hidden field.
+          if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
+            $toggleHiddenStatus.val(JSON.stringify(toggleStatus));
+          }
+
+        });//end for toggle click delegation
       });
       //now enable the other collapsible rows
       cf7Form_accordion.each(function(){
@@ -628,6 +628,7 @@
     //new panel
     var $newPanel = $( cf7sgPanels[firstTabId] );
     $newPanel.attr('id', panelId);
+
     //add input name as class to parent span
     $(':input', $newPanel).each(function(){
       var $this = $(this);
@@ -661,8 +662,6 @@
         $this.trigger('sgSelect2');
       }
     });
-    //append new panel
-    $tab.append($newPanel);
     //change all the ids of inner tabs in the new panel
     var $innerTabs = $newPanel.find('ul.ui-tabs-nav li a');
     $innerTabs.each(function(){
@@ -722,6 +721,8 @@
       }
     }); //end collapsible titles.
 
+    //append new panel
+    $tab.append($newPanel);
 
     $tab.tabs( "refresh" );
     $tab.tabs( "option", "active", -1 );
@@ -747,7 +748,7 @@
       if(onText.length == 0){
         offText = 'No';
       }
-      $this.toggles( { text:{ on:onText, off:offText }, on: state});
+      $this.toggles( { drag: false, text:{ on:onText, off:offText }, on: state});
     }
     return $this;
   }
