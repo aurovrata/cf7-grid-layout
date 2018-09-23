@@ -253,6 +253,10 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_grid_values', 5, 1 );
     //filter cf7 validation
     $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 30, 2 );
+
+    //filter cf7 mail components (add missing tabbed files)
+    $this->loader->add_filter('wpcf7_mail_components', $plugin_public, 'wpcf7_mail_components' ,10, 3);
+
     //benchmark validation
     $this->loader->add_filter( 'wpcf7_validate_dynamic_select*', $plugin_public, 'validate_required', 30, 2 );
     $this->loader->add_filter( 'wpcf7_validate_benchmark*', $plugin_public, 'validate_required', 30, 2 );

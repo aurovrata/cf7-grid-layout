@@ -742,6 +742,45 @@ class Cf7_Grid_Layout_Public {
     return $result;
   }
 
+    /**
+   * We need to add the missing attachments just before the mail is sent.
+   * Hooked to filter 'wpcf7_mail_components', sets up the final $components object
+   * @since 2.3.0
+   * @param Array $components   an array of mail parts
+   * @param WPCF7_ContactForm $cf7form   cf7 form object
+   * @param WPCF7_Mail $cf7mail   cf7 mail object
+   * @return Array  an array of mail parts
+  **/
+  public function wpcf7_mail_components($components, $cf7form, $cf7mail) {
+    $tags = $cf7form->scan_form_tags();
+    $submission = WPCF7_Submission::get_instance();
+    $uploaded_files = $submission->uploaded_files();
+    $attachments = $components['attachments'];
+    
+    foreach ( $tags as $tag ) {
+      $field_type = self::field_type($tag['name'], $cf7form->id());
+
+      switch($tag['type']){
+        case 'file':
+          switch($field_type){
+            case 'tab':
+              $max_fields =0;
+              $index_suffix = '_tab-';
+              $regex = '/^'.preg_quote($tag['name']).'_tab-[0-9]+$/';
+              //extract all relevant fields
+              $submitted_fields = preg_grep($regex, array_keys($uploaded_files));
+              foreach($submitted_fields as $index => $field){
+                $attachments[] = $uploaded_files[$field];
+              }
+              break;
+          }
+          break;
+      }
+    }
+    $components['attachments'] = $attachments;
+    return $components;
+  }
+  
   /**
    * Final validation with all values submitted for inter dependent validation
    * Hooked to filter 'wpcf7_validate', sets up the final $result object
@@ -776,10 +815,33 @@ class Cf7_Grid_Layout_Public {
     if(isset($_POST['_cf7sg_toggles'])){
       $toggle_status = json_decode( stripslashes($_POST['_cf7sg_toggles']));
     }
-		foreach ( $tags as $tag ) {
+    foreach ( $tags as $tag ) {
       /**
       * @since 2.1.5 fix validation of non-toggled checkox/radio.  Toggled fields are now tracked in the tag itself as a class.
       */
+      $field_type = self::field_type($tag['name'], $cf7form->id());
+
+      // Custom execution for tabbed file fields
+      switch($tag['type']){
+        case 'file':
+          switch($field_type){
+            case 'tab':
+              // Search for $_FILES where name match a tabbed file field
+              $regex = '/^'.preg_quote($tag['name']).'_tab-[0-9]+$/';
+              //extract all relevant fields
+              $submitted_fields = preg_grep($regex, array_keys($_FILES));
+              foreach($submitted_fields as $index => $field){
+                // For each tabbed file, call the filter validate to add uploaded_files
+                $dup_tag = clone $tag;
+                $dup_tag->name = $field;
+                $result = apply_filters("wpcf7_validate_{$dup_tag['type']}", $result, $dup_tag);
+              }
+              break;
+          }
+        break;
+      }
+    
+    
       if(!isset($_POST[$tag['name']])){
         $isRequired = false;
         switch($tag['type']){
@@ -815,7 +877,6 @@ class Cf7_Grid_Layout_Public {
 			$result = apply_filters( "wpcf7_validate_{$type}", $result, $tag );
 		  //check to see if this field is an array (table or tab or both).
       $tag_types[$tag['name']] = $tag['type'];
-      $field_type = self::field_type($tag['name'], $cf7form->id());
       switch($field_type){
         case 'tab':
         case 'table':
