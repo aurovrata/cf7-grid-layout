@@ -924,4 +924,68 @@ class Cf7_Grid_Layout_Admin {
     }
     return true;
   }
+  /**
+  * We need to add the missing attachments just before the mail is sent.
+  * Hooked to filter 'wpcf7_mail_components', sets up the final $components object
+  * @since 2.4.0
+  * @param Array $components   an array of mail parts
+  * @param WPCF7_ContactForm $cf7form   cf7 form object
+  * @param WPCF7_Mail $cf7mail   cf7 mail object
+  * @return Array  an array of mail parts
+ **/
+ public function wpcf7_mail_components($components, $cf7form, $cf7mail) {
+   $tags = $cf7form->scan_form_tags();
+   $submission = WPCF7_Submission::get_instance();
+   $uploaded_files = $submission->uploaded_files();
+
+   foreach ( $tags as $tag ) {
+     $field_type = self::field_type($tag['name'], $cf7form->id());
+     switch($tag['type']){
+       case 'file':
+         switch($field_type){
+           case 'singular':
+             continue; /*skip this field, as already taken care by cf7 plugin*/
+             break;
+           case 'tab':
+           case 'table':
+           case 'both':
+             $regex = '/^'.preg_quote($tag['name']);
+             // Search for $_FILES where name match a tabbed file field
+             $submitted_fields = preg_grep($regex.'$/', $uploaded_files);
+             //extract all relevant fields
+             $submitted_fields += preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', $uploaded_files);
+             //we also need the rows with tab index=0
+             $submitted_fields += preg_grep($regex.'_row-[0-9]+$/', $uploaded_files);
+             //.. and tabs with row index=0
+             $submitted_fields += preg_grep($regex.'_tab-[0-9]+$/', $uploaded_files);
+             foreach($submitted_fields as $index => $field){
+               $row = $tab = null;
+               if('both'==$field_type) $row=$tab='';
+               $regex = '/^('.preg_quote($tag['name']).')';
+               $field_name = $field;
+               switch(1){
+                 case preg_match($regex.'_tab-([0-9]+)_row-([0-9]+)',$field, $matches):
+                   $field_name = $matches[1];
+                   $tab = $matches[2];
+                   $row = $matches[3];
+                   break;
+                 case preg_match($regex.'_row-([0-9]+)',$field, $matches):
+                   $field_name = $matches[1];
+                   $row = $matches[2];
+                   break;
+                 case preg_match($regex.'_tab-([0-9]+)',$field, $matches):
+                   $field_name = $matches[1];
+                   $tab = $matches[2];
+                   break;
+               }
+               $components['attachments'] = $uploaded_files[$field];
+               $components['body'].= apply_fitlers('cf7sg_annotate_mail_attach_grid_files','', $field_name, $row, $tab, count($attachments), $_POST['_wpcf7_key']);
+             }
+             break;
+         }
+         break;
+     }
+   }
+   return $components;
+ }
 }

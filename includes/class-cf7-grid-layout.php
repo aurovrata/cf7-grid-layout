@@ -213,7 +213,9 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wpcf7_admin_misc_pub_section', $plugin_admin, 'dynamic_select_choices' , 10, 1);
     $this->loader->add_action( 'wpcf7_admin_init', $plugin_admin, 'cf7_shortcode_tags' );
     //modify the default form template
-  	$this->loader->add_filter( 'wpcf7_default_template', $plugin_admin, 'default_cf7_form' , 5,2);
+    $this->loader->add_filter( 'wpcf7_default_template', $plugin_admin, 'default_cf7_form' , 5,2);
+    /** @since 2.4.0 attache array file fields to mails */
+    $this->loader->add_filter( 'wpcf7_mail_components', $plugin_admin, 'wpcf7_mail_components' , 20,3);
 
 	}
 

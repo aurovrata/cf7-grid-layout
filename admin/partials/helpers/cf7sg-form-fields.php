@@ -71,6 +71,7 @@ function {$field_name_slug}_dynamic_option_label($label, $post, $name, $cf7_key)
   if('{$form_key}'!==$cf7_key && '{$field_name}' !== $field){
     return $label;
   }
+  //setup a custom label
   return $label;
 }" href="javascript:void(0);">Filter</a> the option label.
 </li>

@@ -727,7 +727,7 @@ class Cf7_Grid_Layout_Public {
    * @return WPCF7_Validation  validation result
   **/
   public function validate_required($result, $tag){
-    if(!isset( $_POST[$tag->name] )){
+    if(!isset( $_POST[$tag->name] ) ){
       return $result; //not submitted hence disabled.
     }
     $tag = new WPCF7_FormTag( $tag );
@@ -785,7 +785,7 @@ class Cf7_Grid_Layout_Public {
         switch($tag['type']){
           case 'checkbox*':
           case 'radio':
-          case 'file*': //file will not have any values in $_POST.
+          case 'file*': /** @since 2.3.1 fix as file will not have any values in $_POST.*/
             $isRequired = true;
             $tag_options = $tag->options;
             if(empty($tag_options)) break; //break from switch, not toggled, we need to validate.
@@ -839,6 +839,26 @@ class Cf7_Grid_Layout_Public {
               $sg_field_tag = clone $tag;
               $sg_field_tag['name'] = $tag['name'].$index;
               $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag);
+            }
+          }
+          /** @since 2.3.1 fix the files tag validation for files in tabs/tables*/
+          switch(true){
+            case 'file':
+            case 'file*':
+            // Search for $_FILES where name match a tabbed file field
+            $regex = '/^'.preg_quote($tag['name']);
+            $submitted_fields = preg_grep($regex.'$/', array_keys($_FILES));
+            //extract all relevant fields
+            $submitted_fields += preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($_FILES));
+            //we also need the rows with tab index=0
+            $submitted_fields += preg_grep($regex.'_row-[0-9]+$/', array_keys($_FILES));
+            //.. and tabs with row index=0
+            $submitted_fields += preg_grep($regex.'_tab-[0-9]+$/', array_keys($_FILES));
+            foreach($submitted_fields as $index => $field){
+              // For each tabbed file, call the filter validate to add uploaded_files
+              $sg_field_tag = clone $tag;
+              $sg_field_tag['name'] = $field;
+              $result = apply_filters("wpcf7_validate_{$dup_tag['type']}", $result, $sg_field_tag);
             }
           }
           break;

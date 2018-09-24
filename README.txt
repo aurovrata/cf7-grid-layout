@@ -208,6 +208,11 @@ and you can also turn off highlight altogether by inserting this additional line
 19. v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
 
 == Changelog ==
+= 2.4.0 =
+* fix toggle sections not enalbing fields properly.
+* disable toggle slide.
+* fix mail attachments of files in tabbed/table sections.
+* added 'cf7sg_annotate_mail_attach_grid_files' filter.
 = 2.3.0 =
 * enable form duplication.
 * fix radio buttons on tabs.
