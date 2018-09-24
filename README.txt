@@ -64,6 +64,11 @@ This plugin would not have been possible without the following open-source effor
 * [JQuery Toggles](https://simontabor.com/labs/toggles/) - enables pretty toggle switches on collapsible sections.
 * [PHP Query](https://github.com/punkave/phpQuery) - a php class that enables traversing and manipulation of html documents using css selectors like JQuery.  This is used to build the modular functionality of form designs.
 
+= Thanks to =
+Birmania (@birmania) for providing:
+* a fix for js toggles.
+* a fix for file fields in tabs as mail attachments
+
 = Privacy Notices =
 
 This plugin, in itself, does not:
