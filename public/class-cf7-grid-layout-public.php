@@ -776,16 +776,15 @@ class Cf7_Grid_Layout_Public {
     if(isset($_POST['_cf7sg_toggles'])){
       $toggle_status = json_decode( stripslashes($_POST['_cf7sg_toggles']));
     }
-		foreach ( $tags as $tag ) {
+    foreach ( $tags as $tag ) {
       /**
       * @since 2.1.5 fix validation of non-toggled checkox/radio.  Toggled fields are now tracked in the tag itself as a class.
       */
-      if(!isset($_POST[$tag['name']])){
+      if(!isset($_POST[$tag['name']]) && !isset($_FILES[$tag['name']])){ /** @since 2.3.1 fix as file will not have any values in $_POST.*/
         $isRequired = false;
         switch($tag['type']){
           case 'checkbox*':
           case 'radio':
-          case 'file*': /** @since 2.3.1 fix as file will not have any values in $_POST.*/
             $isRequired = true;
             $tag_options = $tag->options;
             if(empty($tag_options)) break; //break from switch, not toggled, we need to validate.
@@ -847,18 +846,17 @@ class Cf7_Grid_Layout_Public {
             case 'file*':
             // Search for $_FILES where name match a tabbed file field
             $regex = '/^'.preg_quote($tag['name']);
-            $submitted_fields = preg_grep($regex.'$/', array_keys($_FILES));
             //extract all relevant fields
-            $submitted_fields += preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($_FILES));
+            $submitted_fields = preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($_FILES));
             //we also need the rows with tab index=0
-            $submitted_fields += preg_grep($regex.'_row-[0-9]+$/', array_keys($_FILES));
+            $submitted_fields = array_unique(array_merge($submitted_fields, preg_grep($regex.'_row-[0-9]+$/', array_keys($_FILES))));
             //.. and tabs with row index=0
-            $submitted_fields += preg_grep($regex.'_tab-[0-9]+$/', array_keys($_FILES));
+            $submitted_fields = array_unique(array_merge($submitted_fields, preg_grep($regex.'_tab-[0-9]+$/', array_keys($_FILES))));
             foreach($submitted_fields as $index => $field){
               // For each tabbed file, call the filter validate to add uploaded_files
               $sg_field_tag = clone $tag;
               $sg_field_tag['name'] = $field;
-              $result = apply_filters("wpcf7_validate_{$dup_tag['type']}", $result, $sg_field_tag);
+              $result = apply_filters("wpcf7_validate_{$sg_field_tag['type']}", $result, $sg_field_tag);
             }
           }
           break;
@@ -1203,6 +1201,7 @@ class Cf7_Grid_Layout_Public {
 
    foreach ( $tags as $tag ) {
      $field_type = self::field_type($tag['name'], $cf7form->id());
+
      switch($tag['type']){
        case 'file':
          switch($field_type){
@@ -1212,15 +1211,14 @@ class Cf7_Grid_Layout_Public {
            case 'tab':
            case 'table':
            case 'both':
-             $regex = '/^'.preg_quote($tag['name']);
              // Search for $_FILES where name match a tabbed file field
-             $submitted_fields = preg_grep($regex.'$/', $uploaded_files);
+             $regex = '/^'.preg_quote($tag['name']);
              //extract all relevant fields
-             $submitted_fields += preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', $uploaded_files);
+             $submitted_fields = preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($uploaded_files));
              //we also need the rows with tab index=0
-             $submitted_fields += preg_grep($regex.'_row-[0-9]+$/', $uploaded_files);
+             $submitted_fields = array_unique(array_merge($submitted_fields, preg_grep($regex.'_row-[0-9]+$/', array_keys($uploaded_files))));
              //.. and tabs with row index=0
-             $submitted_fields += preg_grep($regex.'_tab-[0-9]+$/', $uploaded_files);
+             $submitted_fields = array_unique(array_merge($submitted_fields, preg_grep($regex.'_tab-[0-9]+$/', array_keys($uploaded_files))));
              foreach($submitted_fields as $index => $field){
                $row = $tab = null;
                if('both'==$field_type) $row=$tab='';
@@ -1241,8 +1239,8 @@ class Cf7_Grid_Layout_Public {
                    $tab = $matches[2];
                    break;
                }
-               $components['attachments'] = $uploaded_files[$field];
-               $components['body'].= apply_fitlers('cf7sg_annotate_mail_attach_grid_files','', $field_name, $row, $tab, count($attachments), $_POST['_wpcf7_key']);
+               $components['attachments'][] = $uploaded_files[$field];
+               $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $field_name, $row, $tab, count($attachments), $_POST['_wpcf7_key']);
              }
              break;
          }
