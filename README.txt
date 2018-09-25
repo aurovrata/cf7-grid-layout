@@ -213,6 +213,8 @@ and you can also turn off highlight altogether by inserting this additional line
 19. v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
 
 == Changelog ==
+= 2.4.1 =
+* fix fatal error in cf7 mail tag.
 = 2.4.0 =
 * fix toggle sections not enalbing fields properly.
 * disable toggle slide.
