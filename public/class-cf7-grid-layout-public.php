@@ -157,6 +157,7 @@ class Cf7_Grid_Layout_Public {
     $form = wpcf7_get_current_contact_form();
     $post = get_post($form->id());
     $hidden['_wpcf7_key'] = $post->post_name;
+    $hidden['_cf7sg_fields'] = '';
     $hidden['_cf7sg_toggles'] = '';
     return $hidden;
   }
@@ -513,40 +514,7 @@ class Cf7_Grid_Layout_Public {
     }
     wp_die();
   }
-  /**
-   *  This function filters submitted data and consolidates grid field values into arrays.
-   * Function hooked on 'wpcf7_posted_data'
-   * @since 1.0.0
-   * @param   Array    $data    unvalidated submitted data.
-   * @return  Array    filtered submitted data.
-  **/
-  public function setup_grid_values($data){
-    //debug_msg($data, 'submitted');
-    $cf7form = WPCF7_ContactForm::get_current();
-    if(empty($cf7form) ){
-      debug_msg("Unable to load submitted form");
-      return $data;
-    }else if(isset($data['_wpcf7']) ){
-      $cf7_id = $data['_wpcf7'];
-      if( $cf7_id != $cf7form->id() ){
-        $cf7form = WPCF7_ContactForm::get_instance($cf7_id);
-      }
-    }
-		//debug_msg($grid_fields, 'grid fields...');
-    $tags = $cf7form->scan_form_tags();
-    foreach($tags as $tag){
-      $field_type = self::field_type($tag['name'], $cf7_id);
-      switch($field_type){
-        case 'tab':
-        case 'table':
-        case 'both':
-        // the $data array is passed by reference and will be consolidated.
-        $this->consolidate_grid_submissions($tag['name'], $field_type, $data);
-        break;
-      }
-    }
-    return $data;
-  }
+
 	/**
 	 * function returns an array of fields as keys and value which are eitehr 'tab' or 'table', or 'both'.
 	 *
@@ -585,139 +553,7 @@ class Cf7_Grid_Layout_Public {
     self::$array_grid_fields[$form_id]=$grid_fields;
 		return $grid_fields;
 	}
-  /**
-  * Consolidates submitted data from table and tab fields into arrays.
-  *
-  *@since 1.0.0
-  *@param string $field_name a cf7 form field name which is part of tabs or table grid section.
-  *@param array $type field type, should be 'tab'/'table'/'both'.
-  *@param array $data cf7 form submissed data passed by reference as consolidated grid values will be removed and the original field value replaced with an array.
-  *@return array  a filtered array of $index_suffix=>$value pairs for tabs or rows fields, The index suffix is '.row-<index>' for tables and '.tab-<index>' for tabs. This method returns a 2 dimensional array for fields which are both within rowns and tabs.  The 2 dimensional array will list [<tab_suffix>][<row_suffix>]=>$value.  The original field name that was submitted can be reconstructed as $field_name.$index_suffix.  The first field will have an empty string as its $index_suffix.
-  */
-  private function consolidate_grid_submissions($field_name, $type, &$data){
-    $values = array();
-    $regex = '';
-    $submitted_fields=array();
-    $max_fields =0;
-    $purge_fields=array();
-    switch($type){
-      case 'table':
-        $index_suffix = '_row-';
-        $regex = '/^'.preg_quote($field_name).'_row-[0-9]+$/';
-        $values['']=$data[$field_name];
-        //extract all relevant fields
-        $submitted_fields = preg_grep($regex, array_keys($data));
-        $max_fields = sizeof($submitted_fields);
-        break;
-      case 'tab':
-        $index_suffix = '_tab-';
-        $regex = '/^'.preg_quote($field_name).'_tab-[0-9]+$/';
-        $values['']=$data[$field_name];
-        //extract all relevant fields
-        $submitted_fields = preg_grep($regex, array_keys($data));
-        foreach($submitted_fields as $field){
-          $idx = 1.0 * str_replace($field_name.'_tab-', '', $field);
-          if($max_fields < $idx)  $max_fields = $idx;
-        }
-        break;
-      case 'both':
-        $regex = '/^'.preg_quote($field_name);
-        $values[''] = array(); //init multi-dimensional array
-        if(isset($data[$field_name])){
-          $values[''][''] = $data[$field_name];
-        }else{
-          $values[''][''] = null;
-        }
-        //extract all relevant fields
-        $submitted_fields = preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($data));
-        //we also need the rows with tab index=0
-        $submitted_fields += preg_grep($regex.'_row-[0-9]+$/', array_keys($data));
-        //.. and tabs with row index=0
-        $submitted_fields += preg_grep($regex.'_tab-[0-9]+$/', array_keys($data));
-        //if('other-rm-qty'==$field_name){
-          // debug_msg($submitted_fields, 'Found fields '.$field_name);
-        //}
-        $max_fields = sizeof($submitted_fields);
-        break;
-    }
 
-    $row_idx=1; //[0][0] already set above is this is tab table field
-    $tab_idx=0;
-    $error_loop=false;
-    $loop_counter_limit = apply_filters('cf7sg_set_max_tabs_limit', 10, $data['_wpcf7_key'], $data['_wpcf7']);
-    for($idx=1; ($idx <= $max_fields && !$error_loop); $idx++){
-      switch($type){
-        case 'table':
-        case 'tab':
-          if(!isset($data[$field_name.$index_suffix.$idx])){
-            /**
-            *assuming this field was not submitted as it was disabled, hence set to null.
-            * @since 1.0.0
-            */
-            $values[$index_suffix.$idx] = null;
-          }else{
-            $values[$index_suffix.$idx] = $data[$field_name.$index_suffix.$idx];
-            $purge_fields[$field_name.$index_suffix.$idx] = true;
-          }
-          break;
-        case 'both':
-          //first attempt to look for the frist tab rows
-          $row_suffix = ($row_idx>0)?'_row-'.$row_idx:'';
-          $tab_suffix = ($tab_idx>0)?'_tab-'.$tab_idx:'';
-          //if('other-rm-qty'==$field_name){
-            // debug_msg($idx.'Looking for: '.$field_name.$tab_suffix.$row_suffix);
-          //}
-          if(isset($data[$field_name.$tab_suffix.$row_suffix])){
-            $values[$tab_suffix][$row_suffix] = $data[$field_name.$tab_suffix.$row_suffix];
-            $purge_fields[$field_name.$tab_suffix.$row_suffix] = true;
-            //next loop, look for the next row within the same tab,
-            $row_idx +=1;
-          }else{
-
-            $loop_counter=$tab_idx;
-						$loop = true;
-            do{//move to next tab, and reset the row counter
-              // debug_msg('loop:'.$loop_counter.', max: '.$loop_counter_limit);
-              $loop_counter +=1;
-              if($loop_counter > $loop_counter_limit) $error_loop=true;
-              $tab_idx +=1;
-              $row_idx = 0;
-              $row_suffix = '';
-              $tab_suffix = '_tab-'.$tab_idx;
-              //init new tab row values array
-              $values[$tab_suffix] = array();
-              //keep looking for next tab if we don't find a value;
-              /**
-              *if the frist row is not submitted then this may be in a toggled section which has been disabled.
-              * but we still need to keep looking for values in other tabs.
-              *@since 1.1.0
-              */
-              $values[$tab_suffix][$row_suffix] = null;
-							$loop = !isset($data[$field_name.$tab_suffix.$row_suffix]) && !$error_loop;
-            }while($loop);
-            if(!$error_loop) {
-              $values[$tab_suffix][$row_suffix] = $data[$field_name.$tab_suffix.$row_suffix];
-              $purge_fields[$field_name.$tab_suffix.$row_suffix] = true;
-              $row_idx +=1; //next loop, keep searching in thsi tab.
-            }else{
-              debug_msg($submitted_fields, 'CF7SG ERROR: Reached max tabs search loop for table field '.$field_name.' (cannot find any new rows above tab '.$tab_idx.' therefor abandoning search for remaining '.sizeof($submitted_fields)-$idx.' regex match in preg_grep result array listed below)');
-              //for loop will end here
-            }
-          }
-          break;
-      }//end switch.
-    }//end for loop preg_grep array.
-    if(!$error_loop){
-      //debug_msg($purge_fields, 'purging ');
-      //debug_msg($data);
-      $data = array_udiff_uassoc($data, $purge_fields, function($a, $b){return 0;}, function($a, $b){
-        if ($a === $b) return 0;
-        return ($a > $b)? 1:-1;
-      }); //this will remove all the surplus fields
-      $data[$field_name] = $values;
-    }
-    return $values;
-  }
   /**
    * Validates required benchmark and dynamic_select tags
    *
@@ -768,101 +604,62 @@ class Cf7_Grid_Layout_Public {
     $data = $submitted->get_posted_data();
     $tag_types = array(); //store all form tags, including cloned tags for array fields.
 
-    /**
-    *@since 2.1.0 fix issue with Conditional Field plugin.
-    */
-    $data = $this->remove_hidden_fields_from_conditional_plugin($data);
+    $field_status = '';
+    if(isset($_POST['_cf7sg_fields'])){
+      $field_status = json_decode( stripslashes($_POST['_cf7sg_fields']));
+    }
     $toggle_status = '';
     if(isset($_POST['_cf7sg_toggles'])){
       $toggle_status = json_decode( stripslashes($_POST['_cf7sg_toggles']));
     }
-    foreach ( $tags as $tag ) {
-      /**
-      * @since 2.1.5 fix validation of non-toggled checkox/radio.  Toggled fields are now tracked in the tag itself as a class.
-      */
-      if(!isset($_POST[$tag['name']]) && !isset($_FILES[$tag['name']])){ /** @since 2.3.1 fix as file will not have any values in $_POST.*/
-        $isRequired = false;
-        switch($tag['type']){
-          case 'checkbox*':
-          case 'radio':
-            $isRequired = true;
-            $tag_options = $tag->options;
-            if(empty($tag_options)) break; //break from switch, not toggled, we need to validate.
-            $toggle='';
-            foreach($tag_options as $option){
-              $match = array();
-              preg_match('/class:cf7sg-toggle-(.[^\s]+)/i',$option, $match);
-              if(!empty($match)){
-                $toggle=$match[1];
-                break; //break fromeach loop.
-              }
-            }
-            if(empty($toggle)) break; //break from switch, not toggled, we need to validate.
-            //check if the toggle is open. only open toggles are registered.
-            if(!empty($toggle_status) && property_exists($toggle_status, $toggle)) break; //break from switch, is toggled and in use, we need to validate.
-            //if we reached here, then the checkbox/radio is toggled and not in use, so do not validate.
-            $isRequired = false;
-            break;
-          }
-          if(!$isRequired) continue;//not submitted==disabled, or not used.
-      }
-      /**
-      *@since 1.9.0 fix issue with Conditional Field plugin.
-      */
-      if(!isset($data[$tag['name']])) continue; //it was removed by some plugin.
-			$type = $tag['type'];
-			$result = apply_filters( "wpcf7_validate_{$type}", $result, $tag );
-		  //check to see if this field is an array (table or tab or both).
-      $tag_types[$tag['name']] = $tag['type'];
-      $field_type = self::field_type($tag['name'], $cf7form->id());
-      switch($field_type){
-        case 'tab':
-        case 'table':
-        case 'both':
-          // the $data array is passed by reference and will be consolidated.
-          $values =  $data[$tag['name']];
-          foreach($values as $index=>$value){
-            if(is_array($value)){
-              foreach($value as $row=>$row_value){
-                if(!isset($_POST[$tag['name'].$index.$row])){
-                   continue;//not submitted==disabled.  @since 1.1.0
-                 }
-                $sg_field_tag = clone $tag;
-                $sg_field_tag['name'] = $tag['name'].$index.$row;
-                $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag);
-              }
-            }else{
-              if(!isset($_POST[$tag['name'].$index])){
-                continue; //not submitted==disabled. @since 1.1.0
-              }
-              $sg_field_tag = clone $tag;
-              $sg_field_tag['name'] = $tag['name'].$index;
-              $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag);
-            }
-          }
-          /** @since 2.3.1 fix the files tag validation for files in tabs/tables*/
-          switch(true){
-            case 'file':
-            case 'file*':
-            // Search for $_FILES where name match a tabbed file field
-            $regex = '/^'.preg_quote($tag['name']);
-            //extract all relevant fields
-            $submitted_fields = preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($_FILES));
-            //we also need the rows with tab index=0
-            $submitted_fields = array_unique(array_merge($submitted_fields, preg_grep($regex.'_row-[0-9]+$/', array_keys($_FILES))));
-            //.. and tabs with row index=0
-            $submitted_fields = array_unique(array_merge($submitted_fields, preg_grep($regex.'_tab-[0-9]+$/', array_keys($_FILES))));
-            foreach($submitted_fields as $index => $field){
-              // For each tabbed file, call the filter validate to add uploaded_files
-              $sg_field_tag = clone $tag;
-              $sg_field_tag['name'] = $field;
-              $result = apply_filters("wpcf7_validate_{$sg_field_tag['type']}", $result, $sg_field_tag);
-            }
-          }
-          break;
+    
+    $ignored_fields = $this->compute_fields_to_ignore($data);
+
+    // all_tags will contain the form tag + additional tags from CF7 Grid Layout
+    $all_tags = array();
+    $all_tags = $tags;
+    
+    // Get a Map with Name => Tag (Speed optimization)
+    $name_to_tag = array();
+    foreach ($tags as $tag)
+    {
+      $name_to_tag[$tag['name']] = $tag;
+    }
+    
+    // Search for additional tags created by grid layout
+    $regex_pattern = '/^(?P<name>.*?)(?P<tab>_tab-[0-9]+)?(?P<row>_row-[0-9]+)?$/';
+    foreach ($field_status as $field) {
+      // Match the field to split name/tab/row
+      preg_match($regex_pattern, $field, $matches);
+      
+      if (isset($matches))
+      {
+        $name = isset($matches['name']) ? $matches['name'] : '';
+        $tab = isset($matches['tab']) ? $matches['tab'] : '';
+        $row = isset($matches['row']) ? $matches['row'] : '';
+
+        // If this tag exists in the original form
+        if (isset($name_to_tag[$name]))
+        {
+          // Duplicate the tag to be an additional field tag
+          $all_tags[] = $this->build_posted_tag($name_to_tag[$name], $tab, $row);
+        }
       }
     }
-
+    
+    // Iterate over all tags to validate
+    foreach($all_tags as $tag) {
+      /**
+      *@since 2.1.0 fix issue with Conditional Field plugin.
+      */
+      // Ignore fields that are disabled by condition field plugin
+      if (!in_array($tag['name'], $ignored_fields))
+      {
+        $tag_types[$tag['name']] = $tag['type'];
+        $result = $this->validate_posted_data($result, $tag, $toggle_status);
+      }
+    }
+    
     $validation = array();
     $form_key = '';
     if(isset($data['_wpcf7_key'])){
@@ -898,6 +695,83 @@ class Cf7_Grid_Layout_Public {
       }
     }
     return $result;
+  }
+  
+  /**
+  * Function to validate a posted data
+  * @since 2.4.2
+  * @param      string           $tag            Form tag to duplicate.
+  * @param      string           $tab            tab name of the new tag.
+  * @param      string           $row            row name of the new tag.
+  * @param      WPCF7_Validation $result         validation object
+  * @param      WPCF7_FormTag    $tag            a cf7 tag to validate
+  * @param      Array            $toggle_status  array of toggle status (enabled or not)
+  * @return WPCF7_Validation  validation result
+  */
+  private function validate_posted_data($result, $tag, $toggle_status)
+  {
+    /**
+    * @since 2.1.5 fix validation of non-toggled checkox/radio.  Toggled fields are now tracked in the tag itself as a class.
+    */
+    if(!isset($_POST[$tag['name']])){ /** @since 2.3.1 fix as file will not have any values in $_POST.*/
+      $isRequired = false;
+      switch($tag['type']){
+        case 'checkbox*':
+        case 'radio':
+          $isRequired = true;
+          $tag_options = $tag->options;
+          if(empty($tag_options)) break; //break from switch, not toggled, we need to validate.
+          $toggle='';
+          foreach($tag_options as $option){
+            $match = array();
+            preg_match('/class:cf7sg-toggle-(.[^\s]+)/i',$option, $match);
+            if(!empty($match)){
+              $toggle=$match[1];
+              break; //break fromeach loop.
+            }
+          }
+          if(empty($toggle)) break; //break from switch, not toggled, we need to validate.
+          //check if the toggle is open. only open toggles are registered.
+          if(!empty($toggle_status) && property_exists($toggle_status, $toggle)) break; //break from switch, is toggled and in use, we need to validate.
+          //if we reached here, then the checkbox/radio is toggled and not in use, so do not validate.
+          $isRequired = false;
+          break;
+        }
+        if(!$isRequired) return $result;//not submitted==disabled, or not used.
+    }
+
+    // Execute the original validation filter
+    $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $tag);
+    
+    return $result;
+  }
+  
+  /**
+  * Function to duplicate a legit tag into a CF7 Grid Layout one (added through panel or row)
+  * @since 2.4.2
+  * @param      WPCF7_FormTag    $tag     Form tag to duplicate.
+  * @param      string    $tab     tab name of the new tag.
+  * @param      string    $row     row name of the new tag.
+  * @return tag duplicated with tab and row added
+  */
+  private function build_posted_tag($tag, $tab=null, $row=null)
+  {
+    $sg_field_tag = clone $tag;
+    $sg_field_tag['name'] = $tag['name'].$tab.$row;
+    
+    $tag_options = $sg_field_tag->options;
+    foreach($tag_options as $index => $option){
+      $match = array();
+      preg_match('/class:cf7sg-toggle-(.[^\s]+)/i',$option, $match);
+      if(!empty($match)){
+        $tag_options[$index] = $option.$tab;
+        break; //break fromeach loop.
+      }
+    }
+    
+    $sg_field_tag->options = $tag_options;
+    
+    return $sg_field_tag;
   }
   /**
   * Function to save toggled collapsible sections status to open them up again for draft forms.
@@ -1108,14 +982,16 @@ class Cf7_Grid_Layout_Public {
   * Function to temporarily fix the conditional fields plugin issue.
   * this is is called by the vlidation function 'filter_wpcf7_validate' above.
   *@since 2.1
-  *@param array $posted_data submitted data
+  *@param array $field_status submitted data
   *@return array submitted data without fields that remained hidden.
   */
-  private function remove_hidden_fields_from_conditional_plugin($posted_data){
+  private function compute_fields_to_ignore($posted_data){
+    $ignored_fields = [];
     /*code taken from cf7cf.php file in cf7-conditional-fields*/
     if(!isset($posted_data['_wpcf7cf_hidden_group_fields'])){
-      return $posted_data;
+      return $ignored_fields;
     }
+
     $hidden_fields = json_decode(stripslashes($posted_data['_wpcf7cf_hidden_group_fields']));
     $conditonal_fields = array();
     if (is_array($hidden_fields) && count($hidden_fields) > 0) {
@@ -1123,11 +999,12 @@ class Cf7_Grid_Layout_Public {
         if (wpcf7cf_endswith($field, '[]')) {
           $field = substr($field,0,strlen($field)-2);
         }
-        unset( $posted_data[$field] );
+        $ignored_fields[] = $field;
       }
     }
-    return $posted_data;
+    return $ignored_fields;
   }
+  
   /**
   * Filter mail tags which are table or tab fields.
   * Hooked on 'wpcf7_mail_tag_replaced'.
@@ -1247,6 +1124,7 @@ class Cf7_Grid_Layout_Public {
          break;
      }
    }
+
    return $components;
  }
 }

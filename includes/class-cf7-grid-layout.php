@@ -250,9 +250,10 @@ class Cf7_Grid_Layout {
     //instroduced a dynamic taxonomy droppdown tag for forms
     $this->loader->add_action( 'wpcf7_init', $plugin_public, 'register_cf7_shortcode' );
     //setup individual tag filers
-    $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_grid_values', 5, 1 );
+    //$this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_grid_values', 5, 1 );
     //filter cf7 validation
     $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 30, 2 );
+    
     //benchmark validation
     $this->loader->add_filter( 'wpcf7_validate_dynamic_select*', $plugin_public, 'validate_required', 30, 2 );
     $this->loader->add_filter( 'wpcf7_validate_benchmark*', $plugin_public, 'validate_required', 30, 2 );

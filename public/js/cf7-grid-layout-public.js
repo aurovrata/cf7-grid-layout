@@ -19,6 +19,11 @@
   }
 
   $(document).ready( function(){
+    var $toggleHiddenStatus = $('input[name="_cf7sg_fields"]', $('form.wpcf7-form'));
+    $toggleHiddenStatus.val("");
+    var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $('form.wpcf7-form'));
+    $toggleHiddenStatus.val("");
+    
     //click delegation for warning windows
     $('form.wpcf7-form').on('click','.confirm-button', function(event){
       var $target = $(event.target);
@@ -84,7 +89,10 @@
           if($table.is('.cf7-sg-table-footer')) $table = $table.prev('.container');
           $table.cf7sgCloneRow();
         }else if($button.is('.cf7-sg-table .row-control .dashicons')){ //---------- delete the row, delete button only on last row
-          $button.closest('.row.cf7-sg-table').remove();
+          var $rowToRemove = $button.closest('.row.cf7-sg-table');
+          // Unregister additional fields
+          $rowToRemove.unregisterFields();
+          $rowToRemove.remove();
           $button.closest('.container').trigger('sgRowDeleted');
         }
       });
@@ -169,7 +177,10 @@
           var panelId = $target.siblings('a').attr('href');
           var $container = $target.closest('.cf7-sg-tabs');
           var activate = false;
-          $container.children('div'+panelId).remove(); //remove panel
+          var $panelToRemove = $container.children('div'+panelId);
+          // Unregister additional fields
+          $panelToRemove.unregisterFields();
+          $panelToRemove.remove(); //remove panel
           if($target.closest('li').remove().is('.ui-state-active')){ //remove tab
             activate = true;
           }
@@ -179,6 +190,7 @@
           if(activate){
             $container.tabs({active:0}); //activate the last tab
           }
+          
         }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab
           //add a new tab
           var $container = $target.closest('.cf7-sg-tabs');
@@ -566,12 +578,7 @@
     var $cloneRow = $('.cf7-sg-cloned-table-row', $table);
     var $row = $cloneRow.clone();
     $row.removeClass('cf7-sg-cloned-table-row').attr('data-row',rowIdx);
-    //show row so select2 init properly
-    if($footer.length>0){
-      $footer.before($row.show());
-    }else{
-      $cloneRow.before($row.show());
-    }
+
     //add input name as class to parent span
     $(':input', $row).each(function(){
       var $input = $(this);
@@ -599,6 +606,17 @@
         $input.trigger('sgSelect2');
       }
     });
+    
+    //show row so select2 init properly
+    if($footer.length>0){
+      $footer.before($row.show());
+    }else{
+      $cloneRow.before($row.show());
+    }
+    
+    // Register new additional fields
+    $row.registerFields();
+    
     //when the button is clicked, trigger a content increase for accordions to refresh
     $table.trigger('sgContentIncrease');
     $row.trigger('sgRowAdded',rowIdx);
@@ -628,6 +646,7 @@
     //new panel
     var $newPanel = $( cf7sgPanels[firstTabId] );
     $newPanel.attr('id', panelId);
+    
     //add input name as class to parent span
     $(':input', $newPanel).each(function(){
       var $this = $(this);
@@ -661,8 +680,13 @@
         $this.trigger('sgSelect2');
       }
     });
+    
     //append new panel
     $tab.append($newPanel);
+    
+    // Register new additional fields
+    $newPanel.registerFields();
+    
     //change all the ids of inner tabs in the new panel
     var $innerTabs = $newPanel.find('ul.ui-tabs-nav li a');
     $innerTabs.each(function(){
@@ -750,6 +774,48 @@
       $this.toggles( { drag:false, text:{ on:onText, off:offText }, on: state});
     }
     return $this;
+  }
+  
+  //Method used to register inputs from a container as CF7 additional field. It allow to avoid server-side consolidation.
+  $.fn.registerFields = function(){
+    // Get the input that list additional fields
+    var $fieldHiddenStatus = $('input[name="_cf7sg_fields"]', $(this).closest('form'));
+    var fieldStatus = new Set();
+    if($fieldHiddenStatus.length>0 ){
+      if($fieldHiddenStatus.val().length>0){
+        fieldStatus = new Set(JSON.parse($fieldHiddenStatus.val()));
+      }
+    }
+
+    // Add all inputs to the list
+    $(':input', $(this)).each(function() {
+      var name = $(this).attr('name');
+      fieldStatus.add(name);
+    });
+    
+    // Update value
+    $fieldHiddenStatus.val(JSON.stringify(Array.from(fieldStatus)));
+  }
+  
+  //Method used to unregister inputs from a container as CF7 additional field. It allow to avoid server-side consolidation.
+  $.fn.unregisterFields = function(){
+    // Get the input that list additional fields
+    var $fieldHiddenStatus = $('input[name="_cf7sg_fields"]', $(this).closest('form'));
+    var fieldStatus = new Set();
+    if($fieldHiddenStatus.length>0 ){
+      if($fieldHiddenStatus.val().length>0){
+        fieldStatus = new Set(JSON.parse($fieldHiddenStatus.val()));
+      }
+    }
+    
+    // Remove all inputs from the list
+    $(':input', $(this)).each(function() {
+      var name = $(this).attr('name');
+      fieldStatus.delete(name);
+    });
+    
+    // Update value
+    $fieldHiddenStatus.val(JSON.stringify(Array.from(fieldStatus)));
   }
 
   // if this is an updated form (due to chagen in embeded forms), send grid fields back to server.
