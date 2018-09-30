@@ -19,8 +19,8 @@
   }
 
   $(document).ready( function(){
-    var $toggleHiddenStatus = $('input[name="_cf7sg_fields"]', $('form.wpcf7-form'));
-    $toggleHiddenStatus.val("");
+    var $fieldHiddenStatus = $('input[name="_cf7sg_fields"]', $('form.wpcf7-form'));
+    $fieldHiddenStatus.val("");
     var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $('form.wpcf7-form'));
     $toggleHiddenStatus.val("");
     
