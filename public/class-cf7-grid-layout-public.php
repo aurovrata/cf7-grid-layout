@@ -514,6 +514,57 @@ class Cf7_Grid_Layout_Public {
     }
     wp_die();
   }
+  
+  /**
+   *  This function filters submitted data and consolidates grid field values into arrays.
+   * Function hooked on 'wpcf7_posted_data'
+   * @since 1.0.0
+   * @param   Array    $data    unvalidated submitted data.
+   * @return  Array    filtered submitted data.
+  **/
+  public function setup_grid_values($data){
+    // This array will be a two dimensional array for each base field name as ['name'] => ['tab']['row']
+    $values = array();
+    
+    $this->iterate_over_additional_fields(function($field, $name, $tab, $row) use(&$values, $data) {
+      // If this is the first encounter for 'name'
+      if (!isset($values[$name]))
+      {
+        // Start to create/fill array with the base field value
+        $base_value = isset($data[$name]) ? $data[$name] : null;
+        $values[$name] = array( // Tab array
+          '' => array( // Row array
+            '' => $base_value
+          )
+        );
+      }
+      
+      // If this is the first encounter for this 'tab'
+      if (!isset($values[$name][$tab]))
+      {
+        // Create the rows array for 'tab'
+        $values[$name][$tab] = array();
+      }
+      
+      // If value exists for given field
+      if (isset($data[$field]))
+      {
+        $values[$name][$tab][$row] = $data[$field];
+        unset($data[$field]); //this will remove all the surplus fields
+      } else
+      {
+        // Field is not set on FORM $_POST
+        $values[$name][$tab][$row] = null;
+      }
+    });
+    
+    foreach ($values as $name => $value)
+    {
+      $data[$name] = $value;
+    }
+    
+    return $data;
+  }
 
 	/**
 	 * function returns an array of fields as keys and value which are eitehr 'tab' or 'table', or 'both'.
@@ -604,20 +655,12 @@ class Cf7_Grid_Layout_Public {
     $data = $submitted->get_posted_data();
     $tag_types = array(); //store all form tags, including cloned tags for array fields.
 
-    $field_status = '';
-    if(isset($_POST['_cf7sg_fields'])){
-      $field_status = json_decode( stripslashes($_POST['_cf7sg_fields']));
-    }
     $toggle_status = '';
     if(isset($_POST['_cf7sg_toggles'])){
       $toggle_status = json_decode( stripslashes($_POST['_cf7sg_toggles']));
     }
     
     $ignored_fields = $this->compute_fields_to_ignore($data);
-
-    // all_tags will contain the form tag + additional tags from CF7 Grid Layout
-    $all_tags = array();
-    $all_tags = $tags;
     
     // Get a Map with Name => Tag (Speed optimization)
     $name_to_tag = array();
@@ -626,26 +669,18 @@ class Cf7_Grid_Layout_Public {
       $name_to_tag[$tag['name']] = $tag;
     }
     
-    // Search for additional tags created by grid layout
-    $regex_pattern = '/^(?P<name>.*?)(?P<tab>_tab-[0-9]+)?(?P<row>_row-[0-9]+)?$/';
-    foreach ($field_status as $field) {
-      // Match the field to split name/tab/row
-      preg_match($regex_pattern, $field, $matches);
-      
-      if (isset($matches))
+    // all_tags will contain the form tag + additional tags from CF7 Grid Layout
+    $all_tags = array();
+    $all_tags = $tags;
+    
+    $this->iterate_over_additional_fields(function($field, $name, $tab, $row) use(&$all_tags, $name_to_tag) {
+      // If this tag exists in the original form
+      if (isset($name_to_tag[$name]))
       {
-        $name = isset($matches['name']) ? $matches['name'] : '';
-        $tab = isset($matches['tab']) ? $matches['tab'] : '';
-        $row = isset($matches['row']) ? $matches['row'] : '';
-
-        // If this tag exists in the original form
-        if (isset($name_to_tag[$name]))
-        {
-          // Duplicate the tag to be an additional field tag
-          $all_tags[] = $this->build_posted_tag($name_to_tag[$name], $tab, $row);
-        }
+        // Duplicate the tag to be an additional field tag
+        $all_tags[] = $this->build_posted_tag($name_to_tag[$name], $tab, $row);
       }
-    }
+    });
     
     // Iterate over all tags to validate
     foreach($all_tags as $tag) {
@@ -713,7 +748,7 @@ class Cf7_Grid_Layout_Public {
     /**
     * @since 2.1.5 fix validation of non-toggled checkox/radio.  Toggled fields are now tracked in the tag itself as a class.
     */
-    if(!isset($_POST[$tag['name']])){ /** @since 2.3.1 fix as file will not have any values in $_POST.*/
+    if(!isset($_POST[$tag['name']]) && !isset($_FILES[$tag['name']])){ /** @since 2.3.1 fix as file will not have any values in $_POST.*/
       $isRequired = false;
       switch($tag['type']){
         case 'checkbox*':
@@ -987,6 +1022,7 @@ class Cf7_Grid_Layout_Public {
   */
   private function compute_fields_to_ignore($posted_data){
     $ignored_fields = [];
+
     /*code taken from cf7cf.php file in cf7-conditional-fields*/
     if(!isset($posted_data['_wpcf7cf_hidden_group_fields'])){
       return $ignored_fields;
@@ -1062,6 +1098,39 @@ class Cf7_Grid_Layout_Public {
     }
     return $replaced;
   }
+  
+  	/**
+	 * Function that retrieve the fields added by CF7 Grid Layout and call "lambda" for each element.
+	 *
+	 * @since 2.4.2
+	 * @param      Function($field, $name, $tab, $row)    $lambda     Function that will be called for each additional field
+	 * @return     Nothing.
+	**/
+  private function iterate_over_additional_fields($lambda) {
+    // Get field status from FORM POST
+    $field_status = '';
+    if(isset($_POST['_cf7sg_fields'])){
+      $field_status = json_decode( stripslashes($_POST['_cf7sg_fields']));
+    }
+    
+    // Scan the fields to split them in name/tab/row
+    $regex_pattern = '/^(?P<name>.*?)(?P<tab>_tab-[0-9]+)?(?P<row>_row-[0-9]+)?$/';
+    foreach ($field_status as $field) {
+      // Match the field to split name/tab/row
+      preg_match($regex_pattern, $field, $matches);
+      
+      if (isset($matches))
+      {
+        $name = isset($matches['name']) ? $matches['name'] : '';
+        $tab = isset($matches['tab']) ? $matches['tab'] : '';
+        $row = isset($matches['row']) ? $matches['row'] : '';
+        
+        // Call the lambda function with according parameters
+        $lambda($field, $name, $tab, $row);
+      }
+    }
+  }
+  
   /**
   * We need to add the missing attachments just before the mail is sent.
   * Hooked to filter 'wpcf7_mail_components', sets up the final $components object
@@ -1070,61 +1139,19 @@ class Cf7_Grid_Layout_Public {
   * @param WPCF7_ContactForm $cf7form   cf7 form object
   * @param WPCF7_Mail $cf7mail   cf7 mail object
   * @return Array  an array of mail parts
- **/
- public function wpcf7_mail_components($components, $cf7form, $cf7mail) {
-   $tags = $cf7form->scan_form_tags();
-   $submission = WPCF7_Submission::get_instance();
-   $uploaded_files = $submission->uploaded_files();
+  **/
+  public function wpcf7_mail_components($components, $cf7form, $cf7mail) {
+    $submission = WPCF7_Submission::get_instance();
+    $uploaded_files = $submission->uploaded_files();
 
-   foreach ( $tags as $tag ) {
-     $field_type = self::field_type($tag['name'], $cf7form->id());
-
-     switch($tag['type']){
-       case 'file':
-         switch($field_type){
-           case 'singular':
-             continue; /*skip this field, as already taken care by cf7 plugin*/
-             break;
-           case 'tab':
-           case 'table':
-           case 'both':
-             // Search for $_FILES where name match a tabbed file field
-             $regex = '/^'.preg_quote($tag['name']);
-             //extract all relevant fields
-             $submitted_fields = preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($uploaded_files));
-             //we also need the rows with tab index=0
-             $submitted_fields = array_unique(array_merge($submitted_fields, preg_grep($regex.'_row-[0-9]+$/', array_keys($uploaded_files))));
-             //.. and tabs with row index=0
-             $submitted_fields = array_unique(array_merge($submitted_fields, preg_grep($regex.'_tab-[0-9]+$/', array_keys($uploaded_files))));
-             foreach($submitted_fields as $index => $field){
-               $row = $tab = null;
-               if('both'==$field_type) $row=$tab='';
-               $regex = '/^('.preg_quote($tag['name']).')';
-               $field_name = $field;
-               switch(1){
-                 case preg_match($regex.'_tab-([0-9]+)_row-([0-9]+)',$field, $matches):
-                   $field_name = $matches[1];
-                   $tab = $matches[2];
-                   $row = $matches[3];
-                   break;
-                 case preg_match($regex.'_row-([0-9]+)',$field, $matches):
-                   $field_name = $matches[1];
-                   $row = $matches[2];
-                   break;
-                 case preg_match($regex.'_tab-([0-9]+)',$field, $matches):
-                   $field_name = $matches[1];
-                   $tab = $matches[2];
-                   break;
-               }
-               $components['attachments'][] = $uploaded_files[$field];
-               $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $field_name, $row, $tab, count($attachments), $_POST['_wpcf7_key']);
-             }
-             break;
-         }
-         break;
-     }
-   }
-
+    $this->iterate_over_additional_fields(function($field, $name, $tab, $row) use(&$components, $uploaded_files) {
+      if (isset($uploaded_files[$field]))
+      {
+        $components['attachments'][] = $uploaded_files[$field];
+        $components['body'] .= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $name, $row, $tab, count($components['attachments']), $_POST['_wpcf7_key']);
+      }
+    });
+   
    return $components;
  }
 }
