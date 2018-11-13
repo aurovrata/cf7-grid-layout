@@ -212,6 +212,7 @@ and you can also turn off highlight altogether by inserting this additional line
 18. A benchmark field is available which allows you to display warning when certain input values breach the benchmark limit.  The benchmark field also emits a javascript event when the limit is breached so that custom javascript action can be executed.
 19. Click on the code icon in any given column cell of the grid UI editor and it will take you to the equivalent code lines in the text editor.
 20. v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
+21. The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 
 == Changelog ==
 = 2.5.0 =
