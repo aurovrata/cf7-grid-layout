@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 4.9.5
+Tested up to: 5.0.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -208,11 +208,16 @@ and you can also turn off highlight altogether by inserting this additional line
 14. On the form front-end your users will be able to add new tabs.
 15. A column can be converted into an entire existing cf7 form by editing the column ('pencil' button) and selecting the option 'Insert Form'.  This will convert the column into a dropdown field from which you can select an existing form that you have previously designed.  This makes for modular design of forms.
 16. This plugin introduces dynamic dropdowns, which allow you to manage dropdown field options using various content managed in your WordPress dashboard.  For example you can use taxonomy terms as options, or you can use existing post types' allowing your users to select/link existing content from your WordPress CMS managed data to their submission.  The dynamic dropdown can also be programmatically populated using a hook filter with the last option 'Custom'.
-17. A benchmark field is available which allows you to display warning when certain input values breach the benchmark limit.  The benchmark field also emits a javascript event when the limit is breached so that custom javascript action can be executed.
-18. Click on the code icon in any given column cell of the grid UI editor and it will take you to the equivalent code lines in the text editor.
-19. v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
+17. If you create a dynamic-dropdown field and select filter as source, the plugin expects the options to be provided by a filter.  Your field cell will have an extra 'filter' icon at the top, click it to reveal the filters available.  You can click on the filter link which will copy a helper code snipet which you an paste in your *functions.php* file and customise to provide the options list.
+18. A benchmark field is available which allows you to display warning when certain input values breach the benchmark limit.  The benchmark field also emits a javascript event when the limit is breached so that custom javascript action can be executed.
+19. Click on the code icon in any given column cell of the grid UI editor and it will take you to the equivalent code lines in the text editor.
+20. v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
 
 == Changelog ==
+= 2.5.0 =
+* rewrite of validation engine to better handle array inputs.
+* fix for file mail attachments.
+* fix for checkbox validation.
 = 2.4.1 =
 * fix fatal error in cf7 mail tag.
 = 2.4.0 =

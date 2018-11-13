@@ -190,7 +190,15 @@ function {$field_name_slug}_select2_filter_values($values, $field, $submitted_da
 */
 function {$field_name_slug}_dynamic_options($options, $name, $cf7_key){
   //these are the label users will see when the dropdown opens.
-  $options = '<option>...</option>';
+  //you can group your options if need be. Let's assume you have an array of arrays of data to display in groups.
+  $data = ... //fetch your data, either from the databse or some other source.
+  foreach($data as $group_label=>$options){
+    $options += '<optgroup label="'.$group_label.'">';
+    foreach($options as $label=>$value){
+      $options += '<option value="'.$value.'">'.$label.'</option>';
+    }
+    $options += '</optgroup>';
+  }
   return $options;
 }" href="javascript:void(0);">Filter</a> the options.
 </li>

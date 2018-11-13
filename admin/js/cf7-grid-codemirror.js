@@ -214,8 +214,7 @@
 
       //setup sub-forms hidden field.
       var embeds = [];
-      var hasTables = false;
-      var hasTabs = false;
+      var hasTables = false, hasTabs = false, hasToggles=false;
       if($embdedForms.length>0){
         $embdedForms.each(function(){
           embeds[embeds.length] = $(this).data('form');
@@ -226,33 +225,65 @@
       //scan and submit tabs & tables fields.
       var tableFields = [];
       $('.row.cf7-sg-table', $formNoEmbeds).each(function(){
+        /**@since 2.4.2 track each tables with unique ids and their fields*/
+        var unique = $(this).closest('.container.cf7-sg-table').attr('id');
+        var fields = {};
+        fields[unique]=[];
         var search = $(this).html();
         var match = cf7TagRegexp.exec(search);
         //console.log('search:'+search);
         while (match != null) {
           //ttFields[ match[2] ] = match[1];
-          tableFields[tableFields.length] = match[2];
+          fields[unique][fields[unique].length] = match[2];
           //console.log('match'+match[2]);
           match = cf7TagRegexp.exec(search); //get the next match.
         }
+        tableFields[tableFields.length] = fields;
         hasTables = true;
       });
       //var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)\s*(.[^\[]*)\]/img;
       var tabFields = [];
       $('.container.cf7-sg-tabs-panel', $formNoEmbeds).each(function(){
+        /**@since 2.4.2 track each tables with unique ids and their fields*/
+        var unique = $(this).attr('id');
+        var fields = {};
+        fields[unique]=[];
         var search = $(this).html();
         var match = cf7TagRegexp.exec(search);
         while (match != null) {
           //if( -1 === tableFields.indexOf(match[2]) ) /*removed as now want to idenify fields which are both tabs and table fields*/
-          tabFields[tabFields.length] = match[2];
+          fields[unique][fields[unique].length] = match[2];
           //ttFields[match[2]] = match[1];
           match = cf7TagRegexp.exec(search); //get the next match.
         }
+        tabFields[tabFields.length] = fields;
         hasTabs = true;
+      });
+      /**
+      * Track toggled fields to see if they are submitted or not.
+      * @since 2.5 */
+
+      var toggledFields = [];
+      $('.container.cf7sg-collapsible.with-toggle', $formNoEmbeds).each(function(){
+        /**@since 2.4.2 track each tables with unique ids and their fields*/
+        var unique = $(this).attr('id');
+        var fields = {};
+        fields[unique]=[];
+        var search = $(this).html();
+        var match = cf7TagRegexp.exec(search);
+        while (match != null) {
+          //if( -1 === tableFields.indexOf(match[2]) ) /*removed as now want to idenify fields which are both tabs and table fields*/
+          fields[unique][fields[unique].length] = match[2];
+          //ttFields[match[2]] = match[1];
+          match = cf7TagRegexp.exec(search); //get the next match.
+        }
+        toggledFields[toggledFields.length] = fields;
+        hasToggles = true;
       });
       //append hidden fields
       $this.append('<input type="hidden" name="cf7sg-has-tabs" value="'+hasTabs+'" /> ');
       $this.append('<input type="hidden" name="cf7sg-has-tables" value="'+hasTables+'" /> ');
+      $this.append('<input type="hidden" name="cf7sg-has-toggles" value="'+hasToggles+'" /> ');
       var disabled = $('#form-editor-tabs').tabs('option','disabled');
       $this.append('<input type="hidden" name="cf7sg-has-grid" value="'+disabled+'" /> ');
       /*
@@ -260,6 +291,8 @@
       */
       $('#cf7sg-tabs-fields').val(JSON.stringify(tabFields));
       $('#cf7sg-table-fields').val(JSON.stringify(tableFields));
+      $('#cf7sg-toggle-fields').val(JSON.stringify(toggledFields));
+
       //alert(ttFields);
       // continue the submit unbind preventDefault.
       $this.unbind('submit').submit();

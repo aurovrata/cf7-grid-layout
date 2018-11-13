@@ -101,6 +101,10 @@
       /*--------------------------------------------------- convert tables */
       $('div.container.cf7-sg-table', $form).each(function(){
         var $this = $(this);
+        if($this[0].hasAttribute('id')){
+          var id = 'cf7-sg-table-'+(new Date).getTime();
+          $this.attr('id', id);
+        }
         var $ctrl = $this.find('.row.cf7-sg-table > .row-controls' ).first().find('.table-row-label');
         $('input', $ctrl).prop('checked', true);
         //set button label
@@ -279,7 +283,7 @@
 
       /*
         Row controls
-        ----------------------------------------------------------------------------ROW CONTRLS
+        ----------------------------------------------------------ROW CONTRLS
       */
       var $parentRow;
       if($target.is('.dashicons-trash.form-control')){ //--------TRASH included form
@@ -296,7 +300,7 @@
             $parent.children('.grid-column').append('<textarea class="grid-input"></textarea>');
           }
         }
-      }else if($target.is('.dashicons-plus.row-control')){ //-----------ADD
+      }else if($target.is('.dashicons-plus.row-control')){ //-----------ADD Row
         $target.closest('.container').insertNewRow();
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
         //hide any other controls that might be open
@@ -335,11 +339,12 @@
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
       }else if($target.is('input.table-row')){ //-------------checkbox table row
         if($target.is(':checked')){
+          var id = 'cf7-sg-table-'+(new Date).getTime();
           $target.closest('.row').addClass('cf7-sg-table');
-          $target.closest('.container').addClass('cf7-sg-table');
+          $target.closest('.container').addClass('cf7-sg-table').attr('id',id);
         }else{
           $target.closest('.row').removeClass('cf7-sg-table');
-          $target.closest('.container').removeClass('cf7-sg-table');
+          $target.closest('.container').removeClass('cf7-sg-table').removeAttr('id');
         }
         //toggle disable the sibling input
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
@@ -1024,13 +1029,18 @@
     var $this = $(this);
     if(typeof areaCode === 'undefined') areaCode ='';
     var append=true;
-    if( $this.is('.columns') || $this.is($grid)){
-      append=true;
-    }else if($this.is('.container') || $this.is('.cf7sg-external-form') ){
-      append=false;
-    }else{
-      return $this;
+    switch(true){
+      case ( $this.is('.columns') || $this.is($grid)):
+      case $this.is('.container.cf7-sg-tabs-panel'): /* fixes rows added in panels*/
+        append=true;
+        break;
+      case ($this.is('.container') || $this.is('.cf7sg-external-form') ):
+        append=false;
+        break;
+      default: //unknown element, maybe an error.
+        return $this;
     }
+
     var $newRow = $( $('#grid-row').html() );
     //append the column controls and textarea
     $('.columns', $newRow).append( $($('#grid-col').html()) );

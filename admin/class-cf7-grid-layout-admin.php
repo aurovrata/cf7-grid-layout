@@ -598,8 +598,15 @@ class Cf7_Grid_Layout_Admin {
     if(empty($tt_fields)) $tt_fields = array();
     if(!is_array($tt_fields)) $tt_fields = array($tt_fields);
   	$sanitised_table_fields = array();
-  	foreach($tt_fields as $table_field){
-  	  $sanitised_table_fields[] = sanitize_text_field($table_field);
+  	foreach($tt_fields as $table_fields){
+      if(is_object($table_fields)){ /** @since 2.4.2 track fields in each tables. */
+        $table_fields = get_object_vars($table_fields); /*convert to array*/
+        $table = array_keys($table_fields);
+        $table = sanitize_text_field($table[0]);
+        $table_fields = $table_fields[$table];
+        $sanitised_table_fields[$table]=array();
+        foreach($table_fields as $field) $sanitised_table_fields[$table][] = sanitize_text_field($field);
+      }else $sanitised_table_fields[] = sanitize_text_field($table_fields);
   	}
     update_post_meta($post_id, '_cf7sg_grid_table_names', $sanitised_table_fields);
     //tabs
@@ -608,19 +615,46 @@ class Cf7_Grid_Layout_Admin {
     if(!is_array($tt_fields)) $tt_fields = array($tt_fields);
   	$sanitised_tab_fields = array();
   	foreach($tt_fields as $tab_field){
-      $sanitised_tab_fields[] = sanitize_text_field($tab_field);
+      if(is_object($tab_field)){  /** @since 2.4.2 track fields in each tabs. */
+        $tab_field = get_object_vars($tab_field); /*convert to array*/
+        $tab = array_keys($tab_field);
+        $tab = sanitize_text_field($tab[0]);
+        $tab_field = $tab_field[$tab];
+        $sanitised_tab_fields[$tab]=array();
+        foreach($tab_field as $field) $sanitised_tab_fields[$tab][] = sanitize_text_field($field);
+      }else $sanitised_tab_fields[] = sanitize_text_field($tab_field);
   	}
     update_post_meta($post_id, '_cf7sg_grid_tabs_names', $sanitised_tab_fields);
+    /** track toggled fields.
+    * @since 2.5*/
+    $tt_fields = json_decode(stripslashes($_POST['cf7sg-toggle-fields']));
+    if(empty($tt_fields)) $tt_fields = array();
+    if(!is_array($tt_fields)) $tt_fields = array($tt_fields);
+  	$sanitised_toggled_fields = array();
+  	foreach($tt_fields as $tgg_field){
+      if(is_object($tgg_field)){
+        $tgg_field = get_object_vars($tgg_field); /*convert to array*/
+        $tgg = array_keys($tgg_field);
+        $tgg = sanitize_text_field($tgg[0]);
+        $tgg_field = $tgg_field[$tgg];
+        $sanitised_toggled_fields[$tgg]=array();
+        foreach($tgg_field as $field) $sanitised_toggled_fields[$tgg][] = sanitize_text_field($field);
+      }else $sanitised_toggled_fields[] = sanitize_text_field($tgg_field);
+  	}
+    update_post_meta($post_id, '_cf7sg_grid_toggled_names', $sanitised_toggled_fields);
     //flag tab & tables for more efficient front-end display.
     $has_tabs =  ( 'true' === $_POST['cf7sg-has-tabs']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tabs', $has_tabs);
     $has_tables = ( 'true' === $_POST['cf7sg-has-tables']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tables', $has_tables);
+    $has_toggles = ( 'true' === $_POST['cf7sg-has-toggles']) ? true : false;
+    update_post_meta($post_id, '_cf7sg_has_tables', $has_toggles);
     /**
     * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
     */
     $is_cf7sg = ( 'true' === $_POST['is_cf7sg_form']) ? true : false;
     update_post_meta($post_id, '_cf7sg_managed_form', $is_cf7sg);
+    udpate_post_meta($post_id, '_cf7sg_version', $this->version);
     /**
     *@since 2.3.0 the duplicate functionality has been isntored and therefore any new meta fields added to this plugin needs to be added to the duplication properties too.
     */

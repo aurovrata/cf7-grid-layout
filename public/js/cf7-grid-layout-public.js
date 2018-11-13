@@ -31,6 +31,10 @@
     if($cf7Form_table.length){
       $('.container.cf7-sg-table', $cf7Form_table).each(function(){
         var $table = $(this);
+        if($table[0].hasAttribute('id')){ /** @since 2.4.2 track table fields*/
+          var $tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $table.attr('id'));
+          $table.prepend($tracker);
+        }
         var $row = $('.row.cf7-sg-table', $table);
         var label = 'Add Row';
         //get label for button.
@@ -84,8 +88,13 @@
           if($table.is('.cf7-sg-table-footer')) $table = $table.prev('.container');
           $table.cf7sgCloneRow();
         }else if($button.is('.cf7-sg-table .row-control .dashicons')){ //---------- delete the row, delete button only on last row
+          var $table = $button.closest('.container');
           $button.closest('.row.cf7-sg-table').remove();
-          $button.closest('.container').trigger('sgRowDeleted');
+          var rows = $table.children('.row.cf7-sg-table').not('.cf7-sg-cloned-table-row').length
+          $table.trigger('sgRowDeleted');
+          /** @since 2.4.2 track table fields */
+          var $tracker = $table.children('.cf7sg-tracker-field');
+          if($tracker.length) $tracker.val(rows);
         }
       });
     }//end table structure
@@ -128,8 +137,6 @@
       });
     }//end validation
 
-    //enable tabs
-
     //enable the tabs
     var $cf7Form_tabs = $('div.has-tabs form.wpcf7-form');
     if($cf7Form_tabs.length){
@@ -143,7 +150,11 @@
           $list.after('<ul class="cf7sg-add-tab ui-tabs-nav"><li class="ui-state-default ui-corner-top"><a class="cf7sg-add-tab ui-tabs-anchor"><span class="cf7sg-add-tab dashicons dashicons-plus"></span></a></li></ul>');
           //clone the tab
           var $panel = $this.children('.cf7-sg-tabs-panel').first();
-          //add class to all fields
+          /** @since 2.4.2 track tab fields */
+          var $tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $panel.attr('id'));
+          $this.prepend($tracker);
+
+           //add class to all fields
           $panel.find(':input').each(function(){
             var $this = $(this);
             if($this.is('.cf7-sg-table :input')) return;
@@ -165,9 +176,9 @@
       //delegate tab addition/deletion
       $cf7Form_tabs.click('ul.ui-tabs-nav li', function(event){
         var $target = $(event.target);
-        if($target.is('.cf7sg-close-tab')){ //---------------------- close tab
+        var $container = $target.closest('.cf7-sg-tabs');
+        if($target.is('.cf7sg-close-tab')){ //---------------------- close/delete tab.
           var panelId = $target.siblings('a').attr('href');
-          var $container = $target.closest('.cf7-sg-tabs');
           var activate = false;
           $container.children('div'+panelId).remove(); //remove panel
           if($target.closest('li').remove().is('.ui-state-active')){ //remove tab
@@ -179,9 +190,11 @@
           if(activate){
             $container.tabs({active:0}); //activate the last tab
           }
-        }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab
+          /** @since 2.4.2 udpate the tracker field*/
+          var $tracker = $container.children('.cf7sg-tracker-field');
+          if($tracker) $tracker.val($container.children('.cf7-sg-tabs-panel').length);
+        }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab.
           //add a new tab
-          var $container = $target.closest('.cf7-sg-tabs');
           $container.cf7sgCloneTab();
         }
       });
@@ -397,7 +410,6 @@
               $text.children('.toggle').remove();
               toggleStatus[id] = $text.text().trim() + "|" + $header.children('.toggle').data('on');
             }
-
           }else{
             toggleSwitch.toggle(false);
             $('.row.ui-accordion-content :input', $header.parent()).prop('disabled', true);
@@ -602,6 +614,9 @@
     //when the button is clicked, trigger a content increase for accordions to refresh
     $table.trigger('sgContentIncrease');
     $row.trigger('sgRowAdded',rowIdx);
+    /** @since 2.4.2 track table fields */
+    var $tracker = $table.children('.cf7sg-tracker-field');
+    if($tracker.length) $tracker.val(rowIdx+1); //rowIdx is zero based.
     return $table;
   }
   //clone tabs, called on a div.cf7-sg-tabs
@@ -728,6 +743,10 @@
     /** @since 1.2.2 */
     //trigger new tab event for custom js.
     $newPanel.trigger('sgTabAdded',tabCount);
+    /** @since 2.4.2 track tabs and their fields.*/
+    //increment tab count tacker.
+    var $tracker = $tab.children('.cf7sg-tracker-field');
+    if($tracker) $tracker.val($tab.children('.cf7-sg-tabs-panel').length);
     return $tab;
   }
 

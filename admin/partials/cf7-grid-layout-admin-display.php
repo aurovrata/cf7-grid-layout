@@ -28,6 +28,7 @@
 <input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms" />
 <input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />
 <input type="hidden" value="" id="cf7sg-table-fields" name="cf7sg-table-fields" />
+<input type="hidden" value="" id="cf7sg-toggle-fields" name="cf7sg-toggle-fields" />
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();

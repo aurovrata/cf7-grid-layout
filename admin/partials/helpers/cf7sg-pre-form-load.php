@@ -47,14 +47,3 @@ function form_wrapper_id($css_id, $cf7_key){
   return $css_id;
 }" href="javascript:void(0);">Filter</a> the form wrapper css id.
 </li>
-<li>
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_set_max_tabs_limit','form_max_tabs',10,2);
-function form_max_tabs($limit, $cf7_key){
-  // $limit the limit of tabs users can created in tabbed section (see screenshot 13 in the plugin page, https://wordpress.org/plugins/cf7-grid-layout/#screenshots).
-  //$cf7_key unique form key to identify your form, $cf7_id is its post_id.
-  if('{$form_key}'==$cf7_key ){
-    $limit =  5;
-  }
-  return $limit;
-}" href="javascript:void(0);">Filter</a> the tabs limit (default 10).
-</li>
