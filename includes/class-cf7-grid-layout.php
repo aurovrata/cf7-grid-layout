@@ -238,9 +238,6 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wp_ajax_nopriv_save_grid_fields', $plugin_public, 'save_grid_fields' );
     $this->loader->add_action( 'wp_ajax_save_grid_fields', $plugin_public, 'save_grid_fields' );
 
-    /*Shortcodes*/
-    //add_shortcode('multi-cf7-form', array($plugin_public, 'multi_form_shortcode'));
-    //add_shortcode('child-cf7-form', array($plugin_public, 'child_form_shortcode'));
     /* CF7 Hooks */
     //disable autloading of cf7 plugin scripts
     //add_filter( 'wpcf7_load_js',  '__return_false' );
