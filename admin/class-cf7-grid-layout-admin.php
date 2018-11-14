@@ -654,7 +654,7 @@ class Cf7_Grid_Layout_Admin {
     */
     $is_cf7sg = ( 'true' === $_POST['is_cf7sg_form']) ? true : false;
     update_post_meta($post_id, '_cf7sg_managed_form', $is_cf7sg);
-    udpate_post_meta($post_id, '_cf7sg_version', $this->version);
+    update_post_meta($post_id, '_cf7sg_version', $this->version);
     /**
     *@since 2.3.0 the duplicate functionality has been isntored and therefore any new meta fields added to this plugin needs to be added to the duplication properties too.
     */
