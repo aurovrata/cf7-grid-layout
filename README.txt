@@ -12,7 +12,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 This plugins allows pure css responsive grid layouts for contact form 7.  It enables rich interlinking of your CMS data via taxonomy/posts populated dropdown fields.  It also enables modular design of complex forms.
 
 == Description ==
-**NOTE WordPress 5.0 & Gutenberg editor update** - this plugin is now compatible with WP 5.0, however, the Gutenberg editor does not recognise [shortcodes with hyphons](https://www.getgutenberg.io/documentation/content/shortcodes/) (dash) characters, so a new shortcode is introduced from v3.9.0, `[cf7form ...]`. Your form table will now display this new shortcode.  Creating new pages/posts with Gutenberg from now on will require you use this new shortcode.  The old remains active for existing content.
+**NOTE WordPress 5.0 & Gutenberg editor update** - this plugin is now compatible with WP 5.0, however, the Gutenberg editor does not recognise [shortcodes with hyphons](https://www.getgutenberg.io/documentation/content/shortcodes/) (dash) characters, so a new shortcode is introduced from v2.5, `[cf7form ...]`. Your form table will now display this new shortcode.  Creating new pages/posts with Gutenberg from now on will require you use this new shortcode.  The old remains active for existing content.
 
 The plugin uses the [smart-grid](http://origin.css.gd/) css plugin to build beautiful form layouts.  It introduces a graphical editor to design your forms, as well as a coloured html syntax editor built using the excellent CodeMirror editor.  It is now possible to design smart layouts with ease.
 
