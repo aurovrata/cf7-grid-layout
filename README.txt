@@ -192,6 +192,12 @@ yes, you can use the following filters to either switch off only the shortcode h
 and you can also turn off highlight altogether by inserting this additional line to your functions.php file,
 `add_filter('cf7sg_admin_editor_theme', function($theme, $form_key){return '';}, 10, 2);`
 
+= 14. Can collapsible sections be shown as open by default? =
+
+Yes, identify the row in your text editor which implements your collapsible section, and add the `data-open="true"` attribute to it,
+
+`<div class="container cf7sg-collapsible" data-open="true" ...`
+
 == Screenshots ==
 
 1. (1) This plugin replaces the CF7 post table page and post edit pages with WordPress core post edit and post pages.  This means that other plugins that build on WordPress standards for custom admin dashboard functionality should now play nicely with CF7.  One out-of-the-box improvement is the ability to customise the CF7 form table columns being displayed.
@@ -217,6 +223,8 @@ and you can also turn off highlight altogether by inserting this additional line
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 
 == Changelog ==
+= 2.5.3 =
+* fix open by default collapsible sections.
 = 2.5.2 =
 * fix for Gutenberg shortcode format.
 = 2.5.1 =

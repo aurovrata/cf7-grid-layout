@@ -437,11 +437,9 @@
             state = false;
           }else{
             switch(state){
-              case 'true':
+              case true:
                 state = 0;
                 break;
-              case 'false':
-                state = false;
             }
           }
           $('#'+cssId).accordion({
