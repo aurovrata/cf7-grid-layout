@@ -225,6 +225,7 @@ Yes, identify the row in your text editor which implements your collapsible sect
 == Changelog ==
 = 2.5.4 =
 * fixed bug preventing tables being setup properly.
+* toggles now are identied when the form is saved and this is used to prevent toggle js/css resources being loaded on the front-end if not required.
 = 2.5.3 =
 * fix open by default collapsible sections.
 = 2.5.2 =

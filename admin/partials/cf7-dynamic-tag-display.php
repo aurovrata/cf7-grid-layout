@@ -18,7 +18,7 @@
 
 <div id="dynamic-select-tag-generator" class="control-box cf7-dynamic-select">
   <fieldset>
-    <legend>Dynamic Select Dropdown field</legend>
+    <legend><?= __('Dynamic Select Dropdown field','cf7-grid-layout')?></legend>
     <table  class="form-table">
       <tbody>
         <tr>
@@ -26,37 +26,37 @@
       	<td><input type="text" name="name" class="tg-name oneline" id="<?= esc_attr( $args['content'] . '-name' ); ?>" /></td>
       	</tr>
         <tr>
-        	<th scope="row">Field type</th>
-        	<td><input name="required" type="checkbox"> Required field<br /></td>
+        	<th scope="row"><?=__('Field type','cf7-grid-layout')?></th>
+        	<td><input name="required" type="checkbox"><?=__('Required field','cf7-grid-layout')?><br /></td>
       	</tr>
         <tr>
-          <th scope="row">Id attribute</th>
+          <th scope="row"><?=__('Id attribute','cf7-grid-layout')?></th>
           <td>
             <input name="id" class="idvalue oneline option" id="tag-generator-panel-dynamic-select-id" type="text">
           </td>
         </tr>
         <tr>
-          <th scope="row">Class attribute</th>
+          <th scope="row"><?=__('Class attribute','cf7-grid-layout')?></th>
           <td>
             <input name="class" class="classvalue oneline option" id="tag-generator-panel-dynamic-select-class" type="text">
           </td>
         </tr>
         <tr>
-          <th scope="row">Dropdown style</th>
+          <th scope="row"><?=__('Dropdown style','cf7-grid-layout')?></th>
           <td>
             <div>
               <input name="select-style[]" class=" select-type "  type="radio" value="select" checked="checked"/>
-              <label>HTML Select field</label>
+              <label><?=__('HTML Select field','cf7-grid-layout')?></label>
             </div>
             <div>
               <input name="select-style[]" class=" select-type "  type="radio" value="nice" />
-              <label><a target="_blank" href="http://hernansartorio.com/jquery-nice-select/">jQuery Nice Select</a></label>
+              <label><a target="_blank" href="http://hernansartorio.com/jquery-nice-select/"><?=__('jQuery Nice Select','cf7-grid-layout')?></a></label>
             </div>
             <div>
               <input name="select-style[]" class=" select-type "  type="radio" value="select2" />
-              <label><a target="_blank" href="https://select2.github.io/">jQuery Select2</a></label>
+              <label><a target="_blank" href="https://select2.github.io/"><?=__('jQuery Select2','cf7-grid-layout')?></a></label>
               <input name="select2-tags" id="select2-tags" type="checkbox" disabled value="select2tags"/>
-              <label for="select2-tags"><a target="_blank" href="https://select2.github.io/examples.html#tags">Enable user options</a></label>
+              <label for="select2-tags"><a target="_blank" href="https://select2.github.io/examples.html#tags"><?=__('Enable user options','cf7-grid-layout')?></a></label>
             </div>
           </td>
         </tr>
@@ -65,12 +65,12 @@
     <div id="dynamic-dropdown-sources" class="tabordion">
       <section id="taxonomy-source">
         <input type="radio" name="sections" id="taxonomy-tab" checked>
-        <label for="taxonomy-tab">Taxonomy</label>
+        <label for="taxonomy-tab"><?=__('Taxonomy','cf7-grid-layout')?></label>
         <article>
-          <h4>Taxonomy source</h4>
+          <h4><?=__('Taxonomy source','cf7-grid-layout')?></h4>
           <select class="taxonomy-list">
-            <option value="" data-name="" >Choose a Taxonomy</option>
-            <option class="cf7sg-new-taxonomy" value="new_taxonomy" data-name="New Category">New Categories</option>
+            <option value="" data-name="" ><?=__('Choose a Taxonomy','cf7-grid-layout')?></option>
+            <option class="cf7sg-new-taxonomy" value="new_taxonomy" data-name="New Category"><?=__('New Categories','cf7-grid-layout')?></option>
           <?php
           //get options.
           $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
@@ -88,8 +88,8 @@
           }
           //inset the default post tags and category
           ?>
-          <option value="post_tag" data-name="Post Tag" class="system-taxonomy">Post Tags</option>
-          <option value="category" data-name="Post Category" class="system-taxonomy">Post Categories</option>
+          <option value="post_tag" data-name="Post Tag" class="system-taxonomy"><?=__('Post Tags','cf7-grid-layout')?></option>
+          <option value="category" data-name="Post Category" class="system-taxonomy"><?=__('Post Categories','cf7-grid-layout')?></option>
           <?php
           $system_taxonomies = get_taxonomies( array('public'=>true, '_builtin' => false), 'objects' );
           foreach($system_taxonomies as $taxonomy){
@@ -99,24 +99,24 @@
           ?>
           </select>
           <div class="cf72post-new-taxonomy">
-            <div><strong>New Taxonomy</strong></div>
-            <label>Plural Name<br />
+            <div><strong><?=__('New Taxonomy','cf7-grid-layout')?></strong></div>
+            <label><?=__('Plural Name','cf7-grid-layout')?><br />
             <input disabled="true" class="cf72post-new-taxonomy" type="text" name="plural_name" value=""></label>
-            <label >Singular Name<br />
+            <label ><?=__('Singular Name','cf7-grid-layout')?><br />
             <input disabled="true"  class="cf72post-new-taxonomy" type="text" name="singular_name" value=""></label>
-            <label>Slug<br />
+            <label><?=__('Slug','cf7-grid-layout')?><br />
             <input disabled="true"  class="cf72post-new-taxonomy" type="text" name="taxonomy_slug" value="" /></label>
-            <label class="hidden"><input class="cf72post-new-taxonomy" type="checkbox" name="is_hierarchical" />hierarchical</label>
+            <label class="hidden"><input class="cf72post-new-taxonomy" type="checkbox" name="is_hierarchical" /><?=__('hierarchical','cf7-grid-layout')?></label>
           </div>
         </article>
       </section>
       <section id="post-source">
         <input type="radio" name="sections" id="post-tab">
-        <label for="post-tab">Post</label>
+        <label for="post-tab"><?=__('Post','cf7-grid-layout')?></label>
         <article class="">
-          <h4>Post source</h4>
+          <h4><?=__('Post source','cf7-grid-layout')?></h4>
           <select class="post-list">
-            <option value="">Select a post</option>
+            <option value=""><?=__('Select a post','cf7-grid-layout')?></option>
             <?php
             $args = array(
                'show_ui'   => true,
@@ -154,8 +154,8 @@
               $taxonomy_lists['page'] .= '</optgroup>'.PHP_EOL;
             }
             ?>
-            <option value="post">Posts</option>
-            <option value="page">Pages</option>
+            <option value="post"><?=__('Posts','cf7-grid-layout')?></option>
+            <option value="page"><?=__('Pages','cf7-grid-layout')?></option>
           </select>
 
   <?php foreach($taxonomy_lists as $type=>$list ):
@@ -171,9 +171,9 @@
       </section>
       <section id="custom-source">
         <input type="radio" name="sections" id="custom-tab">
-        <label for="custom-tab">Custom</label>
+        <label for="custom-tab"><?=__('Custom','cf7-grid-layout')?></label>
         <article>
-          <h4>Custom source</h4>
+          <h4><?=__('Custom source','cf7-grid-layout')?></h4>
         </article>
       </section>
     </div> <!-- end-tabs-->

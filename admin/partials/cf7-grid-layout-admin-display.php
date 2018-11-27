@@ -5,8 +5,8 @@
 ?>
 <div id="form-editor-tabs">
   <ul>
-    <li><a href="#cf7-editor-grid">Grid</a></li>
-    <li><a href="#cf7-codemirror">Text</a></li>
+    <li><a href="#cf7-editor-grid"><?=__('Grid','cf7-grid-layout')?></a></li>
+    <li><a href="#cf7-codemirror"><?=__('Text','cf7-grid-layout')?></a></li>
   </ul>
   <div id="cf7-editor-grid">
     <div id="grid-form"></div>
@@ -45,23 +45,23 @@
         <span class="dashicons dashicons-trash row-control"></span>
         <div class="grid-controls">
           <label class="collapsible-row-label unique-mod">
-            Row collapsible
+            <?=__('Row collapsible','cf7-grid-layout')?>
             <input type="checkbox" class="collapsible-row" />
           </label>
           <label class="cf7-sg-hidden table-row-label unique-mod">
-            Row table input
+            <?=__('Row table input','cf7-grid-layout')?>
             <input type="checkbox" class="table-row" />
           </label>
           <label class="table-row-button">
-            Button label
+            <?=__('Button label','cf7-grid-layout')?>
             <input type="text" value="Add Row"/>
           </label>
           <label class="cf7-sg-hidden footer-row-label unique-mod">
-            Row table footer
+            <?=__('Row table footer','cf7-grid-layout')?>
             <input type="checkbox" class="footer-row" />
           </label>
           <label class="cf7-sg-hidden tabs-row-label unique-mod">
-            Tabbed section
+            <?=__('Tabbed section','cf7-grid-layout')?>
             <input type="checkbox" class="tabs-row" />
           </label>
         </div>
@@ -73,7 +73,7 @@
   <div class="cf7sg-external-form" data-form="">
     <div class="form-controls">
       <select class="form-select">
-        <option value="">Select contact form 7</option>
+        <option value=""><?=__('Select contact form 7','cf7-grid-layout')?></option>
         <?php
           $cf7_forms = get_posts(array(
             'post_type' => 'wpcf7_contact_form',
@@ -100,20 +100,20 @@
   </div>
 </div>
 <div id="grid-collapsible">
-  <div class="cf7sg-collapsible-title"><label>Section title <input type="text" /><input type="hidden" /><input type="checkbox" /><span>toggled</span></label></div>
+  <div class="cf7sg-collapsible-title"><label><?=__('Section title','cf7-grid-layout')?> <input type="text" /><input type="hidden" /><input type="checkbox" /><span><?=__('toggled','cf7-grid-layout')?></span></label></div>
 </div>
 <div id="grid-collapsible-with-toggle">
   <div class="toggle toggle-light" data-on="Yes" data-off="No"></div>
 </div>
 <div id="grid-tabs">
   <ul class="cf7-sg-tabs-list">
-    <li><a href="" class="cf7-sg-hidden"></a><label>Tab label<input type="text" /></label></li>
+    <li><a href="" class="cf7-sg-hidden"></a><label><?=__('Tab label','cf7-grid-layout')?><input type="text" /></label></li>
   </ul>
 </div>
 <div id="grid-helper">
   <span class="dashicons dashicons-no-alt"></span>
-  <span class="copy-helper">Click to copy!</span>
-  <p>Click-to-copy &amp; paste in your <em>functions.php</em> file.</p>
+  <span class="copy-helper"><?=__('Click to copy!','cf7-grid-layout')?></span>
+  <p><?=__('Click-to-copy &amp; paste in your <em>functions.php</em> file.','cf7-grid-layout')?></p>
   <ul class="cf7sg-helper-list"></ul>
 </div>
 <div id="grid-col">
@@ -126,52 +126,52 @@
     <span class="dashicons dashicons-move column-control"></span>
     <span class="icon-code column-control"></span>
     <div class="grid-controls">
-      Column offset:<br />
+      <?=__('Column offset:','cf7-grid-layout')?><br />
       <select class="column-offset select2 column-setting">
-        <option value="" selected>no offset</option>
-        <option value="offset-one">one (1/12<sup>th</sup>)</option>
-        <option value="offset-two">two (1/6<sup>th</sup>)</option>
-        <option value="offset-three">three (1/4<sup>th</sup>)</option>
-        <option value="offset-four">four (1/3<sup>rd</sup>)</option>
-        <option value="offset-five">five (5/12<sup>ths</sup>)</option>
-        <option value="offset-six">half</option>
-        <option value="offset-seven">seven (7/12<sup>ths</sup>)</option>
-        <option value="offset-eight">eight (2/3<sup>rds</sup>)</option>
-        <option value="offset-nine">nine (3/4<sup>ths</sup>)</option>
-        <option value="offset-ten">ten (5/6<sup>ths</sup>)</option>
-        <option value="offset-eleven">eleven (11/12<sup>ths</sup>)</option>
+        <option value="" selected><?=__('no offset','cf7-grid-layout')?></option>
+        <option value="offset-one"><?=__('one (1/12<sup>th</sup>)','cf7-grid-layout')?></option>
+        <option value="offset-two"><?=__('two (1/6<sup>th</sup>)','cf7-grid-layout')?></option>
+        <option value="offset-three"><?=__('three (1/4<sup>th</sup>)','cf7-grid-layout')?></option>
+        <option value="offset-four"><?=__('four (1/3<sup>rd</sup>)','cf7-grid-layout')?></option>
+        <option value="offset-five"><?=__('five (5/12<sup>ths</sup>)','cf7-grid-layout')?></option>
+        <option value="offset-six"><?=__('half','cf7-grid-layout')?></option>
+        <option value="offset-seven"><?=__('seven (7/12<sup>ths</sup>)','cf7-grid-layout')?></option>
+        <option value="offset-eight"><?=__('eight (2/3<sup>rds</sup>)','cf7-grid-layout')?></option>
+        <option value="offset-nine"><?=__('nine (3/4<sup>ths</sup>)','cf7-grid-layout')?></option>
+        <option value="offset-ten"><?=__('ten (5/6<sup>ths</sup>)','cf7-grid-layout')?></option>
+        <option value="offset-eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
       </select>
-      Column size:<br />
+      <?=__('Column size:','cf7-grid-layout')?><br />
       <select class="column-size select2 column-setting">
-        <option value="one">one (1/12<sup>th</sup>)</option>
-        <option value="two">two (1/6<sup>th</sup>)</option>
-        <option value="one-fourth">three (1/4<sup>th</sup>)</option>
-        <option value="one-third">four (1/3<sup>rd</sup>)</option>
-        <option value="five">five (5/12<sup>ths</sup>)</option>
-        <option value="one-half">half width</option>
-        <option value="seven">seven (7/12<sup>ths</sup>)</option>
-        <option value="two-thirds">eight (2/3<sup>rds</sup>)</option>
-        <option value="nine">nine (3/4<sup>ths</sup>)</option>
-        <option value="ten">ten (5/6<sup>ths</sup>)</option>
-        <option value="eleven">eleven (11/12<sup>ths</sup>)</option>
-        <option value="full" selected>full wifth</option>
+        <option value="one"><?=__('one (1/12<sup>th</sup>)','cf7-grid-layout')?></option>
+        <option value="two"><?=__('two (1/6<sup>th</sup>)','cf7-grid-layout')?></option>
+        <option value="one-fourth"><?=__('three (1/4<sup>th</sup>)','cf7-grid-layout')?></option>
+        <option value="one-third"><?=__('four (1/3<sup>rd</sup>)','cf7-grid-layout')?></option>
+        <option value="five"><?=__('five (5/12<sup>ths</sup>)','cf7-grid-layout')?></option>
+        <option value="one-half"><?=__('half width','cf7-grid-layout')?></option>
+        <option value="seven"><?=__('seven (7/12<sup>ths</sup>)','cf7-grid-layout')?></option>
+        <option value="two-thirds"><?=__('eight (2/3<sup>rds</sup>)','cf7-grid-layout')?></option>
+        <option value="nine"><?=__('nine (3/4<sup>ths</sup>)','cf7-grid-layout')?></option>
+        <option value="ten"><?=__('ten (5/6<sup>ths</sup>)','cf7-grid-layout')?></option>
+        <option value="eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
+        <option value="full" selected><?=__('full wifth','cf7-grid-layout')?></option>
       </select>
       <a id="new-row" class="button make-grid" href="javascript:void(0);"><?php _e('Make grid', 'cf7-grid-layout');?></a>
       <a class="button external-form" href="javascript:void(0);"><?php _e('Insert form', 'cf7-grid-layout');?></a>
     </div>
     <div class="cf7-field-label cf7-field-inner">
-      <p class="content">Field label</p>
-      <input type="text" placeholder="Field Label"/>
+      <p class="content"><?=__('Field label','cf7-grid-layout')?></p>
+      <input type="text" placeholder="<?=__('Field Label','cf7-grid-layout')?>"/>
       <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
     <div class="cf7-field-type cf7-field-inner">
-      <p class="content">[select a field]</p>
-      <textarea placeholder="select a field"></textarea>
+      <p class="content"><?=__('[select a field]','cf7-grid-layout')?></p>
+      <textarea placeholder="<?=__('select a field','cf7-grid-layout')?>"></textarea>
       <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
     <div class="cf7-field-tip cf7-field-inner">
-      <p class="content">describe your field</p>
-      <input type="text" placeholder="describe your field here" />
+      <p class="content"><?=__('describe your field','cf7-grid-layout')?></p>
+      <input type="text" placeholder="<?=__('describe your field here','cf7-grid-layout')?>" />
       <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
     <textarea class="grid-input"></textarea>
