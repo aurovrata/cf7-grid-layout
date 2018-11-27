@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Smart Grid for CF7\n"
-"POT-Creation-Date: 2018-11-27 18:46+0530\n"
-"PO-Revision-Date: 2018-11-27 18:49+0530\n"
+"POT-Creation-Date: 2018-11-27 18:58+0530\n"
+"PO-Revision-Date: 2018-11-27 18:58+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -239,7 +239,16 @@ msgstr ""
 #: admin/partials/cf7-dynamic-tag-display.php:158
 #, fuzzy
 msgid "Pages"
-msgstr "Contact Form 7 Polylang extension <strong>ATTENCION</strong>: du fait de l'evolution du plugin Polylang, et de la non-conformite au standard de code de WP par le plugin CF7, ce plugin est maintenant une extension du plugin <a href=\"https://wordpress.org/plugins/cf7-grid-layout/\">CF7 Smart Grid-layout</a>.<br /> Veuillez l'installer afin de profiter de toutes les fonctionalite du plugin Polylang dans les pages admin du plugin CF7.  Si vous ne 'installez pas, vos formulaires continuront de marcher mais vous ne pourrez pas creer de <em>nouvelles traductions</em>. Pour plus d'info lisez cette <a href=\"https://wordpress.org/plugins/cf7-polylang/\">page</a>."
+msgstr ""
+"Contact Form 7 Polylang extension <strong>ATTENCION</strong>: du fait de "
+"l'evolution du plugin Polylang, et de la non-conformite au standard de code "
+"de WP par le plugin CF7, ce plugin est maintenant une extension du plugin <a "
+"href=\"https://wordpress.org/plugins/cf7-grid-layout/\">CF7 Smart Grid-"
+"layout</a>.<br /> Veuillez l'installer afin de profiter de toutes les "
+"fonctionalite du plugin Polylang dans les pages admin du plugin CF7.  Si "
+"vous ne 'installez pas, vos formulaires continuront de marcher mais vous ne "
+"pourrez pas creer de <em>nouvelles traductions</em>. Pour plus d'info lisez "
+"cette <a href=\"https://wordpress.org/plugins/cf7-polylang/\">page</a>."
 
 #: admin/partials/cf7-dynamic-tag-display.php:174
 #, fuzzy
@@ -254,7 +263,16 @@ msgstr "Code Javascript personnalisé"
 #: admin/partials/cf7-grid-layout-admin-display.php:8
 #, fuzzy
 msgid "Grid"
-msgstr "Contact Form 7 Polylang extension <strong>ATTENCION</strong>: du fait de l'evolution du plugin Polylang, et de la non-conformite au standard de code de WP par le plugin CF7, ce plugin est maintenant une extension du plugin <a href=\"https://wordpress.org/plugins/cf7-grid-layout/\">CF7 Smart Grid-layout</a>.<br /> Veuillez l'installer afin de profiter de toutes les fonctionalite du plugin Polylang dans les pages admin du plugin CF7.  Si vous ne 'installez pas, vos formulaires continuront de marcher mais vous ne pourrez pas creer de <em>nouvelles traductions</em>. Pour plus d'info lisez cette <a href=\"https://wordpress.org/plugins/cf7-polylang/\">page</a>."
+msgstr ""
+"Contact Form 7 Polylang extension <strong>ATTENCION</strong>: du fait de "
+"l'evolution du plugin Polylang, et de la non-conformite au standard de code "
+"de WP par le plugin CF7, ce plugin est maintenant une extension du plugin <a "
+"href=\"https://wordpress.org/plugins/cf7-grid-layout/\">CF7 Smart Grid-"
+"layout</a>.<br /> Veuillez l'installer afin de profiter de toutes les "
+"fonctionalite du plugin Polylang dans les pages admin du plugin CF7.  Si "
+"vous ne 'installez pas, vos formulaires continuront de marcher mais vous ne "
+"pourrez pas creer de <em>nouvelles traductions</em>. Pour plus d'info lisez "
+"cette <a href=\"https://wordpress.org/plugins/cf7-polylang/\">page</a>."
 
 #: admin/partials/cf7-grid-layout-admin-display.php:9
 msgid "Text"
@@ -421,6 +439,38 @@ msgstr "dans une liste de champ de taxonomie"
 msgid "describe your field here"
 msgstr ""
 
+#: admin/partials/cf7-helper-metabox-display.php:8
+msgid ""
+"Click on a link to copy the helper snippet code and paste it in your "
+"<em>functions.php</em> file."
+msgstr ""
+
+#: admin/partials/cf7-helper-metabox-display.php:10
+#: admin/partials/cf7-helper-metabox-display.php:20
+msgid "Toggle panel: Helper"
+msgstr ""
+
+#: admin/partials/cf7-helper-metabox-display.php:11
+msgid "Pre-form-loading hooks"
+msgstr ""
+
+#: admin/partials/cf7-helper-metabox-display.php:13
+msgid "Hooks fired prior to the form loading"
+msgstr ""
+
+#: admin/partials/cf7-helper-metabox-display.php:21
+msgid "Post-form-submit hooks"
+msgstr ""
+
+#: admin/partials/cf7-helper-metabox-display.php:23
+msgid "Hooks fired after the form is submitted"
+msgstr ""
+
+#: admin/partials/cf7-info-metabox-display.php:7
+#, fuzzy
+msgid "Form key"
+msgstr "Sauvegarder le formulaire dans un Article"
+
 #: admin/partials/cf7-info-metabox-display.php:10
 msgid "https://contactform7.com/docs/"
 msgstr ""
@@ -445,6 +495,83 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
+#: admin/partials/cf7-info-metabox-display.php:20
+msgid "Manage dynamic lists"
+msgstr ""
+
 #: admin/partials/cf7-info-metabox-display.php:24
 msgid "Edit"
 msgstr "Éditer"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:19
+#: admin/partials/helpers/cf7sg-form-fields.php:37
+#: admin/partials/helpers/cf7sg-form-fields.php:57
+#: admin/partials/helpers/cf7sg-form-fields.php:76
+#: admin/partials/helpers/cf7sg-form-fields.php:96
+#: admin/partials/helpers/cf7sg-form-fields.php:113
+#: admin/partials/helpers/cf7sg-form-fields.php:151
+#: admin/partials/helpers/cf7sg-form-fields.php:180
+#: admin/partials/helpers/cf7sg-form-fields.php:203
+#: admin/partials/helpers/cf7sg-post-form-submit.php:16
+#: admin/partials/helpers/cf7sg-post-form-submit.php:39
+#: admin/partials/helpers/cf7sg-pre-form-load.php:15
+#: admin/partials/helpers/cf7sg-pre-form-load.php:26
+#: admin/partials/helpers/cf7sg-pre-form-load.php:37
+#: admin/partials/helpers/cf7sg-pre-form-load.php:48
+msgid "Filter"
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-form-fields.php:19
+msgid "query arguments to retrieve posts for dynamic dropdown."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-form-fields.php:37
+#: admin/partials/helpers/cf7sg-form-fields.php:76
+#, fuzzy
+msgid "the option label."
+msgstr "Label"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:57
+#: admin/partials/helpers/cf7sg-form-fields.php:96
+msgid "the option attributes."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-form-fields.php:113
+msgid "the default option label."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-form-fields.php:151
+msgid "user added option."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-form-fields.php:180
+msgid "user selection with user added option."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-form-fields.php:203
+msgid "the options."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-post-form-submit.php:16
+msgid "custom form submission validation of any field."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-post-form-submit.php:39
+msgid "mail annotation for complex array file field attachments."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-pre-form-load.php:15
+msgid "cf7 tag field pre-html."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-pre-form-load.php:26
+msgid "cf7 tag field post-html."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-pre-form-load.php:37
+msgid "cf7 tag required-html."
+msgstr ""
+
+#: admin/partials/helpers/cf7sg-pre-form-load.php:48
+msgid "the form wrapper css id."
+msgstr ""
