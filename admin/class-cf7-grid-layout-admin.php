@@ -648,7 +648,7 @@ class Cf7_Grid_Layout_Admin {
     $has_tables = ( 'true' === $_POST['cf7sg-has-tables']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tables', $has_tables);
     $has_toggles = ( 'true' === $_POST['cf7sg-has-toggles']) ? true : false;
-    update_post_meta($post_id, '_cf7sg_has_tables', $has_toggles);
+    update_post_meta($post_id, '_cf7sg_has_toggles', $has_toggles);
     /**
     * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
     */

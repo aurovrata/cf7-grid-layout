@@ -264,7 +264,6 @@ class Cf7_Grid_Layout_Public {
     //load tabs
     $has_tabs = false;
     if(get_post_meta($cf7_id, '_cf7sg_has_tabs', true)){
-      wp_enqueue_script('jquery-ui-tabs');
       $class['has-tabs']=true;
       $has_tabs = true;
     }
@@ -278,14 +277,13 @@ class Cf7_Grid_Layout_Public {
     wp_enqueue_script('jquery-effects-core');
 		$class['has-nice-select'] = true;
     //if(isset($class['has-nice-select'])){
-      wp_enqueue_script('jquery-nice-select');
-      wp_enqueue_style('jquery-nice-select-css');
+    wp_enqueue_script('jquery-nice-select');
+    wp_enqueue_style('jquery-nice-select-css');
     //}
-    $class['has-toggles']=true;
-    wp_enqueue_script('jquery-toggles');
-    wp_enqueue_style('jquery-toggles-css');
-    wp_enqueue_style('jquery-toggles-light-css');
-
+    if(get_post_meta($cf7_id, '_cf7sg_has_toggles', true)){
+      $class['has-toggles']=true;
+      $has_toggles = true;
+    }
 
     //styles
     wp_enqueue_style('contact-form-7');
@@ -334,6 +332,17 @@ class Cf7_Grid_Layout_Public {
           $class['has-tabs']=true;;
           $has_tabs = true;
         }
+        if(!$has_toggles && get_post_meta($post_obj->ID, '_cf7sg_has_toggles', true)){
+          $class['has-toggles']=true;
+          $has_toggles=true;
+        }
+      }
+
+      if($has_tabs) wp_enqueue_script('jquery-ui-tabs');
+      if($has_toggles){
+        wp_enqueue_script('jquery-toggles');
+        wp_enqueue_style('jquery-toggles-css');
+        wp_enqueue_style('jquery-toggles-light-css');
       }
       if(!empty($cf7_form)){ //redraw the form.
         $cf7_form = wpcf7_save_contact_form(array('id'=>$cf7_id, 'form'=>$form_raw));
