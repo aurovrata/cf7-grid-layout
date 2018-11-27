@@ -13,7 +13,7 @@ function validate_field_submission($validation_errors, $submission, $cf7_key){
     }
   }
   return $validation_errors;
-}" href="javascript:void(0);">Filter</a> custom form submission validation of any field.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('custom form submission validation of any field.','cf7-grid-layout')?>
 </li>
 <li>
   <a class="helper" data-cf72post="add_filter( 'cf7sg_annotate_mail_attach_grid_files','annotate_mail_attachments',10,7);
@@ -36,5 +36,5 @@ function annotate_mail_attachments($label, $field, $row, $tab, $attachment_index
   //for example a file field in a table within a tabbed section.
   $label = '<div>'.$attachment_index.'-('.$field.'['.$tab.']['.$row.'])</div>';
   return $label;
-}" href="javascript:void(0);">Filter</a> mail annotation for complex array file field attachments.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('mail annotation for complex array file field attachments.','cf7-grid-layout')?>
 </li>

@@ -16,7 +16,7 @@ function {$field_name_slug}_dynamic_list($query_args, $field, $cf7_key){
   }
   //setup your custom query...
   return $query_args;
-}" href="javascript:void(0);">Filter</a> query arguments to retrieve posts for dynamic dropdown.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('query arguments to retrieve posts for dynamic dropdown.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-taxonomy">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_label','{$field_name_slug}_dynamic_option_label',10,4);
@@ -34,7 +34,7 @@ function {$field_name_slug}_dynamic_option_label($label, $term, $name, $cf7_key)
     return $label;
   }
   return $label;
-}" href="javascript:void(0);">Filter</a> the option label.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option label.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-taxonomy">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_attributes','{$field_name_slug}_dynamic_option_attributes',10,4);
@@ -54,7 +54,7 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $term, $name,
   }
   //example: $attributes['class'] = array($term->slug);
   return $attributes;
-}" href="javascript:void(0);">Filter</a> the option attributes.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option attributes.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-post">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_label','{$field_name_slug}_dynamic_option_label',10,4);
@@ -73,7 +73,7 @@ function {$field_name_slug}_dynamic_option_label($label, $post, $name, $cf7_key)
   }
   //setup a custom label
   return $label;
-}" href="javascript:void(0);">Filter</a> the option label.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option label.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-post">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_attributes','{$field_name_slug}_dynamic_option_attributes',10,4);
@@ -93,7 +93,7 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $post, $name,
   }
   //example: $attributes['class'] = array('author-'.$post->post_author);
   return $attributes;
-}" href="javascript:void(0);">Filter</a> the option attributes.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option attributes.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_default_value','{$field_name_slug}_dynamic_default_option',10,3);
@@ -110,7 +110,7 @@ function {$field_name_slug}_dynamic_default_option($default, $field, $cf7_key){
   }
   $default = 'Please select an option...';
   return $default;
-}" href="javascript:void(0);">Filter</a> the default option label.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the default option label.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-post-tags <?=$post_my_form_only?>">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_new_post','{$field_name_slug}_select2_newpost',10,7);
@@ -148,7 +148,7 @@ function {$field_name_slug}_select2_newpost($post_name, $field, $title, $post_ty
   //create your new post using wp_insert_post();
   $post_name = 'new_sbummision';
   return $post_name;
-}" href="javascript:void(0);">Filter</a> user added option.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('user added option.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-filter <?=$post_my_form_only?>">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_filter_select2_submission','{$field_name_slug}_select2_filter_values',10,4);
@@ -177,7 +177,7 @@ function {$field_name_slug}_select2_filter_values($values, $field, $submitted_da
   }
   //do something...
   return $values;
-}" href="javascript:void(0);">Filter</a> user selection with user added option.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('user selection with user added option.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-filter">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_custom_options','{$field_name_slug}_dynamic_options',10,3);
@@ -200,5 +200,5 @@ function {$field_name_slug}_dynamic_options($options, $name, $cf7_key){
     $options += '</optgroup>';
   }
   return $options;
-}" href="javascript:void(0);">Filter</a> the options.
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the options.','cf7-grid-layout')?>
 </li>

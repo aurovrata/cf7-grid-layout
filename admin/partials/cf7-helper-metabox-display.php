@@ -5,22 +5,22 @@ if(is_plugin_active( 'post-my-contact-form-7/cf7-2-post.php' )){
   $post_my_form_only='';
 }
 ?>
-<p>Click on a link to copy the helper snippet code and paste it in your <em>functions.php</em> file.</p>
+<p><?=__('Click on a link to copy the helper snippet code and paste it in your <em>functions.php</em> file.','cf7-grid-layout')?></p>
 <div id="helperdiv" class="postbox">
-  <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Helper</span><span class="toggle-indicator" aria-hidden="true"></span></button>
-  <h2 class="hndle ui-sortable-handle"><span>Pre-form-loading hooks</span></h2>
+  <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?=__('Toggle panel: Helper','cf7-grid-layout')?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
+  <h2 class="hndle ui-sortable-handle"><span><?=__('Pre-form-loading hooks','cf7-grid-layout')?></span></h2>
   <div class="inside">
-    <p>Hooks fired prior to the form loading</p>
+    <p><?=__('Hooks fired prior to the form loading','cf7-grid-layout')?></p>
     <ol class="cf7sg-hooks helper-list">
       <?php  require_once plugin_dir_path( __FILE__ ) .'helpers/cf7sg-pre-form-load.php'; ?>
     </ol>
   </div>
 </div>
 <div id="submithelperdiv" class="postbox">
-  <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Helper</span><span class="toggle-indicator" aria-hidden="true"></span></button>
-  <h2 class="hndle ui-sortable-handle"><span>Post-form-submit hooks</span></h2>
+  <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?=__('Toggle panel: Helper','cf7-grid-layout')?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
+  <h2 class="hndle ui-sortable-handle"><span><?=__('Post-form-submit hooks','cf7-grid-layout')?></span></h2>
   <div class="inside">
-    <p>Hooks fired after the form is submitted</p>
+    <p><?=__('Hooks fired after the form is submitted','cf7-grid-layout')?></p>
     <ol class="cf7sg-hooks helper-list">
       <?php  require_once plugin_dir_path( __FILE__ ) .'helpers/cf7sg-post-form-submit.php'; ?>
     </ol>
