@@ -1440,7 +1440,7 @@ class Cf7_Grid_Layout_Public {
               }
               break;
             default: //singular fields.
-              if(empty($data[$tag['name']])) continue;
+              if(empty($uploaded_files[$tag['name']])) continue;
               $idx++;
               $file = $uploaded_files[$tag['name']];
               $attachments[] = $file;
@@ -1453,6 +1453,7 @@ class Cf7_Grid_Layout_Public {
       }
     }
     $components['attachments'] = $attachments;
+    debug_msg($attachments, $tag['name']);
     return $components;
   }
 }
