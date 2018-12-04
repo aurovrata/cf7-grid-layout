@@ -199,7 +199,7 @@ class Cf7_Grid_Layout_Public {
    * Hooked to 'wpcf7_form_hidden_fields'
    * @since 1.0.0
    * @param      Array    $hidden     hidden fields to add to cf7 form.
-   * @return      Array    $hidden     hidden fields to add to cf7 form.
+   * @return      Array     hidden fields to add to cf7 form.
   **/
   public function add_hidden_fields($hidden){
     $form = wpcf7_get_current_contact_form();
@@ -328,8 +328,7 @@ class Cf7_Grid_Layout_Public {
           $has_tables = true;
         }
         if(!$has_tabs && get_post_meta($post_obj->ID, '_cf7sg_has_tabs', true)){
-          wp_enqueue_script('jquery-ui-tabs');
-          $class['has-tabs']=true;;
+          $class['has-tabs']=true;
           $has_tabs = true;
         }
         if(!$has_toggles && get_post_meta($post_obj->ID, '_cf7sg_has_toggles', true)){
@@ -337,21 +336,20 @@ class Cf7_Grid_Layout_Public {
           $has_toggles=true;
         }
       }
-
-      if($has_tabs) wp_enqueue_script('jquery-ui-tabs');
-      if($has_toggles){
-        wp_enqueue_script('jquery-toggles');
-        wp_enqueue_style('jquery-toggles-css');
-        wp_enqueue_style('jquery-toggles-light-css');
-      }
       if(!empty($cf7_form)){ //redraw the form.
         $cf7_form = wpcf7_save_contact_form(array('id'=>$cf7_id, 'form'=>$form_raw));
-        debug_msg('Updated embeded forms in cf7 form: '.$cf7_key);
+        //debug_msg('Updated embeded forms in cf7 form: '.$cf7_key);
         //reload the form
         //$cf7_form = wpcf7_contact_form($cf7_id);
         $output = $cf7_form->form_html($attr);
         $class['has-update']=true;
       }
+    }
+    if($has_tabs) wp_enqueue_script('jquery-ui-tabs');
+    if($has_toggles){
+      wp_enqueue_script('jquery-toggles');
+      wp_enqueue_style('jquery-toggles-css');
+      wp_enqueue_style('jquery-toggles-light-css');
     }
     //$cf7_key = get_post_meta($cf7_id, '_smart_grid_cf7_form_key', true);
     //allow custom script print
@@ -1394,66 +1392,66 @@ class Cf7_Grid_Layout_Public {
   * @return Array  an array of mail parts
   */
   public function wpcf7_mail_components($components, $cf7form, $cf7mail) {
-    $tags = $cf7form->scan_form_tags();
+    //$tags = $cf7form->scan_form_tags();
     $submission = WPCF7_Submission::get_instance();
     $uploaded_files = $submission->uploaded_files();
+    $cf7_mail = WPCF7_Mail::get_current();
+    /** @since 2.5.6 fix issue with non-attached files */
+    $template = $cf7_mail->get( 'attachments' );
     $row = $tab = null;
     $idx = 0;
     $attachments = array();
-    foreach ( $tags as $tag ) {
-      $field_type = self::field_type($tag['name'], $cf7form->id());
-      switch($tag['basetype']){
-        case 'file':
-          $data = $submission->get_posted_data($tag['name']);
-          switch($field_type){
-            case 'tab':
-            case 'table':
-              foreach($data as $field_idx=>$file_name){
-                if(empty($file_name)) continue;
-                $idx++;
-                $row = ('table'==$field_type)? str_replace('_row-', '', $field_idx):null;
-                $row = (isset($row) && empty($row))? 1:1+(int)$row;
-                $tab = ('tab'==$field_type)?  str_replace('_tab-', '', $field_idx):null;
-                $tab = (isset($tab) && empty($tab))? 1:1+(int)$tab;
-                $file = $uploaded_files[$tag['name'].$field_idx];
-                $attachments[] = $file;
-                $file = explode('/',$file);
-                $filename = $file[count($file)-1];
-                $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files', '', $tag['name'], $row, $tab, $idx,$filename, $_POST['_wpcf7_key']);
-              }
-              break;
-            case 'both':
-              $row = $tab = 1;
-              foreach($data as $field_tab=>$tab_files){
-                $tab = str_replace('_tab-', '', $field_tab);
-                $tab = empty($tab)?1:1+(int) $tab;
-                foreach($tab_files as $field_row=>$file_name){
-                  if(empty($file_name)) continue;
-                  $idx++;
-                  $row = str_replace('_row-', '', $field_row);
-                  $file = $uploaded_files[$tag['name'].$field_tab.$field_row];
-                  $attachments[] = $file;
-                  $file = explode('/',$file);
-                  $filename = $file[count($file)-1];
-                  $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $tag['name'], $row, $tab, $idx,$filename, $_POST['_wpcf7_key']);
-                }
-              }
-              break;
-            default: //singular fields.
-              if(empty($uploaded_files[$tag['name']])) continue;
+    foreach ( (array) $uploaded_files as $name => $path ) {
+      if ( false === strpos( $template, "[${name}]" ) )  continue; //not attached.
+      $field_type = self::field_type($name, $cf7form->id());
+      $data = $submission->get_posted_data($name);
+      switch($field_type){
+        case 'tab':
+        case 'table':
+          foreach($data as $field_idx=>$file_name){
+            if(empty($file_name)) continue;
+            $idx++;
+            $row = ('table'==$field_type)? str_replace('_row-', '', $field_idx):null;
+            $row = (isset($row) && empty($row))? 1:1+(int)$row;
+            $tab = ('tab'==$field_type)?  str_replace('_tab-', '', $field_idx):null;
+            $tab = (isset($tab) && empty($tab))? 1:1+(int)$tab;
+            $file = $uploaded_files[$name.$field_idx];
+            $attachments[] = $file;
+            $file = explode('/',$file);
+            $filename = $file[count($file)-1];
+            $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files', '', $name, $row, $tab, $idx,$filename, $_POST['_wpcf7_key']);
+          }
+          break;
+        case 'both':
+          $row = $tab = 1;
+          foreach($data as $field_tab=>$tab_files){
+            $tab = str_replace('_tab-', '', $field_tab);
+            $tab = empty($tab)?1:1+(int) $tab;
+            foreach($tab_files as $field_row=>$file_name){
+              if(empty($file_name)) continue;
               $idx++;
-              $file = $uploaded_files[$tag['name']];
+              $row = str_replace('_row-', '', $field_row);
+              $file = $uploaded_files[$name.$field_tab.$field_row];
               $attachments[] = $file;
               $file = explode('/',$file);
               $filename = $file[count($file)-1];
-              $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $tag['name'], null, null, $idx,$filename, $_POST['_wpcf7_key']);
-              break;
+              $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $name, $row, $tab, $idx,$filename, $_POST['_wpcf7_key']);
+            }
           }
           break;
+        default: //singular fields.
+          if(empty($path)) continue;
+          $idx++;
+          $attachments[] = $path;
+          $path = explode('/',$path);
+          $filename = $path[count($path)-1];
+          $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $name, null, null, $idx,$filename, $_POST['_wpcf7_key']);
+          break;
       }
+      //     break;
+      // }
     }
     $components['attachments'] = $attachments;
-    debug_msg($attachments, $tag['name']);
     return $components;
   }
 }
