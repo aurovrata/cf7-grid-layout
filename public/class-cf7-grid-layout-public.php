@@ -280,6 +280,7 @@ class Cf7_Grid_Layout_Public {
     wp_enqueue_script('jquery-nice-select');
     wp_enqueue_style('jquery-nice-select-css');
     //}
+    $has_toggles = false;
     if(get_post_meta($cf7_id, '_cf7sg_has_toggles', true)){
       $class['has-toggles']=true;
       $has_toggles = true;

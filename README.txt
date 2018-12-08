@@ -223,6 +223,8 @@ Yes, identify the row in your text editor which implements your collapsible sect
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 
 == Changelog ==
+= 2.5.7 =
+* fix $has_toggles code.
 = 2.5.6 =
 * tabs/toggle libraries not being loaded.
 * fix bug where all file fields being attached.
