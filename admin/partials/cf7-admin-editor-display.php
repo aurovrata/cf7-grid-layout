@@ -13,8 +13,8 @@
  */
  $screen = get_current_screen();
 ?>
-<?php do_action( 'wpcf7_admin_warnings' ); ?>
-<?php do_action( 'wpcf7_admin_notices' ); ?>
+<?php do_action( 'wpcf7_admin_warnings', 'wpcf7', wpcf7_current_action(), null ); ?>
+<?php do_action( 'wpcf7_admin_notices' , 'wpcf7', wpcf7_current_action(), null ); ?>
 <?php
 if('add' == $screen->action) do_action( 'load-contact_page_wpcf7-new' );
 else do_action( 'load-toplevel_page_wpcf7' );

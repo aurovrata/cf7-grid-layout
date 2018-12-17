@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.0.0
+Tested up to: 5.0.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -223,6 +223,8 @@ Yes, identify the row in your text editor which implements your collapsible sect
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 
 == Changelog ==
+= 2.5.8 =
+* fix admin edit page breaking with cf7 plugin update v5.1
 = 2.5.7 =
 * fix $has_toggles code.
 = 2.5.6 =
