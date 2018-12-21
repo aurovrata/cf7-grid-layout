@@ -42,6 +42,15 @@ class Cf7_Grid_Layout_Public {
 	private $version;
 
   /**
+   * The version of this plugin.
+   *
+   * @since    2.6.0
+   * @access   private
+   * @var      string    $form_id    The current form id.
+   */
+  private $form_id='';
+
+  /**
    * The cf7 array fields.
    *
    * @since    1.0.0
@@ -67,6 +76,14 @@ class Cf7_Grid_Layout_Public {
    * @var      Array    $array_toggled_panels    The form toggled sections used.
    */
   static private $array_toggled_panels = array();
+  /**
+   * The cf7 array fields.
+   *
+   * @since    2.6.0
+   * @access   private
+   * @var      Array    $localised_data    Localised data parameters.
+   */
+  private $localised_data = array();
 
 	/**
 	 * Initialize the class and set its properties.
@@ -118,8 +135,8 @@ class Cf7_Grid_Layout_Public {
   *@param string $field field nav_menu_link_attributes.
   *@return boolean check if the field is in a toggle section.
   */
-  static protected function get_toggle($field){
-    return isset(self::$array_toggle_fields[$field]) ? self::$array_toggle_fields[$field]: null;
+  protected function get_toggle($field){
+    return isset(self::$array_toggle_fields[$this->form_id][$field]) ? self::$array_toggle_fields[$this->form_id][$field]: null;
   }
   /**
   * Check if a toggled section was used and its fields submitted.
@@ -128,8 +145,8 @@ class Cf7_Grid_Layout_Public {
   *@param string $toggle toogle id
   *@return boolean was the toggle section submitted.
   */
-  static protected function is_submitted($toggle){
-    return isset(self::$array_toggled_panels[$toggle]);
+  protected function is_submitted($toggle){
+    return isset(self::$array_toggled_panels[$this->form_id][$toggle]);
   }
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
@@ -247,9 +264,14 @@ class Cf7_Grid_Layout_Public {
     if(empty($class)){
       $class = array();
     }
-
     wp_enqueue_script($this->plugin_name);
-    wp_localize_script($this->plugin_name, 'cf7sg',array('url' => admin_url( 'admin-ajax.php' )));
+    /** @since 2.6.0 disabled button message*/
+    $messages = wpcf7_messages();
+    $this->localised_data = array(
+      'url' => admin_url( 'admin-ajax.php' ),
+      'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']['default']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' )
+    );
+    wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
 
     $class['has-validation']=true;
 
@@ -376,14 +398,19 @@ class Cf7_Grid_Layout_Public {
     //debug_msg($toggles, $post_id.' status ');
     if(empty($toggles)) $toggles = array();
     wp_enqueue_script($this->plugin_name);
-    wp_localize_script(
-      $this->plugin_name, 'cf7sg',
-      array(
-        'url' => admin_url( 'admin-ajax.php' ),
-        'toggles_status' => $toggles
-      )
-    );
+    wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script( array('toggles_status' => $toggles)) );
     return $field_values;
+  }
+  /**
+  *  Single sour for localised script.
+  *
+  *@since 2.6.0
+  *@param array $params additional parameter to send.
+  *@return array data array to localise
+  */
+  private function localise_script($params=array()){
+    $this->localised_data += $params;
+    return $this->localised_data;
   }
   /**
    * Update sub-forms in cf7 forms
@@ -590,10 +617,12 @@ class Cf7_Grid_Layout_Public {
       }
     }
     $cf7_id = $cf7form->id();
+    $this->form_id = $cf7_id;
 		//debug_msg($grid_fields, 'grid fields...');
     $tags = $cf7form->scan_form_tags();
     foreach($tags as $tag){
-      $field_type = self::field_type($tag['name'], $cf7_id);
+      $field_name = $tag['name'];
+      $field_type = self::field_type($field_name, $cf7_id);
       switch($field_type){
         case 'tab':
         case 'table':
@@ -603,9 +632,15 @@ class Cf7_Grid_Layout_Public {
           if( isset($_POST['_cf7sg_version']) && version_compare($_POST['_cf7sg_version'],'2.5.0','>=') ){
             $this->consolidate_grid_submissions_v2($tag, $field_type, $data);
           }else{
-            $this->consolidate_grid_submissions($tag['name'], $field_type, $data);
+            $this->consolidate_grid_submissions($field_name, $field_type, $data);
           }
-        break;
+          break;
+        default:
+          $toggle = $this->get_toggle($field_name);
+          if('unit-contact' ==$field_name) debug_msg($toggle, 'unit contact toggle ');
+          if(!empty($toggle)) $data[$field_name] = $this->is_submitted($toggle) ? $this->get_field_value($field_name, $data,$field_type) : null;
+          else $data[$field_name]= $this->get_field_value($field_name, $data, $tag['basetype']);
+          break;
       }
     }
     return $data;
@@ -633,21 +668,21 @@ class Cf7_Grid_Layout_Public {
     $submitted_fields=array();
     $max_fields =0;
     $purge_fields=array();
-    $toggle = self::get_toggle($field_name);
+    $toggle = $this->get_toggle($field_name);
     switch($type){
       case 'tab':
       case 'table':
         $index_suffix = ('table'==$type)?'_row-':'_tab-';
         //find the number of rows submitted.
-        $max_fields = $_POST[$origin];
+        $max_fields = isset($_POST[$origin]) ? $_POST[$origin]:0;
         if(!empty($toggle)){ //check if submitted.
-          $values[''] = self::is_submitted($toggle) ? $this->get_field_value($field_name, $data,$field_type) : null;
+          $values[''] = $this->is_submitted($toggle) ? $this->get_field_value($field_name, $data,$field_type) : null;
         }else $values['']= $this->get_field_value($field_name, $data,$field_type);
 
         for($idx=1;$idx<$max_fields;$idx++){
           $fid=$index_suffix.$idx;
           if(!empty($toggle)){ //check if submitted.
-            $values[$fid] = self::is_submitted($toggle.$fid) ? $this->get_field_value($field_name.$fid, $data,$field_type) : null;
+            $values[$fid] = $this->is_submitted($toggle.$fid) ? $this->get_field_value($field_name.$fid, $data,$field_type) : null;
           }else $values[$fid] = $this->get_field_value($field_name.$fid, $data,$field_type);
           $purge_fields[$field_name.$fid] = true;
         }
@@ -656,10 +691,10 @@ class Cf7_Grid_Layout_Public {
         $origins = explode(':', $origin);
         $table_origin = $origins[0];
         $tab_origin = $origins[1];
-        $max_tabs = $_POST[$tab_origin];
+        $max_tabs = isset($_POST[$tab_origin])?$_POST[$tab_origin]:0;
         $values[''] = array(); //init multi-dimensional array
         if(!empty($toggle)){ //check if submitted, tab<-toggle<-table.
-          $values[''][''] = self::is_submitted($toggle) ? $this->get_field_value($field_name, $data,$field_type) : null;
+          $values[''][''] = $this->is_submitted($toggle) ? $this->get_field_value($field_name, $data,$field_type) : null;
         }else $values[''][''] = $this->get_field_value($field_name, $data,$field_type);
 
         for($idx=0;$idx<$max_tabs;$idx++){ //tables in other tabs.
@@ -669,7 +704,7 @@ class Cf7_Grid_Layout_Public {
             $row_suffix= ($jdx>0)?'_row-'.$jdx:'';
             $fid = $tab_suffix.$row_suffix;
             if(!empty($toggle)){ //check if submitted, tab<-toggle<-table.
-              $values[$tab_suffix][$row_suffix] = self::is_submitted($toggle.$tab_suffix) ? $this->get_field_value( $field_name.$fid, $data, $field_type):null;
+              $values[$tab_suffix][$row_suffix] = $this->is_submitted($toggle.$tab_suffix) ? $this->get_field_value( $field_name.$fid, $data, $field_type):null;
             }else $values[$tab_suffix][$row_suffix] = $this->get_field_value($field_name.$fid, $data,$field_type);
             $purge_fields[$field_name.$fid] = true; //remove from the origina $data.
           }
@@ -747,25 +782,23 @@ class Cf7_Grid_Layout_Public {
     self::$array_grid_fields[$form_id]=$grid_fields;
     //load panel fields.
     if( isset($_POST['_cf7sg_version']) && version_compare($_POST['_cf7sg_version'],'2.5.0','>=') ){
-      self::$array_toggled_panels=array();
+      self::$array_toggled_panels[$form_id]=array();
       $toggled_panels = array();
       if(isset($_POST['_cf7sg_toggles'])){
         $toggled_panels = json_decode( stripslashes($_POST['_cf7sg_toggles']));
         if(!empty($toggled_panels)) $toggled_panels = get_object_vars($toggled_panels);
         else $toggled_panels = array();
       }
-      self::$array_toggled_panels=$toggled_panels;
+      self::$array_toggled_panels[$form_id]=$toggled_panels;
 
       $fields = get_post_meta($form_id, '_cf7sg_grid_toggled_names', true);
-      self::$array_toggle_fields=array();
+      self::$array_toggle_fields[$form_id]=array();
       if(!empty($fields)){
         foreach($fields as $panel=>$pfields){
-          foreach($pfields as $field) self::$array_toggle_fields[$field]=$panel;
+          foreach($pfields as $field) self::$array_toggle_fields[$form_id][$field]=$panel;
         }
       }
     }
-    // debug_msg(self::$array_toggle_fields, 'toggle fields ');
-    // debug_msg(self::$array_toggled_panels, 'toggled panels ');
 		return $grid_fields;
 	}
   /**
@@ -949,6 +982,8 @@ class Cf7_Grid_Layout_Public {
     $tags = $cf7form->scan_form_tags();
     $submitted = WPCF7_Submission::get_instance();
     $data = $submitted->get_posted_data();
+    if(isset($data['unit-contact'])) debug_msg($data['unit-contact'], 'unit-contact ');
+    if(isset($_POST['unit-contact'])) debug_msg($_POST['unit-contact'], 'posted unit-contact');
     $tag_types = array(); //store all form tags, including cloned tags for array fields.
 
     /**
@@ -1055,6 +1090,7 @@ class Cf7_Grid_Layout_Public {
           }
           break;
         default:
+          if(!isset($data[$tag['name']])) continue; /*likely toggled and unused*/
           $result = apply_filters( "wpcf7_validate_{$type}", $result, $tag );
           break;
       }

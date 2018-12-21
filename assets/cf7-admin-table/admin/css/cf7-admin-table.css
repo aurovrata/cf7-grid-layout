@@ -42,3 +42,20 @@
 #shortcode {
     line-height: 1.2em;
 }
+.row-title.cf7sg-update {
+    color: #d10000;
+}
+.display-none{display: none;}
+span.cf7sg-popup {
+  background: rgba(227, 224, 224, 0.81);
+  font-size: 1.2em;
+  border-radius: 3px;
+  top: -2.2em;
+  max-height: 200px;
+  left: 0;
+  position: absolute;
+  transition: 500ms ease;
+  padding: .4em;
+  white-space: nowrap;
+}
+.row-title.cf7sg-update:hover+span.cf7sg-popup {display: block;}

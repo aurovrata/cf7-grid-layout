@@ -958,4 +958,82 @@ class Cf7_Grid_Layout_Admin {
     }
     return true;
   }
+  /**
+  * Add disabled button message on hover to cf7 messages.
+  * Hooked to 'wpcf7_messages', see file contact-form-7/includes/contact-form-template.php fn messages().
+  *@since 2.6.0
+  *@param array $messages array of messages to filter.
+  *@return array array of cf7 messages.
+  */
+  public function disabled_message($messages){
+    $messages['submit_disabled'] = array(
+			'description'
+				=> __( "Hover message for disabled submit/save button", 'cf7-grid-layout' ),
+			'default'
+				=> __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
+		);
+    return $messages;
+  }
+  /**
+  * Adds pretty pointers to help users.
+  * Hooked on 'admin_enqueue_scripts'
+  *@since 2.6.0
+  *@param string $hook_suffix current page.
+  */
+  public function pretty_admin_pointers($hook_suffix) {
+    $screen = get_current_screen();
+    if (!isset($screen) || 'wpcf7_contact_form' != $screen->post_type){
+      return;
+    }
+    $enqueue_pointer = false;
+    // Get array list of dismissed pointers for current user and convert it to array
+    $user_id = get_current_user_id();
+    $dismissed_pointers = explode( ',', get_user_meta( $user_id, 'dismissed_wp_pointers', true ) );
+    $pointers = array();
+    /**
+    * Filter to add custom pointers for user iterface.
+    * @var array $pointers an array of $pointer_id=>array($content, $arrow, $valign) key/value pairs to filter.  The key is the pointer id to identify which ones the user has dismissed.  The value is an array with the message $content, the position of the $arrow (left|right|top|bottom), the vertical alignment ($valign) of the box (center|top|bottom).
+    * @return array an array of pointers, which will be checked agains the current user.
+    */
+    $filter_pointers = apply_filters('cf7sg_plugin_pointers-'.$screen->id, array());
+    foreach($filter_pointers as $id=>$pointer){
+    	// Check if our pointer is not among dismissed ones
+    	if( !in_array( $id, $dismissed_pointers ) ) {
+        $enqueue_pointer = true;
+        $pointers[$id] = array($pointer[0], $pointer[1], $pointer[2]);
+      }
+    }
+
+  	// Enqueue pointer CSS and JS files, if needed
+  	if( $enqueue_pointer ) {
+  		wp_enqueue_style( 'wp-pointer' );
+  		wp_enqueue_script( 'wp-pointer' );
+      wp_enqueue_script('cf7sg-pointer-js', plugin_dir_url( __DIR__ ).'admin/js/cf7sg-pointers.js', array('jquery'), $this->version, true);
+      wp_localize_script('cf7sg-pointer-js', 'cf7sg_pointers',
+        array('pointers'=>$pointers, 'next'=>__('Next', 'cf7-grid-layout'))
+      );
+      // Add footer scripts using callback function
+      add_action( 'admin_print_footer_scripts', array($this, 'pretty_pointer_script') );
+  	}
+  }
+  /**
+  * CF7 Table pointer notices.
+  * Hooked on 'cf7sg_plugin_pointers-edit-wpcf7_contact_form'
+  *@since 2.6.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function edit_pointers($pointers){
+    ob_start();
+    include_once 'partials/pointers/cf7sg-pointer-update-forms.php';
+    $content =ob_get_clean();
+    $pointers['update_forms_pointer'] = array($content, 'left', 'center');
+    /* shortcodes */
+    ob_start();
+    include_once 'partials/pointers/cf7sg-pointer-shortcodes.php';
+    $content = ob_get_clean();
+    $pointers['cf7sg_shortcodes'] = array($content, 'top', 'top');
+
+    return $pointers;
+  }
 }

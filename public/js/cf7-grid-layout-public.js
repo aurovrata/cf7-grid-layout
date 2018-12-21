@@ -514,7 +514,11 @@
         }
       }
     });
-  });
+    /** on hover popup message for disabled submit buttons
+    * @since 2.6.0
+    */
+    $('div.cf7-smart-grid .wpcf7-submit').after('<span class="cf7sg-popup display-none">'+cf7sg.submit_disabled+'</span>').parent().addClass('cf7sg-popup');
+  }); //end on document ready().
   /*
     jQuery extended functions
   */

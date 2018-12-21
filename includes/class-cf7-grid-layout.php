@@ -204,6 +204,9 @@ class Cf7_Grid_Layout {
     /**
     *@since 2.3.0 redirect post.php for form duplicate*/
     $this->loader->add_filter('admin_init', $plugin_admin, 'duplicate_cf7_form');
+    /** @since 2.6.0*/
+    $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'pretty_admin_pointers' );
+    $this->loader->add_action( 'cf7sg_plugin_pointers-edit-wpcf7_contact_form', $plugin_admin, 'edit_pointers' );
     /*
     CF7 Hooks
     */
@@ -214,6 +217,9 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wpcf7_admin_init', $plugin_admin, 'cf7_shortcode_tags' );
     //modify the default form template
     $this->loader->add_filter( 'wpcf7_default_template', $plugin_admin, 'default_cf7_form' , 5,2);
+    /** @since 2.6.0*/
+    $this->loader->add_filter( 'wpcf7_messages', $plugin_admin, 'disabled_message' , 5,2);
+
 
 	}
 

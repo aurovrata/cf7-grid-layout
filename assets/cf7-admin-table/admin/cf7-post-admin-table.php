@@ -309,7 +309,12 @@ if(!class_exists('Cf7_WP_Post_Table')){
           break;
         case 'cf7_key':
           $form = get_post($post_id);
-          echo '<span class="cf7-form-key">'.$form->post_name.'</span>';
+          $update = '';
+          if( get_post_meta($post_id, '_cf7sg_managed_form', true) ){
+            $version = get_post_meta($post_id, '_cf7sg_version', true);
+            if(version_compare($version, CF7SG_VERSION_FORM_UPDATE, '<')) $update = 'cf7sg-update';
+          }
+          echo '<span class="cf7-form-key" data-update="'.$update.'">'.$form->post_name.'</span>';
           break;
       }
     }
@@ -494,6 +499,38 @@ if(!class_exists('Cf7_WP_Post_Table')){
     	);
 
       register_taxonomy( $slug, WPCF7_ContactForm::post_type, $args );
+    }
+    /**
+    * Add a script to the admin table page to highlight form uddates.
+    * hooked to 'admin_footer'.
+    *@since 2.6.0
+    *@param string $param text_description
+    *@return string text_description
+    */
+    public function update_form_highlight(){
+      $screen = get_current_screen();
+      if (!isset($screen) || 'wpcf7_contact_form' != $screen->post_type){
+        return;
+      }
+      switch( $screen->base ){
+        case 'edit':
+        ?>
+        <script type="text/javascript">
+        (function($){
+          $(document).ready(function(){
+            $('tbody#the-list tr').each(function(){
+              var $tr = $(this);
+              var update = $tr.find('.cf7-form-key').data('update');
+              if(update){
+                $tr.find('a.row-title').addClass(update).after('<span class="cf7sg-popup display-none">Please udpate this form, simply edit and update.</span>').parent().css('position','relative');
+              }
+            });
+          });
+        })(jQuery);
+        </script>
+        <?php
+          break;
+      }
     }
   } //end class
   function get_cf7form_id($cf7_key){

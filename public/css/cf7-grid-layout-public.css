@@ -269,3 +269,20 @@ a.cf7sg-button {
     font-weight: bold;
     font-size: 110%;
 }
+.cf7sg-popup{
+  position: relative;
+}
+.display-none{display: none;}
+span.cf7sg-popup {
+  background: rgba(227, 227, 227, 0.81);
+  font-size: 1.2em;
+  border-radius: 3px;
+  bottom: -1.2em;
+  max-height: 200px;
+  left: 0;
+  position: absolute;
+  transition: 500ms ease;
+  padding: .4em;
+  white-space: nowrap;
+}
+.wpcf7-form-control.wpcf7-submit:disabled:hover+span.cf7sg-popup {display: block;}

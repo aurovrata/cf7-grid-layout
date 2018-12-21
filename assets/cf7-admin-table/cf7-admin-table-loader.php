@@ -24,4 +24,6 @@ if(!$cf7_admin->hooks()){
   //cf7-form shortcode
   add_shortcode( 'cf7-form', array( $cf7_admin, 'shortcode') );
   add_shortcode( 'cf7form', array( $cf7_admin, 'shortcode') );
+  /** @since 2.6.0 */
+  add_action('admin_footer', array($cf7_admin, 'update_form_highlight'));
 }

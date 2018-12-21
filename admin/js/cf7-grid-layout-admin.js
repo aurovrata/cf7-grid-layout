@@ -101,8 +101,9 @@
       /*--------------------------------------------------- convert tables */
       $('div.container.cf7-sg-table', $form).each(function(){
         var $this = $(this);
-        if($this[0].hasAttribute('id')){
-          var id = 'cf7-sg-table-'+(new Date).getTime();
+        var id = $this.attr('id');
+        if(typeof id == 'undefined'){
+          id = 'cf7-sg-table-'+(new Date).getTime();
           $this.attr('id', id);
         }
         var $ctrl = $this.find('.row.cf7-sg-table > .row-controls' ).first().find('.table-row-label');
