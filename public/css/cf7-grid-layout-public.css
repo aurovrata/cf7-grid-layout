@@ -154,7 +154,7 @@ span.cf7sg-validation-warning {
   max-width: 200px;
   width: 50%;
 }
-#cf7sg-container .cf7-smart-grid.has-grid .row.cf7-sg-table > .columns > .container > .container {
+.cf7sg-container .cf7-smart-grid.has-grid .row.cf7-sg-table > .columns > .container > .container {
     padding: 0;
 }
 .cf7-smart-grid.has-grid .field .wpcf7-form-control-wrap + .wpcf7-form-control-wrap {
@@ -246,10 +246,10 @@ span.cf7sg-validation-warning {
 .cf7sg-external-form {
     margin-bottom: 5px;
 }
-#cf7sg-container .cf7-smart-grid.has-grid .container {
+.cf7sg-container .cf7-smart-grid.has-grid .container {
     margin-bottom: 5px;
 }
-#cf7sg-container .cf7-smart-grid.has-grid .container:last-child {
+.cf7sg-container .cf7-smart-grid.has-grid .container:last-child {
     margin-bottom: 0;
 }
 .cf7-smart-grid.has-grid .nice-select ul.list {

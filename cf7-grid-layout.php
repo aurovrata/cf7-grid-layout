@@ -1,12 +1,6 @@
 <?php
-
 /**
  * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
  *
  * @link              http://syllogic.in
  * @since             1.0.0
@@ -16,7 +10,7 @@
  * Plugin Name:       CF7 Smart Grid Design Extension
  * Plugin URI:        http://wordpress.syllogic.in
  * Description:       Enabled responsive grid layout designs for Contact Form 7 forms.
- * Version:           2.6.0
+ * Version:           2.7.0
  * Author:            Aurovrata V.
  * Author URI:        http://syllogic.in
  * License:           GPL-2.0+
@@ -24,14 +18,17 @@
  * Text Domain:       cf7-grid-layout
  * Domain Path:       /languages
  */
-
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
+define( 'CF7_GRID_VERSION', '2.7.0' );
+
 if(! defined('WPCF7_AUTOP') ) define('WPCF7_AUTOP', false);
-define( 'CF7_GRID_VERSION', '2.6.0' );
-/** @since 2.6.0, notify users of forms requiring udpates */
+
+
+
+/** @since 2.6.0, NOTIFY USERS of forms requiring udpates */
 define( 'CF7SG_VERSION_FORM_UPDATE', '2.6.0');
 /**
  * The code that runs during plugin activation.

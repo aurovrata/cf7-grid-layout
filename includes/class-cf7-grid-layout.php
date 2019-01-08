@@ -240,6 +240,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'wp_print_scripts', $plugin_public, 'dequeue_cf7_scripts',100 );
 		$this->loader->add_action( 'wp_print_styles', $plugin_public, 'dequeue_cf7_styles',100 );
     $this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'cf7_shortcode_request',5,3 );
+    
     //save grid fields
     $this->loader->add_action( 'wp_ajax_nopriv_save_grid_fields', $plugin_public, 'save_grid_fields' );
     $this->loader->add_action( 'wp_ajax_save_grid_fields', $plugin_public, 'save_grid_fields' );

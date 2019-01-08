@@ -788,9 +788,9 @@
         'id': $('input[name="_wpcf7"]', $form).val()
       }
     });
-    serverRequest.done(function(msg){
-      console.log('success');
-    });
+    // serverRequest.done(function(msg){
+    //   console.log('success');
+    // });
     serverRequest.fail(function(jqXHR, textStatus){
       console.log('CF7 Smart Grid ERROR sending grid fields to server: '+textStatus);
     });

@@ -198,6 +198,14 @@ Yes, identify the row in your text editor which implements your collapsible sect
 
 `<div class="container cf7sg-collapsible" data-open="true" ...`
 
+= 14. How can I display a table of fields in a mail message? =
+If you have a set of fields that are in a table/tab structure, the plugin is not aware of their relationship and as such does not build a table layout in a mail when you use them as tags in a message.  However, a filter is provided for you to achive this.  The filter #3 in the Post-form submit hooks allows you to build a table layout in an *html* mail.  Ensure the html format checkbox is selected in the your mail settings, else the filter will not fire.
+In you mail message body, place the mail tags contiguously for each field that is present in your table.  Hence, assuming you have a table with 3 fields, field-one, field-two, field-three.  Place their tags in the mail body as
+
+`[field-one][field-two][field-three]`
+
+copy the filter helper code and place it in your `functions.php` file.  The code sample assumes the above example fields and sets up a list element for each field, along with a column header.  These list elements are then styled to display them as tables in your mail.
+
 == Screenshots ==
 
 1. (1) This plugin replaces the CF7 post table page and post edit pages with WordPress core post edit and post pages.  This means that other plugins that build on WordPress standards for custom admin dashboard functionality should now play nicely with CF7.  One out-of-the-box improvement is the ability to customise the CF7 form table columns being displayed.
@@ -223,6 +231,9 @@ Yes, identify the row in your text editor which implements your collapsible sect
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 
 == Changelog ==
+= 2.7.0 =
+* fixed css bug for multiple forms per page.
+* added table/tab mail tag filter 'cf7sg_mailtag_grid_fields'.
 = 2.6.0 =
 * add hover message for disabled submit fields.
 * add upgrade warning to update all forms.

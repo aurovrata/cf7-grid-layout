@@ -38,3 +38,47 @@ function annotate_mail_attachments($label, $field, $row, $tab, $attachment_index
   return $label;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('mail annotation for complex array file field attachments.','cf7-grid-layout')?>
 </li>
+<li>
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_mailtag_grid_fields','insert_table_in_mail',10,4);
+/**
+* this filter is used to build an html formated string to rpelace a mail tag of a field that is in a table or tab structure. NOTE: this filter is only fired if the mail format is set to html.
+* In case the field is in a table that is within a tab, then the $data field will be an array of arrays.
+* @param string $html an empty html string to filter.
+* @param string $field the name of the file field being attached
+* @param string $data an array of submitted data.
+* @param string $cf7_key unique form key.
+* @return string an html string to replace the mail tag.
+*/
+function insert_table_in_mail($html, $field, $data, $cf7_key){
+  if('contact-form'!==$cf7_key){ //always validate the form being submitted.
+    return $html;
+  }
+  $build = true;
+  switch($field){ //if either of fields present in the table...
+    case 'field-one':
+      $label = 'First';
+      $html ='<ul style=&quot;list-style-type:none;border-right:1px solid black;display:inline-block;float:left;padding:5px&quot;>';
+      break;
+    case 'field-two':
+      $label = 'Second';
+      $html ='<ul style=&quot;list-style-type:none;border-right:1px solid black;display:inline-block;float:left;padding:5px&quot;>';
+      break;
+    case 'field-three':
+      $label = 'Third';
+      /*styling for last column*/
+      $html ='<ul style=&quot;list-style-type:none;display:inline-block;clear:right;padding:5px&quot;>';
+      break;
+    default: //else this isn't a field we want in the table.
+      $build=false;
+      break;
+  }
+  if($build){
+    $html .='<li style=&quot;background-color:lightgray;margin:0;padding:3px 5px&quot;>'.$label.'</li>'
+    foreach($data as $key=>$value){
+      $html .='<li style=&quot;margin:0px;padding:3px 5px&quot;>'.$value.'</li>';
+    }
+    $html .='</ul>';
+  }
+  return $html;
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('Tabled/Tabbed mail tags','cf7-grid-layout')?>
+</li>

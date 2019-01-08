@@ -84,7 +84,7 @@ class Cf7_Grid_Layout_Public {
    * @var      Array    $localised_data    Localised data parameters.
    */
   private $localised_data = array();
-
+  
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -186,12 +186,12 @@ class Cf7_Grid_Layout_Public {
 	 * @since    1.0.0
 	 */
 	public function register_scripts() {
-
-		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-public.js', array( 'jquery','contact-form-7' ), $this->version, true );
-    wp_register_script('jquery-select2', plugin_dir_url( __DIR__ ) . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
-    wp_register_script('jquery-nice-select', plugin_dir_url( __DIR__ ) . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, true );
-    wp_register_script('jquery-toggles', plugin_dir_url( __DIR__ ) . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
-    wp_register_script('js-cf7sg-benchmarking', plugin_dir_url( __FILE__ ) . 'js/cf7-benchmark.js', array( 'jquery' ), $this->version, true );
+    $plugin_dir = plugin_dir_url( __DIR__ );
+		wp_register_script( $this->plugin_name, $plugin_dir . 'public/js/cf7-grid-layout-public.js', array( 'jquery','contact-form-7' ), $this->version, true );
+    wp_register_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
+    wp_register_script('jquery-nice-select', $plugin_dir . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, true );
+    wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
+    wp_register_script('js-cf7sg-benchmarking', $plugin_dir . 'public/js/cf7-benchmark.js', array( 'jquery' ), $this->version, true );
     //allow custom script registration
     do_action('smart_grid_register_scripts');
 	}
@@ -236,8 +236,11 @@ class Cf7_Grid_Layout_Public {
     if('contact-form-7' !== $tag){
       return $output;
     }
+    //wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
+    // global $wp_scripts;
 
+    //wp_print_scripts(array('contact-form-7'));
     $cf7_id = $attr['id'];
     //get the key
     $cf7post = get_post($cf7_id);
@@ -379,8 +382,9 @@ class Cf7_Grid_Layout_Public {
     do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
     //form id
     $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
-    $classes = implode(' ', array_keys($class));
-    $output = '<div id="cf7sg-container"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
+    $classes = implode(' ', array_keys($class)) .' key_'.$cf7_key;
+
+    $output = '<div class="cf7sg-container"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
     return $output;
   }
   /**
@@ -402,7 +406,7 @@ class Cf7_Grid_Layout_Public {
     return $field_values;
   }
   /**
-  *  Single sour for localised script.
+  *  Single source for localised script.
   *
   *@since 2.6.0
   *@param array $params additional parameter to send.
@@ -1377,14 +1381,33 @@ class Cf7_Grid_Layout_Public {
     $build = false;
     switch($field_type){
       case 'tab':
-        $label='tab';
-        if($html) $build = true;
-        break;
       case 'table':
-        $label='row';
-        if($html) $build = true;
+        if($html){
+          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, Cf7_WP_Post_Table::form_key($cf7form->id()));
+          if(!empty($filtered)){
+            $replaced = $filtered;
+            break;
+          }
+        }
+        $label=('table'==$field_type)?'row':$field_type;
+        if($html && is_array($submitted)) {
+          $idx=0;
+          $replaced='';
+          foreach($submitted as $index=>$value){
+            $idx++;
+            if(is_array($value)) $value = implode(' | ', $value);
+            $replaced .= '<div><label>'.$label.'('.$idx.'):</label><span>'.$value.'</span></div>';
+          }
+        }
         break;
       case 'both':
+        if($html){
+          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, Cf7_WP_Post_Table::form_key($cf7form->id()));
+          if(!empty($filtered)){
+            $replaced = $filtered;
+            break;
+          }
+        }
         // build table.
         $replaced = '';
         if( is_array($submitted)) {
@@ -1408,15 +1431,7 @@ class Cf7_Grid_Layout_Public {
         }
         break;
     }
-    if($build && is_array($submitted)) {
-      $idx=0;
-      $replaced='';
-      foreach($submitted as $index=>$value){
-        $idx++;
-        if(is_array($value)) $value = implode(' | ', $value);
-        $replaced .= '<div><label>'.$label.'('.$idx.'):</label><span>'.$value.'</span></div>';
-      }
-    }
+
     return $replaced;
   }
   /**
