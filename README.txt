@@ -231,6 +231,9 @@ copy the filter helper code and place it in your `functions.php` file.  The code
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 
 == Changelog ==
+= 2.7.1 =
+* fix a bug on pretty pointer function call.
+* trim values in toggles that are closed.
 = 2.7.0 =
 * fixed css bug for multiple forms per page.
 * added table/tab mail tag filter 'cf7sg_mailtag_grid_fields'.

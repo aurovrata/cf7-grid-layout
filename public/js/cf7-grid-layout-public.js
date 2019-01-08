@@ -412,7 +412,11 @@
             }
           }else{
             toggleSwitch.toggle(false);
-            $('.row.ui-accordion-content :input', $header.parent()).prop('disabled', true);
+            $('.row.ui-accordion-content :input', $header.parent()).each(function(){
+              /**@since 2.7.1*/
+              var val = this.value; //trim the value to remove spaces.
+              $(this).val(val.trim()).prop('disabled', true);
+            });
             if(trackToggle && toggleStatus.hasOwnProperty(id)) delete toggleStatus[id];
           }
           //store the toggle status in the hidden field.
@@ -518,6 +522,7 @@
     * @since 2.6.0
     */
     $('div.cf7-smart-grid .wpcf7-submit').after('<span class="cf7sg-popup display-none">'+cf7sg.submit_disabled+'</span>').parent().addClass('cf7sg-popup');
+
   }); //end on document ready().
   /*
     jQuery extended functions

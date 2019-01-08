@@ -1013,7 +1013,7 @@ class Cf7_Grid_Layout_Admin {
         array('pointers'=>$pointers, 'next'=>__('Next', 'cf7-grid-layout'))
       );
       // Add footer scripts using callback function
-      add_action( 'admin_print_footer_scripts', array($this, 'pretty_pointer_script') );
+      //add_action( 'admin_print_footer_scripts', array($this, 'pretty_pointer_script') );
   	}
   }
   /**
