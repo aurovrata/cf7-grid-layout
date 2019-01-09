@@ -73,7 +73,7 @@ function insert_table_in_mail($html, $field, $data, $cf7_key){
       break;
   }
   if($build){
-    $html .='<li style=&quot;background-color:lightgray;margin:0;padding:3px 5px&quot;>'.$label.'</li>'
+    $html .='<li style=&quot;background-color:lightgray;margin:0;padding:3px 5px&quot;>'.$label.'</li>';
     foreach($data as $key=>$value){
       $html .='<li style=&quot;margin:0px;padding:3px 5px&quot;>'.$value.'</li>';
     }
