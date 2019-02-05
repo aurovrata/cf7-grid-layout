@@ -84,6 +84,9 @@
         var $button = $(event.target);
         if( $button.is('div.cf7-sg-table-button a') ){ //----------add a row
           $button = $button.parent();
+          /** @since 2.8.0 */
+          if($button.hasClass('disabled')) return false;
+
           var $table = $button.prev('.container');
           if($table.is('.cf7-sg-table-footer')) $table = $table.prev('.container');
           $table.cf7sgCloneRow();
@@ -522,7 +525,25 @@
     * @since 2.6.0
     */
     $('div.cf7-smart-grid .wpcf7-submit').after('<span class="cf7sg-popup display-none">'+cf7sg.submit_disabled+'</span>').parent().addClass('cf7sg-popup');
-
+    /** enable max rows.
+    * @since 2.8.0
+    */
+    $('div.cf7-smart-grid').on('sgRowAdded', '.container.cf7-sg-table',function(event, row){
+      var max, msg, $table = $(this);
+      max = $table.data('max');
+      if('undefined' == typeof max || max == false) return false;
+      max--;
+      if(max==row){
+        msg = '<span class="max-limit wpcf7-not-valid-tip">'+cf7sg.max_table_rows+'</span>';
+        $table.next('.cf7-sg-table-button').addClass('disabled').prepend(msg);
+      }
+    });
+    $('div.cf7-smart-grid').on('sgRowDeleted', '.container.cf7-sg-table',function(event){
+      var max, row, $table = $(this);
+      max = $table.data('max');
+      if('undefined' == typeof max || max == false) return false;
+      $table.next('.cf7-sg-table-button').removeClass('disabled').children('.max-limit').remove();
+    });
   }); //end on document ready().
   /*
     jQuery extended functions
@@ -620,7 +641,7 @@
     });
     //when the button is clicked, trigger a content increase for accordions to refresh
     $table.trigger('sgContentIncrease');
-    $row.trigger('sgRowAdded',rowIdx);
+    $table.trigger('sgRowAdded',rowIdx);
     /** @since 2.4.2 track table fields */
     var $tracker = $table.children('.cf7sg-tracker-field');
     if($tracker.length) $tracker.val(rowIdx+1); //rowIdx is zero based.

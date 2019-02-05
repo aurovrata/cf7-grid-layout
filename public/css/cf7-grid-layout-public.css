@@ -5,6 +5,15 @@
  .cf7-smart-grid.has-grid .ui-button {
     border-radius: 3px;
 }
+.cf7-sg-table-button.disabled .ui-button {
+    color: gray;
+    cursor: not-allowed;
+    text-decoration-line: none;
+}
+.cf7-sg-table-button .max-limit.wpcf7-not-valid-tip {
+    display: inline;
+    margin-right: 30px;
+}
 /*
 .cf7-sg-tabs-list li span.cf7sg-close-tab {display: none !important;}
 .cf7-sg-tabs-list li:last-child span.cf7sg-close-tab {display: inline-block !important;}
@@ -42,6 +51,7 @@ ul.cf7-sg-tabs-list {
  .cf7-smart-grid .cf7-sg-table-button {
   text-align: right;
   margin-top: 10px;
+  margin-bottom: 5px;
 }
 .cf7-smart-grid .row.cf7-sg-table-footer {
     margin-top: 5px;

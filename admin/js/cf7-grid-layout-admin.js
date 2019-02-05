@@ -188,7 +188,7 @@
         $textareaSelected.attr('id', 'wpcf7-form');
       }
       //change this to whichever is live
-      $('textarea', $grid).live('focus', function(){
+      $('textarea', $grid).on('focus', function(){
         var $this = $(this);
         if($textareaSelected.length>0 && $textareaSelected.is('#wpcf7-form')){
           $textareaSelected.attr('id','');

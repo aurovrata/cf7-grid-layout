@@ -206,6 +206,11 @@ In you mail message body, place the mail tags contiguously for each field that i
 
 copy the filter helper code and place it in your `functions.php` file.  The code sample assumes the above example fields and sets up a list element for each field, along with a column header.  These list elements are then styled to display them as tables in your mail.
 
+= 15. How can I set a maximum of rows to a table ? =
+
+As of v2.8, this functionality has now been included.  You will need to add the `data-max` attribute to your table in the text editor and set it to the row limit you want (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #22).  NOTE: in a lengthy form it is easy to navigate directly to the a table or field's text code line using the shortcode navigation buttons provided in the Grid editor, (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #19)
+
+
 == Screenshots ==
 
 1. (1) This plugin replaces the CF7 post table page and post edit pages with WordPress core post edit and post pages.  This means that other plugins that build on WordPress standards for custom admin dashboard functionality should now play nicely with CF7.  One out-of-the-box improvement is the ability to customise the CF7 form table columns being displayed.
@@ -229,8 +234,13 @@ copy the filter helper code and place it in your `functions.php` file.  The code
 19. (19) Click on the code icon in any given column cell of the grid UI editor and it will take you to the equivalent code lines in the text editor.
 20. (20) v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
+22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.8.0 =
+* fix bug on jquery deprecated function.
+* added max row functionality
+
 = 2.7.1 =
 * fix a bug on pretty pointer function call.
 * trim values in toggles that are closed.

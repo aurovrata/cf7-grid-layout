@@ -972,6 +972,13 @@ class Cf7_Grid_Layout_Admin {
 			'default'
 				=> __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
 		);
+    /** @sicne 2.8.0 */
+    $messages['max_table_rows'] = array(
+			'description'
+				=> __( "Message displayed when max tables rows reached.", 'cf7-grid-layout' ),
+			'default'
+				=> __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
+		);
     return $messages;
   }
   /**

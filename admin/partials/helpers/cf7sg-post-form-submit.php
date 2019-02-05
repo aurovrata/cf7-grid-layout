@@ -50,7 +50,7 @@ function annotate_mail_attachments($label, $field, $row, $tab, $attachment_index
 * @return string an html string to replace the mail tag.
 */
 function insert_table_in_mail($html, $field, $data, $cf7_key){
-  if('contact-form'!==$cf7_key){ //always validate the form being submitted.
+  if('{$form_key}'!==$cf7_key){ //always validate the form being submitted.
     return $html;
   }
   $build = true;

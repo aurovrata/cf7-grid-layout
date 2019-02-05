@@ -84,7 +84,7 @@ class Cf7_Grid_Layout_Public {
    * @var      Array    $localised_data    Localised data parameters.
    */
   private $localised_data = array();
-  
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -272,7 +272,8 @@ class Cf7_Grid_Layout_Public {
     $messages = wpcf7_messages();
     $this->localised_data = array(
       'url' => admin_url( 'admin-ajax.php' ),
-      'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']['default']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' )
+      'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']['default']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
+      'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']['default']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' )
     );
     wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
 
