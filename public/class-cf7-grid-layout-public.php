@@ -269,11 +269,13 @@ class Cf7_Grid_Layout_Public {
     }
     wp_enqueue_script($this->plugin_name);
     /** @since 2.6.0 disabled button message*/
-    $messages = wpcf7_messages();
+    $form = wpcf7_get_current_contact_form();
+    $messages = $form->prop('messages');
+    debug_msg($messages, 'messages ');
     $this->localised_data = array(
       'url' => admin_url( 'admin-ajax.php' ),
-      'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']['default']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
-      'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']['default']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' )
+      'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
+      'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' )
     );
     wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
 

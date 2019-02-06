@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.0.1
+Tested up to: 5.0.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -237,10 +237,11 @@ As of v2.8, this functionality has now been included.  You will need to add the 
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.8.1 =
+* messages bug fix
 = 2.8.0 =
 * fix bug on jquery deprecated function.
 * added max row functionality
-
 = 2.7.1 =
 * fix a bug on pretty pointer function call.
 * trim values in toggles that are closed.
