@@ -1,7 +1,7 @@
 === Smart Grid-Layout Design for Contact Form 7 ===
 Contributors: aurovrata
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CNEEQHW889FE6
-Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout
+Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout, multiple column form, grid layout, table inputs
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.0.3
