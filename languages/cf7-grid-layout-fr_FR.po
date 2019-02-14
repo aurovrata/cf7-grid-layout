@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Smart Grid for CF7\n"
-"POT-Creation-Date: 2019-02-05 18:10+0530\n"
-"PO-Revision-Date: 2019-02-05 18:17+0530\n"
+"POT-Creation-Date: 2019-02-14 11:58+0530\n"
+"PO-Revision-Date: 2019-02-14 12:05+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -50,7 +50,7 @@ msgid "Hover message for disabled submit/save button"
 msgstr ""
 
 #: admin/class-cf7-grid-layout-admin.php:973
-#: public/class-cf7-grid-layout-public.php:275
+#: public/class-cf7-grid-layout-public.php:277
 msgid "Disabled!  To enable, check the acceptance field."
 msgstr ""
 
@@ -59,7 +59,7 @@ msgid "Message displayed when max tables rows reached."
 msgstr ""
 
 #: admin/class-cf7-grid-layout-admin.php:980
-#: public/class-cf7-grid-layout-public.php:276
+#: public/class-cf7-grid-layout-public.php:278
 msgid "You have reached the maximum number of rows."
 msgstr ""
 
@@ -79,23 +79,21 @@ msgid "Form"
 msgstr "Sauvegarder le formulaire dans un Article"
 
 #: admin/partials/cf7-admin-editor-display.php:42
-#, fuzzy
 msgid "Mail"
-msgstr "d'un courriel lors d'une soumission/sauvegarde partiel."
+msgstr "Couriel"
 
 #: admin/partials/cf7-admin-editor-display.php:45
 msgid "Messages"
 msgstr "Messages"
 
 #: admin/partials/cf7-admin-editor-display.php:56
-#, fuzzy, php-format
+#, php-format
 msgid "Additional Settings (%d)"
-msgstr "configurations"
+msgstr "Configurations supplémentaires (%d)"
 
 #: admin/partials/cf7-admin-editor-display.php:58
-#, fuzzy
 msgid "Additional Settings"
-msgstr "configurations"
+msgstr "Configurations supplémentaires"
 
 #: admin/partials/cf7-benchmark-tag.php:25
 #: admin/partials/cf7-default-form.php:58
@@ -110,19 +108,16 @@ msgid "Insert Tag"
 msgstr "Insérer marqueur"
 
 #: admin/partials/cf7-default-form.php:59
-#, fuzzy
 msgid "Enter your full name"
-msgstr "saisissez votre nom complet"
+msgstr "Saisissez votre nom complet"
 
 #: admin/partials/cf7-default-form.php:60
-#, fuzzy
 msgid "Email"
-msgstr "saisissez un couriel valide"
+msgstr "Couriel"
 
 #: admin/partials/cf7-default-form.php:61
-#, fuzzy
 msgid "Enter a valid email"
-msgstr "saisissez un couriel valide"
+msgstr "Saisissez un couriel valide"
 
 #: admin/partials/cf7-default-form.php:62
 msgid "Send"
@@ -137,24 +132,20 @@ msgid "the topic of your message"
 msgstr "le sujet de votre message"
 
 #: admin/partials/cf7-default-form.php:65
-#, fuzzy
 msgid "Message"
-msgstr "le sujet de votre message"
+msgstr "Sujet"
 
 #: admin/partials/cf7-default-form.php:66
-#, fuzzy
 msgid "Enter a brief message"
-msgstr "saisissez un message bref"
+msgstr "Saisissez un message bref"
 
 #: admin/partials/cf7-dynamic-tag-display.php:21
-#, fuzzy
 msgid "Dynamic Select Dropdown field"
-msgstr "Choisir un champ du formulaire"
+msgstr "Champ de menu dynamique"
 
 #: admin/partials/cf7-dynamic-tag-display.php:29
-#, fuzzy
 msgid "Field type"
-msgstr "Type de Contenu:"
+msgstr "Type de champ"
 
 #: admin/partials/cf7-dynamic-tag-display.php:30
 #, fuzzy
@@ -179,13 +170,12 @@ msgid "HTML Select field"
 msgstr "Choisir un champ"
 
 #: admin/partials/cf7-dynamic-tag-display.php:53
-#, fuzzy
 msgid "jQuery Nice Select"
-msgstr "Choisir un champ"
+msgstr "menu de type 'jQuery Nice Select'"
 
 #: admin/partials/cf7-dynamic-tag-display.php:57
 msgid "jQuery Select2"
-msgstr "Menu JQuery Select2"
+msgstr "menu JQuery Select2"
 
 #: admin/partials/cf7-dynamic-tag-display.php:59
 msgid "Enable user options"
@@ -240,9 +230,8 @@ msgid "hierarchical"
 msgstr ""
 
 #: admin/partials/cf7-dynamic-tag-display.php:115
-#, fuzzy
 msgid "Post"
-msgstr "Article:"
+msgstr "Article"
 
 #: admin/partials/cf7-dynamic-tag-display.php:117
 #, fuzzy
@@ -259,7 +248,6 @@ msgid "Posts"
 msgstr ""
 
 #: admin/partials/cf7-dynamic-tag-display.php:158
-#, fuzzy
 msgid "Pages"
 msgstr ""
 "Contact Form 7 Polylang extension <strong>ATTENCION</strong>: du fait de "
@@ -270,7 +258,7 @@ msgstr ""
 "fonctionalite du plugin Polylang dans les pages admin du plugin CF7.  Si "
 "vous ne 'installez pas, vos formulaires continuront de marcher mais vous ne "
 "pourrez pas creer de <em>nouvelles traductions</em>. Pour plus d'info lisez "
-"cette <a href=\"https://wordpress.org/plugins/cf7-polylang/\">page</a>."
+"cette <a href=\"https://wordpress.org/plugins/cf7-polylang/\">page</a>"
 
 #: admin/partials/cf7-dynamic-tag-display.php:174
 #, fuzzy
@@ -283,22 +271,12 @@ msgid "Custom source"
 msgstr "Code Javascript personnalisé"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:8
-#, fuzzy
 msgid "Grid"
-msgstr ""
-"Contact Form 7 Polylang extension <strong>ATTENCION</strong>: du fait de "
-"l'evolution du plugin Polylang, et de la non-conformite au standard de code "
-"de WP par le plugin CF7, ce plugin est maintenant une extension du plugin <a "
-"href=\"https://wordpress.org/plugins/cf7-grid-layout/\">CF7 Smart Grid-"
-"layout</a>.<br /> Veuillez l'installer afin de profiter de toutes les "
-"fonctionalite du plugin Polylang dans les pages admin du plugin CF7.  Si "
-"vous ne 'installez pas, vos formulaires continuront de marcher mais vous ne "
-"pourrez pas creer de <em>nouvelles traductions</em>. Pour plus d'info lisez "
-"cette <a href=\"https://wordpress.org/plugins/cf7-polylang/\">page</a>."
+msgstr "Grille"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:9
 msgid "Text"
-msgstr ""
+msgstr "Texte"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:48
 msgid "Row collapsible"
@@ -425,7 +403,7 @@ msgstr "saisissez votre nom complet"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:159
 msgid "Make grid"
-msgstr ""
+msgstr "Creer une grille de champ"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:160
 #, fuzzy
@@ -443,14 +421,12 @@ msgid "Field Label"
 msgstr "Label"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:168
-#, fuzzy
 msgid "[select a field]"
-msgstr "Choisir un champ"
+msgstr "[Choisir un champ]"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:169
-#, fuzzy
 msgid "select a field"
-msgstr "Choisir un champ"
+msgstr "choisir un champ"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:173
 #, fuzzy
@@ -550,9 +526,8 @@ msgstr ""
 
 #: admin/partials/helpers/cf7sg-form-fields.php:37
 #: admin/partials/helpers/cf7sg-form-fields.php:76
-#, fuzzy
 msgid "the option label."
-msgstr "Label"
+msgstr "label d'option."
 
 #: admin/partials/helpers/cf7sg-form-fields.php:57
 #: admin/partials/helpers/cf7sg-form-fields.php:96
