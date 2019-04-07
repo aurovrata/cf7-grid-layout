@@ -367,6 +367,8 @@ class Cf7_Grid_Layout_Admin {
       $args['labels']['filter_items_list'] = 'Filter forms list';
       $args['labels']['items_list_navigation'] = 'Forms list navigation';
       $args['labels']['items_list'] = 'Forms list';
+      /** @since 2.8.1  fix missing delete_posts notices*/
+     $args['capabilities']['delete_posts']='wpcf7_delete_posts';
     }
 
     return $args;
@@ -1043,4 +1045,5 @@ class Cf7_Grid_Layout_Admin {
 
     return $pointers;
   }
+
 }

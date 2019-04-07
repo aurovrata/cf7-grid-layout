@@ -271,7 +271,6 @@ class Cf7_Grid_Layout_Public {
     /** @since 2.6.0 disabled button message*/
     $form = wpcf7_get_current_contact_form();
     $messages = $form->prop('messages');
-    debug_msg($messages, 'messages ');
     $this->localised_data = array(
       'url' => admin_url( 'admin-ajax.php' ),
       'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
@@ -1455,7 +1454,8 @@ class Cf7_Grid_Layout_Public {
     $template = $cf7_mail->get( 'attachments' );
     $row = $tab = null;
     $idx = 0;
-    $attachments = array();
+    /** @since 2.8.1 fix for send pdf */
+    $attachments = $components['attachments'];
     foreach ( (array) $uploaded_files as $name => $path ) {
       if ( false === strpos( $template, "[${name}]" ) )  continue; //not attached.
       $field_type = self::field_type($name, $cf7form->id());
@@ -1471,7 +1471,7 @@ class Cf7_Grid_Layout_Public {
             $tab = ('tab'==$field_type)?  str_replace('_tab-', '', $field_idx):null;
             $tab = (isset($tab) && empty($tab))? 1:1+(int)$tab;
             $file = $uploaded_files[$name.$field_idx];
-            $attachments[] = $file;
+            if(!in_array($attachments,$file)) $attachments[] = $file;
             $file = explode('/',$file);
             $filename = $file[count($file)-1];
             $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files', '', $name, $row, $tab, $idx,$filename, $_POST['_wpcf7_key']);
@@ -1487,7 +1487,7 @@ class Cf7_Grid_Layout_Public {
               $idx++;
               $row = str_replace('_row-', '', $field_row);
               $file = $uploaded_files[$name.$field_tab.$field_row];
-              $attachments[] = $file;
+              if(!in_array($attachments,$file)) $attachments[] = $file;
               $file = explode('/',$file);
               $filename = $file[count($file)-1];
               $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $name, $row, $tab, $idx,$filename, $_POST['_wpcf7_key']);
@@ -1497,7 +1497,7 @@ class Cf7_Grid_Layout_Public {
         default: //singular fields.
           if(empty($path)) continue;
           $idx++;
-          $attachments[] = $path;
+          if(!in_array($attachments,$path)) $attachments[] = $path;
           $path = explode('/',$path);
           $filename = $path[count($path)-1];
           $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $name, null, null, $idx,$filename, $_POST['_wpcf7_key']);

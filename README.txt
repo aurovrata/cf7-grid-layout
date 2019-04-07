@@ -5,7 +5,7 @@ Tags: contact form 7, contact form 7 module, form layout, styling, contact form 
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.0.3
-Stable tag: trunk
+Stable tag: 2.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -239,6 +239,8 @@ As of v2.8, this functionality has now been included.  You will need to add the 
 == Changelog ==
 = 2.8.1 =
 * messages bug fix
+* fix cf7 post type registration missing delete_posts caps.
+* fix attachments from other plugins (send pdf).
 = 2.8.0 =
 * fix bug on jquery deprecated function.
 * added max row functionality
