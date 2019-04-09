@@ -1,4 +1,65 @@
 == Changelog ==
+= 2.10.0 =
+* added 'cf7sg_kses_allowed_html' filter.
+* allowed custom html in forms.
+= 2.9.0 =
+* instroduction of mail tag value filter for individual fields.
+= 2.8.3 =
+* change codemirror editor to textarea#wpcf7-form and populate with html form.
+= 2.8.2 =
+* fix cf7 post type registration missing delete_posts caps.
+* fix attachments from other plugins (send pdf).
+= 2.8.1 =
+* messages bug fix
+= 2.8.0 =
+* fix bug on jquery deprecated function.
+* added max row functionality
+= 2.7.1 =
+* fix a bug on pretty pointer function call.
+* trim values in toggles that are closed.
+= 2.7.0 =
+* fixed css bug for multiple forms per page.
+* added table/tab mail tag filter 'cf7sg_mailtag_grid_fields'.
+= 2.6.0 =
+* add hover message for disabled submit fields.
+* add upgrade warning to update all forms.
+* fix bug on existing tables missing id attr.
+* fix issue on single toggle required fields.
+= 2.5.8 =
+* fix admin edit page breaking with cf7 plugin update v5.1
+= 2.5.7 =
+* fix $has_toggles code.
+= 2.5.6 =
+* tabs/toggle libraries not being loaded.
+* fix bug where all file fields being attached.
+= 2.5.5 =
+* bug fix singular file field attachments.
+= 2.5.4 =
+* fixed bug preventing tables being setup properly.
+* toggles now are identied when the form is saved and this is used to prevent toggle js/css resources being loaded on the front-end if not required.
+= 2.5.3 =
+* fix open by default collapsible sections.
+= 2.5.2 =
+* fix for Gutenberg shortcode format.
+= 2.5.1 =
+* fix save bug.
+= 2.5.0 =
+* rewrite of validation engine to better handle array inputs.
+* fix for file mail attachments.
+* fix for checkbox validation.
+= 2.4.1 =
+* fix fatal error in cf7 mail tag.
+= 2.4.0 =
+* fix toggle sections not enalbing fields properly.
+* disable toggle slide.
+* fix mail attachments of files in tabbed/table sections.
+* added 'cf7sg_annotate_mail_attach_grid_files' filter.
+= 2.3.0 =
+* enable form duplication.
+* fix radio buttons on tabs.
+* fix required file validation.
+= 2.2.0 =
+* allows custom filtered dynamic dropdown options to be html string.
 = 2.1.6 =
 * fix bug find form key by id
 = 2.1.5 =

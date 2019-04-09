@@ -5,7 +5,7 @@ Tags: contact form 7, contact form 7 module, form layout, styling, contact form 
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.1.1
-Stable tag: 2.8.3
+Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -206,10 +206,22 @@ In you mail message body, place the mail tags contiguously for each field that i
 
 copy the filter helper code and place it in your `functions.php` file.  The code sample assumes the above example fields and sets up a list element for each field, along with a column header.  These list elements are then styled to display them as tables in your mail.
 
-= 15. How can I set a maximum of rows to a table ? =
+= 15. How can I set a maximum number of rows to a table ? =
 
 As of v2.8, this functionality has now been included.  You will need to add the `data-max` attribute to your table in the text editor and set it to the row limit you want (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #22).  NOTE: in a lengthy form it is easy to navigate directly to the a table or field's text code line using the shortcode navigation buttons provided in the Grid editor, (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #19)
 
+= 16. Can I add custom input or other html elements in the form ? =
+
+Yes this is possible.  Howevewr, keep in mind that the forms are sanitised using [`wp_kses()`](https://codex.wordpress.org/Function_Reference/wp_kses) function, so any html elements which are not inlcuded in the set of permitted elements will be stripped out of the form.  A filter is included for you add additional html code permitted by the sanitisation function,
+
+`
+add_filter('cf7sg_kses_allowed_html', 'add_custom_html', 10,2);
+function add_custom_html($allowed, $cfk7_key){
+  if('my-custom-form' !== cfk7_key) return $allowed;
+  $allowed['pre']=array('class'=1);
+  return $allowed;
+}
+`
 
 == Screenshots ==
 
@@ -237,6 +249,9 @@ As of v2.8, this functionality has now been included.  You will need to add the 
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.10.0 =
+* added 'cf7sg_kses_allowed_html' filter.
+* allowed custom html in forms.
 = 2.9.0 =
 * instroduction of mail tag value filter for individual fields.
 = 2.8.3 =
@@ -252,71 +267,3 @@ As of v2.8, this functionality has now been included.  You will need to add the 
 = 2.7.1 =
 * fix a bug on pretty pointer function call.
 * trim values in toggles that are closed.
-= 2.7.0 =
-* fixed css bug for multiple forms per page.
-* added table/tab mail tag filter 'cf7sg_mailtag_grid_fields'.
-= 2.6.0 =
-* add hover message for disabled submit fields.
-* add upgrade warning to update all forms.
-* fix bug on existing tables missing id attr.
-* fix issue on single toggle required fields.
-= 2.5.8 =
-* fix admin edit page breaking with cf7 plugin update v5.1
-= 2.5.7 =
-* fix $has_toggles code.
-= 2.5.6 =
-* tabs/toggle libraries not being loaded.
-* fix bug where all file fields being attached.
-= 2.5.5 =
-* bug fix singular file field attachments.
-= 2.5.4 =
-* fixed bug preventing tables being setup properly.
-* toggles now are identied when the form is saved and this is used to prevent toggle js/css resources being loaded on the front-end if not required.
-= 2.5.3 =
-* fix open by default collapsible sections.
-= 2.5.2 =
-* fix for Gutenberg shortcode format.
-= 2.5.1 =
-* fix save bug.
-= 2.5.0 =
-* rewrite of validation engine to better handle array inputs.
-* fix for file mail attachments.
-* fix for checkbox validation.
-= 2.4.1 =
-* fix fatal error in cf7 mail tag.
-= 2.4.0 =
-* fix toggle sections not enalbing fields properly.
-* disable toggle slide.
-* fix mail attachments of files in tabbed/table sections.
-* added 'cf7sg_annotate_mail_attach_grid_files' filter.
-= 2.3.0 =
-* enable form duplication.
-* fix radio buttons on tabs.
-* fix required file validation.
-= 2.2.0 =
-* allows custom filtered dynamic dropdown options to be html string.
-= 2.1.6 =
-* fix bug find form key by id
-= 2.1.5 =
-* better tracking of toggled fields to fix checkbox/radio validation bug.
-* fix recaptcha field bug.
-= 2.1.4 =
-* fix new form template setup for polylang managed translated forms.
-= 2.1.3 =
-* delay loading of cf7 hidden fields to overcome CF7 Conditional Fields plugin [bug](https://wordpress.org/support/topic/bug-plugin-overwrite-cf7-hidden-fields/).
-= 2.1.2 =
-* bug fix click event on toggled titles.
-= 2.1.1 =
-* bug fix on helper classes for dynamic dropdowns.
-= 2.1.0 =
-* fix grid UI css issue.
-* added hook to deactivate plugin when cf7 plugin is deactivated.
-* improved email tag display for html mails for table and tab field values.
-= 2.0.1 =
-* bug fix inline helper for multiple tags in single cell.
-* inline helper cleanup.
-= 2.0.0 =
-* cleanup of helpers.
-* added dynamic dropdown field filter 'cf7sg_dynamic_dropdown_option_attributes'.
-* added dynamic dropdown field filter 'cf7sg_dynamic_dropdown_option_label'.
-* added dynamic inline filter helpers on grid UI cells.
