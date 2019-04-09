@@ -1378,6 +1378,7 @@ class Cf7_Grid_Layout_Public {
   */
   public function filter_table_tab_mail_tag($replaced, $submitted, $html, $mail_tag ){
     $cf7form = WPCF7_ContactForm::get_current();
+    $cf7form_key = Cf7_WP_Post_Table::form_key($cf7form->id());
     $field_type = self::field_type($mail_tag->field_name(), $cf7form->id());
     $label = '';
     $build = false;
@@ -1385,7 +1386,7 @@ class Cf7_Grid_Layout_Public {
       case 'tab':
       case 'table':
         if($html){
-          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, Cf7_WP_Post_Table::form_key($cf7form->id()));
+          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, $cf7form_key);
           if(!empty($filtered)){
             $replaced = $filtered;
             break;
@@ -1404,7 +1405,7 @@ class Cf7_Grid_Layout_Public {
         break;
       case 'both':
         if($html){
-          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, Cf7_WP_Post_Table::form_key($cf7form->id()));
+          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, $cf7form_key);
           if(!empty($filtered)){
             $replaced = $filtered;
             break;
@@ -1431,6 +1432,18 @@ class Cf7_Grid_Layout_Public {
             else  $replaced .= PHP_EOL;
           }
         }
+        break;
+      default: //general fix for cf7 mail tags.
+        $tag = $mail_tag->corresponding_form_tag();
+        /**
+        * Filter the value inserted in the mail tag.
+        * @since 2.9.0.
+        * @param string $replaced value to filter.
+        * @param string $field_name name of the field being inserted in the mail.
+        * @param string $form_key unique form key identifier.
+        * @return string a value to replace.
+        */
+        $replaced = apply_filters('cf7sg_mailtag_'.$tag->basetype, $replaced, $mail_tag->field_name(), $cf7form_key);
         break;
     }
 

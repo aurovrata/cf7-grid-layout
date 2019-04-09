@@ -237,6 +237,8 @@ As of v2.8, this functionality has now been included.  You will need to add the 
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.9.0 =
+* instroduction of mail tag value filter for individual fields.
 = 2.8.3 =
 * change codemirror editor to textarea#wpcf7-form and populate with html form.
 = 2.8.2 =

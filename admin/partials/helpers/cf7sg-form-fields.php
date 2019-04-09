@@ -202,3 +202,21 @@ function {$field_name_slug}_dynamic_options($options, $name, $cf7_key){
   return $options;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the options.','cf7-grid-layout')?>
 </li>
+<li class="cf7sg-tag-dynamic_select cf7sg-tag-radio cf7sg-tag-checkbox cf7sg-tag-select cf7sg-tag-acceptance">
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_mail_tag_{$field_type}','{$field_name_slug}_mail_tag_value',10,3);
+/**
+* Filter the value inserted in the mail tag.
+* @since 2.9.0.
+* @param string $replaced value to filter.
+* @param string $name name of the field being inserted in the mail.
+* @param string $cf7_key unique form key identifier.
+* @return string a value to replace.
+*/
+function {$field_name_slug}_mail_tag_value($replaced, $name, $cf7_key){
+  //check to make sure you have the right field in the right form.
+  if( '{$field_name_slug}' !== $name || '{$form_key}'!==$cf7_key) return $replaced;
+  //$replaced is the value inserted in the mail if you have used this field as a mail tag.
+  $replaced; //this is currently set to the selected value and is a slug, you need to programmatically fetch your value and set it up.
+  return $replaced;
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the mail tag value.','cf7-grid-layout')?>
+</li>

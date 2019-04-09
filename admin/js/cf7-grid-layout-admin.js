@@ -425,6 +425,7 @@
               text = text.replace(/\{\$form_key\}/gi, key);
               text = text.replace(/\{\$field_name\}/gi, field);
               text = text.replace(/\{\$field_name_slug\}/gi, field.replace('-','_'));
+              text = text.replace(/\{\$field_type\}/gi, tag);
               return text;
             }
           });
