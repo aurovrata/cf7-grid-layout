@@ -5,7 +5,7 @@ Tags: contact form 7, contact form 7 module, form layout, styling, contact form 
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.1.1
-Stable tag: 2.8.2
+Stable tag: 2.8.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -237,6 +237,8 @@ As of v2.8, this functionality has now been included.  You will need to add the 
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.8.3 =
+* change codemirror editor to textarea#wpcf7-form and populate with html form.
 = 2.8.2 =
 * fix cf7 post type registration missing delete_posts caps.
 * fix attachments from other plugins (send pdf).

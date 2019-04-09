@@ -12,18 +12,10 @@
     <div id="grid-form"></div>
   </div>
   <div id="cf7-codemirror">
-    <textarea class="cf7-sg-hidden codemirror-cf7-update"></textarea>
+    <textarea id="wpcf7-form" class="cf7-sg-hidden codemirror-cf7-update"><?= esc_textarea( $form_post->prop( 'form' ) ); /** @since 2.8.3 rename codemirror textarea##wpcf7-form adn initially popullate with form.  */?></textarea>
   </div>
 </div>
-<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden large-text code" data-config-field="form.body">
-<?php
-//if( metadata_exists( 'post', $form_post->id(), 'cf7_grid_form' )){ //grid form
-  //echo esc_textarea( $form_post->prop( 'form' ) );
-//}else{
-  echo esc_textarea( $form_post->prop( 'form' ) );
-//}
-?>
-</textarea>
+<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden large-text code" data-config-field="form.body"><?= esc_textarea( $form_post->prop( 'form' ) );?></textarea>
 <!-- cf7sg - track embeded sub-forms -->
 <input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms" />
 <input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />

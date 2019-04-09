@@ -131,6 +131,8 @@
 	            //setup the form code in the hidden textarea
 	            $wpcf7Editor.html(code);
 						});
+            /** @since 2.8.3 clear the codemirror textarea##wpcf7-form */
+            $('textarea.codemirror-cf7-update', $codemirror).val('');
 						$grid.trigger('cf7grid-form-finalise');
           }else{
             //remove id from textarea

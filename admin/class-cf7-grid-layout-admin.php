@@ -337,17 +337,19 @@ class Cf7_Grid_Layout_Admin {
     if(class_exists('WPCF7_ContactForm') &&  $post_type === WPCF7_ContactForm::post_type  ) {
       //debug_msg($args, 'pre-args');
       $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
-      $system_taxonomy = array();
+      /** @since 2.8.3 add wpcf7_type (registered in assets/cf7-table.php) taxonomy to cf7 post type */
+      $system_taxonomy = array('wpcf7_type'); 
       if(!empty($system_dropdowns)){
         foreach($system_dropdowns as $id=>$list){
           $system_taxonomy = array_merge($system_taxonomy, $list);
         }
-        if(!empty($args['taxonomies'])){
-          $system_taxonomy = array_merge($args['taxonomies'], $system_taxonomy);
-        }
-        $system_taxonomy = array_unique($system_taxonomy);
-        $args['taxonomies'] = $system_taxonomy;
       }
+      if(!empty($args['taxonomies'])){
+        $system_taxonomy = array_merge($args['taxonomies'], $system_taxonomy);
+        $system_taxonomy = array_unique($system_taxonomy);
+      }
+      $args['taxonomies'] = $system_taxonomy;
+
       $args['public'] = false;
       $args['show_ui']= true;
       $args['show_in_menu']= 'wpcf7';
