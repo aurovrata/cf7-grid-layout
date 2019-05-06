@@ -207,7 +207,7 @@
         $('textarea#wpcf7-form-hidden').html(code);
         $formNoEmbeds = $('<div>').append(code);
       }else{//we are in text mode.
-        $('textarea#wpcf7-form-hidden').html(cmEditor.getValue());
+        $('textarea#wpcf7-form-hidden').html(cmEditor.getValue()).val(cmEditor.getValue());
         $formNoEmbeds = $('<div>').append(cmEditor.getValue());
       }
       //since 1.8 remove cf7sgfocus class if present.

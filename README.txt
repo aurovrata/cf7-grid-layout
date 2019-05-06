@@ -249,6 +249,9 @@ function add_custom_html($allowed, $cfk7_key){
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.10.1 =
+* fix _() function error in assets.
+* fix js error in cut and paste text editor on form submit.
 = 2.10.0 =
 * added 'cf7sg_kses_allowed_html' filter.
 * allowed custom html in forms.

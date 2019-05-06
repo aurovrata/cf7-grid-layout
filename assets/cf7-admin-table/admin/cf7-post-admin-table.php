@@ -428,7 +428,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
           'cf7key' => '',
       ), $atts );
       if(empty($a['cf7key'])){
-        return '<em>' . _('cf7-form shortcode missing key attribute','cf7-admin-table') . '</em>';
+        return '<em>' . __('cf7-form shortcode missing key attribute','cf7-admin-table') . '</em>';
       }
       //else get the post ID
       $form = get_posts(array(
