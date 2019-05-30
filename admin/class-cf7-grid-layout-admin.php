@@ -580,10 +580,8 @@ class Cf7_Grid_Layout_Admin {
     );
     $allowed_tags['script']=array('type'=>1);
     $allowed_tags = apply_filters('cf7sg_kses_allowed_html',$allowed_tags, $_POST['post_name']);
-    debug_msg($_POST['wpcf7-form'], 'admin form ');
     if(isset( $_POST['wpcf7-form'] )){
       $args['form'] = wp_kses($_POST['wpcf7-form'], $allowed_tags);
-      debug_msg($args['form'], 'saved form ');
     }
   	$args['mail'] = isset( $_POST['wpcf7-mail'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail'] ): array();
   	$args['mail_2'] = isset( $_POST['wpcf7-mail-2'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail-2'] ): array();
