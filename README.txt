@@ -252,8 +252,8 @@ function add_custom_html($allowed, $cfk7_key){
 
 == Changelog ==
 = 2.10.3 =
-* code fix for [bug](https://wordpress.org/support/topic/bug-found-error-in-code/) found in mailchimp extension plugin 
 = 2.10.2 =
+* code fix for [bug](https://wordpress.org/support/topic/bug-found-error-in-code/) found in mailchimp extension plugin
 * added IE polyfill for frontend table fields.
 = 2.10.1 =
 * fix _() function error in assets.
