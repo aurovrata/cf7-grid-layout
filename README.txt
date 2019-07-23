@@ -67,10 +67,13 @@ This plugin would not have been possible without the following open-source effor
 * [PHP Query](https://github.com/punkave/phpQuery) - a php class that enables traversing and manipulation of html documents using css selectors like JQuery.  This is used to build the modular functionality of form designs.
 
 = Thanks to =
-Birmania (@birmania) for providing:
+Birmania [@birmania](https://profiles.wordpress.org/birmania/) for providing:
+
 * a fix for js toggles.
 * a fix for file fields in tabs as mail attachments
-Andrew Browning (@altworks) for poviding:
+
+Andrew Browning [@altworks](https://profiles.wordpress.org/altworks/) for poviding:
+
 * an IE polyfill for frontend table fields.
 
 = Privacy Notices =
