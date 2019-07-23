@@ -1376,9 +1376,10 @@ class Cf7_Grid_Layout_Public {
   *@param WPCF7_MailTag $mail_tag mail tag object of field being replaced.
   *@return string repalcement string.
   */
-  public function filter_table_tab_mail_tag($replaced, $submitted, $html, $mail_tag ){
+  public function filter_table_tab_mail_tag($replaced, $submitted, $html=false, $mail_tag=null ){
     $cf7form = WPCF7_ContactForm::get_current();
     $cf7form_key = Cf7_WP_Post_Table::form_key($cf7form->id());
+    if(empty($mail_tag)) return $replaced;
     $field_type = self::field_type($mail_tag->field_name(), $cf7form->id());
     $label = '';
     $build = false;

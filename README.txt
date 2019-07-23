@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout, multiple column form, grid layout, table inputs
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.1.1
+Tested up to: 5.2.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -70,6 +70,8 @@ This plugin would not have been possible without the following open-source effor
 Birmania (@birmania) for providing:
 * a fix for js toggles.
 * a fix for file fields in tabs as mail attachments
+Andrew Browning (@altworks) for poviding:
+* an IE polyfill for frontend table fields.
 
 = Privacy Notices =
 
@@ -249,6 +251,10 @@ function add_custom_html($allowed, $cfk7_key){
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.10.3 =
+* code fix for [bug](https://wordpress.org/support/topic/bug-found-error-in-code/) found in mailchimp extension plugin 
+= 2.10.2 =
+* added IE polyfill for frontend table fields.
 = 2.10.1 =
 * fix _() function error in assets.
 * fix js error in cut and paste text editor on form submit.
