@@ -132,7 +132,6 @@ class Cf7_Grid_Layout_Admin {
 	 */
 	public function enqueue_scripts($page) {
 		global $post;
-
     //debug_msg($screen, $this->custom_type );
     $plugin_dir = plugin_dir_url( __DIR__ );
     if('toplevel_page_wpcf7' == $page){
@@ -155,8 +154,8 @@ class Cf7_Grid_Layout_Admin {
           'cf7-grid-codemirror-js',
           'cf7sgeditor',
           array(
-            'mode' => apply_filters('cf7sg_admin_editor_mode', 'shortcode', $post->name),
-						'theme' => apply_filters('cf7sg_admin_editor_theme', 'paraiso-light', $post->name),
+            'mode' => apply_filters('cf7sg_admin_editor_mode', 'shortcode', $post->post_name),
+						'theme' => apply_filters('cf7sg_admin_editor_theme', 'paraiso-light', $post->post_name),
           )
         );
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
@@ -164,10 +163,10 @@ class Cf7_Grid_Layout_Admin {
           $this->plugin_name,
           'cf7grid',
           array(
-            'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', '<div class="field"><label></label>', $post->name),
-						'postHTML' => apply_filters('cf7sg_post_cf7_field_html', '<p class="info-tip"></p></div>', $post->name),
-						'requiredHTML' => apply_filters('cf7sg_required_cf7_field_html', '<em>*</em>', $post->name),
-						'ui' => apply_filters('cf7sg_grid_ui', true, $post->name)
+            'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', '<div class="field"><label></label>', $post->post_name),
+						'postHTML' => apply_filters('cf7sg_post_cf7_field_html', '<p class="info-tip"></p></div>', $post->post_name),
+						'requiredHTML' => apply_filters('cf7sg_required_cf7_field_html', '<em>*</em>', $post->post_name),
+						'ui' => apply_filters('cf7sg_grid_ui', true, $post->post_name)
           )
         );
         wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );

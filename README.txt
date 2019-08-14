@@ -203,13 +203,13 @@ Yes, identify the row in your text editor which implements your collapsible sect
 
 `<div class="container cf7sg-collapsible" data-open="true" ...`
 
-= 14. How can I display a table of fields in a mail message? =
+= 14bis. How can I display a table of fields in a mail message? =
 If you have a set of fields that are in a table/tab structure, the plugin is not aware of their relationship and as such does not build a table layout in a mail when you use them as tags in a message.  However, a filter is provided for you to achive this.  The filter #3 in the Post-form submit hooks allows you to build a table layout in an *html* mail.  Ensure the html format checkbox is selected in the your mail settings, else the filter will not fire.
 In you mail message body, place the mail tags contiguously for each field that is present in your table.  Hence, assuming you have a table with 3 fields, field-one, field-two, field-three.  Place their tags in the mail body as
 
 `[field-one][field-two][field-three]`
 
-copy the filter helper code and place it in your `functions.php` file.  The code sample assumes the above example fields and sets up a list element for each field, along with a column header.  These list elements are then styled to display them as tables in your mail.
+copy the filter helper code (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #21) and place it in your *functions.php* file.  The code sample assumes the above example fields and sets up a list element for each field, along with a column header.  These list elements are then styled to display them as tables in your mail.
 
 = 15. How can I set a maximum number of rows to a table ? =
 
@@ -255,6 +255,7 @@ function add_custom_html($allowed, $cfk7_key){
 
 == Changelog ==
 = 2.10.3 =
+* fix admin html filter parameter bug.
 = 2.10.2 =
 * code fix for [bug](https://wordpress.org/support/topic/bug-found-error-in-code/) found in mailchimp extension plugin
 * added IE polyfill for frontend table fields.
