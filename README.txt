@@ -227,6 +227,17 @@ function add_custom_html($allowed, $cfk7_key){
   return $allowed;
 }
 `
+= 17. Is it possible to modify the default html markup for the grid cell and/or the required html markup in the label ? =
+
+Yes, there are filters that have been created to allow a user to modify the html structure.  See the Hook &amp; Filters #1, #2, and #3 ([screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #21).
+
+These filters will only impact new forms or new cells (rows/columns) created.
+
+For the required HTML markup in the label it is possible to manually change the html without the use of the filter by simply marking up your required symbol/text with a `span` element.  For example,
+
+`<span>(req)<\span>`
+
+in order to replace the existing markup.
 
 == Screenshots ==
 
@@ -254,6 +265,8 @@ function add_custom_html($allowed, $cfk7_key){
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.10.4 =
+* add fix for custom required html in label.
 = 2.10.3 =
 * fix admin html filter parameter bug.
 = 2.10.2 =

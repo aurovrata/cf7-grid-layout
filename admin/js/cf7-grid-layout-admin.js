@@ -933,8 +933,11 @@
     var label = $label.val();
     //field
     var field = $this.siblings('div.cf7-field-type').find('textarea').val();
-    var idx = label.indexOf(cf7grid.requiredHTML)
+    var idx = 0;
+    if(cf7grid.requiredHTML.length>0) idx=label.indexOf(cf7grid.requiredHTML)
     if($this.siblings('div.cf7-field-type').is('.required')){
+      /** @since 2.10.4 fix for custom manual labels, allow replacement with empty span*/
+      if(idx<0) idx = label.search(/<span>[\w\W]+<\/span>/g);
       if(idx<0){
         label += cf7grid.requiredHTML;
         $label.val(label);//input field.
