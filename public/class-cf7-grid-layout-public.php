@@ -1096,7 +1096,7 @@ class Cf7_Grid_Layout_Public {
           }
           break;
         default:
-          if(!isset($data[$tag['name']])) continue; /*likely toggled and unused*/
+          if(!isset($data[$tag['name']])) continue 2; /*likely toggled and unused*/
           $result = apply_filters( "wpcf7_validate_{$type}", $result, $tag );
           break;
       }
@@ -1509,7 +1509,7 @@ class Cf7_Grid_Layout_Public {
           }
           break;
         default: //singular fields.
-          if(empty($path)) continue;
+          if(empty($path)) continue 2;
           $idx++;
           if(!in_array($attachments,$path)) $attachments[] = $path;
           $path = explode('/',$path);
@@ -1517,8 +1517,6 @@ class Cf7_Grid_Layout_Public {
           $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $name, null, null, $idx,$filename, $_POST['_wpcf7_key']);
           break;
       }
-      //     break;
-      // }
     }
     $components['attachments'] = $attachments;
     return $components;
