@@ -76,6 +76,10 @@ Andrew Browning [@altworks](https://profiles.wordpress.org/altworks/) for povidi
 
 * an IE polyfill for frontend table fields.
 
+PenhTech [@penhtech](https://wordpress.org/support/users/penhtech/)
+
+* a fix for continue warnings in php7.3
+
 = Privacy Notices =
 
 This plugin, in itself, does not:
