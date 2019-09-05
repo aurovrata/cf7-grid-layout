@@ -1511,7 +1511,7 @@ class Cf7_Grid_Layout_Public {
         default: //singular fields.
           if(empty($path)) continue 2;
           $idx++;
-          if(!in_array($attachments,$path)) $attachments[] = $path;
+          if(!in_array($path, $attachments)) $attachments[] = $path;
           $path = explode('/',$path);
           $filename = $path[count($path)-1];
           $components['body'].= apply_filters('cf7sg_annotate_mail_attach_grid_files','', $name, null, null, $idx,$filename, $_POST['_wpcf7_key']);

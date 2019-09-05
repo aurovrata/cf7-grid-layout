@@ -1,6 +1,6 @@
 === Smart Grid-Layout Design for Contact Form 7 ===
 Contributors: aurovrata
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CNEEQHW889FE6
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EDV4MEJLPT4VY
 Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout, multiple column form, grid layout, table inputs
 Requires at least: 4.7
 Requires PHP: 5.6
@@ -269,6 +269,8 @@ in order to replace the existing markup.
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.10.5 =
+* bug fix on file attachments in notification email.
 = 2.10.4 =
 * add fix for custom required html in label.
 = 2.10.3 =
