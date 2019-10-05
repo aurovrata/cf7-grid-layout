@@ -1,6 +1,6 @@
 /**
  * Enhancements for default CF7 Forms
- * Support for CF7 Smart Grid elements that are available in default CF7 Forms
+ * Support for CF7 Smart Grid elemtents that are available in default CF7 Forms
  */
 (function( $ ) {
 	'use strict';
@@ -18,6 +18,9 @@
 	        ready: function(){
 	          $niceSelects = $(selectors.niceSelect);
 	          $niceSelects.niceSelect();
+	        },
+	        setup: function(){
+	          return typeof $.fn.niceSelect !== 'undefined';
 	        }
 	      }
 	    })(),
@@ -35,15 +38,18 @@
                 tags: $select2.is(selectors.tags)
               });
 	          })
+	        },
+	        setup: function(){
+	          return typeof $.fn.select2 !== 'undefined';
 	        }
 	      }
 	    })();
 	    
   $(document).on('ready', function(){
-    if ( $.fn.niceSelect ) {
+    if ( cf7Form_niceSelect.setup() ) {
       cf7Form_niceSelect.ready();
     }
-    if ( $.fn.select2 ) {
+    if ( cf7Form_select2.setup() ) {
       cf7Form_select2.ready();
     }
   });  
