@@ -40,8 +40,12 @@
 	    })();
 	    
   $(document).on('ready', function(){
-    cf7Form_niceSelect.ready();
-    cf7Form_select2.ready();
+    if ( $.fn.niceSelect ) {
+      cf7Form_niceSelect.ready();
+    }
+    if ( $.fn.select2 ) {
+      cf7Form_select2.ready();
+    }
   });  
 
 })( jQuery );
