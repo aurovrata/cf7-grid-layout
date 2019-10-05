@@ -190,6 +190,7 @@ class Cf7_Grid_Layout_Public {
 		wp_register_script( $this->plugin_name, $plugin_dir . 'public/js/cf7-grid-layout-public.js', array( 'jquery','contact-form-7' ), $this->version, true );
     wp_register_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('jquery-nice-select', $plugin_dir . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, true );
+    wp_register_script( 'cf7-layout-public', $plugin_dir . 'public/js/cf7-layout-public.js', array( 'jquery','contact-form-7', 'jquery-nice-select', 'jquery-select2' ), $this->version, true );
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . 'public/js/cf7-benchmark.js', array( 'jquery' ), $this->version, true );
     //allow custom script registration
@@ -255,12 +256,28 @@ class Cf7_Grid_Layout_Public {
       wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', array($this->plugin_name), null, true);
       do_action('smart_grid_register_custom_script', $cf7_key);
     }
+	  
+    // enable select2 script when the keyword "select2" (in classNames) occurs in $output
+    $class['has-select2'] = strpos($output, 'select2') !== false;    
+    if ( $class['has-select2'] ) {
+      wp_enqueue_script('jquery-select2');
+      wp_enqueue_style('select2-style');
+    }
+    
+    // enable nice-select script when the keyword "nice-select" (in classNames) occurs in $output
+    $class['has-nice-select'] = strpos($output, 'nice-select') !== false;
+    if ( $class['has-nice-select'] ) {
+      wp_enqueue_script('jquery-nice-select');
+      wp_enqueue_style('jquery-nice-select-css');
+    }
+	  
     /**
     * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
     */
     $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
     if(''===$is_form || !$is_form){
       wp_enqueue_style('contact-form-7'); //default cf7 plugin css.
+      wp_enqueue_script('cf7-layout-public'); // enhancements for default cf7 form, support for nice-select and select2
       return $output;
     }
     $class = get_post_meta($cf7_id, '_cf7sg_classes', true);
@@ -280,11 +297,6 @@ class Cf7_Grid_Layout_Public {
 
     $class['has-validation']=true;
 
-    $class['has-select2'] = true;
-    //if(isset($class['has-select2'])){
-      wp_enqueue_script('jquery-select2');
-      wp_enqueue_style('select2-style');
-    //}
     $class['has-accordion']=true;
     wp_enqueue_script('jquery-ui-accordion');
 
@@ -302,11 +314,7 @@ class Cf7_Grid_Layout_Public {
     }
     $class['has-effects']=true;
     wp_enqueue_script('jquery-effects-core');
-		$class['has-nice-select'] = true;
-    //if(isset($class['has-nice-select'])){
-    wp_enqueue_script('jquery-nice-select');
-    wp_enqueue_style('jquery-nice-select-css');
-    //}
+
     $has_toggles = false;
     if(get_post_meta($cf7_id, '_cf7sg_has_toggles', true)){
       $class['has-toggles']=true;
