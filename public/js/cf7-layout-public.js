@@ -1,6 +1,6 @@
 /**
  * Enhancements for default CF7 Forms
- * Support for CF7 Smart Grid elemtents that are available in default CF7 Forms
+ * Support for CF7 Smart Grid elements that are available in default CF7 Forms
  */
 (function( $ ) {
 	'use strict';
