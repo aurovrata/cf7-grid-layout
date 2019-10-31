@@ -19,7 +19,10 @@
 if('add' == $screen->action) do_action( 'load-contact_page_wpcf7-new' );
 else do_action( 'load-toplevel_page_wpcf7' );
 ?>
-
+<div id="cf7sg-editor">
+  <div style="position:relative">
+    <a id="full-screen-cf7" class="button" href="javascript:void(0)"><span><?= __('toggle full screen','cf7-grid-layout')?></span></a>
+  </div>
 <input type="hidden" id="is-cf7sg-form" name="is_cf7sg_form" value="true" />
 <input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
 <input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />
@@ -116,3 +119,4 @@ else do_action( 'load-toplevel_page_wpcf7' );
   });
 })( jQuery );
 </script>
+</div>

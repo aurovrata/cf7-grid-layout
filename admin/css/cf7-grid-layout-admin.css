@@ -1,6 +1,11 @@
  .display-none {
     display: none;
 }
+#full-screen-cf7 {
+    float: right;
+    position: absolute;
+    right: 0;
+  }
 #wpbody-content .inline-edit-row-page fieldset.hide-element,
 #wpbody-content .inline-edit-row-page fieldset.hide-element *{
     height: 0;
@@ -11,4 +16,9 @@
 .button-primary.cf7sg-next {
     margin-right: 22px;
     margin-top: -4px;
+}
+#meta-box-main-cf7-editor.full-width {
+    position: absolute;
+    width: 100%;
+    z-index: 10;
 }

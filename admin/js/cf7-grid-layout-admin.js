@@ -29,6 +29,20 @@
   var wpcf7Value = '';
 
 	$(document).ready( function(){
+    /** @since 2.11.0 full screen button*/
+    var $editor = $('#cf7sg-editor'),
+      bodyWidth = $('#wpbody').width();
+    $editor.css('background-color',$('body').css('background-color'));
+    $('#full-screen-cf7').on('click', function(){
+      $editor.toggleClass('full-screen');
+      $(this).toggleClass('full-screen');
+      if($editor.is('.full-screen')) $editor.width(bodyWidth);
+      else $editor.width('auto');
+      // $oldParent = $editor.parent();
+      // $editor.detach();
+      // $nextParent.prepend($editor);
+      // $nextParent = $oldParent;
+    });
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     $grid = $('#grid-form');
     $rowControl = $('#top-grid-controls');

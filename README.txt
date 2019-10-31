@@ -80,6 +80,10 @@ PenhTech [@penhtech](https://wordpress.org/support/users/penhtech/)
 
 * a fix for continue warnings in php7.3
 
+Thomas Fellinger [@netzgestaltung](https://profiles.wordpress.org/netzgestaltung/)
+
+* a fix for [Really Simple Captcha](https://wordpress.org/plugins/really-simple-captcha/) plugin.
+
 = Privacy Notices =
 
 This plugin, in itself, does not:
@@ -93,8 +97,9 @@ This plugin, in itself, does not:
 
 1. Install the Contact Form 7 plugin.
 2. Unpack this plugin archive file into your wp-content/plugins folder.
-3. Activate the plugin through the 'Plugins' menu in WordPress
-4. Read the FAQs & Screenshot captions to understand how to use this plugin.
+3. Activate the plugin through the 'Plugins' menu in WordPress.
+4. Create a new form to leverage the grid editor, existing forms can only be edited in text mode.
+5. Read the FAQs & Screenshot captions to understand how to use this plugin.
 
 == Frequently Asked Questions ==
 
@@ -243,6 +248,13 @@ For the required HTML markup in the label it is possible to manually change the 
 
 in order to replace the existing markup.
 
+= 18. I can only edit my form in 'Text' mode, I cannot see the 'Grid' tab, why? =
+existing forms are not editable in the grid editor.
+
+Create a new form to be able to leverage the grid editor functionality.
+
+this plugin allows you to create grid layout forms by creating an htlm markup and a CSS stylesheet which displays your form fields in a responsive grid.
+
 == Screenshots ==
 
 1. (1) This plugin replaces the CF7 post table page and post edit pages with WordPress core post edit and post pages.  This means that other plugins that build on WordPress standards for custom admin dashboard functionality should now play nicely with CF7.  One out-of-the-box improvement is the ability to customise the CF7 form table columns being displayed.
@@ -269,6 +281,10 @@ in order to replace the existing markup.
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 2.11.0 =
+* recaptch plugin fix by @netzgestaltung.
+* full-screen form editor button.
+
 = 2.10.5 =
 * bug fix on file attachments in notification email.
 = 2.10.4 =

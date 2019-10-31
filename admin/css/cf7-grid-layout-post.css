@@ -1,6 +1,26 @@
 #ajax-response.error-msg{
   color:red;
 }
+#full-screen-cf7 {
+    position: absolute;
+    top: -39px;
+    left: 160px;
+}
+#full-screen-cf7.full-screen {
+    position: absolute;
+    top: auto;
+    left: auto;
+    right: 0;
+    bottom: -58px;
+}
+#cf7sg-editor.full-screen {
+    top: 5px;
+    z-index: 10;
+    position: fixed;
+    overflow: auto;
+    height: 100%;
+    margin-left: -15px;
+  }
 #form-editor-tabs ul.ui-tabs-nav {
     border-bottom: 1px solid #ddd;
     padding: 7px 0px 0 3px;

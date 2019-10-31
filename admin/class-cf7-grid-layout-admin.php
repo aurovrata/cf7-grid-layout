@@ -1046,10 +1046,10 @@ class Cf7_Grid_Layout_Admin {
   public function edit_pointers($pointers){
     ob_start();
     include_once 'partials/pointers/cf7sg-pointer-update-forms.php';
-    $content =ob_get_clean();
+    $content =ob_get_contents();
     $pointers['update_forms_pointer'] = array($content, 'left', 'center');
     /* shortcodes */
-    ob_start();
+    ob_clean();
     include_once 'partials/pointers/cf7sg-pointer-shortcodes.php';
     $content = ob_get_clean();
     $pointers['cf7sg_shortcodes'] = array($content, 'top', 'top');

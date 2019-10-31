@@ -1096,6 +1096,7 @@ class Cf7_Grid_Layout_Public {
           }
           break;
         default:
+          /** @since 2.11.0 recaptcha fix constributed by @netzgestaltung */
           if ( $type !== 'captchar' ) { // really simple captcha gets called twice otherwise - and does not validate
             if(!isset($data[$tag['name']])) continue 2; /*likely toggled and unused*/
             $result = apply_filters( "wpcf7_validate_{$type}", $result, $tag );
