@@ -291,6 +291,8 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 3.0.1 =
+* fix pointers didmiss bug.
 = 3.0.0 =
 * clean-up core integration with cf7 plugin.
 * add WP std capabilities for better role management.

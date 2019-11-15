@@ -1,6 +1,8 @@
 jQuery(document).ready( function($) {
-  function createPointer(content, id, arrow, valign){
-    var $point;
+  function createPointer(id,pointer){
+    var $point,
+      content=pointer[0], arrow=pointer[1],
+      valign=pointer[2],selector=pointer[3];
     switch(id){
       case 'update_forms_pointer':
         $point = $('tbody#the-list tr .cf7-form-key[data-update="cf7sg-update"]');
@@ -12,7 +14,7 @@ jQuery(document).ready( function($) {
         $point = $('tbody#the-list tr .cf7-2-post-shortcode').first();
         break;
       default:
-        $point = $(id);
+        $point = $(selector);
         break;
     }
     var pointer =  $point.pointer({
@@ -29,11 +31,11 @@ jQuery(document).ready( function($) {
   if(pids.length>1){
     pidx=0;
     id = pids[pidx];
-    pobj=createPointer(pointers[id][0], id, pointers[id][1],pointers[id][2]);
+    pobj=createPointer(id, pointers[id]);
     if(!pobj && pidx<pids.length){ //try the next one.
       pidx++;
       id = pids[pidx];
-      pobj=createPointer(pointers[id][0], id, pointers[id][1],pointers[id][2]);
+      pobj=createPointer(id, pointers[id]);
     }
     $('body').on('click', 'a.cf7sg-next', function(e){
       // var $pointer = $(e.target);
@@ -41,7 +43,7 @@ jQuery(document).ready( function($) {
       if(pidx<pids.length){
         pidx++;
         id = pids[pidx];
-        pobj=createPointer(pointers[id][0], id, pointers[id][1],pointers[id][2]);
+        pobj=createPointer( id, pointers[id]);
         pobj.pointer('open');
       }
     });

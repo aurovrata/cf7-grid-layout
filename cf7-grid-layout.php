@@ -23,7 +23,7 @@
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
-define( 'CF7_GRID_VERSION', '3.0.0' );
+define( 'CF7_GRID_VERSION', '3.0.1' );
 
 if(! defined('WPCF7_AUTOP') ) define('WPCF7_AUTOP', false);
 
