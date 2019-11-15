@@ -29,6 +29,7 @@
   var wpcf7Value = '';
 
 	$(document).ready( function(){
+    //change the form id to mimic cf7 plugin custom admin page.
     /** @since 2.11.0 full screen button*/
     var $editor = $('#cf7sg-editor'),
       bodyWidth = $('#wpbody').width();

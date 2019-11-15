@@ -46,7 +46,7 @@
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
       }
       if(cf7sgeditor.mode.length>0){
-        console.log('addind mode');
+        // console.log('addind mode');
         cmConfig['mode']=cf7sgeditor.mode;
       }
       if(cf7sgeditor.theme.length>0){
@@ -161,9 +161,10 @@
 
             $codemirror.beautify(cursor);
 
-
-            var scrollPos = $('#form-panel').offset().top;
-            $(window).scrollTop(scrollPos);
+            if($grid.children('.container').length>0){
+              var scrollPos = $('#form-panel').offset().top;
+              $(window).scrollTop(scrollPos);
+            }
           }
         }
       });
@@ -194,26 +195,27 @@
       event.preventDefault(); //this will prevent the default submit
       var $embdedForms = '';
       var $formNoEmbeds = '';
+      var codeMirror ='';
       if('#cf7-editor-grid' == gridTab){ //set up the code in the cf7 textarea
         var $txta = $('textarea#wpcf7-form');
         $txta.html($txta.val()+'\n');
-        var code = html_beautify(
+        codeMirror = html_beautify(
           $grid.CF7FormHTML(),
           {
             'indent_size': 2,
             'wrap_line_length': 0
           }
         );
-        $('textarea#wpcf7-form-hidden').html(code);
-        $formNoEmbeds = $('<div>').append(code);
+        $('textarea#wpcf7-form-hidden').html(codeMirror);
+        $formNoEmbeds = $('<div>').append(codeMirror);
       }else{//we are in text mode.
-        $('textarea#wpcf7-form-hidden').html(cmEditor.getValue()).val(cmEditor.getValue());
-        $formNoEmbeds = $('<div>').append(cmEditor.getValue());
+        codeMirror = cmEditor.getValue();
+        $('textarea#wpcf7-form-hidden').html(codeMirror).val(codeMirror);
+        $formNoEmbeds = $('<div>').append(codeMirror);
       }
       //since 1.8 remove cf7sgfocus class if present.
       $('.cf7sgfocus', $formNoEmbeds).removeClass('cf7sgfocus');
       $embdedForms = $formNoEmbeds.find('.cf7sg-external-form').remove();
-
       //setup sub-forms hidden field.
       var embeds = [];
       var hasTables = false, hasTabs = false, hasToggles=false;
@@ -224,6 +226,15 @@
       }
       $('#cf7sg-embeded-forms').val(JSON.stringify(embeds));
       var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img;
+      /** @since 3.0.0 determine scripts required */
+      var scriptClass ="";
+      if(codeMirror.indexOf("class:sgv-")>0) scriptClass += "has-validation,";
+      if(codeMirror.indexOf("class:select2")>0) scriptClass += "has-select2,";
+      if(codeMirror.indexOf("class:nice-select")>0) scriptClass += "has-nice-select,";
+      if($('.cf7sg-collapsible', $formNoEmbeds).length>0) scriptClass += "has-accordion,";
+      if(codeMirror.indexOf("[benchmark")>0) scriptClass += "has-benchmark,";
+      if(codeMirror.indexOf("[date")>0) scriptClass += "has-date,";
+
       //scan and submit tabs & tables fields.
       var tableFields = [];
       $('.row.cf7-sg-table', $formNoEmbeds).each(function(){
@@ -288,9 +299,13 @@
       $this.append('<input type="hidden" name="cf7sg-has-toggles" value="'+hasToggles+'" /> ');
       var disabled = $('#form-editor-tabs').tabs('option','disabled');
       $this.append('<input type="hidden" name="cf7sg-has-grid" value="'+disabled+'" /> ');
-      /*
-      TODO: check for nice-select/select2, effects, toggles, accordion, validation to reduce script loads on front end.
-      */
+      //update script classes since v3.
+      if(hasTabs) scriptClass+="has-tabs,";
+      if(hasTables) scriptClass+="has-table,";
+      if(hasToggles) scriptClass+="has-toggles,";
+      if(!disabled) scriptClass+="has-grid,";
+      $this.append('<input type="hidden" name="cf7sg-script-classes" value="'+scriptClass+'" />');
+
       $('#cf7sg-tabs-fields').val(JSON.stringify(tabFields));
       $('#cf7sg-table-fields').val(JSON.stringify(tableFields));
       $('#cf7sg-toggle-fields').val(JSON.stringify(toggledFields));

@@ -26,8 +26,8 @@
         $target.parent().remove();
       }
     })
-    //.cf7-sg-table structure
-    var $cf7Form_table = $('div.has-table form.wpcf7-form');
+    //.cf7-sg-table structure, smart grid only.
+    var $cf7Form_table = $('div.cf7-smart-grid.has-table form.wpcf7-form');
     if($cf7Form_table.length){
       $('.container.cf7-sg-table', $cf7Form_table).each(function(){
         var $table = $(this);
@@ -102,8 +102,8 @@
       });
     }//end table structure
 
-    //inline validation
-    var cf7Form_validation = $('div.has-validation form.wpcf7-form');
+    //inline validation any forms
+    var cf7Form_validation = $('div.cf7-smart-grid.has-validation form.wpcf7-form');
     if(cf7Form_validation.length){
       var validation = $('input[type="number"][class*="sgv-"]', cf7Form_validation)
       validation.each(function(){
@@ -140,8 +140,8 @@
       });
     }//end validation
 
-    //enable the tabs
-    var $cf7Form_tabs = $('div.has-tabs form.wpcf7-form');
+    //enable the tabs smart grid only.
+    var $cf7Form_tabs = $('div.cf7-smart-grid.has-tabs form.wpcf7-form');
     if($cf7Form_tabs.length){
       cf7sgPanels = {}; //object to store cloned panels
       $( ".cf7-sg-tabs",  $cf7Form_tabs).each(function(){
@@ -202,8 +202,8 @@
         }
       });
     }
-    //enable jquery-ui select menu,
-    var cf7Form_niceSelect = $('div.has-nice-select form.wpcf7-form');
+    //enable jquery-ui select menu, any forms.
+    var cf7Form_niceSelect = $('div.cf7-smart-grid.has-nice-select form.wpcf7-form');
     if(cf7Form_niceSelect.length > 0){
       //check if this is a mapped cf7-2-post form
       cf7Form_niceSelect.filter('div.cf7_2_post form.wpcf7-form').each(function(){
@@ -234,8 +234,8 @@
         $form.trigger('sgNiceSelect');
       });
     }
-    //enabled select2 dropdowns
-    var cf7Form_select2 = $('div.has-select2 form.wpcf7-form');
+    //enabled select2 dropdowns any forms.
+    var cf7Form_select2 = $('div.cf7-smart-grid.has-select2 form.wpcf7-form');
     if(cf7Form_select2.length > 0){
       //check if this is a mapped cf7-2-post form
       cf7Form_select2.filter('div.cf7_2_post form.wpcf7-form').each(function(){
@@ -270,7 +270,7 @@
     var input = document.createElement( 'input' );
     input.setAttribute('type','date');
     var html5date = (input.type == 'date');
-		var cf7Form_datepicker = $('div.has-date form.wpcf7-form');
+		var cf7Form_datepicker = $('div.cf7-smart-grid.has-date form.wpcf7-form');
 		if(cf7Form_datepicker.length > 0){
 			//check if this is a mapped cf7-2-post form
 			cf7Form_datepicker.filter('div.cf7_2_post form.wpcf7-form').each(function(){
@@ -309,8 +309,8 @@
 			});
 		}
 
-    //enable collapsible rows
-    var cf7Form_accordion = $('div.has-accordion form.wpcf7-form');
+    //enable collapsible rows only smart grid
+    var cf7Form_accordion = $('div.cf7-smart-grid.has-accordion form.wpcf7-form');
     if(cf7Form_accordion.length>0){
       //enable the toggle buttons
       cf7Form_accordion.filter('div.has-toggles form.wpcf7-form').each(function(){
@@ -470,7 +470,7 @@
     /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
     *@since 1.1.0
     */
-    $('div.cf7_2_post div.has-toggles form.wpcf7-form').each(function(){
+    $('div.cf7_2_post div.cf7-smart-grid.has-toggles form.wpcf7-form').each(function(){
       var $form = $(this);
       var nonceID = $form.closest('div.cf7_2_post').attr('id');
       if(nonceID.length>0){

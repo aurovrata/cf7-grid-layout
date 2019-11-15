@@ -22,7 +22,8 @@ if( !function_exists('debug_msg') ){
           $file = implode('/',$files);
           $line = $backtrace[0]['line'];
           $msg='DEBUG_MSG: '.PHP_EOL;
-          if($file != $debug_msg_last_file && $line != $debug_msg_last_line){
+          if(true===$trace || ($file != $debug_msg_last_file && $line != $debug_msg_last_line)){
+            if($trace===true) $trace = sizeof($backtrace);
             for($idx=$trace; $idx>0; $idx--){
               $msg.="   [".$backtrace[$idx]['line']."]->/".$backtrace[$idx]['file'].PHP_EOL;
             }

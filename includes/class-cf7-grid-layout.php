@@ -207,6 +207,8 @@ class Cf7_Grid_Layout {
     /** @since 2.6.0*/
     $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'pretty_admin_pointers' );
     $this->loader->add_action( 'cf7sg_plugin_pointers-edit-wpcf7_contact_form', $plugin_admin, 'edit_pointers' );
+    /** @since 3.0.0 */
+    $this->loader->add_action( 'cf7sg_plugin_pointers-wpcf7_contact_form', $plugin_admin, 'post_pointers' );
     /*
     CF7 Hooks
     */
@@ -219,7 +221,13 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter( 'wpcf7_default_template', $plugin_admin, 'default_cf7_form' , 5,2);
     /** @since 2.6.0*/
     $this->loader->add_filter( 'wpcf7_messages', $plugin_admin, 'disabled_message' , 5,2);
-    
+    /** @since 3.0.0 */
+    $this->loader->add_filter( 'wpcf7_map_meta_cap', $plugin_admin, 'reset_meta_cap' , 5,1);
+    //make sure users that cannot publish forms are set to pending.
+    $this->loader->add_filter( 'wp_insert_post_data', $plugin_admin, 'pending_for_review');
+    //add all form capabilities to editor role.
+    $this->loader->add_action( 'admin_init', $plugin_admin, 'enable_cf7_editor_role', 5,0 );
+
 	}
 
 	/**

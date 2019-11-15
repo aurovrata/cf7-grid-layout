@@ -54,9 +54,9 @@
             </div>
             <div>
               <input name="select-style[]" class=" select-type "  type="radio" value="select2" />
-              <label><a target="_blank" href="https://select2.github.io/"><?=__('jQuery Select2','cf7-grid-layout')?></a></label>
+              <label><a target="_blank" href="https://select2.org/getting-started/basic-usage"><?=__('jQuery Select2','cf7-grid-layout')?></a></label>
               <input name="select2-tags" id="select2-tags" type="checkbox" disabled value="select2tags"/>
-              <label for="select2-tags"><a target="_blank" href="https://select2.github.io/examples.html#tags"><?=__('Enable user options','cf7-grid-layout')?></a></label>
+              <label for="select2-tags"><a target="_blank" href="https://select2.org/tagging"><?=__('Enable user options','cf7-grid-layout')?></a></label>
             </div>
           </td>
         </tr>

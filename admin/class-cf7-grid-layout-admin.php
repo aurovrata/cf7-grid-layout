@@ -49,13 +49,26 @@ class Cf7_Grid_Layout_Admin {
     $this->version = $version;
   }
   /**
+  * get cf7 post type set by cf7 plugin.
+  *
+  *@since 3.0.0
+  *@return string post type.
+  */
+  private function cf7_post_type(){
+    $type = 'wpcf7_post_type_notset';
+    if(class_exists('WPCF7_ContactForm') ) {
+      $type = WPCF7_ContactForm::post_type;
+    }
+    return $type;
+  }
+  /**
   * Hack to add scripts/styles to edit page.
   * Hooked on 'admin_enqueue_scripts'.
   *@since 1.5.0
   */
   public function popular_extentions_scripts(){
     $screen = get_current_screen();
-    if (empty($screen) || 'wpcf7_contact_form' != $screen->post_type){
+    if (empty($screen) || $this->cf7_post_type() != $screen->post_type){
       return;
     }
     $plugin_dir = plugin_dir_url( __DIR__ );
@@ -81,7 +94,7 @@ class Cf7_Grid_Layout_Admin {
   */
   public function print_extentions_scripts(){
     $screen = get_current_screen();
-    if (empty($screen) || 'wpcf7_contact_form' != $screen->post_type){
+    if (empty($screen) || $this->cf7_post_type() != $screen->post_type){
       return;
     }
     global $plugin_page;
@@ -96,7 +109,7 @@ class Cf7_Grid_Layout_Admin {
 	 */
 	public function enqueue_styles() {
       $screen = get_current_screen();
-    if (empty($screen) || 'wpcf7_contact_form' != $screen->post_type){
+    if (empty($screen) || $this->cf7_post_type() != $screen->post_type){
       return;
     }
     $plugin_dir = plugin_dir_url( __DIR__ );
@@ -139,13 +152,13 @@ class Cf7_Grid_Layout_Admin {
       return;
     }
     $screen = get_current_screen();
-    if ('wpcf7_contact_form' != $screen->post_type){
+    if ($this->cf7_post_type() != $screen->post_type){
       return;
     }
     switch( $screen->base ){
       case 'post':
 		    //for the future
-        $this->setup_cf7_object();
+        //$this->setup_cf7_object(); already called by load-{sub-page} hook.
         //enqueue the cf7 scripts.
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
@@ -270,10 +283,6 @@ class Cf7_Grid_Layout_Admin {
         break;
     }
 	}
-//   public function inspect_scripts() {
-//     global $wp_scripts;
-//     debug_msg($wp_scripts->queue);
-// }
 
   /**
   * Adds a new sub-menu to replace the 'Add New' CF7 menu
@@ -289,12 +298,11 @@ class Cf7_Grid_Layout_Admin {
       'wpcf7_edit_contact_forms',
       'post-new.php?post_type=wpcf7_contact_form'
     );
-
     //initial cf7 object when creating new form
     add_action( 'load-' . $hook, array($this, 'setup_cf7_object'));
     //remove_submenu_page( $menu_slug, $submenu_slug );
     remove_submenu_page( 'wpcf7', 'wpcf7-new' );
-    remove_meta_box('slugdiv', 'wpcf7_contact_form', 'normal');
+    remove_meta_box('slugdiv', $this->cf7_post_type(), 'normal');
   }
   /**
   * Change the submenu order
@@ -333,16 +341,16 @@ class Cf7_Grid_Layout_Admin {
   */
 
   public function modify_cf7_post_type_args($args, $post_type){
-    if(class_exists('WPCF7_ContactForm') &&  $post_type === WPCF7_ContactForm::post_type  ) {
+    if($post_type === $this->cf7_post_type()  ) {
       //debug_msg($args, 'pre-args');
-      $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
+      // $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
       /** @since 2.8.3 add wpcf7_type (registered in assets/cf7-table.php) taxonomy to cf7 post type */
       $system_taxonomy = array('wpcf7_type');
-      if(!empty($system_dropdowns)){
-        foreach($system_dropdowns as $id=>$list){
-          $system_taxonomy = array_merge($system_taxonomy, $list);
-        }
-      }
+      // if(!empty($system_dropdowns)){
+      //   foreach($system_dropdowns as $id=>$list){
+      //     $system_taxonomy = array_merge($system_taxonomy, $list);
+      //   }
+      // }
       if(!empty($args['taxonomies'])){
         $system_taxonomy = array_merge($args['taxonomies'], $system_taxonomy);
         $system_taxonomy = array_unique($system_taxonomy);
@@ -369,9 +377,22 @@ class Cf7_Grid_Layout_Admin {
       $args['labels']['items_list_navigation'] = 'Forms list navigation';
       $args['labels']['items_list'] = 'Forms list';
       /** @since 2.8.1  fix missing delete_posts notices*/
-     $args['capabilities']['delete_posts']='wpcf7_delete_posts';
-    }
+      // $args['capabilities']['delete_posts']= 'wpcf7_delete_posts';
+      /** @since 3.0.0 enable better capability management */
+      $args['map_meta_cap']=true; //allow finer capability mapping.
+      $args['capabilities']['edit_post'] = 'wpcf7_edit_contact_form';
+      $args['capabilities']['read_post'] = 'wpcf7_read_contact_form';
+      $args['capabilities']['delete_post'] = 'wpcf7_delete_contact_form';
+   		$args['capabilities']['edit_posts'] = 'wpcf7_edit_contact_forms';
+      $args['capabilities']['edit_others_posts']= 'wpcf7_edit_others_contact_forms';
+      $args['capabilities']['edit_published_posts']= 'wpcf7_edit_published_contact_forms';
+      $args['capabilities']['delete_posts']= 'wpcf7_delete_contact_forms';
+      $args['capabilities']['delete_published_posts']= 'wpcf7_delete_published_contact_forms';
+      $args['capabilities']['delete_others_posts']= 'wpcf7_delete_others_contact_forms';
+      $args['capabilities']['publish_posts']= 'wpcf7_publish_contact_forms';
 
+       // debug_msg($args);
+    }
     return $args;
   }
   /**
@@ -404,11 +425,11 @@ class Cf7_Grid_Layout_Admin {
   */
   public function main_editor_meta_box() {
     //add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args)
-    if(class_exists('WPCF7_ContactForm') &&  post_type_exists( WPCF7_ContactForm::post_type ) ) {
+    if( post_type_exists( $this->cf7_post_type() ) ) {
       add_meta_box( 'meta-box-main-cf7-editor',
         __( 'Edit Contact Form', 'contact-form-7' ),
         array($this , 'main_editor_metabox_display'),
-        WPCF7_ContactForm::post_type,
+        $this->cf7_post_type(),
         'normal',
         'high'
       );
@@ -474,11 +495,11 @@ class Cf7_Grid_Layout_Admin {
   */
   public function info_meta_box() {
     //add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args)
-    if(class_exists('WPCF7_ContactForm') &&  post_type_exists( WPCF7_ContactForm::post_type ) ) {
+    if(post_type_exists( $this->cf7_post_type() ) ) {
       add_meta_box( 'meta-box-cf7-info',
         __( 'Information', 'contact-form-7' ),
         array($this , 'info_metabox_display'),
-        WPCF7_ContactForm::post_type,
+        $this->cf7_post_type(),
         'side',
         'high'
       );
@@ -491,7 +512,7 @@ class Cf7_Grid_Layout_Admin {
    * @param      WP_Post    $post    post object being edited/created.
   **/
   public function cf7_post_submit_action($post){
-    if('wpcf7_contact_form' == $post->post_type){
+    if($this->cf7_post_type() == $post->post_type){
       do_action( 'wpcf7_admin_misc_pub_section', $post->ID );
     }
   }
@@ -509,11 +530,11 @@ class Cf7_Grid_Layout_Admin {
   */
   public function helper_meta_box() {
     //add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args).
-    if(class_exists('WPCF7_ContactForm') &&  post_type_exists( WPCF7_ContactForm::post_type ) ) {
+    if(post_type_exists( $this->cf7_post_type() ) ) {
       add_meta_box( 'meta-box-cf7sg-helper',
         __( 'Actions & Filters', 'cf7-grid-layout' ),
         array($this , 'helper_metabox_display'),
-        WPCF7_ContactForm::post_type,
+        $this->cf7_post_type(),
         'side',
         'low'
       );
@@ -561,7 +582,7 @@ class Cf7_Grid_Layout_Admin {
         break;
     }
 
-    //debug_msg($_POST, 'submitted ');
+    // debug_msg($_POST, 'submitted ');
     $args = $_REQUEST;
   	$args['id'] = $post_id;
 
@@ -668,6 +689,11 @@ class Cf7_Grid_Layout_Admin {
     $is_cf7sg = ( 'true' === $_POST['is_cf7sg_form']) ? true : false;
     update_post_meta($post_id, '_cf7sg_managed_form', $is_cf7sg);
     update_post_meta($post_id, '_cf7sg_version', $this->version);
+    /** @since 3.0.0 track script classes for loading for js/css in front-end */
+    $classes = sanitize_text_field($_POST['cf7sg-script-classes']);
+    $classes = explode(',', trim($classes, ','));
+    // debug_msg($classes, 'script classes');
+    update_post_meta($post_id, '_cf7sg_script_classes', $classes);
     /**
     *@since 2.3.0 the duplicate functionality has been isntored and therefore any new meta fields added to this plugin needs to be added to the duplication properties too.
     */
@@ -681,7 +707,7 @@ class Cf7_Grid_Layout_Admin {
   */
   public function duplicate_form_properties($new_form_id, $form_id){
     //these properties will be preceded with an '_' by the cf7 plugin before being duplicated.
-    $properties = array('_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form');
+    $properties = array('_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form','_cf7sg_script_classes', '_cf7sg_version');
     $properties = apply_filters('cf7sg_duplicate_form_properties', $properties);
     foreach($properties as $field){
       $value = get_post_meta($form_id, $field, true);
@@ -764,7 +790,7 @@ class Cf7_Grid_Layout_Admin {
     }
     $cf7_key = sanitize_text_field($_POST['cf7_key']);
     $sub_forms = get_posts(array(
-      'post_type' => 'wpcf7_contact_form',
+      'post_type' => $this->cf7_post_type(),
       'post_name__in' => array($cf7_key)
     ));
     $form='';
@@ -950,7 +976,7 @@ class Cf7_Grid_Layout_Admin {
       'description'                => 'Contact Form 7 dynamic dropdown taxonomy list',
   	);
 
-    register_taxonomy( $slug, WPCF7_ContactForm::post_type, $args );
+    register_taxonomy( $slug, $this->cf7_post_type(), $args );
   }
   /**
   * Deactivate this plugin if CF7 plugin is deactivated.
@@ -1000,9 +1026,9 @@ class Cf7_Grid_Layout_Admin {
   *@since 2.6.0
   *@param string $hook_suffix current page.
   */
-  public function pretty_admin_pointers($hook_suffix) {
+  public function pretty_admin_pointers($hook_suffix){
     $screen = get_current_screen();
-    if (!isset($screen) || 'wpcf7_contact_form' != $screen->post_type){
+    if (!isset($screen) || $this->cf7_post_type() != $screen->post_type || in_array( $hook_suffix, array('post.php', 'post-new.php'), true)){
       return;
     }
     $enqueue_pointer = false;
@@ -1023,7 +1049,7 @@ class Cf7_Grid_Layout_Admin {
         $pointers[$id] = array($pointer[0], $pointer[1], $pointer[2]);
       }
     }
-
+    debug_msg($dismissed_pointers, 'dismissed ');
   	// Enqueue pointer CSS and JS files, if needed
   	if( $enqueue_pointer ) {
   		wp_enqueue_style( 'wp-pointer' );
@@ -1040,8 +1066,8 @@ class Cf7_Grid_Layout_Admin {
   * CF7 Table pointer notices.
   * Hooked on 'cf7sg_plugin_pointers-edit-wpcf7_contact_form'
   *@since 2.6.0
-  *@param string $param text_description
-  *@return string text_description
+  *@param array $pointers array of pointers to suplement
+  *@return array array of pointers element-id=>hmtl to display key value pairs.
   */
   public function edit_pointers($pointers){
     ob_start();
@@ -1053,8 +1079,90 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-shortcodes.php';
     $content = ob_get_clean();
     $pointers['cf7sg_shortcodes'] = array($content, 'top', 'top');
-
     return $pointers;
   }
+  /**
+  * CF7 Edit pointer notices.
+  * Hooked on 'cf7sg_plugin_pointers-wpcf7_contact_form'
+  *@since 2.6.0
+  *@param array $pointers array of pointers to suplement
+  *@return array array of pointers element-id=>hmtl to display key value pairs.
+  */
+  public function post_pointers($pointers){
+    ob_start();
+    include_once 'partials/pointers/cf7sg-pointer-editor-full-screen.php';
+    $content =ob_get_contents();
+    //content / arrow [top,bottom,left,right] / box align [top,bottom,center]
+    $pointers['#full-screen-cf7'] = array($content, 'left', 'center');
+    /* shortcodes */
+    ob_clean();
+    include_once 'partials/pointers/cf7sg-pointer-editor-tabs.php';
+    $content =ob_get_contents();
+    $pointers['#form-editor-tabs>ul>li.ui-tabs-active'] = array($content, 'right', 'center');
+    /* shortcodes */
+    ob_clean();
+    include_once 'partials/pointers/cf7sg-pointer-editor-rows-control.php';
+    $content = ob_get_contents();
+    if(!empty($content)){
+      $pointers['#grid-form>.container>.row>.row-controls'] = array($content, 'right', 'center');
+      ob_clean();
+    }
+    include_once 'partials/pointers/cf7sg-pointer-editor-column-control.php';
+    $content = ob_get_contents();
+    if(!empty($content)){
+      $pointers['#grid-form>.container>.row>.columns:first-child>.grid-column>span.icon-code'] = array($content, 'left', 'center');
+      ob_clean();
+    }
+    include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php';
+    $content = ob_get_contents();
+    $pointers['#top-tags>#tag-generator-list > a[title*="dynamic-dropdown"]'] = array($content, 'left', 'center');
+    ob_clean();
+    include_once 'partials/pointers/cf7sg-pointer-tag-benchmark.php';
+    $content = ob_get_clean();
+    $pointers['#top-tags>#tag-generator-list > a[title*="benchmark"]'] = array($content, 'left', 'center');
+    return $pointers;
+  }
+  /**
+  * Rest meta_caps for better fine tuning of user caps.
+  * hooked to 'wpcf7_map_meta_cap'.
+  *@since 3.0.0
+  *@param array $caps key->value pairs of capabilities.
+  *@return array key->value pairs of capabilities.
+  */
+  public function reset_meta_cap($caps){
+		// fixes bug in contact-form-7/capabilities.php, which uses array_diff instead of array_merge
+    return array();
+  }
+  /**
+  * CF7 plugin by default sets form post status to 'publish' regardless of user capability.
+  * This functions rectifies this.   Hooked to 'wp_insert_post_data'.
+  *@since 3.0.0
+  *@param array $data sanitised post data.
+  *@return array post data.
+  */
+  public function pending_for_review($data){
+    if($this->cf7_post_type() != $data['post_type']) return $data;
 
+    $post_type_object = get_post_type_object( $this->cf7_post_type() );
+    //check if user can publish.
+    if(!current_user_can($post_type_object->cap->publish_posts) && $data['post_status']=='publish'){
+      $data['post_status']='pending';
+    }
+    // debug_msg('post status '.$data['post_status']);
+    return $data;
+  }
+  /**
+  * Enable all cf7 capabilites for editors.
+  * Hooked to action 'admin_init'.
+  *@since 3.0.0
+  */
+  public function enable_cf7_editor_role(){
+    global $wp_roles;
+    if ( ! isset( $wp_roles ) ) $wp_roles = new WP_Roles();
+    $caps=array('wpcf7_edit_contact_forms','wpcf7_edit_others_contact_forms','wpcf7_edit_published_contact_forms','wpcf7_read_contact_forms','wpcf7_publish_contact_forms','wpcf7_delete_contact_forms','wpcf7_delete_published_contact_forms','wpcf7_delete_others_contact_forms');
+    $fe = $wp_roles->get_role('editor');
+    foreach($caps as $cap) $fe->add_cap($cap);
+    $ad = $wp_roles->get_role('administrator');
+    foreach($caps as $cap) $ad->add_cap($cap);
+  }
 }

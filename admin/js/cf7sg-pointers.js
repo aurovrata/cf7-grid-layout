@@ -11,6 +11,9 @@ jQuery(document).ready( function($) {
       case 'cf7sg_shortcodes':
         $point = $('tbody#the-list tr .cf7-2-post-shortcode').first();
         break;
+      default:
+        $point = $(id);
+        break;
     }
     var pointer =  $point.pointer({
       content: content,

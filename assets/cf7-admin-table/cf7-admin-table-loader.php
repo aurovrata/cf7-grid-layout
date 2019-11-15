@@ -8,7 +8,7 @@ if(!$cf7_admin->hooks()){
   add_action( 'admin_enqueue_scripts', array($cf7_admin , 'enqueue_script'));
   //add_action( 'admin_enqueue_scripts', array($this, 'enqueue_scripts') ));
   //modify the CF7 post type
-  add_action('init', array( $cf7_admin, 'modify_cf7_post_type' ) , 20 );
+  // add_action('init', array( $cf7_admin, 'modify_cf7_post_type' ) , 20 );
   //cf7 sub-menu
   add_action('admin_menu', array( $cf7_admin, 'add_cf7_sub_menu' ));
   add_filter( 'custom_menu_order', array( $cf7_admin, 'change_cf7_submenu_order' ),1000);

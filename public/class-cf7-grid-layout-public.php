@@ -238,9 +238,6 @@ class Cf7_Grid_Layout_Public {
     }
     //wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
-    // global $wp_scripts;
-
-    //wp_print_scripts(array('contact-form-7'));
     $cf7_id = $attr['id'];
     //get the key
     $cf7post = get_post($cf7_id);
@@ -255,18 +252,46 @@ class Cf7_Grid_Layout_Public {
       wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', array($this->plugin_name), null, true);
       do_action('smart_grid_register_custom_script', $cf7_key);
     }
-    /**
-    * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
-    */
-    $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
-    if(''===$is_form || !$is_form){
-      wp_enqueue_style('contact-form-7'); //default cf7 plugin css.
-      return $output;
-    }
-    $class = get_post_meta($cf7_id, '_cf7sg_classes', true);
+    /** @since 3.0.0 load scripts only for required classes */
+    $class = get_post_meta($cf7_id, '_cf7sg_script_classes', true);
     if(empty($class)){
       $class = array();
     }
+    //check classes required for sub-forms.
+    $sub_forms = array();
+    $sub_form_keys = get_post_meta($cf7_id, '_cf7sg_sub_forms', true);
+    if(!empty($sub_form_keys)){
+      $args = array(
+        'post_type' => 'wpcf7_contact_form',
+        'post_name__in' => $sub_form_keys
+      );
+      $sub_forms = get_posts($args);
+      foreach($sub_forms as $form){
+        $sub_class = get_post_meta($form->ID, '_cf7sg_script_classes', true);
+        if(!empty($sub_class)) $class = array_unique(array_merge($class, $sub_class));
+      }
+    }
+    //select2
+    if(array_search('has-select2',$class, true)!==false){
+      wp_enqueue_script('jquery-select2');
+      wp_enqueue_style('select2-style');
+    }
+    //nice-select
+    if(array_search('has-nice-select',$class, true)!==false){
+      wp_enqueue_script('jquery-nice-select');
+      wp_enqueue_style('jquery-nice-select-css');
+    }
+    //benchmark
+    if(array_search('has-benchmark',$class, true)!==false){
+      wp_enqueue_script('js-cf7sg-benchmarking');
+    }
+    if(array_search('has-date',$class, true)!==false){
+      wp_enqueue_script('jquery-ui-datepicker');
+    }
+    //cf7 plugin styles
+    wp_enqueue_style('contact-form-7');
+    //cf7sg script & style.
+    wp_enqueue_style($this->plugin_name);
     wp_enqueue_script($this->plugin_name);
     /** @since 2.6.0 disabled button message*/
     $form = wpcf7_get_current_contact_form();
@@ -277,101 +302,64 @@ class Cf7_Grid_Layout_Public {
       'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' )
     );
     wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
-
-    $class['has-validation']=true;
-
-    $class['has-select2'] = true;
-    //if(isset($class['has-select2'])){
-      wp_enqueue_script('jquery-select2');
-      wp_enqueue_style('select2-style');
-    //}
-    $class['has-accordion']=true;
-    wp_enqueue_script('jquery-ui-accordion');
-
-    //load tabs
-    $has_tabs = false;
-    if(get_post_meta($cf7_id, '_cf7sg_has_tabs', true)){
-      $class['has-tabs']=true;
-      $has_tabs = true;
+    //setup classes and id for wrapper.
+    $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
+    /**
+    * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
+    */
+    $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
+    if(''===$is_form || !$is_form){
+      wp_enqueue_style('contact-form-7'); //default cf7 plugin css.
+      do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
+      $classes = implode(' ', $class) .' key_'.$cf7_key;
+      $output = '<div class="cf7sg-container"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
+      return $output;
     }
-    //load tables
-    $has_tables = false;
-    if(get_post_meta($cf7_id, '_cf7sg_has_tables', true)){
-      $class['has-table']=true;
-      $has_tables = true;
-    }
-    $class['has-effects']=true;
-    wp_enqueue_script('jquery-effects-core');
-		$class['has-nice-select'] = true;
-    //if(isset($class['has-nice-select'])){
-    wp_enqueue_script('jquery-nice-select');
-    wp_enqueue_style('jquery-nice-select-css');
-    //}
-    $has_toggles = false;
-    if(get_post_meta($cf7_id, '_cf7sg_has_toggles', true)){
-      $class['has-toggles']=true;
-      $has_toggles = true;
-    }
-
-    //styles
-    wp_enqueue_style('contact-form-7');
-    wp_enqueue_style($this->plugin_name);
+    //load required dependencies for grid form.
     wp_enqueue_style('smart-grid');
     wp_enqueue_style('dashicons');
-    $class['has-grid']=true;
-    wp_enqueue_style('cf7-jquery-ui-theme');
-    wp_enqueue_style('cf7-jquery-ui-structure');
-    wp_enqueue_style('cf7-jquery-ui');
-    if(isset($class['has-benchmark'])){
-      wp_enqueue_script('js-cf7sg-benchmarking');
-    }
 
-    $class['has-date']=true;
-    wp_enqueue_script('jquery-ui-datepicker');
+    //jquery accordion for collapsible rows.
+    $has_section = array_search('has-accordion',$class, true) !==false;
+    if($has_section){
+      wp_enqueue_script('jquery-ui-accordion');
+    }
+    $has_tabs = array_search('has-tabs',$class, true) !==false;
+    $has_tables = array_search('has-table',$class, true) !==false;
+    $has_toggles = array_search('has-toggles',$class, true) !==false;
 
     $form_time = strtotime($cf7post->post_modified);
-    //check if there are any recently updated sub-forms.
-    $sub_form_keys = get_post_meta($cf7_id, '_cf7sg_sub_forms', true);
-    if(!empty($sub_form_keys)){
-      $args = array(
-        'post_type' => 'wpcf7_contact_form',
-        'post_name__in' => $sub_form_keys
-      );
-      $sub_forms = get_posts($args);
+    if(!empty($sub_forms)){
       $cf7_form = $form_raw = '';
       foreach($sub_forms as $post_obj){
-        //check form saved date
-        //debug_msg()
+        //check form saved date, if sub-form is newer, we need to udpate it.
         if(strtotime($post_obj->post_modified ) > $form_time){
           if(empty($cf7_form)){
             $cf7_form = wpcf7_contact_form($cf7_id);
             $form_raw = $cf7_form->prop( 'form' );
           }
           $form_raw = $this->update_sub_form($form_raw, $post_obj);
-          //debug_msg($form_raw, 'new form---------------- ');
-        }
-        //check if sub-forms needs tabs|tablevalidate_beanchmark
-        if(!$has_tables && get_post_meta($post_obj->ID, '_cf7sg_has_tables', true)){
-          $class['has-table']=true;
-          $has_tables = true;
-        }
-        if(!$has_tabs && get_post_meta($post_obj->ID, '_cf7sg_has_tabs', true)){
-          $class['has-tabs']=true;
-          $has_tabs = true;
-        }
-        if(!$has_toggles && get_post_meta($post_obj->ID, '_cf7sg_has_toggles', true)){
-          $class['has-toggles']=true;
-          $has_toggles=true;
         }
       }
       if(!empty($cf7_form)){ //redraw the form.
         $cf7_form = wpcf7_save_contact_form(array('id'=>$cf7_id, 'form'=>$form_raw));
-        //debug_msg('Updated embeded forms in cf7 form: '.$cf7_key);
         //reload the form
         //$cf7_form = wpcf7_contact_form($cf7_id);
         $output = $cf7_form->form_html($attr);
-        $class['has-update']=true;
+        $class[]= 'has-update';
+        //actino for other plugin notification.
+        do_action('cf7sg_subform_uddate',$cf7_id, $cf7_form, $attr );
       }
+    }
+    //required for tables/tabs/accordion
+    if($has_tabs || $has_tables || $has_toggles || $has_section){
+      wp_enqueue_script('jquery-effects-core');
+    }
+
+    if($has_tabs || $has_toggles || $has_section){
+      wp_enqueue_style('cf7-jquery-ui-theme');
+      wp_enqueue_style('cf7-jquery-ui-structure');
+      wp_enqueue_style('cf7-jquery-ui');
     }
     if($has_tabs) wp_enqueue_script('jquery-ui-tabs');
     if($has_toggles){
@@ -382,10 +370,8 @@ class Cf7_Grid_Layout_Public {
     //$cf7_key = get_post_meta($cf7_id, '_smart_grid_cf7_form_key', true);
     //allow custom script print
     do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
-    //form id
-    $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
-    $classes = implode(' ', array_keys($class)) .' key_'.$cf7_key;
 
+    $classes = implode(' ', $class) .' key_'.$cf7_key;
     $output = '<div class="cf7sg-container"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
     return $output;
   }

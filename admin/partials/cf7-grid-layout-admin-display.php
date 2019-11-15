@@ -1,8 +1,10 @@
 <h2><?php echo esc_html( __( 'Form', 'contact-form-7' ) ); ?></h2>
+<div id="top-tags">  
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();
 ?>
+</div>
 <div id="form-editor-tabs">
   <ul>
     <li><a href="#cf7-editor-grid"><?=__('Grid','cf7-grid-layout')?></a></li>

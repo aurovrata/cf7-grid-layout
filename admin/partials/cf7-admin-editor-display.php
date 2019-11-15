@@ -20,103 +20,103 @@ if('add' == $screen->action) do_action( 'load-contact_page_wpcf7-new' );
 else do_action( 'load-toplevel_page_wpcf7' );
 ?>
 <div id="cf7sg-editor">
-  <div style="position:relative">
-    <a id="full-screen-cf7" class="button" href="javascript:void(0)"><span><?= __('toggle full screen','cf7-grid-layout')?></span></a>
-  </div>
-<input type="hidden" id="is-cf7sg-form" name="is_cf7sg_form" value="true" />
-<input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
-<input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />
-<?php wp_nonce_field( 'wpcf7-save-contact-form_' .  $post_id, '_wpcf7nonce' ); ?>
+    <div style="position:relative">
+      <a id="full-screen-cf7" class="button" href="javascript:void(0)"><span><?= __('toggle full screen','cf7-grid-layout')?></span></a>
+    </div>
+  <input type="hidden" id="is-cf7sg-form" name="is_cf7sg_form" value="true" />
+  <input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
+  <input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />
+  <?php wp_nonce_field( 'wpcf7-save-contact-form_' .  $post_id, '_wpcf7nonce' ); ?>
 
-<div id="contact-form-editor">
-  <div class="keyboard-interaction"><?php echo sprintf( esc_html( __( '%s keys switch panels', 'contact-form-7' ) ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
+  <div id="contact-form-editor">
+    <div class="keyboard-interaction"><?php echo sprintf( esc_html( __( '%s keys switch panels', 'contact-form-7' ) ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
 
-<?php
+  <?php
 
-	$editor = new WPCF7_Editor( $cf7_form );
-	$panels = array();
+  	$editor = new WPCF7_Editor( $cf7_form );
+  	$panels = array();
 
-	if ( current_user_can( 'wpcf7_edit_contact_form', $post_id ) ) {
-		$panels = array(
-			'form-panel' => array(
-				'title' => __( 'Form', 'contact-form-7' ),
-				'callback' => array($this, 'grid_editor_panel') ),
-			'mail-panel' => array(
-				'title' => __( 'Mail', 'contact-form-7' ),
-				'callback' => 'wpcf7_editor_panel_mail' ),
-			'messages-panel' => array(
-				'title' => __( 'Messages', 'contact-form-7' ),
-				'callback' => 'wpcf7_editor_panel_messages' ) );
+  	if ( current_user_can( 'wpcf7_edit_contact_form', $post_id ) ) {
+  		$panels = array(
+  			'form-panel' => array(
+  				'title' => __( 'Form', 'contact-form-7' ),
+  				'callback' => array($this, 'grid_editor_panel') ),
+  			'mail-panel' => array(
+  				'title' => __( 'Mail', 'contact-form-7' ),
+  				'callback' => 'wpcf7_editor_panel_mail' ),
+  			'messages-panel' => array(
+  				'title' => __( 'Messages', 'contact-form-7' ),
+  				'callback' => 'wpcf7_editor_panel_messages' ) );
 
-		$additional_settings = trim( $cf7_form->prop( 'additional_settings' ) );
-		$additional_settings = explode( "\n", $additional_settings );
-		$additional_settings = array_filter( $additional_settings );
-		$additional_settings = count( $additional_settings );
+  		$additional_settings = trim( $cf7_form->prop( 'additional_settings' ) );
+  		$additional_settings = explode( "\n", $additional_settings );
+  		$additional_settings = array_filter( $additional_settings );
+  		$additional_settings = count( $additional_settings );
 
-		$panels['additional-settings-panel'] = array(
-			'title' => $additional_settings
-				? sprintf(
-					__( 'Additional Settings (%d)', 'contact-form-7' ),
-					$additional_settings )
-				: __( 'Additional Settings', 'contact-form-7' ),
-			'callback' => 'wpcf7_editor_panel_additional_settings' );
-	}
-  /**
-  * filter to add/remove panels from the cf7 post editor
-  * @param array $panel aarray of panels presented as tabs in the editor, $id => array( 'title' => $panel_title, 'callback' => $callback_function).  The $callback_function must be a valid function to echo the panel html script.
-  */
-	$panels = apply_filters( 'wpcf7_editor_panels', $panels );
+  		$panels['additional-settings-panel'] = array(
+  			'title' => $additional_settings
+  				? sprintf(
+  					__( 'Additional Settings (%d)', 'contact-form-7' ),
+  					$additional_settings )
+  				: __( 'Additional Settings', 'contact-form-7' ),
+  			'callback' => 'wpcf7_editor_panel_additional_settings' );
+  	}
+    /**
+    * filter to add/remove panels from the cf7 post editor
+    * @param array $panel aarray of panels presented as tabs in the editor, $id => array( 'title' => $panel_title, 'callback' => $callback_function).  The $callback_function must be a valid function to echo the panel html script.
+    */
+  	$panels = apply_filters( 'wpcf7_editor_panels', $panels );
 
-	foreach ( $panels as $id => $panel ) {
-		$editor->add_panel( $id, $panel['title'], $panel['callback'] );
-	}
+  	foreach ( $panels as $id => $panel ) {
+  		$editor->add_panel( $id, $panel['title'], $panel['callback'] );
+  	}
 
-	$editor->display();
-?>
-</div><!-- #contact-form-editor -->
+  	$editor->display();
+  ?>
+  </div><!-- #contact-form-editor -->
 
-<form action="" class="dummy-form" data-id="dummy">
-  <!-- DUMMY FORM to prevent some wp-core scripts from tempering with cf7 tags forms printed below-->
-</form>
-<?php
+  <form action="" class="dummy-form" data-id="dummy">
+    <!-- DUMMY FORM to prevent some wp-core scripts from tempering with cf7 tags forms printed below-->
+  </form>
+  <?php
 
-	$tag_generator = WPCF7_TagGenerator::get_instance();
+  	$tag_generator = WPCF7_TagGenerator::get_instance();
 
-	$tag_generator->print_panels( $cf7_form );
+  	$tag_generator->print_panels( $cf7_form );
 
-	do_action( 'wpcf7_admin_footer', $cf7_form );
+  	do_action( 'wpcf7_admin_footer', $cf7_form );
 
-  $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-  $show_dropdown = array();
-  if( isset($dropdowns[$post_id]) ){
-    $show_dropdown = $dropdowns[$post_id];
-  }
-?>
-<script type="text/javascript">
-(function( $ ) {
-	'use strict';
-  //hide the taxonomy metabox not used on this page.
-  $(document).ready(function() {
-    <?php
-    $slugs = array();
-
-    foreach($dropdowns as $id => $all_lists){
-      //if($id == $post_id) continue;
-      foreach($all_lists as $slug => $taxonomy){
-        if(isset($slugs[$slug])){
-          continue;
-        }
-        if( $taxonomy['hierarchical'] ){
-          $hide_id = $slug.'div';
-        }else{
-          $hide_id = 'tagsdiv-'.$slug;
-        }
-
-        echo '$("#' . $hide_id . '").hide();'.PHP_EOL;
-      }
+    $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
+    $show_dropdown = array();
+    if( isset($dropdowns[$post_id]) ){
+      $show_dropdown = $dropdowns[$post_id];
     }
-    ?>
-  });
-})( jQuery );
-</script>
+  ?>
+  <script type="text/javascript">
+  (function( $ ) {
+  	'use strict';
+    //hide the taxonomy metabox not used on this page.
+    $(document).ready(function() {
+      <?php
+      $slugs = array();
+
+      foreach($dropdowns as $id => $all_lists){
+        //if($id == $post_id) continue;
+        foreach($all_lists as $slug => $taxonomy){
+          if(isset($slugs[$slug])){
+            continue;
+          }
+          if( $taxonomy['hierarchical'] ){
+            $hide_id = $slug.'div';
+          }else{
+            $hide_id = 'tagsdiv-'.$slug;
+          }
+
+          echo '$("#' . $hide_id . '").hide();'.PHP_EOL;
+        }
+      }
+      ?>
+    });
+  })( jQuery );
+  </script>
 </div>

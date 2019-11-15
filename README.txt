@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout, multiple column form, grid layout, table inputs
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.2.0
+Tested up to: 5.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -159,6 +159,16 @@ function filter_pre_html($html, $cf7_key){
 **Custom scripts**
 The plugin will look for a javascript file `js/{$cf7key}.js` from the base of your theme root folder and load it on the page where your form is displayed.  Create a `js/` subfolder in your theme (or child theme folder), and create a file called `<your-form-cf7key>.js` in which you place your custom javascript code.
 
+In addition if you need to localise your custom script, you can do so using the following action hook,
+`
+add_action('smart_grid_register_custom_script', 'localise_custom_scritp', 10,1);
+function localise_custom_scritp($cf7_key){
+  if('my-form'!=$cf7_key) return;
+  //your script is enqueued with the handle $cf7_key.'-js'
+  wp_localize_script($cf7_key.'-js', 'customObj', array('key1'=>'value1'));
+}
+`
+
 The `$cf7key` is the unique key associated with your form which you can find in the Information metabox of your form edit page.
 
 If you wish to [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/) a general javascript file for all your forms, you can use the hook `smart_grid_register_scripts`,
@@ -281,6 +291,16 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 3.0.0 =
+* clean-up core integration with cf7 plugin.
+* add WP std capabilities for better role management.
+* automatic detection of required js scripts / css styling when form saved.
+* more efficient loading of front-end resources (js/css).
+* enabling benchmark fields for non-grid forms.
+* enabling dynamic_select fields for non-grid forms.
+* enabling sgv- validation for non-grid forms.
+* added pointers to form edit screen.
+
 = 2.11.0 =
 * recaptch plugin fix by @netzgestaltung.
 * full-screen form editor button.
@@ -300,18 +320,3 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 = 2.10.0 =
 * added 'cf7sg_kses_allowed_html' filter.
 * allowed custom html in forms.
-= 2.9.0 =
-* instroduction of mail tag value filter for individual fields.
-= 2.8.3 =
-* change codemirror editor to textarea#wpcf7-form and populate with html form.
-= 2.8.2 =
-* fix cf7 post type registration missing delete_posts caps.
-* fix attachments from other plugins (send pdf).
-= 2.8.1 =
-* messages bug fix
-= 2.8.0 =
-* fix bug on jquery deprecated function.
-* added max row functionality
-= 2.7.1 =
-* fix a bug on pretty pointer function call.
-* trim values in toggles that are closed.
