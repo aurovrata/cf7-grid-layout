@@ -1161,6 +1161,7 @@ class Cf7_Grid_Layout_Admin {
     $caps=array('wpcf7_edit_contact_forms','wpcf7_edit_others_contact_forms','wpcf7_edit_published_contact_forms','wpcf7_read_contact_forms','wpcf7_publish_contact_forms','wpcf7_delete_contact_forms','wpcf7_delete_published_contact_forms','wpcf7_delete_others_contact_forms');
     $fe = $wp_roles->get_role('editor');
     foreach($caps as $cap) $fe->add_cap($cap);
+    $caps[]='wpcf7_manage_integration';
     $ad = $wp_roles->get_role('administrator');
     foreach($caps as $cap) $ad->add_cap($cap);
   }

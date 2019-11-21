@@ -191,7 +191,31 @@ Yes, as of v1.1 of this plugin, toggled sections input fields are disabled when 
 Please note that in the back-end, these fields which are listed in the form layout but are not submitted are set eventually set as null in the filtered submitted data.  So if you hook a functionality post the form-submission, be aware that you also need to test submitted values for `NULL` as opposed to empty.
 
 = 10.Can I group toggled sections so as to have either/or sections ?=
-Yes, with v1.1 you can the `data-group` attribute which by default is empty to regroup toggled sections and therefore ensure that only 1 of these grouped sections is used by a user.  Edit your form in the html editor (Text tab) and fill the `data-group` attribute with the same value (no spaces) for each toggled section (`div.container.with-toggle`) you wish to re-group.
+Yes, with v1.1 you can the `data-group` attribute which by default is empty to regroup toggled sections and therefore ensure that only 1 of these grouped sections is used by a user.  Edit your form in the html editor (Text tab) and fill the `data-group` attribute with the same value (no spaces) for each toggled section (`div.container.with-toggle`) you wish to re-group,
+`
+<div class="container cf7sg-collapsible with-toggle" id="0sTn7L" data-group="group1">
+  <div class="cf7sg-collapsible-title"><span class="cf7sg-title toggled">Name &amp; Contact</span>
+    <div class="toggle toggle-light" data-on="Yes" data-off="No"></div>
+  </div>
+  <div class="row">
+    <div class="columns one-third">
+    </div>
+    <div class="columns one-third">
+    </div>
+    <div class="columns one-third">
+    </div>
+  </div>
+</div>
+<div class="container cf7sg-collapsible with-toggle" id="CNeqCy" data-group="group1">
+  <div class="cf7sg-collapsible-title"><span class="cf7sg-title toggled">Address</span>
+    <div class="toggle toggle-light" data-on="Yes" data-off="No"></div>
+  </div>
+  <div class="row">
+    <div class="columns full">
+    </div>
+  </div>
+</div>
+`
 
 = 11.I am using Post My CF7 Form plugin, how are toggles status saved in the database? =
 When you install Post My CF7 Form plugin to map your form submissions to posts in the dashboard, this plugin will automatically save the toggle status, so that draft forms can be re-loaded as well accessing the data for later use.  The status of the toggle is saved to the custom meta-field `cf7sg_toggles_status`,
@@ -291,6 +315,8 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 3.0.2 =
+* added 'wpcf7_manage_integration' cap to admin role.
 = 3.0.1 =
 * fix pointers didmiss bug.
 = 3.0.0 =
