@@ -293,7 +293,7 @@
 					});
 				}
 			});
-			//for non cf7 2 post forms, just enable the nice select
+			//for non cf7 2 post forms, just enable the datepicker
 			cf7Form_datepicker.not('div.cf7_2_post form.wpcf7-form').each(function(){
 				$('input.wpcf7-date:enabled', $(this)).each(function(){
           var $date = $(this);

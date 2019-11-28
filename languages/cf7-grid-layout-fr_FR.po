@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Smart Grid for CF7\n"
-"POT-Creation-Date: 2019-02-14 11:58+0530\n"
-"PO-Revision-Date: 2019-02-14 12:05+0530\n"
+"POT-Creation-Date: 2019-11-22 23:37+0530\n"
+"PO-Revision-Date: 2019-11-23 00:00+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -11,101 +11,60 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.2.1\n"
 "X-Poedit-Basepath: ..\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: public\n"
 "X-Poedit-SearchPath-1: includes\n"
 "X-Poedit-SearchPath-2: admin\n"
+"X-Poedit-SearchPath-3: public\n"
+"X-Poedit-SearchPath-4: assets/cf7-admin-table\n"
+"X-Poedit-SearchPathExcluded-0: languages\n"
+"X-Poedit-SearchPathExcluded-1: .git\n"
+"X-Poedit-SearchPathExcluded-2: assets\n"
 
-#: admin/class-cf7-grid-layout-admin.php:288
-#: admin/class-cf7-grid-layout-admin.php:406
-#, fuzzy
-msgid "Edit Contact Form"
-msgstr "Champs du formulaire"
-
-#: admin/class-cf7-grid-layout-admin.php:289
-#, fuzzy
-msgid "Add New"
-msgstr "Nouvelle categorie"
-
-#: admin/class-cf7-grid-layout-admin.php:476
-msgid "Information"
-msgstr "Information"
-
-#: admin/class-cf7-grid-layout-admin.php:511
-#, fuzzy
+#: admin/class-cf7-grid-layout-admin.php:535
 msgid "Actions & Filters"
-msgstr "Actions et Filtres"
+msgstr "Actions & Filtres"
 
-#: admin/class-cf7-grid-layout-admin.php:776
+#: admin/class-cf7-grid-layout-admin.php:815
 msgid "dynamic-dropdown"
 msgstr "menu-dynamique"
 
-#: admin/class-cf7-grid-layout-admin.php:781
+#: admin/class-cf7-grid-layout-admin.php:820
 msgid "benchmark"
 msgstr "référence"
 
-#: admin/class-cf7-grid-layout-admin.php:971
+#: admin/class-cf7-grid-layout-admin.php:1010
 msgid "Hover message for disabled submit/save button"
 msgstr ""
+"Message à indiquer quand la sourie survole le bouton désactivé de soumission/"
+"sauvegarde"
 
-#: admin/class-cf7-grid-layout-admin.php:973
-#: public/class-cf7-grid-layout-public.php:277
+#: admin/class-cf7-grid-layout-admin.php:1012
+#: public/class-cf7-grid-layout-public.php:301
 msgid "Disabled!  To enable, check the acceptance field."
-msgstr ""
+msgstr "Bouton désactivé! Cochez la case d'acceptation afin de l'activer."
 
-#: admin/class-cf7-grid-layout-admin.php:978
+#: admin/class-cf7-grid-layout-admin.php:1017
 msgid "Message displayed when max tables rows reached."
-msgstr ""
+msgstr "Message à indiquer une fois la limite de rangée atteinte."
 
-#: admin/class-cf7-grid-layout-admin.php:980
-#: public/class-cf7-grid-layout-public.php:278
+#: admin/class-cf7-grid-layout-admin.php:1019
+#: public/class-cf7-grid-layout-public.php:302
 msgid "You have reached the maximum number of rows."
-msgstr ""
+msgstr "Limite totale de rangée atteinte."
 
-#: admin/class-cf7-grid-layout-admin.php:1020
+#: admin/class-cf7-grid-layout-admin.php:1058
 msgid "Next"
 msgstr "Prochain"
 
-#: admin/partials/cf7-admin-editor-display.php:29
-#, php-format
-msgid "%s keys switch panels"
-msgstr ""
+#: admin/partials/cf7-admin-editor-display.php:24
+msgid "toggle full screen"
+msgstr "plein écran"
 
-#: admin/partials/cf7-admin-editor-display.php:39
-#: admin/partials/cf7-grid-layout-admin-display.php:1
-#, fuzzy
-msgid "Form"
-msgstr "Sauvegarder le formulaire dans un Article"
-
-#: admin/partials/cf7-admin-editor-display.php:42
-msgid "Mail"
-msgstr "Couriel"
-
-#: admin/partials/cf7-admin-editor-display.php:45
-msgid "Messages"
-msgstr "Messages"
-
-#: admin/partials/cf7-admin-editor-display.php:56
-#, php-format
-msgid "Additional Settings (%d)"
-msgstr "Configurations supplémentaires (%d)"
-
-#: admin/partials/cf7-admin-editor-display.php:58
-msgid "Additional Settings"
-msgstr "Configurations supplémentaires"
-
-#: admin/partials/cf7-benchmark-tag.php:25
 #: admin/partials/cf7-default-form.php:58
-#: admin/partials/cf7-dynamic-tag-display.php:25
-#, fuzzy
 msgid "Name"
-msgstr "Votre Nom"
-
-#: admin/partials/cf7-benchmark-tag.php:97
-#: admin/partials/cf7-dynamic-tag-display.php:188
-msgid "Insert Tag"
-msgstr "Insérer marqueur"
+msgstr "Nom"
 
 #: admin/partials/cf7-default-form.php:59
 msgid "Enter your full name"
@@ -113,11 +72,11 @@ msgstr "Saisissez votre nom complet"
 
 #: admin/partials/cf7-default-form.php:60
 msgid "Email"
-msgstr "Couriel"
+msgstr "Courriel"
 
 #: admin/partials/cf7-default-form.php:61
 msgid "Enter a valid email"
-msgstr "Saisissez un couriel valide"
+msgstr "Saisissez un courriel valide"
 
 #: admin/partials/cf7-default-form.php:62
 msgid "Send"
@@ -125,15 +84,15 @@ msgstr "Envoyez"
 
 #: admin/partials/cf7-default-form.php:63
 msgid "Subject"
-msgstr "Sujet"
+msgstr "Object"
 
 #: admin/partials/cf7-default-form.php:64
 msgid "the topic of your message"
-msgstr "le sujet de votre message"
+msgstr "l'objet de votre message"
 
 #: admin/partials/cf7-default-form.php:65
 msgid "Message"
-msgstr "Sujet"
+msgstr "Message"
 
 #: admin/partials/cf7-default-form.php:66
 msgid "Enter a brief message"
@@ -148,9 +107,8 @@ msgid "Field type"
 msgstr "Type de champ"
 
 #: admin/partials/cf7-dynamic-tag-display.php:30
-#, fuzzy
 msgid "Required field"
-msgstr "Choisir un champ"
+msgstr "Champ obligatoire"
 
 #: admin/partials/cf7-dynamic-tag-display.php:33
 msgid "Id attribute"
@@ -165,337 +123,292 @@ msgid "Dropdown style"
 msgstr "Style de menu"
 
 #: admin/partials/cf7-dynamic-tag-display.php:49
-#, fuzzy
 msgid "HTML Select field"
-msgstr "Choisir un champ"
+msgstr "Liste de choix"
 
 #: admin/partials/cf7-dynamic-tag-display.php:53
 msgid "jQuery Nice Select"
-msgstr "menu de type 'jQuery Nice Select'"
+msgstr "liste nice-select"
 
 #: admin/partials/cf7-dynamic-tag-display.php:57
 msgid "jQuery Select2"
-msgstr "menu JQuery Select2"
+msgstr "liste JQuery Select2"
 
 #: admin/partials/cf7-dynamic-tag-display.php:59
 msgid "Enable user options"
-msgstr ""
+msgstr "Activer les options utilisateur"
 
 #: admin/partials/cf7-dynamic-tag-display.php:68
-#, fuzzy
 msgid "Taxonomy"
-msgstr "Filtrer l'enregistrement de taxonomies"
+msgstr "Taxonomie"
 
 #: admin/partials/cf7-dynamic-tag-display.php:70
-#, fuzzy
 msgid "Taxonomy source"
-msgstr "Filtrer l'enregistrement de taxonomies"
+msgstr "Choix de taxonomie"
 
 #: admin/partials/cf7-dynamic-tag-display.php:72
 msgid "Choose a Taxonomy"
-msgstr "Saisir une Taxonomie"
+msgstr "Saisir une taxonomie"
 
 #: admin/partials/cf7-dynamic-tag-display.php:73
 msgid "New Categories"
-msgstr "Nouvelles categories"
+msgstr "Nouvelle categorie"
 
 #: admin/partials/cf7-dynamic-tag-display.php:91
 msgid "Post Tags"
-msgstr "Étiquettes Article"
+msgstr "Étiquettes de publication"
 
 #: admin/partials/cf7-dynamic-tag-display.php:92
 msgid "Post Categories"
-msgstr "Catégories Article"
+msgstr "Catégories de publication"
 
 #: admin/partials/cf7-dynamic-tag-display.php:102
-#, fuzzy
 msgid "New Taxonomy"
-msgstr "Nouvelle categorie"
+msgstr "Nouvelle taxonomie"
 
 #: admin/partials/cf7-dynamic-tag-display.php:103
 msgid "Plural Name"
-msgstr "Nom pluriel"
+msgstr "Nom au pluriel"
 
 #: admin/partials/cf7-dynamic-tag-display.php:105
-#, fuzzy
 msgid "Singular Name"
-msgstr "Non singulier"
+msgstr "Non au singulier"
 
 #: admin/partials/cf7-dynamic-tag-display.php:107
 msgid "Slug"
-msgstr "Permalien"
+msgstr "Slug"
 
 #: admin/partials/cf7-dynamic-tag-display.php:109
 msgid "hierarchical"
-msgstr ""
+msgstr "hiérarchique"
 
 #: admin/partials/cf7-dynamic-tag-display.php:115
 msgid "Post"
-msgstr "Article"
+msgstr "Publication"
 
 #: admin/partials/cf7-dynamic-tag-display.php:117
-#, fuzzy
 msgid "Post source"
-msgstr "Sauvegarder le formulaire dans un type de contenu"
+msgstr "Choix de publication"
 
 #: admin/partials/cf7-dynamic-tag-display.php:119
-#, fuzzy
 msgid "Select a post"
-msgstr "Choisir un type de contenu"
+msgstr "Saisir une publication"
 
 #: admin/partials/cf7-dynamic-tag-display.php:157
 msgid "Posts"
-msgstr ""
+msgstr "Publications"
 
 #: admin/partials/cf7-dynamic-tag-display.php:158
 msgid "Pages"
-msgstr ""
-"Contact Form 7 Polylang extension <strong>ATTENCION</strong>: du fait de "
-"l'evolution du plugin Polylang, et de la non-conformite au standard de code "
-"de WP par le plugin CF7, ce plugin est maintenant une extension du plugin <a "
-"href=\"https://wordpress.org/plugins/cf7-grid-layout/\">CF7 Smart Grid-"
-"layout</a>.<br /> Veuillez l'installer afin de profiter de toutes les "
-"fonctionalite du plugin Polylang dans les pages admin du plugin CF7.  Si "
-"vous ne 'installez pas, vos formulaires continuront de marcher mais vous ne "
-"pourrez pas creer de <em>nouvelles traductions</em>. Pour plus d'info lisez "
-"cette <a href=\"https://wordpress.org/plugins/cf7-polylang/\">page</a>"
+msgstr "Page"
 
 #: admin/partials/cf7-dynamic-tag-display.php:174
-#, fuzzy
 msgid "Custom"
-msgstr "Code Javascript personnalisé"
+msgstr "Sur mesure"
 
 #: admin/partials/cf7-dynamic-tag-display.php:176
-#, fuzzy
 msgid "Custom source"
-msgstr "Code Javascript personnalisé"
+msgstr "Options de liste sur mesure"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:8
+#: admin/partials/cf7-dynamic-tag-display.php:178
+msgid "Hook the following filter to programmatically load the drodown options"
+msgstr "Accrocher ce filtré pour définir la liste de choix"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:10
 msgid "Grid"
 msgstr "Grille"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:9
+#: admin/partials/cf7-grid-layout-admin-display.php:11
 msgid "Text"
 msgstr "Texte"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:48
+#: admin/partials/cf7-grid-layout-admin-display.php:42
 msgid "Row collapsible"
-msgstr ""
+msgstr "Rangée coulissante"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:52
+#: admin/partials/cf7-grid-layout-admin-display.php:46
 msgid "Row table input"
-msgstr ""
+msgstr "Tableau d'entrées"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:56
-#, fuzzy
+#: admin/partials/cf7-grid-layout-admin-display.php:50
 msgid "Button label"
-msgstr "Label"
+msgstr "Texte du bouton"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:60
+#: admin/partials/cf7-grid-layout-admin-display.php:51
+msgid "Add Row"
+msgstr "Nouvelle rangée"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:54
 msgid "Row table footer"
-msgstr ""
+msgstr "Rangée pied de tableau"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:64
+#: admin/partials/cf7-grid-layout-admin-display.php:58
 msgid "Tabbed section"
-msgstr ""
+msgstr "Section d'onglet"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:76
-#, fuzzy
+#: admin/partials/cf7-grid-layout-admin-display.php:70
 msgid "Select contact form 7"
-msgstr "Champs du formulaire"
+msgstr "Choisir un formulaire"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:103
-#, fuzzy
+#: admin/partials/cf7-grid-layout-admin-display.php:97
 msgid "Section title"
-msgstr "Titre Article"
+msgstr "Titre de section"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:103
+#: admin/partials/cf7-grid-layout-admin-display.php:97
 msgid "toggled"
-msgstr ""
+msgstr "bouton de bascule"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:104
+msgid "Tab label"
+msgstr "Texte d'onglet"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:109
+msgid "Click to copy!"
+msgstr "Cliquer pour copier!"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:110
-#, fuzzy
-msgid "Tab label"
-msgstr "Label"
-
-#: admin/partials/cf7-grid-layout-admin-display.php:115
-msgid "Click to copy!"
-msgstr ""
-
-#: admin/partials/cf7-grid-layout-admin-display.php:116
 msgid "Click-to-copy &amp; paste in your <em>functions.php</em> file."
-msgstr ""
+msgstr "Cliquer et copier/coller dans votre ficher <em>functions.php</em>."
+
+#: admin/partials/cf7-grid-layout-admin-display.php:123
+msgid "Column offset:"
+msgstr "Décalage de colonne:"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:125
+msgid "no offset"
+msgstr "non décalé"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:126
+#: admin/partials/cf7-grid-layout-admin-display.php:140
+msgid "one (1/12<sup>th</sup>)"
+msgstr "une (1/12<sup>ème</sup>)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:127
+#: admin/partials/cf7-grid-layout-admin-display.php:141
+msgid "two (1/6<sup>th</sup>)"
+msgstr "deux (1/6<sup>ème</sup>)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:128
+#: admin/partials/cf7-grid-layout-admin-display.php:142
+msgid "three (1/4<sup>th</sup>)"
+msgstr "trois (1/4)"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:129
-msgid "Column offset:"
-msgstr ""
+#: admin/partials/cf7-grid-layout-admin-display.php:143
+msgid "four (1/3<sup>rd</sup>)"
+msgstr "quatre (1/3)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:130
+#: admin/partials/cf7-grid-layout-admin-display.php:144
+msgid "five (5/12<sup>ths</sup>)"
+msgstr "cinq (5/12<sup>èmes</sup>)"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:131
-msgid "no offset"
-msgstr ""
+msgid "half"
+msgstr "moitie"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:132
 #: admin/partials/cf7-grid-layout-admin-display.php:146
-msgid "one (1/12<sup>th</sup>)"
-msgstr ""
+msgid "seven (7/12<sup>ths</sup>)"
+msgstr "sept (7/12<sup>èmes</sup>)"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:133
 #: admin/partials/cf7-grid-layout-admin-display.php:147
-msgid "two (1/6<sup>th</sup>)"
-msgstr ""
+msgid "eight (2/3<sup>rds</sup>)"
+msgstr "huit (2/3)"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:134
 #: admin/partials/cf7-grid-layout-admin-display.php:148
-msgid "three (1/4<sup>th</sup>)"
-msgstr ""
+msgid "nine (3/4<sup>ths</sup>)"
+msgstr "neuf (3/4)"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:135
 #: admin/partials/cf7-grid-layout-admin-display.php:149
-msgid "four (1/3<sup>rd</sup>)"
-msgstr ""
+msgid "ten (5/6<sup>ths</sup>)"
+msgstr "dix (5/6<sup>èmes</sup>)"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:136
 #: admin/partials/cf7-grid-layout-admin-display.php:150
-msgid "five (5/12<sup>ths</sup>)"
-msgstr ""
-
-#: admin/partials/cf7-grid-layout-admin-display.php:137
-msgid "half"
-msgstr ""
+msgid "eleven (11/12<sup>ths</sup>)"
+msgstr "onze (11/12<sup>èmes</sup>)"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:138
-#: admin/partials/cf7-grid-layout-admin-display.php:152
-msgid "seven (7/12<sup>ths</sup>)"
-msgstr ""
-
-#: admin/partials/cf7-grid-layout-admin-display.php:139
-#: admin/partials/cf7-grid-layout-admin-display.php:153
-msgid "eight (2/3<sup>rds</sup>)"
-msgstr ""
-
-#: admin/partials/cf7-grid-layout-admin-display.php:140
-#: admin/partials/cf7-grid-layout-admin-display.php:154
-msgid "nine (3/4<sup>ths</sup>)"
-msgstr ""
-
-#: admin/partials/cf7-grid-layout-admin-display.php:141
-#: admin/partials/cf7-grid-layout-admin-display.php:155
-msgid "ten (5/6<sup>ths</sup>)"
-msgstr ""
-
-#: admin/partials/cf7-grid-layout-admin-display.php:142
-#: admin/partials/cf7-grid-layout-admin-display.php:156
-msgid "eleven (11/12<sup>ths</sup>)"
-msgstr ""
-
-#: admin/partials/cf7-grid-layout-admin-display.php:144
 msgid "Column size:"
-msgstr ""
+msgstr "Taille de colonne:"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:145
+msgid "half width"
+msgstr "moitié largeur"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:151
-msgid "half width"
-msgstr ""
+msgid "full wifth"
+msgstr "largeur entière"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:153
+msgid "Make grid"
+msgstr "Créer une grille"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:154
+msgid "Insert form"
+msgstr "Insérer un formulaire existant"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:157
-#, fuzzy
-msgid "full wifth"
-msgstr "saisissez votre nom complet"
+#: admin/partials/cf7-grid-layout-admin-display.php:158
+msgid "Field label"
+msgstr "Texte de champ"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:159
-msgid "Make grid"
-msgstr "Creer une grille de champ"
-
-#: admin/partials/cf7-grid-layout-admin-display.php:160
-#, fuzzy
-msgid "Insert form"
-msgstr "Insérer marqueur"
+#: admin/partials/cf7-grid-layout-admin-display.php:162
+msgid "[select a field]"
+msgstr "[choisir un champ]"
 
 #: admin/partials/cf7-grid-layout-admin-display.php:163
-#, fuzzy
-msgid "Field label"
-msgstr "Label"
-
-#: admin/partials/cf7-grid-layout-admin-display.php:164
-#, fuzzy
-msgid "Field Label"
-msgstr "Label"
-
-#: admin/partials/cf7-grid-layout-admin-display.php:168
-msgid "[select a field]"
-msgstr "[Choisir un champ]"
-
-#: admin/partials/cf7-grid-layout-admin-display.php:169
 msgid "select a field"
 msgstr "choisir un champ"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:173
-#, fuzzy
+#: admin/partials/cf7-grid-layout-admin-display.php:167
 msgid "describe your field"
-msgstr "dans une liste de champ de taxonomie"
+msgstr "description du champ"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:174
+#: admin/partials/cf7-grid-layout-admin-display.php:168
 msgid "describe your field here"
-msgstr ""
+msgstr "saisir la description du champ"
 
 #: admin/partials/cf7-helper-metabox-display.php:8
 msgid ""
 "Click on a link to copy the helper snippet code and paste it in your "
 "<em>functions.php</em> file."
 msgstr ""
+"Cliquez sur un lien pour copier l'extrait de code d'assistance et collez-le "
+"dans votre fichier <em>functions.php</em>."
 
 #: admin/partials/cf7-helper-metabox-display.php:10
 #: admin/partials/cf7-helper-metabox-display.php:20
 msgid "Toggle panel: Helper"
-msgstr ""
+msgstr "Basculer le panneau d'aide"
 
 #: admin/partials/cf7-helper-metabox-display.php:11
 msgid "Pre-form-loading hooks"
-msgstr ""
+msgstr "Crochets de pré-chargement de formulaire"
 
 #: admin/partials/cf7-helper-metabox-display.php:13
 msgid "Hooks fired prior to the form loading"
-msgstr ""
+msgstr "Crochets exécutés avant le chargement du formulaire"
 
 #: admin/partials/cf7-helper-metabox-display.php:21
 msgid "Post-form-submit hooks"
-msgstr ""
+msgstr "Crochets poste-envois de formulaire"
 
 #: admin/partials/cf7-helper-metabox-display.php:23
 msgid "Hooks fired after the form is submitted"
-msgstr ""
+msgstr "Crochets exécutés une fois le formulaire envoyé"
 
 #: admin/partials/cf7-info-metabox-display.php:7
-#, fuzzy
 msgid "Form key"
-msgstr "Sauvegarder le formulaire dans un Article"
-
-#: admin/partials/cf7-info-metabox-display.php:10
-msgid "https://contactform7.com/docs/"
-msgstr ""
-
-#: admin/partials/cf7-info-metabox-display.php:10
-msgid "Docs"
-msgstr ""
-
-#: admin/partials/cf7-info-metabox-display.php:11
-msgid "https://contactform7.com/faq/"
-msgstr ""
-
-#: admin/partials/cf7-info-metabox-display.php:11
-msgid "FAQ"
-msgstr ""
-
-#: admin/partials/cf7-info-metabox-display.php:12
-msgid "https://contactform7.com/support/"
-msgstr ""
-
-#: admin/partials/cf7-info-metabox-display.php:12
-msgid "Support"
-msgstr ""
+msgstr "Clé d'identité de formulaire"
 
 #: admin/partials/cf7-info-metabox-display.php:20
 msgid "Manage dynamic lists"
-msgstr ""
+msgstr "Gérer les listes dynamiques"
 
 #: admin/partials/cf7-info-metabox-display.php:24
 msgid "Edit"
@@ -510,6 +423,7 @@ msgstr "Éditer"
 #: admin/partials/helpers/cf7sg-form-fields.php:151
 #: admin/partials/helpers/cf7sg-form-fields.php:180
 #: admin/partials/helpers/cf7sg-form-fields.php:203
+#: admin/partials/helpers/cf7sg-form-fields.php:221
 #: admin/partials/helpers/cf7sg-post-form-submit.php:16
 #: admin/partials/helpers/cf7sg-post-form-submit.php:39
 #: admin/partials/helpers/cf7sg-post-form-submit.php:83
@@ -518,64 +432,136 @@ msgstr "Éditer"
 #: admin/partials/helpers/cf7sg-pre-form-load.php:37
 #: admin/partials/helpers/cf7sg-pre-form-load.php:48
 msgid "Filter"
-msgstr ""
+msgstr "Filtrer"
 
 #: admin/partials/helpers/cf7sg-form-fields.php:19
 msgid "query arguments to retrieve posts for dynamic dropdown."
-msgstr ""
+msgstr "les arguments de requête des publications pour liste dynamique."
 
 #: admin/partials/helpers/cf7sg-form-fields.php:37
 #: admin/partials/helpers/cf7sg-form-fields.php:76
 msgid "the option label."
-msgstr "label d'option."
+msgstr "le texte d'option."
 
 #: admin/partials/helpers/cf7sg-form-fields.php:57
 #: admin/partials/helpers/cf7sg-form-fields.php:96
 msgid "the option attributes."
-msgstr ""
+msgstr "les attributs d'option."
 
 #: admin/partials/helpers/cf7sg-form-fields.php:113
 msgid "the default option label."
-msgstr ""
+msgstr "le texte de l'option initiale."
 
 #: admin/partials/helpers/cf7sg-form-fields.php:151
 msgid "user added option."
-msgstr ""
+msgstr "option de l'utilisateur."
 
 #: admin/partials/helpers/cf7sg-form-fields.php:180
 msgid "user selection with user added option."
-msgstr ""
+msgstr "la sélection de l'utilisateur ainsi que les options ajoutées."
 
 #: admin/partials/helpers/cf7sg-form-fields.php:203
 msgid "the options."
-msgstr ""
+msgstr "les optoins."
+
+#: admin/partials/helpers/cf7sg-form-fields.php:221
+msgid "the mail tag value."
+msgstr "la valeur du marqueur de courriel."
 
 #: admin/partials/helpers/cf7sg-post-form-submit.php:16
 msgid "custom form submission validation of any field."
-msgstr ""
+msgstr "la validation personnalisé de quelconque champ envoyé."
 
 #: admin/partials/helpers/cf7sg-post-form-submit.php:39
 msgid "mail annotation for complex array file field attachments."
 msgstr ""
+"l'annotation de plusieurs pièces jointes dans le courriel d'un champ fichier "
+"tableau."
 
 #: admin/partials/helpers/cf7sg-post-form-submit.php:83
 msgid "Tabled/Tabbed mail tags"
 msgstr ""
+"Les valeurs de marqueurs de champs de tableau ou/et de section d'onglet"
 
 #: admin/partials/helpers/cf7sg-pre-form-load.php:15
 msgid "cf7 tag field pre-html."
-msgstr ""
+msgstr "les pré-éléments HTML de marqueur de champ CF7."
 
 #: admin/partials/helpers/cf7sg-pre-form-load.php:26
 msgid "cf7 tag field post-html."
-msgstr ""
+msgstr "les poste-éléments HTML de marqueur de champ CF7."
 
 #: admin/partials/helpers/cf7sg-pre-form-load.php:37
 msgid "cf7 tag required-html."
-msgstr ""
+msgstr "l'élément indicateur HTML de marqueur de champ CF7 obligatoire."
 
 #: admin/partials/helpers/cf7sg-pre-form-load.php:48
 msgid "the form wrapper css id."
+msgstr "l'attribut d'identité de l'élément contenant le formulaire."
+
+#: admin/partials/pointers/cf7sg-pointer-editor-column-control.php:11
+msgid "Column controls"
+msgstr "Contrôles de colonne"
+
+#: admin/partials/pointers/cf7sg-pointer-editor-column-control.php:12
+msgid ""
+"Use the column controls to split a row into multiple columns (<span class="
+"\"dashicons dashicons-plus\"></span>), delete a column (<span class="
+"\"dashicons dashicons-trash\"></span>), or move (<span class=\"dashicons "
+"dashicons-move\"></span>) an existing column by dragging it within the same "
+"row.  <br />Use this link (<span class=\"icon-code\"></span>) to switch to "
+"the line of code in the text editor corresponsding to this column.<br />You "
+"can also edit a column (<span class=\"dashicons dashicons-edit\"></span>) "
+"and <b>convert it into a grid section</b>.  Column grid sections can have "
+"multiple rows and mulitple columns.<br />You can also convert a column into "
+"a form by inserting an existing sub-form.  This is useful to design and "
+"maintain multiple large forms that have common fields."
+msgstr ""
+
+#: admin/partials/pointers/cf7sg-pointer-editor-full-screen.php:4
+msgid "Edit in full screen"
+msgstr ""
+
+#: admin/partials/pointers/cf7sg-pointer-editor-full-screen.php:5
+msgid "Toggle full-screen mode to ease coding of your form."
+msgstr ""
+
+#: admin/partials/pointers/cf7sg-pointer-editor-rows-control.php:11
+msgid "Row controls"
+msgstr ""
+
+#: admin/partials/pointers/cf7sg-pointer-editor-rows-control.php:12
+msgid ""
+"The row controls are in a dark grey box.  You can add new rows (<span class="
+"\"dashicons dashicons-plus\"></span>), delete a row (<span class=\"dashicons "
+"dashicons-trash\"></span>), or move (<span class=\" dashicons dashicons-move"
+"\"></span>) an existing row by dragging it.  You can also edit a row (<span "
+"class=\" dashicons dashicons-edit\"></span>) and convert it into a "
+"collapsible section.  Collapsible sections are great to break down a large "
+"form."
+msgstr ""
+
+#: admin/partials/pointers/cf7sg-pointer-editor-tabs.php:11
+#: admin/partials/pointers/cf7sg-pointer-editor-tabs.php:14
+msgid "Switch Editors"
+msgstr ""
+
+#: admin/partials/pointers/cf7sg-pointer-editor-tabs.php:12
+msgid ""
+"CF7 Smart Grid extension replaces the Contact Form 7 textarea editor with a "
+"<b>UI Grid editor</b> and a colour markup text editor, use this tab to "
+"switch between the two.<br />  <b>NOTE</b> that previous forms designed "
+"using the CF7 plugin editor will be editable in the text editor only.<br /"
+"><b>Clear this form</b> by switching to the text mode, selecting everything "
+"and deleting the code. Switch back to the grid editor to start with a blank "
+"form."
+msgstr ""
+
+#: admin/partials/pointers/cf7sg-pointer-editor-tabs.php:15
+msgid ""
+"<b>Grid editor disabled!</b>  This form's HTML markup is not compatible.  "
+"The Smart Grid encodes forms with a HTML markup that allows rich responsive "
+"layouts.  Create a new form to experience the grid editor."
 msgstr ""
 
 #: admin/partials/pointers/cf7sg-pointer-shortcodes.php:4
@@ -589,6 +575,28 @@ msgid ""
 "<em>cf7Key</em>, which is non other than the slug of the wpcf7_contact_form "
 "post, which remains fixed when you export/import your forms and port them to "
 "a new server.  Happy coding!"
+msgstr ""
+
+#: admin/partials/pointers/cf7sg-pointer-tag-benchmark.php:4
+msgid "Benchmark field"
+msgstr "Champ de référence"
+
+#: admin/partials/pointers/cf7sg-pointer-tag-benchmark.php:5
+msgid ""
+"This tag allows you to add number fields with benchmark validations, when a "
+"limit is breached a js script will display your warning message without the "
+"user having to submit the form for validation."
+msgstr ""
+
+#: admin/partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php:4
+msgid "Dynamic dropdown field"
+msgstr "Champ de liste dynamique"
+
+#: admin/partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php:5
+msgid ""
+"This tag allows you to build dynamic drodown select fields whose options are "
+"populated by a list of taxonomy terms, post titles, or a custom "
+"programmatically created list using the filter."
 msgstr ""
 
 #: admin/partials/pointers/cf7sg-pointer-update-forms.php:3
@@ -608,3 +616,36 @@ msgid ""
 "Forms that need to be updated will be <em style=\"color:red;\">highlighted "
 "in red</em>."
 msgstr ""
+
+#~ msgid "Edit Contact Form"
+#~ msgstr "Éditer le formulaire"
+
+#~ msgid "Add New"
+#~ msgstr "Nouveau formulaire"
+
+#~ msgid "Information"
+#~ msgstr "Information"
+
+#~ msgid "%s keys switch panels"
+#~ msgstr "les touches %s change de panneaux"
+
+#~ msgid "Form"
+#~ msgstr "Formulaire"
+
+#~ msgid "Mail"
+#~ msgstr "Courriel"
+
+#~ msgid "Messages"
+#~ msgstr "Messages"
+
+#~ msgid "Additional Settings (%d)"
+#~ msgstr "Configurations supplémentaires (%d)"
+
+#~ msgid "Additional Settings"
+#~ msgstr "Configurations supplémentaires"
+
+#~ msgid "Insert Tag"
+#~ msgstr "Insérer marqueur"
+
+#~ msgid "Field Label"
+#~ msgstr "Texte de Champ"

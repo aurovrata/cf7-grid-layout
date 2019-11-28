@@ -251,8 +251,8 @@ if(!class_exists('Cf7_WP_Post_Table')){
       remove_submenu_page( 'wpcf7', 'wpcf7' );
       $hook = add_submenu_page(
         'wpcf7',
-        __( 'Edit Form Types', 'contact-form-7' ),
-        __( 'Form Types', 'contact-form-7' ),
+        __cf7sg( 'Edit Form Types' ),
+        __cf7sg( 'Form Types' ),
         'wpcf7_read_contact_forms',
         'edit-tags.php?taxonomy=wpcf7_type&post_type=wpcf7_contact_form'
       );
@@ -298,7 +298,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
     */
     public function modify_cf7_list_columns($columns){
       $columns['shortcode'] = 'Shortcode<br /><span class="cf7-help-tip"><a href="javascript:void();">What\'s this?</a><span class="cf7-short-info">Use this shortcode the same way you would use the contact-form-7 shortcode. (See the plugin page for more information )</span></span>';
-      $columns['cf7_key'] = __('Form key', 'contact-form-7');
+      $columns['cf7_key'] = __cf7sg('Form key');
       return $columns;
     }
     /**
@@ -358,7 +358,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
             $actions['copy'] = sprintf(
               '<a href="%1$s">%2$s</a>',
               esc_url( $copy_link ),
-              esc_html( __( 'Duplicate', 'contact-form-7' ) )
+              esc_html( __cf7sg( 'Duplicate' ) )
             );
           }
         }

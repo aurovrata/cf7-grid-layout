@@ -293,8 +293,8 @@ class Cf7_Grid_Layout_Admin {
 
     $hook = add_submenu_page(
       'wpcf7',
-      __( 'Edit Contact Form', 'contact-form-7' ),
-      __( 'Add New', 'contact-form-7' ),
+      __cf7sg( 'Edit Contact Form'),
+      __cf7sg( 'Add New'),
       'wpcf7_edit_contact_forms',
       'post-new.php?post_type=wpcf7_contact_form'
     );
@@ -427,7 +427,7 @@ class Cf7_Grid_Layout_Admin {
     //add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args)
     if( post_type_exists( $this->cf7_post_type() ) ) {
       add_meta_box( 'meta-box-main-cf7-editor',
-        __( 'Edit Contact Form', 'contact-form-7' ),
+        __cf7sg( 'Edit Contact Form' ),
         array($this , 'main_editor_metabox_display'),
         $this->cf7_post_type(),
         'normal',
@@ -497,7 +497,7 @@ class Cf7_Grid_Layout_Admin {
     //add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args)
     if(post_type_exists( $this->cf7_post_type() ) ) {
       add_meta_box( 'meta-box-cf7-info',
-        __( 'Information', 'contact-form-7' ),
+        __cf7sg( 'Information' ),
         array($this , 'info_metabox_display'),
         $this->cf7_post_type(),
         'side',
@@ -1160,9 +1160,13 @@ class Cf7_Grid_Layout_Admin {
     if ( ! isset( $wp_roles ) ) $wp_roles = new WP_Roles();
     $caps=array('wpcf7_edit_contact_forms','wpcf7_edit_others_contact_forms','wpcf7_edit_published_contact_forms','wpcf7_read_contact_forms','wpcf7_publish_contact_forms','wpcf7_delete_contact_forms','wpcf7_delete_published_contact_forms','wpcf7_delete_others_contact_forms');
     $fe = $wp_roles->get_role('editor');
-    foreach($caps as $cap) $fe->add_cap($cap);
+    if(!empty($fe)){ /** @since 3.0.3 in case editor role is deleted */
+      foreach($caps as $cap) $fe->add_cap($cap);
+    }
     $caps[]='wpcf7_manage_integration';
     $ad = $wp_roles->get_role('administrator');
-    foreach($caps as $cap) $ad->add_cap($cap);
+    if(!empty($ad)){ /** @since 3.0.3 in case admin role is deleted */
+      foreach($caps as $cap) $ad->add_cap($cap);
+    }
   }
 }

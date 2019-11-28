@@ -68,6 +68,22 @@
       source = 'post';
     }else if($tab.is('#custom-tab')){
       source = 'filter';
+      $('a.helper.init', $tab.parent()).each(function(){
+        new Clipboard($(this)[0], {
+          text: function(trigger) {
+            // var $target = $(trigger);
+            // var text = $target.data('cf72post');
+            //get post slug
+            // var key = $('#post_name').val();
+            // text = text.replace(/\{\$form_key\}/gi, key);
+            // text = text.replace(/\{\$field_name\}/gi, field);
+            // text = text.replace(/\{\$field_name_slug\}/gi, field.replace('-','_'));
+            // text = text.replace(/\{\$field_type\}/gi, tag);
+            return $(trigger).data('cf72post');;
+          }
+        });
+        $(this).removeClass('init');
+      });
     }
     updateCF7Tag(source);
   });

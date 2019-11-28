@@ -29,7 +29,7 @@ else do_action( 'load-toplevel_page_wpcf7' );
   <?php wp_nonce_field( 'wpcf7-save-contact-form_' .  $post_id, '_wpcf7nonce' ); ?>
 
   <div id="contact-form-editor">
-    <div class="keyboard-interaction"><?php echo sprintf( esc_html( __( '%s keys switch panels', 'contact-form-7' ) ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
+    <div class="keyboard-interaction"><?php echo sprintf( esc_html( __cf7sg( '%s keys switch panels') ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
 
   <?php
 
@@ -39,13 +39,13 @@ else do_action( 'load-toplevel_page_wpcf7' );
   	if ( current_user_can( 'wpcf7_edit_contact_form', $post_id ) ) {
   		$panels = array(
   			'form-panel' => array(
-  				'title' => __( 'Form', 'contact-form-7' ),
+  				'title' => __cf7sg( 'Form' ),
   				'callback' => array($this, 'grid_editor_panel') ),
   			'mail-panel' => array(
-  				'title' => __( 'Mail', 'contact-form-7' ),
+  				'title' => __cf7sg( 'Mail' ),
   				'callback' => 'wpcf7_editor_panel_mail' ),
   			'messages-panel' => array(
-  				'title' => __( 'Messages', 'contact-form-7' ),
+  				'title' => __cf7sg( 'Messages' ),
   				'callback' => 'wpcf7_editor_panel_messages' ) );
 
   		$additional_settings = trim( $cf7_form->prop( 'additional_settings' ) );
@@ -56,9 +56,9 @@ else do_action( 'load-toplevel_page_wpcf7' );
   		$panels['additional-settings-panel'] = array(
   			'title' => $additional_settings
   				? sprintf(
-  					__( 'Additional Settings (%d)', 'contact-form-7' ),
+  					__cf7sg( 'Additional Settings (%d)' ),
   					$additional_settings )
-  				: __( 'Additional Settings', 'contact-form-7' ),
+  				: __cf7sg( 'Additional Settings' ),
   			'callback' => 'wpcf7_editor_panel_additional_settings' );
   	}
     /**

@@ -1,4 +1,22 @@
 /*[dynamic-select] tag*/
+#dynamic-select-tag-generator a.helper::before {
+    content: 'Click to copy!';
+    display: none;
+    position: absolute;
+    bottom: -20px;
+    left: 50px;
+    background: #323232;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+#dynamic-select-tag-generator .position-relative{
+  position: relative;
+}
+#dynamic-select-tag-generator .helper:hover::before {
+    display: inline-block;
+}
 #dynamic-select-tag-generator .cf72post-new-taxonomy label {
     float: left;
     width: 24%;

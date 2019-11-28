@@ -1,5 +1,5 @@
-<h2><?php echo esc_html( __( 'Form', 'contact-form-7' ) ); ?></h2>
-<div id="top-tags">  
+<h2><?php echo esc_html( __cf7sg( 'Form' ) ); ?></h2>
+<div id="top-tags">
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();
@@ -48,7 +48,7 @@
           </label>
           <label class="table-row-button">
             <?=__('Button label','cf7-grid-layout')?>
-            <input type="text" value="Add Row"/>
+            <input type="text" value="<?= __('Add Row','cf7-grid-layout')?>"/>
           </label>
           <label class="cf7-sg-hidden footer-row-label unique-mod">
             <?=__('Row table footer','cf7-grid-layout')?>
@@ -150,12 +150,12 @@
         <option value="eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
         <option value="full" selected><?=__('full wifth','cf7-grid-layout')?></option>
       </select>
-      <a id="new-row" class="button make-grid" href="javascript:void(0);"><?php _e('Make grid', 'cf7-grid-layout');?></a>
-      <a class="button external-form" href="javascript:void(0);"><?php _e('Insert form', 'cf7-grid-layout');?></a>
+      <a id="new-row" class="button make-grid" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
+      <a class="button external-form" href="javascript:void(0);"><?= __('Insert form', 'cf7-grid-layout');?></a>
     </div>
     <div class="cf7-field-label cf7-field-inner">
       <p class="content"><?=__('Field label','cf7-grid-layout')?></p>
-      <input type="text" placeholder="<?=__('Field Label','cf7-grid-layout')?>"/>
+      <input type="text" placeholder="<?=__('Field label','cf7-grid-layout')?>"/>
       <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
     <div class="cf7-field-type cf7-field-inner">

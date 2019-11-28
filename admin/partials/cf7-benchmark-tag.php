@@ -22,7 +22,7 @@
     <table  class="form-table">
       <tbody>
         <tr>
-      	<th scope="row"><label for="<?php echo esc_attr( $args['content'] . '-name' ); ?>"><?php echo esc_html( __( 'Name', 'contact-form-7' ) ); ?></label></th>
+      	<th scope="row"><label for="<?php echo esc_attr( $args['content'] . '-name' ); ?>"><?php echo esc_html( __cf7sg( 'Name' ) ); ?></label></th>
       	<td><input type="text" name="name" class="tg-name oneline" id="<?php echo esc_attr( $args['content'] . '-name' ); ?>" /></td>
       	</tr>
         <tr>
@@ -94,7 +94,7 @@
   <input type="text" name="benchmark" class="tag code" readonly="readonly" onfocus="this.select()" />
 
   <div class="submitbox">
-      <input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr( __( 'Insert Tag', 'contact-form-7' ) ); ?>" />
+      <input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr( __cf7sg( 'Insert Tag' ) ); ?>" />
   </div>
 
   <br class="clear" />
