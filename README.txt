@@ -315,6 +315,8 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 3.0.4 =
+* fix css style on rows/container for DIVI theme.
 = 3.0.3 =
 * fix add_cap bug for deleted roles.
 = 3.0.2 =

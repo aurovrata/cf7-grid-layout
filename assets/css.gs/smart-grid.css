@@ -5,11 +5,15 @@
     padding: 0 1.06383%;
     margin: 0 auto;
     width:100%;
+    flex-wrap: wrap;
+    zoom: 1;
+    display: block
 }
 
-.cf7sg-container .cf7-smart-grid.has-grid .container,
-.row {
-    zoom: 1
+.cf7sg-container .cf7-smart-grid.has-grid .row {
+    zoom: 1;
+    display: block;
+    margin: 0
 }
 
 .cf7sg-container .cf7-smart-grid.has-grid .container:before,
