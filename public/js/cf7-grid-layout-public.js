@@ -290,12 +290,31 @@
                 $date.setupDatePicker();
               }
 						});
+            /** @since 3.1 enable datepicker on text fields */
+            $('input.wpcf7-text.datepicker:enabled', $(this)).each(function(){
+              var $date = $(this);
+							var id = $date.attr('id');
+							if(typeof id == 'undefined'){
+		            id = randString(6);
+		            $date.attr('id', id); //assign a random id
+		          }
+              $date.setupDatePicker();
+						});
 					});
 				}
 			});
 			//for non cf7 2 post forms, just enable the datepicker
 			cf7Form_datepicker.not('div.cf7_2_post form.wpcf7-form').each(function(){
-				$('input.wpcf7-date:enabled', $(this)).each(function(){
+				$('input.wpcf7-text.datepicker:enabled', $(this)).each(function(){
+          var $date = $(this);
+					var id = $date.attr('id');
+					if(typeof id == 'undefined'){
+						id = randString(6);
+						$date.attr('id', id); //assign a random id
+					}
+          $date.setupDatePicker();
+				});
+        $('input.wpcf7-date:enabled', $(this)).each(function(){
           var $date = $(this);
 					var id = $date.attr('id');
 					if(typeof id == 'undefined'){
@@ -551,7 +570,7 @@
 	//datepicker for date fields
 	$.fn.setupDatePicker = function(){
     var $date = $(this);
-		if(!$date.is('.wpcf7-date:enabled')){
+		if(!$date.is('.wpcf7-date:enabled') && !$date.is('.wpcf7-text.datepicker:enabled')){
 			return $date;
 		}
 		var miny='';

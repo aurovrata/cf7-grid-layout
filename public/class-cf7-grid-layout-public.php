@@ -156,8 +156,6 @@ class Cf7_Grid_Layout_Public {
 	public function register_styles() {
     $plugin_dir = plugin_dir_url( __DIR__ );
     //default style for cf7 grid forms (row buttons and tables mainly).
-    wp_register_style( $this->plugin_name, $plugin_dir . 'public/css/cf7-grid-layout-public.css', array(), $this->version, 'all' );
-    wp_register_style( 'cf7-benchmark-css', $plugin_dir . 'public/css/cf7-benchmark.css', array(), $this->version, 'all' );
     //others
     // get registered script object for jquery-ui
     global $wp_scripts;
@@ -170,11 +168,21 @@ class Cf7_Grid_Layout_Public {
 
     wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui->ver, 'all');
     wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui->ver, 'all');
-		wp_register_style( 'smart-grid', $plugin_dir . 'assets/css.gs/smart-grid.css', array(), $this->version, 'all' );
+    /** @since 3.1,0 improve live loading of resources */
+    $ff = '';
+    $pf='';
+    if(!defined('WP_DEBUG') || !WP_DEBUG){
+      $ff = '.min';
+      $pf = '/min';
+    }
+    wp_register_style( 'cf7-benchmark-css', $plugin_dir . "public/css{$pf}/cf7-benchmark.css", array(), $this->version, 'all' );
+    wp_register_style( $this->plugin_name, $plugin_dir . "public/css{$pf}/cf7-grid-layout-public.css", array(), $this->version, 'all' );
+    wp_register_style( 'smart-grid', $plugin_dir . "assets/css.gs/smart-grid{$ff}.css", array(), $this->version, 'all' );
+    wp_register_style('jquery-nice-select-css', $plugin_dir . "assets/jquery-nice-select/css/nice-select{$ff}.css", array(), $this->version, 'all' );
+    wp_register_style('jquery-toggles-css', $plugin_dir . "assets/jquery-toggles/css/toggles{$ff}.css", array(), $this->version, 'all' );
+    wp_register_style('jquery-toggles-light-css', $plugin_dir . "assets/jquery-toggles/css/themes/toggles-light{$ff}.css", array('jquery-toggles-css'), $this->version, 'all' );
+
     wp_register_style('select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), $this->version, 'all' );
-    wp_register_style('jquery-nice-select-css', $plugin_dir . 'assets/jquery-nice-select/css/nice-select.css', array(), $this->version, 'all' );
-    wp_register_style('jquery-toggles-css', $plugin_dir . 'assets/jquery-toggles/css/toggles.css', array(), $this->version, 'all' );
-    wp_register_style('jquery-toggles-light-css', $plugin_dir . 'assets/jquery-toggles/css/themes/toggles-light.css', array('jquery-toggles-css'), $this->version, 'all' );
 
     //allow custom script registration
     do_action('smart_grid_register_styles');
@@ -186,12 +194,17 @@ class Cf7_Grid_Layout_Public {
 	 * @since    1.0.0
 	 */
 	public function register_scripts() {
+    /** @since 3.1,0 improve live loading of resources */
+    $pf='';
+    if(!defined('WP_DEBUG') || !WP_DEBUG){
+      $pf = '/min';
+    }
     $plugin_dir = plugin_dir_url( __DIR__ );
-		wp_register_script( $this->plugin_name, $plugin_dir . 'public/js/cf7-grid-layout-public.js', array( 'jquery','contact-form-7' ), $this->version, true );
+		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public.js", array( 'jquery','contact-form-7' ), $this->version, true );
     wp_register_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('jquery-nice-select', $plugin_dir . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
-    wp_register_script('js-cf7sg-benchmarking', $plugin_dir . 'public/js/cf7-benchmark.js', array( 'jquery' ), $this->version, true );
+    wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
     //allow custom script registration
     do_action('smart_grid_register_scripts');
 	}
@@ -287,6 +300,7 @@ class Cf7_Grid_Layout_Public {
     }
     if(array_search('has-date',$class, true)!==false){
       wp_enqueue_script('jquery-ui-datepicker');
+      wp_enqueue_style('cf7-jquery-ui');
     }
     //cf7 plugin styles
     wp_enqueue_style('contact-form-7');

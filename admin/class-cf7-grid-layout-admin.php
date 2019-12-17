@@ -126,7 +126,7 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_style( "codemirror-foldgutter-css", $plugin_dir . 'assets/codemirror/addon/fold/foldgutter.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-dialog-css", $plugin_dir . 'assets/codemirror/addon/dialog/dialog.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-matchesonscrollbar-css", $plugin_dir . 'assets/codemirror/addon/search/matchesonscrollbar.css', array(), $this->version, 'all' );
-        wp_enqueue_style( 'smart-grid-css', $plugin_dir . 'assets/css.gs/smart-grid.min.css', array(), $this->version, 'all');
+        wp_enqueue_style( 'smart-grid-css', $plugin_dir . 'assets/css.gs/smart-grid.admin.css', array(), $this->version, 'all');
         wp_enqueue_style('dashicons');
         wp_enqueue_style('select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), $this->version, 'all' );
         break;

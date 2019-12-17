@@ -233,7 +233,7 @@
       if(codeMirror.indexOf("class:nice-select")>0) scriptClass += "has-nice-select,";
       if($('.cf7sg-collapsible', $formNoEmbeds).length>0) scriptClass += "has-accordion,";
       if(codeMirror.indexOf("[benchmark")>0) scriptClass += "has-benchmark,";
-      if(codeMirror.indexOf("[date")>0) scriptClass += "has-date,";
+      if(codeMirror.indexOf("[date")>0 || 0<codeMirror.search(/\[text([^\]]+?)class:datepicker/ig)) scriptClass += "has-date,";
 
       //scan and submit tabs & tables fields.
       var tableFields = [];
