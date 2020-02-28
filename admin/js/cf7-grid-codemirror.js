@@ -1,8 +1,9 @@
 /**
  Javascript to handle Codemirror editor
  Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
+ @since 3.1.2 introduce instaiated cm editor as attribute in anonymous function.
 */
-(function( $ ) {
+(function( $, cme ) {
 
   $(document).ready( function(){
     var $codemirror = $('#cf7-codemirror');
@@ -10,7 +11,8 @@
     var codemirrorUpdated = false;
     var $grid = $('#grid-form');
     var gridTab = '#cf7-editor-grid'; //default at load time.
-    var cmEditor ;
+    //set codemirror editor value;
+    cme.setValue($wpcf7Editor.text());
 
     $wpcf7Editor.on('grid-ready', function(){ //------ setup the codemirror editor
       //codemirror editor
@@ -31,29 +33,10 @@
         };
         return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), cf7Overlay);
       });
-      var cmConfig =  {
-        value: $wpcf7Editor.text(),
-        extraKeys: {"Ctrl-Space": "autocomplete"},
-        lineNumbers: true,
-        styleActiveLine: true,
-        matchBrackets: true,
-        tabSize:2,
-        mode: 'htmlmixed',
-        lineWrapping: true,
-        addModeClass: true,
-        foldGutter: true,
-        autofocus:false,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-      }
-      if(cf7sgeditor.mode.length>0){
-        // console.log('addind mode');
-        cmConfig['mode']=cf7sgeditor.mode;
-      }
-      if(cf7sgeditor.theme.length>0){
-        cmConfig['theme']=cf7sgeditor.theme;
-      }
-      //console.log(cmConfig);
-      cmEditor = CodeMirror( $codemirror.get(0), cmConfig);
+      // var cmConfig =
+      if(cf7sgeditor.mode.length>0) cme.setOption('mode',cf7sgeditor.mode);
+      if(cf7sgeditor.theme.length>0) cme.setOption('theme',cf7sgeditor.theme);
+      // cmEditor = CodeMirror( $codemirror.get(0), cmConfig);
 
       /*  TODO: enable shortcode edit at a future date
       $('.cm-shortcode',$codemirror).each(function(){
@@ -64,36 +47,36 @@
       });
       */
       $.fn.beautify = function(cursor){
-        cmEditor.setSelection({
-          'line':cmEditor.firstLine(),
+        cme.setSelection({
+          'line':cme.firstLine(),
           'ch':0,
           'sticky':null
         },{
-          'line':cmEditor.lastLine(),
+          'line':cme.lastLine(),
           'ch':0,
           'sticky':null
         },
         {scroll: false});
-        cmEditor.indentSelection("smart");
-        cmEditor.setCursor(cmEditor.firstLine(),0);
+        cme.indentSelection("smart");
+        cme.setCursor(cme.firstLine(),0);
         if('undefined' != typeof cursor && cursor.find(false)){
           var from = cursor.from();
           var to = cursor.to();
-          cmEditor.setSelection(CodeMirror.Pos(from.line, 0), to);
-          cmEditor.scrollIntoView({from: from, to: CodeMirror.Pos(to.line + 10, 0)});
+          cme.setSelection(CodeMirror.Pos(from.line, 0), to);
+          cme.scrollIntoView({from: from, to: CodeMirror.Pos(to.line + 10, 0)});
         }
       }
       $codemirror.beautify();
 
-      //var cur = cmEditor.getCursor();
-      //cmEditor.setCursor(99, cur.ch);
+      //var cur = cme.getCursor();
+      //cme.setCursor(99, cur.ch);
 
-      cmEditor.on('changes', function(){
+      cme.on('changes', function(){
         codemirrorUpdated = true;
         var disabled = $('#form-editor-tabs').tabs('option','disabled');
 
         if(true===disabled){
-          var changes = $('<div>').append(cmEditor.getValue());
+          var changes = $('<div>').append(cme.getValue());
           if(0===changes.children().length || changes.children('.container').length>0){
             $('#form-editor-tabs').tabs('option',{disabled:false});
             /**
@@ -121,7 +104,7 @@
     	                'wrap_line_length': 0
     	              });
                 }
-	            cmEditor.setValue(code);
+	            cme.setValue(code);
 	            //reset the codemirror change flag
 	            codemirrorUpdated = false;
 	            //remove id from textarea
@@ -144,7 +127,7 @@
           if('#cf7-editor-grid' == ui.newPanel.selector){
             if(codemirrorUpdated){
               //update the hidden textarea
-              $wpcf7Editor.text(cmEditor.getValue());
+              $wpcf7Editor.text(cme.getValue());
               //trigger rebuild grid event
               $grid.trigger('build-grid');
             }else{ //try to set the focus on the 'cf7sgfocus element'
@@ -157,7 +140,7 @@
               }
             }
           }else if('#cf7-codemirror' == ui.newPanel.selector){
-            var cursor = cmEditor.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cmEditor.firstLine(), 0), {caseFold: true, multiline: true});
+            var cursor = cme.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cme.firstLine(), 0), {caseFold: true, multiline: true});
 
             $codemirror.beautify(cursor);
 
@@ -182,7 +165,7 @@
         var $textarea = $('textarea#wpcf7-form');
         if($textarea.is('.codemirror-cf7-update')){
           var tag = $textarea.delay(100).val();
-          cmEditor.replaceSelection(tag);
+          cme.replaceSelection(tag);
           //update codemirror.
           $textarea.val(''); //clear.
         }
@@ -209,7 +192,7 @@
         $('textarea#wpcf7-form-hidden').html(codeMirror);
         $formNoEmbeds = $('<div>').append(codeMirror);
       }else{//we are in text mode.
-        codeMirror = cmEditor.getValue();
+        codeMirror = cme.getValue();
         $('textarea#wpcf7-form-hidden').html(codeMirror).val(codeMirror);
         $formNoEmbeds = $('<div>').append(codeMirror);
       }
@@ -423,4 +406,4 @@
     }
   });//dcoument ready end
 
-})( jQuery );
+})( jQuery, codeMirror_5_32);

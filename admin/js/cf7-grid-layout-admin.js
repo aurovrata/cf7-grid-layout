@@ -441,6 +441,7 @@
               text = text.replace(/\{\$field_name\}/gi, field);
               text = text.replace(/\{\$field_name_slug\}/gi, field.replace('-','_'));
               text = text.replace(/\{\$field_type\}/gi, tag);
+              text = text.replace(/\[dqt\]/gi, '"');
               return text;
             }
           });

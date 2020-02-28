@@ -193,9 +193,9 @@ function {$field_name_slug}_dynamic_options($options, $name, $cf7_key){
   //you can group your options if need be. Let's assume you have an array of arrays of data to display in groups.
   $data = ... //fetch your data, either from the databse or some other source.
   foreach($data as $group_label=>$options){
-    $options += '<optgroup label="'.$group_label.'">';
+    $options += '<optgroup label=[dqt]'.$group_label.'[dqt]>';
     foreach($options as $label=>$value){
-      $options += '<option value="'.$value.'">'.$label.'</option>';
+      $options += '<option value=[dqt]'.$value.'[dqt]>'.$label.'</option>';
     }
     $options += '</optgroup>';
   }

@@ -1,7 +1,7 @@
 === Smart Grid-Layout Design for Contact Form 7 ===
 Contributors: aurovrata
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EDV4MEJLPT4VY
-Tags: contact form 7, contact form 7 module, form layout, styling, contact form 7 extension, responsive layout, multiple column form, grid layout, table inputs
+Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, responsive forms, form maker, form builder
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.3
@@ -315,6 +315,10 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 3.1.2 =
+* instantiate CodeMirror after libray load and pass as attribute to anonymous function to fix conflict issue.
+= 3.1.1 =
+* fix helper bug inline filters.
 = 3.1.0 =
 * load minified resources on live sites.
 = 3.0.4 =
@@ -334,23 +338,3 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 * enabling dynamic_select fields for non-grid forms.
 * enabling sgv- validation for non-grid forms.
 * added pointers to form edit screen.
-
-= 2.11.0 =
-* recaptch plugin fix by @netzgestaltung.
-* full-screen form editor button.
-
-= 2.10.5 =
-* bug fix on file attachments in notification email.
-= 2.10.4 =
-* add fix for custom required html in label.
-= 2.10.3 =
-* fix admin html filter parameter bug.
-= 2.10.2 =
-* code fix for [bug](https://wordpress.org/support/topic/bug-found-error-in-code/) found in mailchimp extension plugin
-* added IE polyfill for frontend table fields.
-= 2.10.1 =
-* fix _() function error in assets.
-* fix js error in cut and paste text editor on form submit.
-= 2.10.0 =
-* added 'cf7sg_kses_allowed_html' filter.
-* allowed custom html in forms.

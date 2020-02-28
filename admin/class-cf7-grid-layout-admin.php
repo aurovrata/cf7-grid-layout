@@ -107,8 +107,10 @@ class Cf7_Grid_Layout_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
-      $screen = get_current_screen();
+	public function enqueue_styles($page) {
+    if( in_array($page, array('toplevel_page_wpcf7', 'contact_page_wpcf7-new')) ) return;
+
+    $screen = get_current_screen();
     if (empty($screen) || $this->cf7_post_type() != $screen->post_type){
       return;
     }
@@ -147,7 +149,7 @@ class Cf7_Grid_Layout_Admin {
 		global $post;
     //debug_msg($screen, $this->custom_type );
     $plugin_dir = plugin_dir_url( __DIR__ );
-    if('toplevel_page_wpcf7' == $page){
+    if( in_array($page, array('toplevel_page_wpcf7', 'contact_page_wpcf7-new')) ){
       wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array( 'jquery' ), $this->version, true );
       return;
     }
@@ -157,18 +159,125 @@ class Cf7_Grid_Layout_Admin {
     }
     switch( $screen->base ){
       case 'post':
-		    //for the future
-        //$this->setup_cf7_object(); already called by load-{sub-page} hook.
+        /* register codemirror editor & addons. */
+        //codemirror script
+        wp_register_script( 'cf7-codemirror-js',
+          $plugin_dir . 'assets/codemirror/codemirror.js',
+          null, "5.32", true
+        );
+        /** @since 3.1.2 initialise codemirror after library load and parse as attribute to anonymous functtion in cf7-grid-codemirror.js */
+        wp_add_inline_script('cf7-codemirror-js',
+        'var codeMirror_5_32 = CodeMirror(document.getElementById("cf7-codemirror"),
+        {
+          value: "",
+          extraKeys: {"Ctrl-Space": "autocomplete"},
+          lineNumbers: true,
+          styleActiveLine: true,
+          matchBrackets: true,
+          tabSize:2,
+          mode: "htmlmixed",
+          lineWrapping: true,
+          addModeClass: true,
+          foldGutter: true,
+          autofocus:false,
+          gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+        });');
+        //fold code
+        wp_enqueue_script( 'codemirror-foldcode-js',
+          $plugin_dir . 'assets/codemirror/addon/fold/foldcode.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-foldgutter-js',
+          $plugin_dir . 'assets/codemirror/addon/fold/foldgutter.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-indent-fold-js',
+          $plugin_dir . 'assets/codemirror/addon/fold/indent-fold.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-xml-fold-js',
+          $plugin_dir . 'assets/codemirror/addon/fold/xml-fold.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-brace-fold-js',
+          $plugin_dir . 'assets/codemirror/addon/fold/brace-fold.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-comment-fold-js',
+          $plugin_dir . 'assets/codemirror/addon/fold/comment-fold.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-mixed-js',
+          $plugin_dir . 'assets/codemirror/mode/htmlmixed/htmlmixed.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-javascript-js',
+          $plugin_dir . 'assets/codemirror/mode/javascript/javascript.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-xml-js',
+          $plugin_dir . 'assets/codemirror/mode/xml/xml.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-css-js',
+          $plugin_dir . 'assets/codemirror/mode/css/css.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        //overlay for shortcode highligh
+        wp_enqueue_script( 'codemirror-overlay-js',
+          $plugin_dir . 'assets/codemirror/addon/mode/overlay.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        /**
+        * @since 1.3.0 enable search codemirror
+        */
+        //overlay for shortcode highligh
+        wp_enqueue_script( 'codemirror-search-js',
+          $plugin_dir . 'assets/codemirror/addon/search/search.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-jumptoline-js',
+          $plugin_dir . 'assets/codemirror/addon/search/jump-to-line.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-matchesonscrollbar-js',
+          $plugin_dir . 'assets/codemirror/addon/search/matchesonscrollbar.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-searchcursor-js',
+          $plugin_dir . 'assets/codemirror/addon/search/searchcursor.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-annotatescrollbar-js',
+          $plugin_dir . 'assets/codemirror/addon/scroll/annotatescrollbar.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-dialog-js',
+          $plugin_dir . 'assets/codemirror/addon/dialog/dialog.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+
+        //js beautify
+        wp_enqueue_script( 'beautify-js',
+          $plugin_dir . 'assets/beautify/beautify.js',
+          array('jquery'), $this->version, true
+        );
+        wp_enqueue_script( 'beautify-html-js',
+          $plugin_dir . 'assets/beautify/beautify-html.js',
+          array('beautify-js'), $this->version, true
+        );
+        wp_enqueue_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
+
         //enqueue the cf7 scripts.
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
-        wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs' ), $this->version, true );
+        wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs', 'cf7-codemirror-js' ), $this->version, true );
         wp_localize_script(
           'cf7-grid-codemirror-js',
           'cf7sgeditor',
           array(
             'mode' => apply_filters('cf7sg_admin_editor_mode', 'shortcode', $post->post_name),
-						'theme' => apply_filters('cf7sg_admin_editor_theme', 'paraiso-light', $post->post_name),
+            'theme' => apply_filters('cf7sg_admin_editor_theme', 'paraiso-light', $post->post_name)
           )
         );
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
@@ -185,97 +294,6 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
         wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
 
-
-
-        //codemirror script
-        wp_enqueue_script( 'codemirror-js',
-          $plugin_dir . 'assets/codemirror/codemirror.js',
-          array(), $this->version, false
-        );
-        //fold code
-        wp_enqueue_script( 'codemirror-foldcode-js',
-          $plugin_dir . 'assets/codemirror/addon/fold/foldcode.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-foldgutter-js',
-          $plugin_dir . 'assets/codemirror/addon/fold/foldgutter.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-indent-fold-js',
-          $plugin_dir . 'assets/codemirror/addon/fold/indent-fold.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-xml-fold-js',
-          $plugin_dir . 'assets/codemirror/addon/fold/xml-fold.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-brace-fold-js',
-          $plugin_dir . 'assets/codemirror/addon/fold/brace-fold.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-comment-fold-js',
-          $plugin_dir . 'assets/codemirror/addon/fold/comment-fold.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-mixed-js',
-          $plugin_dir . 'assets/codemirror/mode/htmlmixed/htmlmixed.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-javascript-js',
-          $plugin_dir . 'assets/codemirror/mode/javascript/javascript.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-xml-js',
-          $plugin_dir . 'assets/codemirror/mode/xml/xml.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-css-js',
-          $plugin_dir . 'assets/codemirror/mode/css/css.js',
-          array('codemirror-js'), $this->version, false
-        );
-        //overlay for shortcode highligh
-        wp_enqueue_script( 'codemirror-overlay-js',
-          $plugin_dir . 'assets/codemirror/addon/mode/overlay.js',
-          array('codemirror-js'), $this->version, false
-        );
-        /**
-        * @since 1.3.0 enable search codemirror
-        */
-        //overlay for shortcode highligh
-        wp_enqueue_script( 'codemirror-search-js',
-          $plugin_dir . 'assets/codemirror/addon/search/search.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-jumptoline-js',
-          $plugin_dir . 'assets/codemirror/addon/search/jump-to-line.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-matchesonscrollbar-js',
-          $plugin_dir . 'assets/codemirror/addon/search/matchesonscrollbar.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-searchcursor-js',
-          $plugin_dir . 'assets/codemirror/addon/search/searchcursor.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-annotatescrollbar-js',
-          $plugin_dir . 'assets/codemirror/addon/scroll/annotatescrollbar.js',
-          array('codemirror-js'), $this->version, false
-        );
-        wp_enqueue_script( 'codemirror-dialog-js',
-          $plugin_dir . 'assets/codemirror/addon/dialog/dialog.js',
-          array('codemirror-js'), $this->version, false
-        );
-        //js beautify
-        wp_enqueue_script( 'beautify-js',
-          $plugin_dir . 'assets/beautify/beautify.js',
-          array('jquery'), $this->version, false
-        );
-        wp_enqueue_script( 'beautify-html-js',
-          $plugin_dir . 'assets/beautify/beautify-html.js',
-          array('beautify-js'), $this->version, false
-        );
-        wp_enqueue_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
         break;
       case 'edit':
         //wp_enqueue_script( $this->plugin_name.'-quick-edit', plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-quick-edit.js', false, $this->version, true );

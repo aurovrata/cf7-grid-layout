@@ -1,4 +1,19 @@
 == Changelog ==
+= 2.11.0 =
+* recaptch plugin fix by @netzgestaltung.
+* full-screen form editor button.
+= 2.10.5 =
+* bug fix on file attachments in notification email.
+= 2.10.4 =
+* add fix for custom required html in label.
+= 2.10.3 =
+* fix admin html filter parameter bug.
+= 2.10.2 =
+* code fix for [bug](https://wordpress.org/support/topic/bug-found-error-in-code/) found in mailchimp extension plugin
+* added IE polyfill for frontend table fields.
+= 2.10.1 =
+* fix _() function error in assets.
+* fix js error in cut and paste text editor on form submit.
 = 2.10.0 =
 * added 'cf7sg_kses_allowed_html' filter.
 * allowed custom html in forms.
