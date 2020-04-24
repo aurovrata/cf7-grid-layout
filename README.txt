@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, responsive forms, form maker, form builder
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.3
+Tested up to: 5.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -315,6 +315,10 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 3.1.3 =
+* fix common validation bug.
+* improve 'cf7sg_validate_submission' hook, data array contains file data.
+* redirect cf7 plugin admin pages to smart grid pages.
 = 3.1.2 =
 * instantiate CodeMirror after libray load and pass as attribute to anonymous function to fix conflict issue.
 = 3.1.1 =

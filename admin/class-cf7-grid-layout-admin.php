@@ -1186,5 +1186,24 @@ class Cf7_Grid_Layout_Admin {
     if(!empty($ad)){ /** @since 3.0.3 in case admin role is deleted */
       foreach($caps as $cap) $ad->add_cap($cap);
     }
+
+    /** @since 3.1.3  redirect cf7 plugin pages*/
+    global $pagenow;
+    if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) ) {
+      $url = '';
+      switch($_GET['page']){
+        case 'wpcf7-new':
+          $url = "post-new.php?post_type=wpcf7_contact_form" ;
+          break;
+        case 'wpcf7':
+          if(isset($_GET['post'])) $url = "post.php?post={$_GET['post']}&action=edit&classic-editor";
+          else $url = "edit.php?post_type=wpcf7_contact_form";
+          break;
+      }
+      if(!empty($url)){
+        wp_redirect( admin_url( $url ));
+        exit;
+      }
+    }
   }
 }

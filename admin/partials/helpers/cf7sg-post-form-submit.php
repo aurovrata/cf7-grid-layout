@@ -8,8 +8,24 @@ function validate_field_submission($validation_errors, $submission, $cf7_key){
   $cf7_key unique form key to identify your form, $cf7_id is its post_id.
   */
   if('{$form_key}'==$cf7_key ){
-    if($submission['location-city'] === 'Chennai'){
+    //$validation_errors is an array of field-names=>error messages.
+    //these include the simple validation exposed in the CF7 plugin for required fields/special field formats.
+    if(isset($validation_errors['location-city']) && $submission['location-city'] === 'Chennai'){
       $validation_errors['location-city'] = 'location cannot be Chennai!';
+    }
+    //for fields within tables, these are stored as arrays, one for each row.
+    foreach($validation_errors['my-table-field1'] as $row_index=>$error){
+      if(isset($submission['my-table-field1'][$row_index]) && $submission['my-table-field1'][$row_index]>5){
+        $validation_errors['my-table-field1'][$row_index] = 'value should be less than 5';
+      }
+    }
+    //for fields in tables that are within tab sections, these are stored as 2-dimensional arrays.
+    foreach($validation_errors['my-table-field1'] as $tab_index=>$e_array){
+      foreach($e_array as $row_index => $error){
+        if(isset($submission['my-table-field1'][$tab_index][$row_index]) && $submission['my-table-field1'][$tab_index][$row_index]>5){
+          $validation_errors['my-table-field1'][$tab_index][$row_index] = 'value should be less than 5';
+        }
+      }
     }
   }
   return $validation_errors;
