@@ -1144,7 +1144,6 @@ class Cf7_Grid_Layout_Public {
     * @param int  $form_id  cf7 form post ID.
     * @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
     */
-    debug_msg($result, 'cf7 validation ');
     $validation = apply_filters('cf7sg_validate_submission', $validation, $submission, $form_key, $data['_wpcf7']);
 
     $result = new WPCF7_Validation();
@@ -1165,7 +1164,6 @@ class Cf7_Grid_Layout_Public {
                   debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
                   break;
                 case empty($value): //no message, just continue.
-                  continue 1;
                   break;
                 default:
                   $result->invalidate($validated[$name][$idx], $value);
@@ -1177,7 +1175,6 @@ class Cf7_Grid_Layout_Public {
             debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
             break;
           case empty($msg): //no message, just continue.
-            continue 1;
             break;
           default:
             $result->invalidate($validated[$name], $msg);

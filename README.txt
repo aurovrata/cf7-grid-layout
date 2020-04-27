@@ -315,6 +315,8 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 
 == Changelog ==
+= 3.1.5 =
+* fix continue for PHP 7.3+
 = 3.1.4 =
 * fix continue.
 = 3.1.3 =
