@@ -1165,7 +1165,7 @@ class Cf7_Grid_Layout_Public {
                   debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
                   break;
                 case empty($value): //no message, just continue.
-                  continue;
+                  continue 1;
                   break;
                 default:
                   $result->invalidate($validated[$name][$idx], $value);
@@ -1177,7 +1177,7 @@ class Cf7_Grid_Layout_Public {
             debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
             break;
           case empty($msg): //no message, just continue.
-            continue;
+            continue 1;
             break;
           default:
             $result->invalidate($validated[$name], $msg);
