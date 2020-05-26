@@ -64,7 +64,7 @@ This plugin would not have been possible without the following open-source effor
 * [JQuery Nice Select](http://hernansartorio.com/jquery-nice-select/) - makes beautiful dropdown fields.
 * [JQuery Select2](https://select2.org/) - this plugin converts dropdowns into powerful searchable dropdown fields.
 * [JQuery Toggles](https://simontabor.com/labs/toggles/) - enables pretty toggle switches on collapsible sections.
-* [PHP Query](https://github.com/punkave/phpQuery) - a php class that enables traversing and manipulation of html documents using css selectors like JQuery.  This is used to build the modular functionality of form designs.
+* [PHP Simple HTML Dom](https://github.com/voku/simple_html_dom) - a php library that enables traversing and manipulation of html documents using css selectors like JQuery.  This is used to build the modular functionality of form designs.
 
 = Thanks to =
 Birmania [@birmania](https://profiles.wordpress.org/birmania/) for providing:
@@ -313,8 +313,12 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 20. (20) v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
+23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 3.2.0 =
+* added cf7sg_mailtag_$mail_tag filters.
+* replaced PhpQuery library with SimpleHTMLDom.php (https://github.com/voku/simple_html_dom) library for php 7 compatibility.
 = 3.1.5 =
 * fix continue for PHP 7.3+
 = 3.1.4 =

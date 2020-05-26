@@ -293,7 +293,14 @@ class Cf7_Grid_Layout_Admin {
         );
         wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
         wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
-
+        /** @since 3.2.0 */
+        wp_enqueue_script('cf7sg-mail-tag-js', $plugin_dir.'admin/js/mail-tag-helper.js', array('jquery','jquery-clibboard'));
+        wp_localize_script('cf7sg-mail-tag-js','mailTagHelper',
+          array(
+            'msg'=>__('Click to copy!','cf7-grid-layout'),
+            'filter'=> __('Filter mailTag %s', 'cf7-grid-layout')
+          )
+        );
         break;
       case 'edit':
         //wp_enqueue_script( $this->plugin_name.'-quick-edit', plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-quick-edit.js', false, $this->version, true );

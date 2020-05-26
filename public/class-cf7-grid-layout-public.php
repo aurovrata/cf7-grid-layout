@@ -1,4 +1,5 @@
 <?php
+use voku\helper\HtmlDomParser;
 
 /**
  * The public-facing functionality of the plugin.
@@ -422,26 +423,25 @@ class Cf7_Grid_Layout_Public {
    * Update sub-forms in cf7 forms
    * Hooked to 'do_shortcode'
    * @since 1.0.0
-   * @param      Array    $atts     attributes from the shortcode.
-   * @param      String    $content     shortcode content.
-   * @return     String    shorcode rendered content.
+   * @param      String    $form_raw     HTML form.
+   * @param      WP_Post    $sub_form_post     CF7 sub-form post object.
+   * @return     String    HTML for new form.
   **/
   public function update_sub_form($form_raw, $sub_form_post){
     //Create a new DOM document
     $cf7_key = $sub_form_post->post_name;
     $sub_form_raw = get_post_meta($sub_form_post->ID, '_form', true);
-    //debug_msg($sub_form_raw, 'new subform');
     //PHP DOM plugin.
-    require_once plugin_dir_path(  __DIR__  ) . 'assets/php-query/phpQuery.php';
-    $doc = phpQuery::newDocument($form_raw);
-    //$form = pq('#cf7sg-form-'.$key)->find('form.wpcf-form')->contents()->remove();
-    //remove old form content.
-    pq('#cf7sg-form-'.$cf7_key)->contents()->remove();
-    //$form_wrap = pq('#cf7sg-multi-form-main')->contents()->remove();
-    //$form_wrap->find(('form.wpcf-form'))->append(pq('#cf7sg-multi-form')->html());
-    //add updated form
-    pq('#cf7sg-form-'.$cf7_key)->append($sub_form_raw);
-    return $doc->htmlOuter();
+    /** @since 3.2.0 use Simple HTML Dom library */
+    require_once plugin_dir_path(  __DIR__  ) . 'assets/simple-html-dom/autoload.php';
+
+    $dom = HtmlDomParser::str_get_html($form_raw);
+    //reset the inner form.
+    $element = $dom->find('#cf7sg-form-'.$cf7_key);
+
+    $element[0]->innertext = $sub_form_raw;
+
+    return $dom->outertext;
   }
   /**
    * Function to load custom js script for Post My CF7 Form loading of form field values
@@ -1457,11 +1457,14 @@ class Cf7_Grid_Layout_Public {
   *@param mixed $submitted value of submitted field from cf7 posted data..
   *@param boolea $html mail if mail body is using html.
   *@param WPCF7_MailTag $mail_tag mail tag object of field being replaced.
-  *@return string repalcement string.
+  *@return string replacement string.
   */
   public function filter_table_tab_mail_tag($replaced, $submitted, $html=false, $mail_tag=null ){
     $cf7form = WPCF7_ContactForm::get_current();
     $cf7form_key = Cf7_WP_Post_Table::form_key($cf7form->id());
+    $submitted_cf7 = WPCF7_Submission::get_instance();
+    $submitted_data = $submitted_cf7->get_posted_data();
+
     if(empty($mail_tag)) return $replaced;
     $field_type = self::field_type($mail_tag->field_name(), $cf7form->id());
     $label = '';
@@ -1524,10 +1527,23 @@ class Cf7_Grid_Layout_Public {
         * @since 2.9.0.
         * @param string $replaced value to filter.
         * @param string $field_name name of the field being inserted in the mail.
+        * @param array $submitted submitted form data.
         * @param string $form_key unique form key identifier.
         * @return string a value to replace.
         */
-        $replaced = apply_filters('cf7sg_mailtag_'.$tag->basetype, $replaced, $mail_tag->field_name(), $cf7form_key);
+        if($tag instanceof WPCF7_FormTag){
+          $replaced = apply_filters('cf7sg_mailtag_'.$tag->basetype, $replaced, $mail_tag->field_name(), $submitted_data, $cf7form_key);
+        }
+        /**
+        * Filter the value inserted in the mail tag.
+        * @since 3.1.6.
+        * @param string $replaced value to filter.
+        * @param string $field_name name of the field being inserted in the mail.
+        * @param array $submitted submitted form data.
+        * @param string $form_key unique form key identifier.
+        * @return string a value to replace.
+        */
+        $replaced = apply_filters('cf7sg_mailtag_'.$mail_tag->field_name(), $replaced, $submitted_data, $cf7form_key);
         break;
     }
 
