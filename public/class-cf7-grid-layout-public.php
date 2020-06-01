@@ -155,6 +155,10 @@ class Cf7_Grid_Layout_Public {
 	 * @since    1.0.0
 	 */
 	public function register_styles() {
+    $airplane=false;
+    if( class_exists( 'Airplane_Mode_Core' ) && Airplane_Mode_Core::getInstance()->enabled()){
+      $airplane=true;
+    }
     $plugin_dir = plugin_dir_url( __DIR__ );
     //default style for cf7 grid forms (row buttons and tables mainly).
     //others
@@ -163,9 +167,11 @@ class Cf7_Grid_Layout_Public {
     $ui = $wp_scripts->query('jquery-ui-core');
 
     // tell WordPress to load the Smoothness theme from Google CDN
-    $protocol = is_ssl() ? 'https' : 'http';
-    $url_path = "$protocol://cdnjs.cloudflare.com/ajax/libs/jqueryui/{$ui->ver}/";
-    wp_register_style('cf7-jquery-ui', $url_path . 'themes/smoothness/jquery-ui.min.css', array(), $ui->ver , 'all');
+    if( !$airplane ){
+      $protocol = is_ssl() ? 'https' : 'http';
+      $url_path = "$protocol://cdnjs.cloudflare.com/ajax/libs/jqueryui/{$ui->ver}/";
+      wp_register_style('cf7-jquery-ui', $url_path . 'themes/smoothness/jquery-ui.min.css', array(), $ui->ver , 'all');
+    }
 
     wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui->ver, 'all');
     wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui->ver, 'all');
@@ -182,8 +188,12 @@ class Cf7_Grid_Layout_Public {
     wp_register_style('jquery-nice-select-css', $plugin_dir . "assets/jquery-nice-select/css/nice-select{$ff}.css", array(), $this->version, 'all' );
     wp_register_style('jquery-toggles-css', $plugin_dir . "assets/jquery-toggles/css/toggles{$ff}.css", array(), $this->version, 'all' );
     wp_register_style('jquery-toggles-light-css', $plugin_dir . "assets/jquery-toggles/css/themes/toggles-light{$ff}.css", array('jquery-toggles-css'), $this->version, 'all' );
-
-    wp_register_style('select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), $this->version, 'all' );
+    /** @since 3.2.1 use cloudflare for live sites */
+    if( $airplane || (defined('WP_DEBUG') && WP_DEBUG) ){
+      wp_register_style('select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), '4.0.13', 'all' );
+    }else{
+      wp_register_style('select2-style', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', array(), '4.0.13','all');
+    }
 
     //allow custom script registration
     do_action('smart_grid_register_styles');
@@ -195,6 +205,10 @@ class Cf7_Grid_Layout_Public {
 	 * @since    1.0.0
 	 */
 	public function register_scripts() {
+    $airplane=false;
+    if( class_exists( 'Airplane_Mode_Core' ) && Airplane_Mode_Core::getInstance()->enabled()){
+      $airplane=true;
+    }
     /** @since 3.1,0 improve live loading of resources */
     $pf='';
     if(!defined('WP_DEBUG') || !WP_DEBUG){
@@ -202,7 +216,12 @@ class Cf7_Grid_Layout_Public {
     }
     $plugin_dir = plugin_dir_url( __DIR__ );
 		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public.js", array( 'jquery','contact-form-7' ), $this->version, true );
-    wp_register_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
+    /** @since 3.2.1 use cloudflare for live sites */
+    if( $airplane || (defined('WP_DEBUG') && WP_DEBUG) ){
+      wp_register_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), '4.0.13', true );
+    }else{
+      wp_register_script('jquery-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array( 'jquery' ), '4.0.13', true );
+    }
     wp_register_script('jquery-nice-select', $plugin_dir . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );

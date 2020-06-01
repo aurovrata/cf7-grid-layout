@@ -367,7 +367,7 @@ class Cf7_Grid_Layout_Admin {
 
   public function modify_cf7_post_type_args($args, $post_type){
     if($post_type === $this->cf7_post_type()  ) {
-      //debug_msg($args, 'pre-args');
+      // debug_msg($args, 'pre-args');
       // $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
       /** @since 2.8.3 add wpcf7_type (registered in assets/cf7-table.php) taxonomy to cf7 post type */
       $system_taxonomy = array('wpcf7_type');
@@ -404,6 +404,8 @@ class Cf7_Grid_Layout_Admin {
       /** @since 2.8.1  fix missing delete_posts notices*/
       // $args['capabilities']['delete_posts']= 'wpcf7_delete_posts';
       /** @since 3.0.0 enable better capability management */
+      // $args['capability_type'] = 'page';
+
       $args['map_meta_cap']=true; //allow finer capability mapping.
       $args['capabilities']['edit_post'] = 'wpcf7_edit_contact_form';
       $args['capabilities']['read_post'] = 'wpcf7_read_contact_form';
@@ -415,6 +417,7 @@ class Cf7_Grid_Layout_Admin {
       $args['capabilities']['delete_published_posts']= 'wpcf7_delete_published_contact_forms';
       $args['capabilities']['delete_others_posts']= 'wpcf7_delete_others_contact_forms';
       $args['capabilities']['publish_posts']= 'wpcf7_publish_contact_forms';
+      $args['capabilities']['read_private_posts']= 'wpcf7_publish_contact_forms';
 
        // debug_msg($args);
     }
@@ -1154,8 +1157,20 @@ class Cf7_Grid_Layout_Admin {
   *@return array key->value pairs of capabilities.
   */
   public function reset_meta_cap($caps){
-		// fixes bug in contact-form-7/capabilities.php, which uses array_diff instead of array_merge
-    return array();
+    return array(
+      'wpcf7_read_contact_form'=>'read_post',
+      'wpcf7_edit_contact_form' =>'edit_post',
+      'wpcf7_edit_contact_forms' => 'edit_posts',
+      'wpcf7_edit_others_contact_forms'=>'edit_others_posts',
+      'wpcf7_edit_published_contact_forms'=>'edit_published_posts',
+      'wpcf7_delete_contact_form'=>'delete_post',
+      'wpcf7_delete_contact_forms'=>'delete_posts',
+      'wpcf7_delete_published_contact_forms'=>'delete_published_posts',
+      'wpcf7_delete_others_contact_forms'=>'delete_others_posts',
+      'wpcf7_publish_contact_forms'=>'publish_posts',
+      'wpcf7_publish_contact_forms'=>'read_private_posts',
+      'wpcf7_submit'=>'read', /** @since 3.2.1 to fix subscribers_only. */
+    );
   }
   /**
   * CF7 plugin by default sets form post status to 'publish' regardless of user capability.

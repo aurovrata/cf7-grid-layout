@@ -819,19 +819,20 @@
     //reset helper.
     $helper = $parent.siblings('.dashicons-controls-repeat');
 
-    var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"source:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"source:)[^\[]*)\]/img;
-    var search = $this.val();
-    var match = cf7TagRegexp.exec(search);
-    var label='';
-    var isRequired = false;
-    var type = [];
-    var fields = [];
-    var hooks = [];
-    var tag='';
-    var isSubmit = false;
-    var count =0;
-    var field = '';
-    var stopSearch = false;
+    var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"source:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"source:)[^\[]*)\]/img,
+      search = $this.val(),
+      match = cf7TagRegexp.exec(search),
+      label='',
+      isRequired = false,
+      type = [],
+      fields = [],
+      hooks = [],
+      tag='',
+      isSubmit = false, hasHidden = false,
+      count =0, counth = 0,
+      field = '',
+      stopSearch = false;
+
     while (match != null && !stopSearch) {
       count++;
       label+='['+match[1]+' '+match[2]+']';
@@ -882,6 +883,10 @@
               break;
           }
           break;
+        case 'hidden': /** @since 3.2.1 fix hidden field class */
+          tag+='-input';
+          counth++;
+          break;
       }
       type[type.length] = tag;
       fields[fields.length] = field;
@@ -902,7 +907,7 @@
         return (className.match (/(^|\s)cf7-tags-\S+/g) || []).join(' ');
       });
     }
-    if(count>1){
+    if( (count-counth) >1 ){ /** @since 3.2.1 don't count hidden fields */
       classes += ' cf7-tags-'+count;
       $parentColumn.addClass('cf7-tags-'+count);
     }

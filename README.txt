@@ -316,6 +316,10 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 3.2.1 =
+* fix hidden fields.
+* fix wpcf7_submit capability for sucribers_only attribute.
+* upgrade select2 library for iOS touch fix.
 = 3.2.0 =
 * added cf7sg_mailtag_$mail_tag filters.
 * replaced PhpQuery library with SimpleHTMLDom.php (https://github.com/voku/simple_html_dom) library for php 7 compatibility.
