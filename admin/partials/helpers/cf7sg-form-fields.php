@@ -1,3 +1,10 @@
+<?php
+//helper snippets
+$post_my_form_only = ' no-post-my-form';
+if(is_plugin_active( 'post-my-contact-form-7/cf7-2-post.php' )){
+  $post_my_form_only='';
+}
+?>
 <li class="cf7sg-tag-dynamic_select-post">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_post_query','{$field_name_slug}_dynamic_list',10,3);
 /**

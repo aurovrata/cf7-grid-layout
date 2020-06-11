@@ -9,17 +9,17 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugins allows pure css responsive grid layouts for contact form 7.  It enables rich interlinking of your CMS data via taxonomy/posts populated dropdown fields.  It also enables modular design of complex forms.
+This plugins allow pure CSS responsive grid layouts for contact form 7.  It enables rich interlinking of your CMS data via taxonomy/posts populated dropdown fields.  It also enables modular design of complex forms.
 
 == Description ==
-**NOTE WordPress 5.0 & Gutenberg editor update** - this plugin is now compatible with WP 5.0, however, the Gutenberg editor does not recognise [shortcodes with hyphons](https://www.getgutenberg.io/documentation/content/shortcodes/) (dash) characters, so a new shortcode is introduced from v2.5, `[cf7form ...]`. Your form table will now display this new shortcode.  Creating new pages/posts with Gutenberg from now on will require you use this new shortcode.  The old remains active for existing content.
+**NOTE WordPress 5.0 & Gutenberg editor update** - this plugin is now compatible with WP 5.0, however, the Gutenberg editor does not recognise [shortcodes with hyphens](https://www.getgutenberg.io/documentation/content/shortcodes/) (dash) characters, so a new shortcode is introduced from v2.5, `[cf7form ...]`. Your form table will now display this new shortcode.  Creating new pages/posts with Gutenberg from now on will require you use this new shortcode.  The old remains active for existing content.
 
-The plugin uses the [smart-grid](http://origin.css.gd/) css plugin to build beautiful form layouts.  It introduces a graphical editor to design your forms, as well as a coloured html syntax editor built using the excellent CodeMirror editor.  It is now possible to design smart layouts with ease.
+The plugin uses the [smart-grid](http://origin.css.gd/) CSS plugin to build beautiful form layouts.  It introduces a graphical editor to design your forms, as well as a coloured html syntax editor built using the excellent CodeMirror editor.  It is now possible to design smart layouts with ease.
 
-In addition the plugin also introduces multiple smart input functionalities, such as,
+In addition, the plugin also introduces multiple smart input functionalities, such as,
 
-* **tabled input sections**: these allows you to group several input fields as table rows, the plugin will automatically add an 'Add Row' button to your front end form, giving your users the ability to add multiple rows of your grouped fields.
-* **tabbed sections**: with this plugin you can build tabbed sections of fields, allowing your users to add additional tabs.  It is a similar concept to the tabled input section above, but in a tabbed layout insead.
+* **tabled input sections**: these allow you to group several input fields as table rows, the plugin will automatically add an 'Add Row' button to your front end form, giving your users the ability to add multiple rows of your grouped fields.
+* **tabbed sections**: with this plugin you can build tabbed sections of fields, allowing your users to add additional tabs.  It is a similar concept to the tabled input section above, but in a tabbed layout instead.
 * **collapsible sections**: for long and complex forms you can now group your front-end fields into collapsible sections, making it easier for user to see the big picture.
 * **toggled collapsible sections** for optional sections.  A toggle with a default Yes/No value is inserted, allowing your users to submit optional fields which within the section can be set to required in your design (See FAQ section for more info).
 * **reusable sub-forms**: if you have fields which repeat across multiple forms, you can now build a sub-form which you can include in your form, saving you the trouble of redesigning the form each time, but also making large forms much easier to maintain.
@@ -29,7 +29,15 @@ In addition the plugin also introduces multiple smart input functionalities, suc
 * **redesign the form editor**: this plugin now uses the WordPress default post editor page to edit/build forms, therefore making it easier for developer to plugin their functionality on top, while preserving all the hooks of Contact Form 7.
 
 **Looking for Collaborators**
-Are you a WordPress developer or an HTML/Javascript master?  Want to collaborate on this plugin?  There are some really great pieces of functionality that are in the roadmap for this plugin, but I just don't have the time or resources to get them all on file in a timely manner.  So join me on [GitHub](https://github.com/aurovrata/cf7-grid-layout/wiki/Roadmap) if you want to collaborate.
+Are you a WordPress developer or an HTML/JavaScript master?  Want to collaborate on this plugin?  There are some really great pieces of functionality that are in the roadmap for this plugin, but I just don't have the time or resources to get them all on file in a timely manner.  So join me on [GitHub](https://github.com/aurovrata/cf7-grid-layout/wiki/Roadmap) if you want to collaborate.
+
+**For plugin developers**
+If you wish to leverage the in-editor helper code functionality for your CF7 plugin, you need to use the following hooks,
+`cf7sg_ui_grid_js_helper_hooks` - include js bind event code helpers.
+`cf7sg_ui_grid_helper_hooks` - include php filter/action hooks code helpers.
+`cf7sg_enqueue_admin_editor_scripts` - to enqueue scipts on the admin editor page to bind to editor events for further dynamic code helpers.
+
+If you wish to see an example on how to use this, please check the Google Map CF7 extension plugin code.  The `cf7-google-map/includes/class-cf7-googleMap.php` list the above hooks and the function calls are in the `cf7-google-map/admin/class-cf7-googleMap-admin.php` file.
 
 = Checkout our other CF7 plugin extensions =
 
@@ -39,7 +47,7 @@ Are you a WordPress developer or an HTML/Javascript master?  Want to collaborate
 
 * [Post My CF7 Form](https://wordpress.org/plugins/post-my-contact-form-7/) - this plugin allows you to save you cf7 form to a custom post, map your fields to meta fields or taxonomy.  It also allows you to pre-fill fields before your form  is displayed.
 
-* [CF7 Google Map](https://wordpress.org/plugins/cf7-google-map/) - allows google maps to be inserted into a Contact Form 7.  Unlike other plugins, this one allows map settings to be done at the form level, enabling diverse maps to be configured for each forms.
+* [CF7 Google Map](https://wordpress.org/plugins/cf7-google-map/) - allows Google Maps to be inserted into a Contact Form 7.  Unlike other plugins, this one allows map settings to be done at the form level, enabling diverse maps to be configured for each form.
 
 * [Smart Grid-Layout Design for CF7](https://wordpress.org/plugins/cf7-grid-layout/) - allows responsive grid layout Contact Form 7 form designs, enabling modular designs of complex forms, and rich inter-linking of your CMS data with taxonomy/posts populated dynamic dropdown fields.
 
@@ -57,22 +65,22 @@ A video will be made available in the near future to further demonstrate how to 
 
 This plugin would not have been possible without the following open-source efforts.  Please consider visiting these plugins pages and making a donation to its authors to say thank you.  Even small amount of beer money is always appreciated. Alternatively/additionally you can help in the maintenance or translation effort.
 
-* [Beautify](https://github.com/beautify-web/js-beautify) - a JQuery plugin to beautify html text, used in the text editor of this plugin.
-* [CodeMirror](https://codemirror.net/) - a remarkable JQuery text editor that allows for colour-coded highlighting among many other functionality.  Used to edit form source code in text editor of this plugin.
-* [CSS Smart Grid](http://origin.css.gd/) - a CSS plugin that allows for intuitive css styling of responsive grid layouts.  Used for building the responsive form layouts.
-* [JQuery Clipboard](https://clipboardjs.com/) - copy text to the clipboard, used for helper links.
-* [JQuery Nice Select](http://hernansartorio.com/jquery-nice-select/) - makes beautiful dropdown fields.
-* [JQuery Select2](https://select2.org/) - this plugin converts dropdowns into powerful searchable dropdown fields.
-* [JQuery Toggles](https://simontabor.com/labs/toggles/) - enables pretty toggle switches on collapsible sections.
-* [PHP Simple HTML Dom](https://github.com/voku/simple_html_dom) - a php library that enables traversing and manipulation of html documents using css selectors like JQuery.  This is used to build the modular functionality of form designs.
+* [Beautify](https://github.com/beautify-web/js-beautify) - a jQuery plugin to beautify html text, used in the text editor of this plugin.
+* [CodeMirror](https://codemirror.net/) - a remarkable jQuery text editor that allows for colour-coded highlighting among many other functionality.  Used to edit form source code in text editor of this plugin.
+* [CSS Smart Grid](http://origin.css.gd/) - a CSS plugin that allows for intuitive CSS styling of responsive grid layouts.  Used for building the responsive form layouts.
+* [jQuery Clipboard](https://clipboardjs.com/) - copy text to the clipboard, used for helper links.
+* [jQuery Nice Select](http://hernansartorio.com/jquery-nice-select/) - makes beautiful dropdown fields.
+* [jQuery Select2](https://select2.org/) - this plugin converts dropdowns into powerful searchable dropdown fields.
+* [jQuery Toggles](https://simontabor.com/labs/toggles/) - enables pretty toggle switches on collapsible sections.
+* [PHP Simple HTML Dom](https://github.com/voku/simple_html_dom) - a php library that enables traversing and manipulation of html documents using CSS selectors like jQuery.  This is used to build the modular functionality of form designs.
 
 = Thanks to =
 Birmania [@birmania](https://profiles.wordpress.org/birmania/) for providing:
 
-* a fix for js toggles.
+* a fix for JS toggles.
 * a fix for file fields in tabs as mail attachments
 
-Andrew Browning [@altworks](https://profiles.wordpress.org/altworks/) for poviding:
+Andrew Browning [@altworks](https://profiles.wordpress.org/altworks/) for providing:
 
 * an IE polyfill for frontend table fields.
 
@@ -97,37 +105,37 @@ This plugin, in itself, does not:
 
 1. Install the Contact Form 7 plugin.
 2. Unpack this plugin archive file into your wp-content/plugins folder.
-3. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Activate the plugin through the 'Plugins' menu on WordPress.
 4. Create a new form to leverage the grid editor, existing forms can only be edited in text mode.
 5. Read the FAQs & Screenshot captions to understand how to use this plugin.
 
 == Frequently Asked Questions ==
 
-= 1.How do I drag and sort columns in the grid editor ? =
+= 1. How do I drag and sort columns in the grid editor ? =
 
 Columns can be rearranged within a row by simply dragging and dropping using the handled icon in the columns head.  You can also drag and drop a column into another row, if the target row has sufficient space to receive the column, else a warning msg will appear.  In that case, make some room in the target row and/or resize the column so as to ensure it will fit in the row.
 
-Similarly you can re-organise your rows within a given grid.  Your initial form is grid.  You can convert an existing column into a grid.
+Similarly, you can re-organise your rows within a given grid.  Your initial form is grid.  You can convert an existing column into a grid.
 
-= 2.How do I create a dynamic dropdown list ?=
+= 2. How do I create a dynamic dropdown list ?=
 
-simply create a new dynamic dropdown field using the added tag in the list of available tags and select the type of dynamic list you want to populate with.  You create a list which will appear in the Information metabox in your edit page once you save your form.  It uses the taxonomy management functionality of WordPress but is not associated with any posts as such.  Simply edit the list by adding new terms to your list.  These will appear in your dropdown field.
+Simply create a new dynamic dropdown field using the added tag in the list of available tags and select the type of dynamic list you want to populate with.  You create a list which will appear in the Information metabox in your edit page once you save your form.  It uses the taxonomy management functionality of WordPress but is not associated with any posts as such.  Simply edit the list by adding new terms to your list.  These will appear in your dropdown field.
 
-Alternatively select an existing posts from your dashboard and the post titles will be used to populate the dropdown.
+Alternatively select an existing post from your dashboard and the post titles will be used to populate the dropdown.
 
 You also have the option to select a dynamic filter, and then the plugin will hook your functionality in your functions.php file to get your custom list.
 
-= 3.How do I make nice dropdown selects? =
+= 3. How do I make nice dropdown selects? =
 
 When you create a dynamic dropdown, or a cf7 dropdown field, you add `class:nice-select` to your tag or 'nice-select' in the class text field option.  The plugin will convert your dropdown into a beautiful [nice-select](http://hernansartorio.com/jquery-nice-select/) field.
 
-= 4.How do I make powerful select2 dropdowns? =
+= 4. How do I make powerful select2 dropdowns? =
 
-When you create a dynamic dropdown, or a cf7 dropdown field, you add `class:select2` to your tag or 'select2' in the class text field option.  The plugin will convert your dropdown into a powerful and searchable [JQuery Select2](https://select2.org/) field.  You can also enable select custom user options (known as tagging in the plugin documentation: https://select2.org/tagging) by adding the 'tags' class to your cf7 tag, `class:tags`.
+When you create a dynamic dropdown, or a cf7 dropdown field, you add `class:select2` to your tag or 'select2' in the class text field option.  The plugin will convert your dropdown into a powerful and searchable [jQuery Select2](https://select2.org/) field.  You can also enable select custom user options (known as tagging in the plugin documentation: https://select2.org/tagging) by adding the 'tags' class to your cf7 tag, `class:tags`.
 
 = 5.How do I display a pretty toggle switch on my collapsible section? =
 
-When you convert a row into a collapsible section (see [Screenshot 8](https://wordpress.org/plugins/cf7-grid-layout/#screenshots)), you can check the toggle option which will insert 2 data attributes into your html row, with labels for the toggle switch on/off state.  The default labels are 'yes' for on and 'no' for off.  You can change the `data-on` and `data-off` attributes in the html text editor.  Your form will display a [toggle switch](https://simontabor.com/labs/toggles/).
+When you convert a row into a collapsible section (see [screenshot 8](https://wordpress.org/plugins/cf7-grid-layout/#screenshots)), you can check the toggle option which will insert 2 data attributes into your html row, with labels for the toggle switch on/off state.  The default labels are 'yes' for on and 'no' for off.  You can change the `data-on` and `data-off` attributes in the html text editor.  Your form will display a [toggle switch](https://simontabor.com/labs/toggles/).
 
 = 6.How do I reset a form?=
 Navigate to the 'text' editor of the form, select all the html and delete the editor content.  The plugin will create 1 default row with a single column in the 'grid' editor from which you can design your form afresh.
@@ -157,9 +165,9 @@ function filter_pre_html($html, $cf7_key){
 
 = 8.How can I customise my form ?=
 **Custom scripts**
-The plugin will look for a javascript file `js/{$cf7key}.js` from the base of your theme root folder and load it on the page where your form is displayed.  Create a `js/` subfolder in your theme (or child theme folder), and create a file called `<your-form-cf7key>.js` in which you place your custom javascript code.
+The plugin will look for a JavaScript file `js/{$cf7key}.js` from the base of your theme root folder and load it on the page where your form is displayed.  Create a `js/` subfolder in your theme (or child theme folder), and create a file called `<your-form-cf7key>.js` in which you place your custom JavaScript code.
 
-In addition if you need to localise your custom script, you can do so using the following action hook,
+In addition, if you need to localise your custom script, you can do so using the following action hook,
 `
 add_action('smart_grid_register_custom_script', 'localise_custom_scritp', 10,1);
 function localise_custom_scritp($cf7_key){
@@ -171,15 +179,15 @@ function localise_custom_scritp($cf7_key){
 
 The `$cf7key` is the unique key associated with your form which you can find in the Information metabox of your form edit page.
 
-If you wish to [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/) a general javascript file for all your forms, you can use the hook `smart_grid_register_scripts`,
+If you wish to [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/) a general JavaScript file for all your forms, you can use the hook `smart_grid_register_scripts`,
 `add_action('smart_grid_register_scripts', 'add_js_to_forms');
 function add_js_to_forms(){
    wp_enqueue_script('my-custom-script', '<path to your custom js file>', array(), null, true);
 }`
 **custom styling**
-Similarly you can create a `css/` subfolder in your theme folder and create a file in it called `<your-form-cf7key>.css` and place your custom styling for your form.  The plugin will then load this css file on the page where your form is displayed.
+Similarly, you can create a `css/` subfolder in your theme folder and create a file in it called `<your-form-cf7key>.css` and place your custom styling for your form.  The plugin will then load this CSS file on the page where your form is displayed.
 
-If you wish to [wp_enqueue_styles](https://developer.wordpress.org/reference/functions/wp_enqueue_style/) a general css stylesheet file for all your forms, you can use the hook `smart_grid_register_styles`,
+If you wish to [wp_enqueue_styles](https://developer.wordpress.org/reference/functions/wp_enqueue_style/) a general CSS stylesheet file for all your forms, you can use the hook `smart_grid_register_styles`,
 `add_action('smart_grid_register_styles', 'add_css_to_forms');
 function add_css_to_forms(){
    wp_enqueue_style('my-custom-style', '<path to your custom sheet>', array(), null, 'all');
@@ -229,8 +237,8 @@ this will retrieve an array with the following `key=>value` pairs,
 the key is the unique id of your toggle `.container` element.  If you navigate to the element in the text editor you will notice that a random 'id' attribute has already been set, you can change this to something more meaningful.
 The value of the array if set at the text string comprised of the toggle label (which you filled in), followed by the positive selection string (toggle open status) which is 'Yes' by default, and separated by the '|' (pipe) character.  If the toggle has not been opened, no key/value pairs will be saved in the array for that toggle.
 
-= 12.How can I navigate/search the text editor? =
-As of v1.3 a search functionality has been introduced.  Click anywhere in the text editor and press your search key combination (for example 'Ctrl+F' on windows/linux), you will see a search box at the top of the editor.  This is useful if you want to edit a specific field, so once you have added a new cf7 field tag with the name say 'your-email', you can then search for it on the text editor to locate the code.
+= 12. How can I navigate/search the text editor? =
+As of v1.3 a search functionality has been introduced.  Click anywhere in the text editor and press your search key combination (for example 'Ctrl+F' on Windows/Linux), you will see a search box at the top of the editor.  This is useful if you want to edit a specific field, so once you have added a new cf7 field tag with the name say 'your-email', you can then search for it on the text editor to locate the code.
 
 = 13. Can the text editor highlighting be turned off? =
 yes, you can use the following filters to either switch off only the shortcode highlighting, (add the following line to your functions.php file)
@@ -247,8 +255,8 @@ Yes, identify the row in your text editor which implements your collapsible sect
 `<div class="container cf7sg-collapsible" data-open="true" ...`
 
 = 14bis. How can I display a table of fields in a mail message? =
-If you have a set of fields that are in a table/tab structure, the plugin is not aware of their relationship and as such does not build a table layout in a mail when you use them as tags in a message.  However, a filter is provided for you to achive this.  The filter #3 in the Post-form submit hooks allows you to build a table layout in an *html* mail.  Ensure the html format checkbox is selected in the your mail settings, else the filter will not fire.
-In you mail message body, place the mail tags contiguously for each field that is present in your table.  Hence, assuming you have a table with 3 fields, field-one, field-two, field-three.  Place their tags in the mail body as
+If you have a set of fields that are in a table/tab structure, the plugin is not aware of their relationship and as such does not build a table layout in a mail when you use them as tags in a message.  However, a filter is provided for you to archive this.  The filter #3 in the Post-form submit hooks allows you to build a table layout in an *html* mail.  Ensure the html format checkbox is selected in your mail settings, else the filter will not fire.
+In your mail message body, place the mail tags contiguously for each field that is present in your table.  Hence, assuming you have a table with 3 fields, field-one, field-two, field-three.  Place their tags in the mail body as
 
 `[field-one][field-two][field-three]`
 
@@ -256,11 +264,11 @@ copy the filter helper code (see [screenshot](https://wordpress.org/plugins/cf7-
 
 = 15. How can I set a maximum number of rows to a table ? =
 
-As of v2.8, this functionality has now been included.  You will need to add the `data-max` attribute to your table in the text editor and set it to the row limit you want (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #22).  NOTE: in a lengthy form it is easy to navigate directly to the a table or field's text code line using the shortcode navigation buttons provided in the Grid editor, (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #19)
+As of v2.8, this functionality has now been included.  You will need to add the `data-max` attribute to your table in the text editor and set it to the row limit you want (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #22).  NOTE: in a lengthy form it is easy to navigate directly to the table or field's text code line using the shortcode navigation buttons provided in the Grid editor, (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #19)
 
 = 16. Can I add custom input or other html elements in the form ? =
 
-Yes this is possible.  Howevewr, keep in mind that the forms are sanitised using [`wp_kses()`](https://codex.wordpress.org/Function_Reference/wp_kses) function, so any html elements which are not inlcuded in the set of permitted elements will be stripped out of the form.  A filter is included for you add additional html code permitted by the sanitisation function,
+Yes this is possible.  However, keep in mind that the forms are sanitised using [`wp_kses()`](https://codex.wordpress.org/Function_Reference/wp_kses) function, so any html elements which are not included in the set of permitted elements will be stripped out of the form.  A filter is included for you add additional html code permitted by the sanitisation function,
 
 `
 add_filter('cf7sg_kses_allowed_html', 'add_custom_html', 10,2);
@@ -287,7 +295,7 @@ existing forms are not editable in the grid editor.
 
 Create a new form to be able to leverage the grid editor functionality.
 
-this plugin allows you to create grid layout forms by creating an htlm markup and a CSS stylesheet which displays your form fields in a responsive grid.
+this plugin allows you to create grid layout forms by creating a HTML markup and a CSS stylesheet which displays your form fields in a responsive grid.
 
 == Screenshots ==
 
@@ -295,8 +303,8 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 2. (2) Form type taxonomy is introduced to manage forms.  This is useful when designing forms that change according to the type of users and therefore leverages WP core taxonomy CMS functionality.
 3. (3) The CF7 form editor page is now replaced by the WP core `post.php` page for custom posts.  It offers a UI grid building tool to help design grid layouts.  This is done using a responsive CSS plugin, Smart grid, which divides a row into 12 equal width columns.
 4. (4)The CSS smart-grid plugin columns layout, the total width of a row including column offsets need to add-up to 12 equivalent widths.  If you try to add more columns which takes the total width beyond these 12 units, you will end up with the extra columns flowing below.
-5. (5) The 'text' tab of the form designer allows you to edit the form source in a beautiful CodeMirror html editor with colour highlighted markup for both html as well as CF7 tags. This makes it a lot easier to customise your source code.  Switching back to the grid mode, the plugin will attempt to identify new rows/columns, but if it fails to recognise your custom html code, it will simply leave it as is and display it a separate textarea.
-6. (6) You can add new rows with the '+' button in the row controls, delete with the 'bin' button which only appears on the 2nd row onwards. You can edit the row with the 'pencil' button.  Similarly you can add columns with the '+' button on the column controls, delete with the 'bin' button (only available on the 2nd column onwards), and edit a column using the 'pencil' button.
+5. (5) The 'text' tab of the form designer allows you to edit the form source in a beautiful CodeMirror html editor with colour highlighted markup for both html and CF7 tags. This makes it a lot easier to customise your source code.  Switching back to the grid mode, the plugin will attempt to identify new rows/columns, but if it fails to recognise your custom html code, it will simply leave it as is and display it a separate textarea.
+6. (6) You can add new rows with the '+' button in the row controls, delete with the 'bin' button which only appears on the 2nd row onwards. You can edit the row with the 'pencil' button.  Similarly, you can add columns with the '+' button on the column controls, delete with the 'bin' button (only available on the 2nd column onwards), and edit a column using the 'pencil' button.
 7. (7) Columns can be resized and offset.
 8. (8) A row can be converted into a collapsible 'accordion' style section to collapse part of your form into more manageable parts.
 9. (9) Columns can further be converted into grids, allowing for more complex layouts such as multiple rows within a column.
@@ -306,19 +314,26 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 13. (13) Similar to a table row, you can convert an inner-row into a cloneable tabbed section of fields.  This is similar to the table concept except that users can add additional tabs which clone the entire set of fields presents in the tabbed row.  Make sure you give your tab a label.
 14. (14) On the form front-end your users will be able to add new tabs.
 15. (15) A column can be converted into an entire existing cf7 form by editing the column ('pencil' button) and selecting the option 'Insert Form'.  This will convert the column into a dropdown field from which you can select an existing form that you have previously designed.  This makes for modular design of forms.
-16. (16) This plugin introduces dynamic dropdowns, which allow you to manage dropdown field options using various content managed in your WordPress dashboard.  For example you can use taxonomy terms as options, or you can use existing post types' allowing your users to select/link existing content from your WordPress CMS managed data to their submission.  The dynamic dropdown can also be programmatically populated using a hook filter with the last option 'Custom'.
-17. (17) If you create a dynamic-dropdown field and select filter as source, the plugin expects the options to be provided by a filter.  Your field cell will have an extra 'filter' icon at the top, click it to reveal the filters available.  You can click on the filter link which will copy a helper code snipet which you an paste in your *functions.php* file and customise to provide the options list.
-18. (18) A benchmark field is available which allows you to display warning when certain input values breach the benchmark limit.  The benchmark field also emits a javascript event when the limit is breached so that custom javascript action can be executed.
+16. (16) This plugin introduces dynamic dropdowns, which allow you to manage dropdown field options using various content managed in your WordPress dashboard.  For example, you can use taxonomy terms as options, or you can use existing post types' allowing your users to select/link existing content from your WordPress CMS managed data to their submission.  The dynamic dropdown can also be programmatically populated using a hook filter with the last option 'Custom'.
+17. (17) If you create a dynamic-dropdown field or select filter as source, the plugin expects the options to be provided by a filter.  Your field cell will have an extra 'filter' icon at the top, click it to reveal the filters available.  The plugin has an extensible framework which allows other plugins to leverage the in-editor helper codes to be integrated for specific fields.  For example the Google Map CF7 extension is such an example, and will expose *PHP filter helper codes* as well as *JavaScript helper codes* to customise your field further.
+You can click on the filter link which will copy a helper code snippet which you can paste in your *functions.php* file and customise to provide the options list.
+For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-key>.js` file (see FAQ #8 for more details).
+18. (18) A benchmark field is available which allows you to display warning when certain input values breach the benchmark limit.  The benchmark field also emits a JavaScript event when the limit is breached so that custom JavaScript action can be executed.
 19. (19) Click on the code icon in any given column cell of the grid UI editor and it will take you to the equivalent code lines in the text editor.
-20. (20) v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
+20. (20) v2.0 of the plugin introduces inline field hooks helpers.  These are specific hooks which allow you to filter custom aspect of the field.  Not all tags have field specific hooks, so if any are defined they will show up with the icon in the control bar.
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 3.3.0 =
+* added 'cf7sg_ui_grid_helper_hooks' action for plugin integration.
+* added 'cf7sg_ui_grid_js_helper_hooks' action for plugin integration.
+* enabled in-editor js code helpers.
+* updated screenshot 17.
 = 3.2.1 =
 * fix hidden fields.
-* fix wpcf7_submit capability for sucribers_only attribute.
+* fix wpcf7_submit capability for subscribers_only attribute.
 * upgrade select2 library for iOS touch fix.
 = 3.2.0 =
 * added cf7sg_mailtag_$mail_tag filters.
@@ -332,7 +347,7 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 * improve 'cf7sg_validate_submission' hook, data array contains file data.
 * redirect cf7 plugin admin pages to smart grid pages.
 = 3.1.2 =
-* instantiate CodeMirror after libray load and pass as attribute to anonymous function to fix conflict issue.
+* instantiate CodeMirror after library load and pass as attribute to anonymous function to fix conflict issue.
 = 3.1.1 =
 * fix helper bug inline filters.
 = 3.1.0 =
@@ -344,7 +359,7 @@ this plugin allows you to create grid layout forms by creating an htlm markup an
 = 3.0.2 =
 * added 'wpcf7_manage_integration' cap to admin role.
 = 3.0.1 =
-* fix pointers didmiss bug.
+* fix pointers dismiss bug.
 = 3.0.0 =
 * clean-up core integration with cf7 plugin.
 * add WP std capabilities for better role management.

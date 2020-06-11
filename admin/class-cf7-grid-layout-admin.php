@@ -301,6 +301,9 @@ class Cf7_Grid_Layout_Admin {
             'filter'=> __('Filter mailTag %s', 'cf7-grid-layout')
           )
         );
+        /** @since 3.3.0enqueue ui-grid helpers js */
+        wp_enqueue_script('ui-grid-helpers-js', $plugin_dir.'admin/js/ui-custom-helper.js', array('jquery'));
+        do_action('cf7sg_enqueue_admin_editor_scripts');
         break;
       case 'edit':
         //wp_enqueue_script( $this->plugin_name.'-quick-edit', plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-quick-edit.js', false, $this->version, true );
@@ -1227,5 +1230,13 @@ class Cf7_Grid_Layout_Admin {
         exit;
       }
     }
+  }
+  /**
+  * Add grid helper hooks for individual tags.
+  * Hooked to action 'cf7sg_ui_grid_helper_hooks'.
+  *@since 3.3.0
+  */
+  public function print_helper_hooks(){
+    require_once plugin_dir_path( __FILE__ ) .'partials/helpers/cf7sg-form-fields.php';
   }
 }

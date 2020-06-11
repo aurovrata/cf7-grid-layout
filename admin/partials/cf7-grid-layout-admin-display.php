@@ -1,3 +1,7 @@
+<?php
+global $post;
+$cf7_key = $post->post_name;
+ ?>
 <h2><?php echo esc_html( __cf7sg( 'Form' ) ); ?></h2>
 <div id="top-tags">
 <?php
@@ -113,12 +117,19 @@
   <p><?=__('Click-to-copy &amp; paste in your <em>functions.php</em> file.','cf7-grid-layout')?></p>
   <ul class="cf7sg-helper-list"></ul>
 </div>
+<div id="grid-js-helper">
+  <span class="dashicons dashicons-no-alt"></span>
+  <span class="copy-helper"><?=__('Click to copy!','cf7-grid-layout')?></span>
+  <p class="js-help"><?= sprintf(__('Click-to-copy &amp; paste in<br/><em>&lt;theme folder&gt;/js/%s.js</em> file.','cf7-grid-layout'), $cf7_key);?></p>
+  <ul class="cf7sg-helper-list"></ul>
+</div>
 <div id="grid-col">
   <div class="grid-column">
     <span class="dashicons dashicons-edit column-control"></span>
     <span class="dashicons dashicons-no-alt column-control"></span>
     <span class="dashicons dashicons-plus column-control"></span>
-    <span class="dashicons dashicons-controls-repeat column-control" style="display:none;"></span>
+    <span class="dashicons php-icon column-control" style="display:none;"></span>
+    <span class="js-icon column-control" style="display:none;"></span>
     <span class="dashicons dashicons-trash column-control"></span>
     <span class="dashicons dashicons-move column-control"></span>
     <span class="icon-code column-control"></span>

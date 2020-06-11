@@ -30,7 +30,6 @@
       });
       var helper = mailTagHelper.filter.replace('%s', '<span class="tag-colour">'+tag+'</span>');
       $help.after('<span class="helper">'+helper+', '+mailTagHelper.msg+'</span>');
-      console.log($help.next('span.helper').height());
     })
   })
 })( jQuery );

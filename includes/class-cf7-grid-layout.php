@@ -227,6 +227,9 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter( 'wp_insert_post_data', $plugin_admin, 'pending_for_review');
     //add all form capabilities to editor role.
     $this->loader->add_action( 'admin_init', $plugin_admin, 'enable_cf7_editor_role', 5,0 );
+    /** @since 3.3.0 helper hooks added via action hook */
+    $this->loader->add_action( 'cf7sg_ui_grid_helper_hooks', $plugin_admin, 'print_helper_hooks');
+
 	}
 
 	/**

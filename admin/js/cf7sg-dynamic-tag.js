@@ -1,40 +1,39 @@
 
 (function( $ ) {
   'use strict';
-  var $form = $('#dynamic-select-tag-generator');
-  var $tag = $('input.tag' , $form.closest('.control-box').siblings('.insert-box'));
-  var $button = $tag.siblings('.submitbox').find('input.insert-tag');
-  var $select = $('select.taxonomy-list', $form);
-  var $plural = $('input[name="plural_name"]', $form);
-  var $single = $('input[name="singular_name"]', $form);
-  var $taxonomy = $('input[name="taxonomy_slug"]', $form);
-  var $is_cat = $('input[name="is_hierarchical"]', $form);
-  var $req = $('input[name="required"]', $form);
-  var $name = $('input[name="name"]', $form);
-  var $id = $('input[name="id"]', $form);
-  var $cl = $('input[name="class"]', $form);
-  var $post = $(' select.post-list', $form);
-  var selectType = 'select';
-  // var version6 = false;
-  // var vernums = $.fn.jquery.split('.');
-  // if (parseInt(vernums[0]) > 0 && parseInt(vernums[1]) >= 6 && parseInt(vernums[2]) >= 0 ) {
-  //   version6 = false;
-  // }
+  let $form = $('#dynamic-select-tag-generator'),
+    $tag = $('input.tag' , $form.closest('.control-box').siblings('.insert-box')),
+    $button = $tag.siblings('.submitbox').find('input.insert-tag'),
+    $select = $('select.taxonomy-list', $form),
+    $plural = $('input[name="plural_name"]', $form),
+    $single = $('input[name="singular_name"]', $form),
+    $taxonomy = $('input[name="taxonomy_slug"]', $form),
+    $is_cat = $('input[name="is_hierarchical"]', $form),
+    $req = $('input[name="required"]', $form),
+    $name = $('input[name="name"]', $form),
+    $id = $('input[name="id"]', $form),
+    $cl = $('input[name="class"]', $form),
+    $post = $(' select.post-list', $form),
+    selectType = 'select',
+    multiple='';
 
   $('select.post-list').on('change', function(){
     $('div.post-taxonomies').hide();
     //$('div.post-taxonomies').off('change');
-    var type = $(this).val();
+    let type = $(this).val();
     $('div#'+type).show();
     $('select.select2', $('div#'+type)).not('.select2-hidden-accessible').select2();
   });
 
   $form.on('change',':input', function(event){
-    var $target = $(event.target);
-    var $tab = $('input[name="sections"]:checked');
-    var source = 'taxonomy';
+    let $target = $(event.target),
+      $tab = $('input[name="sections"]:checked'),
+      source = 'taxonomy';
+
+    $('#select-multiple').prop('disabled',false);
+
     if($target.is('select.taxonomy-list')){
-      var $option = $target.find('option:selected');
+      let $option = $target.find('option:selected');
       $taxonomy.val($target.val());
       $plural.val($option.text());
       $single.val($option.data('name'));
@@ -60,6 +59,11 @@
         $('input#select2-tags', $form).prop('checked', false);
         $('input#select2-tags', $form).prop('disabled', true);
       }
+      if( $target.is('#nice-select:checked')  ){
+        //no multiple in nice-select.
+        $('#select-multiple').prop('checked',false);
+        $('#select-multiple').prop('disabled',true);
+      }
     }
     /* which source ? */
     if($tab.is('#taxonomy-tab')){
@@ -71,14 +75,6 @@
       $('a.helper.init', $tab.parent()).each(function(){
         new Clipboard($(this)[0], {
           text: function(trigger) {
-            // var $target = $(trigger);
-            // var text = $target.data('cf72post');
-            //get post slug
-            // var key = $('#post_name').val();
-            // text = text.replace(/\{\$form_key\}/gi, key);
-            // text = text.replace(/\{\$field_name\}/gi, field);
-            // text = text.replace(/\{\$field_name_slug\}/gi, field.replace('-','_'));
-            // text = text.replace(/\{\$field_type\}/gi, tag);
             return $(trigger).data('cf72post');;
           }
         });
@@ -89,7 +85,7 @@
   });
   //udpate the new category if created
   $button.on('click', function(){
-    var $option = $select.find('option:selected');
+    let $option = $select.find('option:selected');
     if($option.is('.cf7sg-new-taxonomy') ){
       $option.after('<option data-name="'+$single.val()+'" value="'+$taxonomy.val()+'">'+$plural.val()+'</option>');
       //$option.next().prop('selected', true);
@@ -100,7 +96,7 @@
       return true; //for other dynamic options just continue.
     }
     //store this new value in the hidden field
-    var values = $('input#cf72post-dynamic-select').val();
+    let values = $('input#cf72post-dynamic-select').val();
     if(0 == values.length){
       values = [];
     }else{
@@ -123,19 +119,18 @@
 
 
   function updateCF7Tag(source='taxonomy') {
-    var id=$id.val();
+    let id=$id.val();
     if(id.length > 0) id =' id:'+id;
 
-    var classes = $cl.val();
+    let classes = $cl.val();
     if(classes.length > 0){
-      var classArr = classes.split(',');
-      var idx;
+      let classArr = classes.split(','), idx;
       classes='';
       for(idx=0; idx<classArr.length; idx++){
         classes += " class:" + classArr[idx].trim() + " ";
       }
     }
-    var values = ''
+    let values = ''
     switch(source){
       case 'taxonomy':
         if($taxonomy.val().length > 0){
@@ -144,11 +139,11 @@
         break;
       case 'post':
         if($post.val().length > 0){
-          var $tax = $('div#'+$post.val()+' > select.select2');
+          let $tax = $('div#'+$post.val()+' > select.select2');
           //.val();
           values = ' "source:post:'+$post.val()+'"';
           if(null != $tax.val()){
-            var term='';
+            let term='';
             for(term of $tax.val()){
               values += ' "'+term+'"';
             }
@@ -174,15 +169,11 @@
       default:
         break;
     }
-    /*
-    if($select.find('option:selected').is('.cf7sg-new-taxonomy')){
-      values += ' "hierarchical:'+ $is_cat.is(':checked')+'"';
-      values += ' "single:'+ $single.val()+'"';
-      values += ' "plural:'+ $plural.val()+'"';
-    }*/
+
     //update tag.
-    var type = 'dynamic_select ';
+    let type = 'dynamic_select ';
+    if($('#select-multiple').is(':checked')) multiple=' multiple';
     if($req.is(':checked')) type = 'dynamic_select* ';
-    $tag.val('[' + type + $name.val() + id + classes + values +']');
+    $tag.val('[' + type + $name.val() + multiple + id + classes + values +']');
   }
 })( jQuery );

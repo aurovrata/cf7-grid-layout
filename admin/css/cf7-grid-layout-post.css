@@ -1,4 +1,21 @@
-a.helper {text-decoration: none;}
+#grid-form .js-help + .cf7sg-helper-list{margin-top:39px;}
+span.js-icon.column-control{
+  background-image: url('./image/js-sprite.png');
+width: 13px;
+display: inline-block;
+height: 10px;
+background-size: 200%;
+margin-top: 4px;}
+.js-icon.column-control:hover {background-position-x: 13px;}
+span.php-icon.column-control{
+  background-image: url('./image/php-sprite.png');
+width: 26px;
+display: inline-block;
+height: 13px;
+background-size: 200%;
+margin-top: 2px;}
+.php-icon.column-control:hover {background-position-x: 26px;}
+a.helper {text-decoration: none;cursor: pointer;}
 a.helper + span.helper {
   display: none;
   position: absolute;
@@ -90,7 +107,7 @@ a.helper:hover + span.helper {display: inline;}
 /*
 grid layout
 */
-#html-script, #grid-col, #grid-helper,
+#html-script, #grid-col, #grid-helper,#grid-js-helper,
 #grid-form .grid-controls,
 #grid-form .row-controls .dashicons-no-alt,
 #grid-form .grid-column > .dashicons-no-alt,
@@ -196,10 +213,11 @@ textarea.grid-input {
     padding: 2px 5px 8px 5px;
     background: white;
 }
-#grid-form .dashicons-controls-repeat {
+#grid-form .php-icon {
     position: relative;
 }
-#grid-form .dashicons-controls-repeat + div.helper-popup {
+#grid-form .php-icon + div.helper-popup,
+#grid-form .js-icon + div.helper-popup {
     position: absolute;
     z-index: 9;
     background: #d8d8d8;

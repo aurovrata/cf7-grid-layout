@@ -941,7 +941,7 @@ class Cf7_Grid_Layout_Public {
               $purge_fields[$field_name.$tab_suffix.$row_suffix] = true;
               $row_idx +=1; //next loop, keep searching in thsi tab.
             }else{
-              debug_msg($submitted_fields, 'CF7SG ERROR: Reached max tabs search loop for table field '.$field_name.' (cannot find any new rows above tab '.$tab_idx.' therefor abandoning search for remaining '.sizeof($submitted_fields)-$idx.' regex match in preg_grep result array listed below)');
+              debug_msg($submitted_fields, 'CF7SG ERROR: Reached max tabs search loop for table field '.$field_name.' (cannot find any new rows above tab '.$tab_idx.' therefor abandoning search for remaining '.(sizeof($submitted_fields)-$idx).' regex match in preg_grep result array listed below)');
               //for loop will end here
             }
           }

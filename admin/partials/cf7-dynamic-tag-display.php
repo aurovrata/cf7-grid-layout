@@ -45,19 +45,34 @@
           <th scope="row"><?=__('Dropdown style','cf7-grid-layout')?></th>
           <td>
             <div>
-              <input name="select-style[]" class=" select-type "  type="radio" value="select" checked="checked"/>
-              <label><?=__('HTML Select field','cf7-grid-layout')?></label>
+              <label for="html-select">
+                <input name="select-style[]" id="html-select" class=" select-type "  type="radio" value="select" checked="checked"/>
+                <?=__('HTML Select field','cf7-grid-layout')?>
+              </label>
             </div>
             <div>
-              <input name="select-style[]" class=" select-type "  type="radio" value="nice" />
-              <label><a target="_blank" href="http://hernansartorio.com/jquery-nice-select/"><?=__('jQuery Nice Select','cf7-grid-layout')?></a></label>
+              <label for="nice-select">
+                <input id="nice-select" name="select-style[]" class=" select-type "  type="radio" value="nice" />
+                <a target="_blank" href="http://hernansartorio.com/jquery-nice-select/"><?=__('jQuery Nice Select','cf7-grid-layout')?></a>
+              </label>
             </div>
             <div>
-              <input name="select-style[]" class=" select-type "  type="radio" value="select2" />
-              <label><a target="_blank" href="https://select2.org/getting-started/basic-usage"><?=__('jQuery Select2','cf7-grid-layout')?></a></label>
-              <input name="select2-tags" id="select2-tags" type="checkbox" disabled value="select2tags"/>
-              <label for="select2-tags"><a target="_blank" href="https://select2.org/tagging"><?=__('Enable user options','cf7-grid-layout')?></a></label>
+              <label for="select2-select">
+                <input id="select2-select" name="select-style[]" class=" select-type "  type="radio" value="select2" />
+                <a target="_blank" href="https://select2.org/getting-started/basic-usage"><?=__('jQuery Select2','cf7-grid-layout')?></a>
+              </label>
+              <label for="select2-tags">
+                <input name="select2-tags" id="select2-tags" type="checkbox" disabled value="select2tags"/>
+                <a target="_blank" href="https://select2.org/tagging"><?=__('Enable user options','cf7-grid-layout')?></a>
+              </label>
             </div>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row"><?=__('Mutliple attribute','cf7-grid-layout')?></th>
+          <td>
+            <input name="select-multiple" id="select-multiple" type="checkbox" value="multiple"/>
+            <a target="_blank" href="https://www.w3schools.com/tags/att_select_multiple.asp"><?=__('Enable multiple selection','cf7-grid-layout')?></a>
           </td>
         </tr>
       </tbody>
