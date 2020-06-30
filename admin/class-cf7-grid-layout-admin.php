@@ -492,7 +492,7 @@ class Cf7_Grid_Layout_Admin {
         }
       }
       $args['locale'] =$locale;
-    }
+    }else $args['locale'] = get_locale();
     WPCF7_ContactForm::get_template( $args);
   }
   /**
