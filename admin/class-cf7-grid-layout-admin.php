@@ -124,7 +124,9 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_style('cf7sg-benchmark-tag-css', $plugin_dir . 'admin/css/cf7sg-benchmark-tag.css', array(), $this->version, 'all' );
         //codemirror
         wp_enqueue_style( "codemirror-css", $plugin_dir . 'assets/codemirror/codemirror.css', array(), $this->version, 'all' );
-        wp_enqueue_style( "codemirror-theme-css", $plugin_dir . 'assets/codemirror/theme/paraiso-light.css', array(), $this->version, 'all' );
+        /** @since 4.0 enable dark theme */
+        wp_enqueue_style( "codemirror-theme-light-css", $plugin_dir . 'assets/codemirror/theme/paraiso-light.css', array(), $this->version, 'all' );
+        wp_enqueue_style( "codemirror-theme-dark-css", $plugin_dir . 'assets/codemirror/theme/material-ocean.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-foldgutter-css", $plugin_dir . 'assets/codemirror/addon/fold/foldgutter.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-dialog-css", $plugin_dir . 'assets/codemirror/addon/dialog/dialog.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-matchesonscrollbar-css", $plugin_dir . 'assets/codemirror/addon/search/matchesonscrollbar.css', array(), $this->version, 'all' );
@@ -167,21 +169,22 @@ class Cf7_Grid_Layout_Admin {
         );
         /** @since 3.1.2 initialise codemirror after library load and parse as attribute to anonymous functtion in cf7-grid-codemirror.js */
         wp_add_inline_script('cf7-codemirror-js',
-        'var codeMirror_5_32 = CodeMirror(document.getElementById("cf7-codemirror"),
-        {
-          value: "",
-          extraKeys: {"Ctrl-Space": "autocomplete"},
+        'const cmInitialSettings = {
+          value:"",
+          extraKeys: {"Ctrl-Space": "autocomplete", "Ctrl-/": "toggleComment"},
           lineNumbers: true,
           styleActiveLine: true,
           matchBrackets: true,
           tabSize:2,
-          mode: "htmlmixed",
           lineWrapping: true,
           addModeClass: true,
           foldGutter: true,
           autofocus:false,
           gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });');
+        }
+        const codeMirror_5_32 = CodeMirror(document.getElementById("cf7-codemirror"),cmInitialSettings);
+        const cssCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-css-codemirror"),cmInitialSettings);
+        const jsCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-js-codemirror"),cmInitialSettings);');
         //fold code
         wp_enqueue_script( 'codemirror-foldcode-js',
           $plugin_dir . 'assets/codemirror/addon/fold/foldcode.js',
@@ -267,7 +270,49 @@ class Cf7_Grid_Layout_Admin {
           array('beautify-js'), $this->version, true
         );
         wp_enqueue_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
-
+        /** @since 4.0 enable dark theme */
+        $cm_light = apply_filters('cf7sg_admin_editor_theme', '');
+        $user_theme = get_user_meta(get_current_user_id(),'_cf7sg_cm_theme', true);
+        if(!empty($cm_light) && file_exists(get_stylesheet_directory().'/'.$cm_light) ){
+          wp_enqueue_style( "codemirror-theme-css", get_stylesheet_directory_uri().'/'.$cm_light, array(), $this->version, 'all' );
+          $user_theme = basename($cm_light, '.css');
+          update_user_meta(get_current_user_id(),'_cf7sg_cm_theme', '');
+        }else{
+          if(empty($user_theme)){
+            $user_theme = 'paraiso-light';
+            update_user_meta(get_current_user_id(),'_cf7sg_cm_theme', 'light');
+          }else{
+            $user_theme = ('light'==$user_theme ? 'paraiso-light' : 'material-ocean');
+          }
+        }
+        $cm_js_light = apply_filters('cf7sg_admin_js_editor_theme', '');
+        $user_js_theme = get_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', true);
+        if(!empty($cm_js_light) && file_exists(get_stylesheet_directory().'/'.$cm_js_light) ){
+          wp_enqueue_style( "codemirror-js-theme-css", get_stylesheet_directory_uri().'/'.$cm_js_light, array(), $this->version, 'all' );
+          $user_js_theme = basename($cm_js_light, '.css');
+          update_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', '');
+        }else{
+          if(empty($user_js_theme)){
+            $user_js_theme = 'paraiso-light';
+            update_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', 'light');
+          }else{
+            $user_js_theme = ('light'==$user_js_theme ? 'paraiso-light' : 'material-ocean');
+          }
+        }
+        $cm_css_light = apply_filters('cf7sg_admin_css_editor_theme', '');
+        $user_css_theme = get_user_meta(get_current_user_id(),'_cf7sg_css_cm_theme', true);
+        if(!empty($cm_css_light) && file_exists(get_stylesheet_directory().'/'.$cm_css_light) ){
+          wp_enqueue_style( "codemirror-css-theme-css", get_stylesheet_directory_uri().'/'.$cm_css_light, array(), $this->version, 'all' );
+          $user_css_theme = basename($cm_css_light, '.css');
+          update_user_meta(get_current_user_id(),'_cf7sg_css_cm_theme', '');
+        }else{
+          if(empty($user_css_theme)){
+            $user_css_theme = 'paraiso-light';
+            update_user_meta(get_current_user_id(),'_cf7sg_css_cm_theme', 'light');
+          }else{
+            $user_css_theme = ('light'==$user_css_theme ? 'paraiso-light' : 'material-ocean');
+          }
+        }
         //enqueue the cf7 scripts.
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
@@ -277,9 +322,36 @@ class Cf7_Grid_Layout_Admin {
           'cf7sgeditor',
           array(
             'mode' => apply_filters('cf7sg_admin_editor_mode', 'shortcode', $post->post_name),
-            'theme' => apply_filters('cf7sg_admin_editor_theme', 'paraiso-light', $post->post_name)
+            'theme' => array(
+               'light'=>'paraiso-light',
+               'dark'=>'material-ocean',
+               'user'=>$user_theme
+            ),
+            'jstheme' => array(
+               'light'=>'paraiso-light',
+               'dark'=>'material-ocean',
+               'user'=>$user_js_theme
+            ),
+            'csstheme' => array(
+               'light'=>'paraiso-light',
+               'dark'=>'material-ocean',
+               'user'=>$user_css_theme
+            )
           )
         );
+        /** @since 4.0.0 js editor */
+        // wp_enqueue_script( 'cf7-js-codemirror-js', $plugin_dir . 'admin/js/cf7sg-js-codemirror.js', array( 'jquery', 'cf7-codemirror-js' ), $this->version, true );
+        // wp_localize_script(
+        //   'cf7-js-codemirror-js',
+        //   'cf7sgJSeditor',
+        //   array(
+        //     'theme' => array(
+        //        'light'=>'paraiso-light',
+        //        'dark'=>'material-ocean',
+        //        'user'=>$user_js_theme
+        //     )
+        //   )
+        // );
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
         wp_localize_script(
           $this->plugin_name,
@@ -492,7 +564,8 @@ class Cf7_Grid_Layout_Admin {
         }
       }
       $args['locale'] =$locale;
-    }
+    }else $args['locale'] = get_locale();
+
     WPCF7_ContactForm::get_template( $args);
   }
   /**
@@ -630,7 +703,8 @@ class Cf7_Grid_Layout_Admin {
       'data-*'=>1,
     );
     $allowed_tags['script']=array('type'=>1);
-    $allowed_tags = apply_filters('cf7sg_kses_allowed_html',$allowed_tags, $_POST['post_name']);
+    $cf7_key = sanitize_text_field($_POST['post_name']);
+    $allowed_tags = apply_filters('cf7sg_kses_allowed_html',$allowed_tags, $cf7_key);
     if(isset( $_POST['wpcf7-form'] )){
       $args['form'] = wp_kses($_POST['wpcf7-form'], $allowed_tags);
     }
@@ -726,8 +800,40 @@ class Cf7_Grid_Layout_Admin {
     // debug_msg($classes, 'script classes');
     update_post_meta($post_id, '_cf7sg_script_classes', $classes);
     /**
-    *@since 2.3.0 the duplicate functionality has been isntored and therefore any new meta fields added to this plugin needs to be added to the duplication properties too.
+    *@since 2.3.0 the duplicate functionality has been instored and therefore any new meta fields added to this plugin needs to be added to the duplication properties too.
     */
+    /** @since 4.0.0 save user theme pref */
+    if(isset($_POST['cf7sg_codemirror_theme'])){
+      update_user_meta(get_current_user_id(),'_cf7sg_cm_theme', $_POST['cf7sg_codemirror_theme']);
+    }
+    if(isset($_POST['cf7sg_js_codemirror_theme'])){
+      update_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', $_POST['cf7sg_js_codemirror_theme']);
+    }
+    //save js file if used.
+    if(!empty($_POST['cf7sg_js_file'])){
+      //check if the file is changed.
+      if(!empty($_POST['cf7sg_prev_js_file']) && file_exists(ABSPATH. $_POST['cf7sg_prev_js_file'])){
+        if( !unlink(ABSPATH.$_POST['cf7sg_prev_js_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_js_file']);
+      }
+      file_put_contents( get_stylesheet_directory()."/js/{$cf7_key}.js", sanitize_textarea_field(stripslashes($_POST['cf7sg_js_file'])));
+    }
+    if(!empty($_POST['cf7sg_css_file'])){
+      //check if the file is changed.
+      if(!empty($_POST['cf7sg_prev_css_file']) && file_exists(ABSPATH.$_POST['cf7sg_prev_css_file'])){
+        if( !unlink(ABSPATH.$_POST['cf7sg_prev_css_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_css_file']);
+      }
+      file_put_contents( get_stylesheet_directory()."/css/{$cf7_key}.css", sanitize_textarea_field(stripslashes($_POST['cf7sg_css_file'])));
+    }
+  }
+  /**
+  * Print default js template,
+  * Hooked to 'cf7sg_default_custom_js_template'
+  *@since 4.0.0
+  *@param string $form_key form key.
+  */
+  public function print_default_js($form_key){
+    $js_file = str_replace(ABSPATH, '', get_stylesheet_directory()."/js/{$form_key}.js");
+    include_once 'partials/cf7-default-js.php';
   }
   /**
   *

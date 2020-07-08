@@ -186,6 +186,7 @@
           $container.children('div'+panelId).remove(); //remove panel
           if($target.closest('li').remove().is('.ui-state-active')){ //remove tab
             activate = true;
+            $container.trigger('sgTabRemoved');
           }
           //show last close button
           var $lastClose = $container.find('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab');
@@ -449,8 +450,12 @@
       }); //end collapsible rows with toggle buttons
 
       //now enable the other collapsible rows
+
       cf7Form_accordion.each(function(){
-        var rows = $('.cf7sg-collapsible', $(this)).not('.cf7sg-collapsible.with-toggle');
+        /** @since 3.4.0 differentiate accordion of collapsible rows*/
+        var rows = $('.cf7sg-collapsible', $(this)).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-accordion-rows .cf7sg-collapsible').not('.cf7sg-slider-section .cf7sg-collapsible');
+        rows = rows.add( $('.cf7sg-accordion-rows', $(this)) );
+
         rows.each(function(){
           var $row = $(this);
           var cssId = $row.attr('id');
@@ -468,15 +473,23 @@
                 break;
             }
           }
-          $('#'+cssId).accordion({
-            collapsible:true,
-            active:state,
-            heightStyle: "content",
-            header: '> div.cf7sg-collapsible-title',
-            activate: function(event, ui){
-              $(this).trigger('sgContentIncrease');
-            }
-          });
+          var options={
+            heightStyle: "content"
+          };
+          /** @since 3.4.0 handle accordion rows for stepped flow */
+          if($row.is('.cf7sg-accordion-rows')){
+            Object.assign(options,{header: 'div.cf7sg-collapsible-title',animate:false });
+          }else{
+            Object.assign(options,{
+              collapsible:true,
+              active:state,
+              header: '> div.cf7sg-collapsible-title',
+              activate: function(event, ui){
+                $(this).trigger('sgContentIncrease');
+              }
+            });
+          }
+          $('#'+cssId).accordion(options);
           //listen for new content added to this accordion
           $row.on('sgContentIncrease', function(){
             $(this).accordion("refresh");
@@ -485,7 +498,104 @@
       });
       cf7Form_accordion.trigger('sgCollapsibleRowsReady')
     }//end collapsible rows
+    var $form_slider = $('div.cf7-smart-grid.has-slider form.wpcf7-form');
+    $form_slider.each(function(){
+      var $form = $(this);
+      $('.cf7sg-slider-section').each(function(){
+        var $this = $(this).wrapInner('<div class="cf7sg-sy-slider"></div>'),
+          slideCount = 0,
+          $slider = $('.cf7sg-sy-slider',$this);
 
+        var sy = $slider.slippry({
+          elements:'div.cf7sg-collapsible',
+          slippryWrapper: '<div class="cf7sg-slider-container" />',
+          slideCrop: '<div class="cf7sg-slide" />',
+          boxClass: 'cf7sg-slide-list',
+          activeClass: 'cf7sg-slide-active',
+          fillerClass: 'cf7sg-slide-filler',
+          loop: false,
+          captions: false,
+          pager:false,
+          controls: false,
+          useCSS: true,
+          auto:false,
+          adaptiveHeight:false,
+          onSliderLoad:function(index){
+            slideCount = sy.getSlideCount()-1;
+            $this.trigger('sgSliderReady');
+          },
+          onSlideAfter:function(slide, old_index, new_index){
+            slide[0].dispatchEvent( new CustomEvent("sgNextSlide", {
+          		bubbles: true,
+          		cancelable: true,
+              detail:{
+                prev:old_index,
+                current:new_index,
+                last:slideCount
+              }
+          	}));
+          },
+          onSlideBefore:function(slide, old_index, new_index){
+            slide[0].dispatchEvent( new CustomEvent("sgPrevSlide", {
+          		bubbles: true,
+          		cancelable: true,
+              detail: {
+                prev:old_index,
+                current:new_index,
+                last:slideCount
+              }
+          	}));
+          }
+        });
+        $slider = $slider.closest('.cf7sg-slider-section');
+        var $prev = $('<span class="slider-control slider-prev"></span>');
+        if($slider.data("prev").length>0){
+          $prev.text($slider.data("prev"));
+        }else $prev.addClass("dashicons dashicons-arrow-left-alt");
+
+        var $next = $('<span class="slider-control slider-next"></span>');
+        if($slider.data("next").length>0){
+          $next.text($slider.data("next"));
+        }else $next.addClass("dashicons dashicons-arrow-right-alt");
+
+        $('.cf7sg-slide-filler',$slider).append($prev).append($next);
+        $prev.hide(); //hide on first slide.
+
+        var isSubmit=false, $submit=null;
+        if($slider.data('submit').length>0){
+          isSubmit = true;
+          $submit = $('<input type="submit" value="'+$slider.data('submit')+'" class="wpcf7-form-control wpcf7-submit">');
+          $next.after($submit);
+          $submit.hide();
+        }
+
+        $('.slider-control', $slider).on('click', function(e){
+          var $control = $(e.target);
+          if($control.is('.slider-prev')){
+            sy.goToPrevSlide();
+          }else if($control.is('.slider-next')){
+            sy.goToNextSlide();
+          }
+        });
+        $slider.on('sgNextSlide sgPrevSlide', function(e){
+          $prev.show();
+          $next.show();
+          if(isSubmit) $submit.hide();
+          switch(e.detail.current){
+            case 0: //hide prev button;
+              $prev.hide();
+              break;
+            case slideCount:
+              $next.hide();
+              if(isSubmit) $submit.show();
+              break;
+          }
+        });
+        $slider.on('sgRowAdded sgRowDeleted',function(event, row){
+          sy.refresh();
+        });
+      })
+    });
     /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
     *@since 1.1.0
     */
@@ -500,8 +610,7 @@
             if('undefined' == typeof cf7sg.toggles_status || 'undefined' == typeof cf7sg.toggles_status[id]){
               $('.row.ui-accordion-content :input', $this).prop('disabled', true);
             }else{
-              var toggle = $this.children('.cf7sg-collapsible-title');
-              toggle.trigger('click');
+              $this.children('.cf7sg-collapsible-title').trigger('click');
             }
           });
         });

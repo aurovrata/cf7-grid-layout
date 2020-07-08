@@ -73,6 +73,7 @@ This plugin would not have been possible without the following open-source effor
 * [jQuery Select2](https://select2.org/) - this plugin converts dropdowns into powerful searchable dropdown fields.
 * [jQuery Toggles](https://simontabor.com/labs/toggles/) - enables pretty toggle switches on collapsible sections.
 * [PHP Simple HTML Dom](https://github.com/voku/simple_html_dom) - a php library that enables traversing and manipulation of html documents using CSS selectors like jQuery.  This is used to build the modular functionality of form designs.
+* [Slippry jQuery slider](http://slippry.com/) - a light weight fully customisable slider plugin.
 
 = Thanks to =
 Birmania [@birmania](https://profiles.wordpress.org/birmania/) for providing:
@@ -326,6 +327,12 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 3.3.3 =
+* fix really simple captcha bug.
+= 3.3.2 =
+* fix locale setting for single non-english langauge sites.
+= 3.3.1 =
+* fix mulsitple select bug.
 = 3.3.0 =
 * added 'cf7sg_ui_grid_helper_hooks' action for plugin integration.
 * added 'cf7sg_ui_grid_js_helper_hooks' action for plugin integration.

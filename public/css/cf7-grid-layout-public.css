@@ -2,8 +2,19 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+ .cf7sg-slider-section .slider-control.slider-prev{float:left}
+ .cf7sg-slider-section .slider-control.slider-next{float:right}
+ .cf7sg-slide-active{z-index: 100;}
+ .cf7sg-slider-section .slider-control:hover{cursor: pointer;}
  .cf7-smart-grid.has-grid .ui-button {
     border-radius: 3px;
+}
+.cf7-smart-grid.has-grid .cf7sg-slide-filler > input.wpcf7-submit {
+    float: right;
+    width: auto;
+}
+.cf7-smart-grid.has-grid input.select2-search__field {
+    min-width: 1.3em;
 }
 .cf7-sg-table-button.disabled .ui-button {
     color: gray;
@@ -150,7 +161,7 @@ span.cf7sg-validation-warning {
 .cf7-smart-grid.has-grid .field {
     width: 100%;
 }
-.cf7-smart-grid.has-grid .wpcf7-form-control {
+.cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
     width: 100%;
 }
 .cf7-smart-grid.has-grid .select2 {
@@ -183,7 +194,7 @@ span.cf7sg-validation-warning {
     font-style: italic;
     color: grey;
 }
-.cf7-smart-grid.has-grid .wpcf7-form-control {
+.cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
     min-height: 34px;
     border-radius: 3px;
 }

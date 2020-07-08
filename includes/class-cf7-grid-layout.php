@@ -229,7 +229,9 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'admin_init', $plugin_admin, 'enable_cf7_editor_role', 5,0 );
     /** @since 3.3.0 helper hooks added via action hook */
     $this->loader->add_action( 'cf7sg_ui_grid_helper_hooks', $plugin_admin, 'print_helper_hooks');
-
+    /** @since 4.0.0 include default js template */
+    $this->loader->add_action( 'cf7sg_default_custom_js_template', $plugin_admin, 'print_default_js', 1,1);
+    
 	}
 
 	/**
