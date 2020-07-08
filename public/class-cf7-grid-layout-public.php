@@ -992,6 +992,8 @@ class Cf7_Grid_Layout_Public {
    * @return WPCF7_Validation  validation result
   **/
   public function filter_wpcf7_validate($result, $tags){
+    /** @since 3.3.3 fix for captch field validation*/
+    $invalids = $result->get_invalid_fields();
     /**
     *@since 1.1.0
     *reset the validation result.
@@ -1137,69 +1139,81 @@ class Cf7_Grid_Layout_Public {
           }
           break;
         default:
-          /** @since 2.11.0 recaptcha fix constributed by @netzgestaltung */
-          if ( $type !== 'captchar' ) { // really simple captcha gets called twice otherwise - and does not validate
-            if(!isset($data[$tag['name']])) continue 2; /*likely toggled and unused*/
-            $result= apply_filters( "wpcf7_validate_{$type}", $result, $tag );
-            /** @since 3.1.3 */
-            $validation[$tag['name']] = $this->strip_cf7_validation($result, $tag['name']);
-            $validated[$tag['name']] = $tag;
-            $submission[$tag['name']] = $this->get_submitted_data($tag['name'], $type, $data[$tag['name']]);
-	        }
+          switch($type) {
+            case 'captchar': //cannot be called twice, hence see if already invalidated.
+              /** @since 3.3.3 check if invalidated previously */
+              if( isset($invalids[$tag['name']]) ){
+                $validation[$tag['name']] = $invalids[$tag['name']]['reason'];
+                $validated[$tag['name']] = $tag;
+              }
+              break;
+            default:
+              if(!isset($data[$tag['name']])) continue 2; /*likely toggled and unused*/
+              $result= apply_filters( "wpcf7_validate_{$type}", $result, $tag );
+              /** @since 3.1.3 */
+              $validation[$tag['name']] = $this->strip_cf7_validation($result, $tag['name']);
+              $validated[$tag['name']] = $tag;
+              $submission[$tag['name']] = $this->get_submitted_data($tag['name'], $type, $data[$tag['name']]);
+              break;
+	  }
           break;
       }
     }
 
     $form_key = '';
-    if(isset($data['_wpcf7_key'])){
-      $form_key = $data['_wpcf7_key'];
+    if(isset($_POST['_wpcf7_key'])){
+      $form_key = $_POST['_wpcf7_key'];
     }
-    /**
-    * filter to validate the entire submission and check interdependency of fields
-    * @since 1.0.0
-    * @param Array  $validation an array of $field_name=>$validaton_message.
-    * @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs) null values are fields which have not been disabled and not submitted such as those in toggled sections.
-    * @param String  $form_key  unique form key to identify current form.
-    * @param int  $form_id  cf7 form post ID.
-    * @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
-    */
-    $validation = apply_filters('cf7sg_validate_submission', $validation, $submission, $form_key, $data['_wpcf7']);
+	  
+    //allow for more complex validation.
+    if(has_filter('cf7sg_validate_submission')){
+			/**
+			* filter to validate the entire submission and check interdependency of fields
+			* @since 1.0.0
+			* @param Array  $validation an array of $field_name=>$validaton_message.
+			* @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs) null values are fields which have not been disabled and not submitted such as those in toggled sections.
+			* @param String  $form_key  unique form key to identify current form.
+			* @param int  $form_id  cf7 form post ID.
+			* @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
+			*/
+			$validation = apply_filters('cf7sg_validate_submission', $validation, $submission, $form_key, $_POST['_wpcf7']);
 
-    $result = new WPCF7_Validation();
+			$result = new WPCF7_Validation();
 
-    if(!empty($validation)){
-      foreach($validation as $name=>$msg){
-        switch(true){
-          case is_array($msg):
-            foreach($msg as $idx=>$value){
-              switch(true){
-                case is_array($value):
-                  foreach($value as $rdx=>$message){
-                    if(empty($message)) continue;
-                    $result->invalidate($validated[$name][$idx][$rdx], $message);
-                  }
-                  break;
-                case is_array($validated[$name][$idx]): //error, expecting array..
-                  debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
-                  break;
-                case empty($value): //no message, just continue.
-                  break;
-                default:
-                  $result->invalidate($validated[$name][$idx], $value);
-                  break;
-              }
-            }
-            break;
-          case is_array($validated[$name]): //error, we should have an array.
-            debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
-            break;
-          case empty($msg): //no message, just continue.
-            break;
-          default:
-            $result->invalidate($validated[$name], $msg);
-            break;
-        }
-      }
+			if(!empty($validation)){
+				foreach($validation as $name=>$msg){
+					switch(true){
+						case is_array($msg):
+							foreach($msg as $idx=>$value){
+								switch(true){
+									case is_array($value):
+										foreach($value as $rdx=>$message){
+											if(empty($message)) continue;
+											$result->invalidate($validated[$name][$idx][$rdx], $message);
+										}
+										break;
+									case is_array($validated[$name][$idx]): //error, expecting array..
+										debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
+										break;
+									case empty($value): //no message, just continue.
+										break;
+									default:
+										$result->invalidate($validated[$name][$idx], $value);
+										break;
+								}
+							}
+							break;
+						case is_array($validated[$name]): //error, we should have an array.
+							debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
+							break;
+						case empty($msg): //no message, just continue.
+							break;
+						default:
+							$result->invalidate($validated[$name], $msg);
+							break;
+					}
+				}
+			}
     }
     return $result;
   }
