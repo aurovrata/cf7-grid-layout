@@ -1143,6 +1143,7 @@ class Cf7_Grid_Layout_Public {
             case 'captchar': //cannot be called twice, hence see if already invalidated.
               /** @since 3.3.3 check if invalidated previously */
               if( isset($invalids[$tag['name']]) ){
+								$result->invalidate( $tag, $invalids[$tag['name']]['reason']);
                 $validation[$tag['name']] = $invalids[$tag['name']]['reason'];
                 $validated[$tag['name']] = $tag;
               }
