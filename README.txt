@@ -328,6 +328,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 == Changelog ==
 = 3.3.3 =
 * fix really simple captcha bug.
+* fix missing hidden fields in CF7 v5.2.
 = 3.3.2 =
 * fix locale setting for single non-english langauge sites.
 = 3.3.1 =
