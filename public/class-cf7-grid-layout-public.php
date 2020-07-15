@@ -632,8 +632,8 @@ class Cf7_Grid_Layout_Public {
   public function setup_grid_values($data){
     $cf7form = WPCF7_ContactForm::get_current();
     if(empty($cf7form) ){
-      if(isset($data['_wpcf7']) ){
-        $cf7_id = $data['_wpcf7'];
+      if(isset($_POST['_wpcf7']) ){
+        $cf7_id = $_POST['_wpcf7'];
         $cf7form = WPCF7_ContactForm::get_instance($cf7_id);
         if(empty($cf7form) ){
           debug_msg("CF7SG ERROR: fn setup_grid_values() is unable to load submitted form");
@@ -681,7 +681,7 @@ class Cf7_Grid_Layout_Public {
   */
   private function consolidate_grid_submissions_v2($field_tag, $type, &$data){
     //get_post_meta($post_id, '_cf7sg_has_tables', true);
-    if(isset($data['_wpcf7']) ) $cf7_id = $data['_wpcf7'];
+    if(isset($_POST['_wpcf7']) ) $cf7_id = $_POST['_wpcf7'];
     else{
       debug_msg("CF7SG ERROR: fn consolidate_grid_submissions_v2() is unable to load submitted form");
     }
@@ -836,6 +836,10 @@ class Cf7_Grid_Layout_Public {
   *@return array  a filtered array of $index_suffix=>$value pairs for tabs or rows fields, The index suffix is '.row-<index>' for tables and '.tab-<index>' for tabs. This method returns a 2 dimensional array for fields which are both within rowns and tabs.  The 2 dimensional array will list [<tab_suffix>][<row_suffix>]=>$value.  The original field name that was submitted can be reconstructed as $field_name.$index_suffix.  The first field will have an empty string as its $index_suffix.
   */
   private function consolidate_grid_submissions($field_name, $type, &$data){
+		$cf7_key = '';
+    if(isset($_POST['_wpcf7_key'])) $cf7_key = $_POST['_wpcf7_key'];
+    $cf7_id = 0;
+    if(isset($_POST['_wpcf7'])) $cf7_id = $_POST['_wpcf7'];
     $values = array();
     $regex = '';
     $submitted_fields=array();
@@ -885,7 +889,7 @@ class Cf7_Grid_Layout_Public {
     $row_idx=1; //[0][0] already set above is this is tab table field
     $tab_idx=0;
     $error_loop=false;
-    $loop_counter_limit = apply_filters('cf7sg_set_max_tabs_limit', 10, $data['_wpcf7_key'], $data['_wpcf7']);
+    $loop_counter_limit = apply_filters('cf7sg_set_max_tabs_limit', 10, $cf7_key, $cf7_id);
     for($idx=1; ($idx <= $max_fields && !$error_loop); $idx++){
       switch($type){
         case 'table':
