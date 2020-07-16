@@ -1153,7 +1153,7 @@ class Cf7_Grid_Layout_Public {
               }
               break;
             default:
-              if(!isset($data[$tag['name']])) continue 2; /*likely toggled and unused*/
+              //if(!isset($data[$tag['name']])) continue 2; /*likely toggled and unused*/
               $result= apply_filters( "wpcf7_validate_{$type}", $result, $tag );
               /** @since 3.1.3 */
               $validation[$tag['name']] = $this->strip_cf7_validation($result, $tag['name']);
