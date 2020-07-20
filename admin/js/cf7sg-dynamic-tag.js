@@ -14,8 +14,7 @@
     $id = $('input[name="id"]', $form),
     $cl = $('input[name="class"]', $form),
     $post = $(' select.post-list', $form),
-    selectType = 'select',
-    multiple='';
+    selectType = 'select', multiple='';
 
   $('select.post-list').on('change', function(){
     $('div.post-taxonomies').hide();
@@ -122,7 +121,7 @@
     let id=$id.val();
     if(id.length > 0) id =' id:'+id;
 
-    let classes = $cl.val();
+    let classes = $cl.val(), postlinks='';
     if(classes.length > 0){
       let classArr = classes.split(','), idx;
       classes='';
@@ -140,7 +139,8 @@
       case 'post':
         if($post.val().length > 0){
           let $tax = $('div#'+$post.val()+' > select.select2');
-          //.val();
+          /** @since 4.0 */
+          if($('#include-post-links').is(':checked')) postlinks = ' permalinks';
           values = ' "source:post:'+$post.val()+'"';
           if(null != $tax.val()){
             let term='';
@@ -174,6 +174,6 @@
     let type = 'dynamic_select ';
     if($('#select-multiple').is(':checked')) multiple=' multiple';
     if($req.is(':checked')) type = 'dynamic_select* ';
-    $tag.val('[' + type + $name.val() + multiple + id + classes + values +']');
+    $tag.val('[' + type + $name.val() + multiple + postlinks + id + classes + values +']');
   }
 })( jQuery );

@@ -19,6 +19,7 @@
 $class = $tag->get_class_option( $class );
 
 $id = $tag->get_id_option();
+$has_permalinks = false;
 /** @since 3.3.0 allow multiple */
 $select_attributes = '';
 $name_suffix='';
@@ -28,6 +29,9 @@ foreach($tag->options as $tag_option){
       $select_attributes = ' multiple';
       $name_suffix='[]';
       break;
+    case 'permalinks': /** @since 4.0 */
+      $has_permalinks = true;
+      break;
   }
 }
 $options = array();
@@ -36,11 +40,11 @@ $cf7_key = Cf7_WP_Post_Table::form_key($cf7_form->id());
 $filter_options = false;
 if(!empty($tag->values)){
   if('taxonomy' == $source['source']){
-    $taxonomy_query= array('hide_empty' => false);
+    $taxonomy_query= array('hide_empty' => false, 'taxonomy'=>$source['taxonomy']);
+    $taxonomy_query = apply_filters('cf7sg_dynamic_dropdown_taxonomy_query', $taxonomy_query, $tag->name, $cf7_key);
     //check the WP version
     global $wp_version;
     if ( $wp_version >= 4.5 ) {
-     $taxonomy_query['taxonomy'] = $source['taxonomy'];
      $terms = get_terms($taxonomy_query); //WP>= 4.5 the get_terms does not take a taxonomy slug field
     }else{
      $terms = get_terms($source['taxonomy'], $taxonomy_query);
@@ -138,7 +142,11 @@ if(!empty($tag->values)){
         * @return array array of $value=>$name pairs which will be used for populating select options attributes.
         * @since 2.0.0
         */
-        $attributes = apply_filters('cf7sg_dynamic_dropdown_option_attributes', array(), $post, $tag->name, $cf7_key);
+        $attributes = array();
+        if($has_permalinks){
+          $attributes['data-permalink'] = get_permalink($post);
+        }
+        $attributes = apply_filters('cf7sg_dynamic_dropdown_option_attributes', $attributes, $post, $tag->name, $cf7_key);
         if(!empty($attributes)){
           foreach($attributes as $attribute => $avalue){
             if(is_array($avalue)){
@@ -146,7 +154,7 @@ if(!empty($tag->values)){
               if('style' === $attribute ) $separator = ';';
               $avalue = implode( $separator, $avalue);
             }
-            $option_attributes[$term->slug] = ' '.$attribute.'="'.$avalue.'"';
+            $option_attributes[$post->post_name] = ' '.$attribute.'="'.$avalue.'"';
           }
         }
       }
@@ -171,12 +179,13 @@ if($filter_options){ //true if either taxonomy or post dropdpwn;
 $tag_name = sanitize_html_class( $tag->name );
 /** @since 3.3.0 enable custom attributes on select element*/
 $attributes = apply_filters('cf7sg_dynamic_dropdown_attributes', array(), $tag->name, $cf7_key);
-
 foreach($attributes as $name=>$value){
   if( !is_null($value) ){
     $select_attributes.=' '.$name.'='.'"'.$value.'"';
   }else $select_attributes.=' '.$name;
 }
+/** @since 4.0 */
+if($has_permalinks) $class.=' cf7sg-permalinks';
 ?>
 <span class="wpcf7-form-control-wrap <?= $tag_name ?>">
 <select id="<?= $id?>" name="<?= $tag->name.$name_suffix ?>" class="<?= $class?>"<?=$select_attributes?>>

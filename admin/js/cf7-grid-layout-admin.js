@@ -177,9 +177,11 @@
           $control = $col.children('.grid-column').addClass('enable-grouping'); //enable checkboxes.
         if($col.is('.cf7sg-accordion-rows')){
           $('.accordion-rows:input', $control).prop('checked', true);
-        }else{
+        }else{ //is .cf7sg-slider-section
           $('.slider-rows:input', $control).prop('checked', true);
         }
+        //remove toggle checkbox.
+        $('input[type="checkbox"]', $col.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).hide().next('span').hide();
       });
       //check if any columns have more than 2 collapsible sections.
       $('.row .cf7sg-collapsible:first-child', $form).each(function(){
@@ -385,7 +387,7 @@
           $target.closest('.container').addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
         }else{
           $target.closest('.row').removeClass('cf7-sg-table');
-          $target.closest('.container').removeClass('cf7-sg-table').removeAttr('id').fireGridUpdate('remove','table-row');
+          $target.closest('.container').removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
         }
         //toggle disable the sibling input
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
@@ -619,12 +621,16 @@
         $parentColumn.after($newColumn);
       }else if( $target.is('.accordion-rows.column-control') ){ /** @since 3.4.0 enable accordion */
         if($target.is(':checked')){
-          $target.closest('.columns').addClass('cf7sg-accordion-rows').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit");
+          $parentColumn.addClass('cf7sg-accordion-rows').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit");
           $target.parent('label').siblings('.grouping-option').children(':input').prop('checked', false);
           $target.fireGridUpdate('add','accordion-rows');
+          //hide toggle checkbox.
+          $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).hide().next('span').hide();
         }else{
           $target.closest('.columns').removeClass('cf7sg-accordion-rows');
           $target.fireGridUpdate('remove','accordion-rows');
+          //show toggle checkbox.
+          $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).show().next('span').show();
         }
       }else if( $target.is('.slider-rows.column-control') ) { /** @since 3.4.0 enable slider */
         if($target.is(':checked')){
@@ -632,9 +638,13 @@
           $target.closest('.columns').addClass('cf7sg-slider-section').attr(attrs).removeClass('cf7sg-accordion-rows');
           $target.parent('label').siblings('.grouping-option').children(':input').prop('checked', false);
           $target.fireGridUpdate('add','slider-section');
+          //hide toggle checkbox.
+          $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).hide().next('span').hide();
         }else{
           $target.closest('.columns').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit");
           $target.fireGridUpdate('remove','slider-section');
+          //show toggle checkbox.
+          $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).show().next('span').show();
         }
       }
       /*
@@ -957,10 +967,19 @@
               source = source[0];
               helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source;
             case match.length > 3:  //lets deal with match[3]
-              if(0=== source.length && match[3].indexOf('slug:'>-1)){
-                source = 'taxonomy';
-                helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source;
+              if(0=== source.length){
+                source="filter";
+                switch(true){
+                  case match[3].indexOf("source:post")>0:
+                    source="post";
+                    break;
+                  case match[3].indexOf("source:taxonomy")>0:
+                    source="taxonomy";
+                    break;
+                }
               }
+              helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source;
+
               if(match[3].indexOf('class:tags')>-1){
                 helpers[helpers.length] = 'cf7sg-tag-dynamic_select-tags';
                 if(source.length>0){
@@ -1065,7 +1084,7 @@
     const $label = $this.siblings('div.cf7-field-label').find(':input');
     let label = $label.val();
     //field
-    const field = $this.siblings('div.cf7-field-type').find('textarea').val();
+    const field = $this.siblings('div.cf7-field-type').find('textarea.field-entry').val();
     let idx = 0;
     if(cf7grid.requiredHTML.length>0) idx=label.indexOf(cf7grid.requiredHTML)
     if($this.siblings('div.cf7-field-type').is('.required')){

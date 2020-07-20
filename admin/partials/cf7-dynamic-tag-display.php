@@ -172,7 +172,8 @@
             <option value="post"><?=__('Posts','cf7-grid-layout')?></option>
             <option value="page"><?=__('Pages','cf7-grid-layout')?></option>
           </select>
-
+          <label><input type="checkbox" id="include-post-links"/><?= __('Include post links','cf7-grid-layout')?></label>
+          
   <?php foreach($taxonomy_lists as $type=>$list ):
           if(empty($list)) continue;
     ?>

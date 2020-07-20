@@ -89,7 +89,6 @@
           cme.setOption("theme",cf7sgeditor.theme[e.target.value]);
         });
       }else $(':input',$themeRadio).prop('disabled',true);
-
       $codemirror.beautify();
 
       cme.on('changes', function(){

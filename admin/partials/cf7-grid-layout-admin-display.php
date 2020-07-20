@@ -365,7 +365,7 @@ $cf7_key = $post->post_name;
     </div>
     <div class="cf7-field-type cf7-field-inner">
       <p class="content"><?=__('[select a field]','cf7-grid-layout')?></p>
-      <textarea placeholder="<?=__('select a field','cf7-grid-layout')?>"></textarea>
+      <textarea class="field-entry" placeholder="<?=__('select a field','cf7-grid-layout')?>"></textarea>
       <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
     <div class="cf7-field-tip cf7-field-inner">

@@ -4,7 +4,7 @@
   var trackTabsFields = []; //to keep track of fields that are converted to arrays.
   var trackTableFields = []; //to keep track of fields that are converted to arrays.
   var cf7sgPanels = {}; //object to store cloned panels
-
+  var cf7sgCustomSelect2Templates = (function (ccst) {return ccst;}(cf7sgCustomSelect2Templates || {}));
   /*warning messages used for in-form validation*/
   $.fn.cf7sgWarning = function(msg){
     var $this = $(this);
@@ -237,6 +237,7 @@
     }
     //enabled select2 dropdowns any forms.
     var cf7Form_select2 = $('div.cf7-smart-grid.has-select2 form.wpcf7-form');
+
     if(cf7Form_select2.length > 0){
       //check if this is a mapped cf7-2-post form
       cf7Form_select2.filter('div.cf7_2_post form.wpcf7-form').each(function(){
@@ -247,9 +248,7 @@
             var $this = $(this);
             $('select.wpcf7-form-control.select2:enabled', $this).each(function(){
               var $select2 = $(this);
-              $select2.select2({
-                tags: $select2.is('.tags')
-              });
+              $select2.select2($select2.cf7sgSelect2Options());
             });
             $this.trigger('sgSelect2');
           });
@@ -260,9 +259,8 @@
         var $this = $(this);
         $('select.wpcf7-form-control.select2:enabled', $this).each(function(){
           var $select2 = $(this);
-          $select2.select2({
-            tags: $select2.is('.tags')
-          });
+          $select2.select2($select2.cf7sgSelect2Options());
+
         });
         $this.trigger('sgSelect2');
       });
@@ -521,7 +519,7 @@
           auto:false,
           adaptiveHeight:false,
           onSliderLoad:function(index){
-            slideCount = sy.getSlideCount()-1;
+            slideCount = $slider.getSlideCount()-1;
             $this.trigger('sgSliderReady');
           },
           onSlideAfter:function(slide, old_index, new_index){
@@ -547,37 +545,38 @@
           	}));
           }
         });
-        $slider = $slider.closest('.cf7sg-slider-section');
+        var $sliderContainer = $slider.closest('.cf7sg-slider-section');
         var $prev = $('<span class="slider-control slider-prev"></span>');
-        if($slider.data("prev").length>0){
-          $prev.text($slider.data("prev"));
+        if($sliderContainer.data("prev").length>0){
+          $prev.text($sliderContainer.data("prev"));
         }else $prev.addClass("dashicons dashicons-arrow-left-alt");
 
         var $next = $('<span class="slider-control slider-next"></span>');
-        if($slider.data("next").length>0){
-          $next.text($slider.data("next"));
+        if($sliderContainer.data("next").length>0){
+          $next.text($sliderContainer.data("next"));
         }else $next.addClass("dashicons dashicons-arrow-right-alt");
 
-        $('.cf7sg-slide-filler',$slider).append($prev).append($next);
+        $('.cf7sg-slide-filler',$sliderContainer).append($prev).append($next);
         $prev.hide(); //hide on first slide.
 
         var isSubmit=false, $submit=null;
-        if($slider.data('submit').length>0){
+        if($sliderContainer.data('submit').length>0){
           isSubmit = true;
-          $submit = $('<input type="submit" value="'+$slider.data('submit')+'" class="wpcf7-form-control wpcf7-submit">');
+          $submit = $('<input type="submit" value="'+$sliderContainer.data('submit')+'" class="wpcf7-form-control wpcf7-submit">');
           $next.after($submit);
-          $submit.hide();
+          let m = ($submit.outerHeight() - 16)/2;
+          $submit.hide().after('<span style="margin:'+m+'px 5px;" class="ajax-loader"></span>');
         }
 
-        $('.slider-control', $slider).on('click', function(e){
+        $('.slider-control', $sliderContainer).on('click', function(e){
           var $control = $(e.target);
           if($control.is('.slider-prev')){
-            sy.goToPrevSlide();
+            $slider.goToPrevSlide();
           }else if($control.is('.slider-next')){
-            sy.goToNextSlide();
+            $slider.goToNextSlide();
           }
         });
-        $slider.on('sgNextSlide sgPrevSlide', function(e){
+        $sliderContainer.on('sgNextSlide sgPrevSlide', function(e){
           $prev.show();
           $next.show();
           if(isSubmit) $submit.hide();
@@ -591,8 +590,8 @@
               break;
           }
         });
-        $slider.on('sgRowAdded sgRowDeleted',function(event, row){
-          sy.refresh();
+        $sliderContainer.on('sgRowAdded sgRowDeleted',function(event, row){
+          $slider.refresh();
         });
       })
     });
@@ -676,6 +675,34 @@
   /*
     jQuery extended functions
   */
+  /** @since 4.0 enable permalinks in post options */
+  var linkOption = function(state){
+    if (!state.id) { return state.text; }
+    var $option=$(state.element);
+    return $('<a href="' + $option.data('permalink') + '">' + state.text + '</a>');
+  }
+  $.fn.cf7sgSelect2Options = function(){
+    var $select2 = $(this), s2options = {tags: $select2.is('.tags')}, field = $select2.attr('name').replace('[]','');
+    if($select2.is('.cf7sg-permalinks')){
+      s2options['templateSelection'] = linkOption;
+      s2options['templateResult'] = linkOption;
+    }
+    if('undefined' != typeof cf7sgCustomSelect2Templates.templateSelection){
+      s2options['templateSelection'] = cf7sgCustomSelect2Templates.templateSelection;
+    }
+    if('undefined' != typeof cf7sgCustomSelect2Templates.templateResult){
+      s2options['templateResult'] = cf7sgCustomSelect2Templates.templateResult;
+    }
+    if('undefined' != typeof cf7sgCustomSelect2Templates[field]){
+      if('undefined' != typeof cf7sgCustomSelect2Templates[field].templateSelection){
+        s2options['templateSelection'] = cf7sgCustomSelect2Templates[field].templateSelection;
+      }
+      if('undefined' != typeof cf7sgCustomSelect2Templates[field].templateResult){
+        s2options['templateResult'] = cf7sgCustomSelect2Templates[field].templateResult;
+      }
+    }
+    return s2options;
+  }
 	//datepicker for date fields
 	$.fn.setupDatePicker = function(){
     var $date = $(this);
@@ -734,6 +761,7 @@
     var $cloneRow = $('.cf7-sg-cloned-table-row', $table);
     var $row = $cloneRow.clone();
     $row.removeClass('cf7-sg-cloned-table-row').attr('data-row',rowIdx);
+    if(cf7sg.table_labels) $('label',$row).remove();
     //show row so select2 init properly
     if($footer.length>0){
       $footer.before($row.show());
@@ -773,9 +801,7 @@
         $input.niceSelect();
       }
       if($input.is('select.select2') && initSelect){
-        $input.select2({
-          tags: $input.is('.tags')
-        });
+        $input.select2($input.cf7sgSelect2Options());
         $input.trigger('sgSelect2');
       }
     });
@@ -838,9 +864,7 @@
         $this.niceSelect();
       }
       if(!isCloneRow && $this.is('select.select2') && initSelect){
-        $this.select2({
-          tags: $this.is('.tags')
-        });
+        $this.select2($this.cf7sgSelect2Options());
         $this.trigger('sgSelect2');
       }
     });

@@ -170,21 +170,25 @@ class Cf7_Grid_Layout_Admin {
         /** @since 3.1.2 initialise codemirror after library load and parse as attribute to anonymous functtion in cf7-grid-codemirror.js */
         wp_add_inline_script('cf7-codemirror-js',
         'const cmInitialSettings = {
-          value:"",
-          extraKeys: {"Ctrl-Space": "autocomplete", "Ctrl-/": "toggleComment"},
-          lineNumbers: true,
-          styleActiveLine: true,
-          matchBrackets: true,
-          tabSize:2,
-          lineWrapping: true,
-          addModeClass: true,
-          foldGutter: true,
-          autofocus:false,
+          value:"",matchTags: {bothTags: true},autoCloseTags:true,
+          extraKeys: {"Ctrl-Space": "autocomplete", "Ctrl-/": "toggleComment", "Ctrl-J": "toMatchingTag"},
+          lineNumbers: true, styleActiveLine: true,
+          matchBrackets: true, tabSize:2, lineWrapping: true, addModeClass: true,
+          foldGutter: true, autofocus:false,
           gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
         }
         const codeMirror_5_32 = CodeMirror(document.getElementById("cf7-codemirror"),cmInitialSettings);
         const cssCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-css-codemirror"),cmInitialSettings);
         const jsCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-js-codemirror"),cmInitialSettings);');
+        //matchtags.
+        wp_enqueue_script( 'codemirror-matchtag-js',
+          $plugin_dir . 'assets/codemirror/edit/matchtags.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-closetag-js',
+          $plugin_dir . 'assets/codemirror/edit/closetag.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
         //fold code
         wp_enqueue_script( 'codemirror-foldcode-js',
           $plugin_dir . 'assets/codemirror/addon/fold/foldcode.js',
@@ -339,19 +343,7 @@ class Cf7_Grid_Layout_Admin {
             )
           )
         );
-        /** @since 4.0.0 js editor */
-        // wp_enqueue_script( 'cf7-js-codemirror-js', $plugin_dir . 'admin/js/cf7sg-js-codemirror.js', array( 'jquery', 'cf7-codemirror-js' ), $this->version, true );
-        // wp_localize_script(
-        //   'cf7-js-codemirror-js',
-        //   'cf7sgJSeditor',
-        //   array(
-        //     'theme' => array(
-        //        'light'=>'paraiso-light',
-        //        'dark'=>'material-ocean',
-        //        'user'=>$user_js_theme
-        //     )
-        //   )
-        // );
+        
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
         wp_localize_script(
           $this->plugin_name,
@@ -565,7 +557,7 @@ class Cf7_Grid_Layout_Admin {
       }
       $args['locale'] =$locale;
     }else $args['locale'] = get_locale();
-    
+
     WPCF7_ContactForm::get_template( $args);
   }
   /**
@@ -815,14 +807,18 @@ class Cf7_Grid_Layout_Admin {
       if(!empty($_POST['cf7sg_prev_js_file']) && file_exists(ABSPATH. $_POST['cf7sg_prev_js_file'])){
         if( !unlink(ABSPATH.$_POST['cf7sg_prev_js_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_js_file']);
       }
-      file_put_contents( get_stylesheet_directory()."/js/{$cf7_key}.js", sanitize_textarea_field(stripslashes($_POST['cf7sg_js_file'])));
+      $path = get_stylesheet_directory()."/js";
+      if (!is_dir($path)) mkdir($path);
+      file_put_contents( $path."/{$cf7_key}.js", sanitize_textarea_field(stripslashes($_POST['cf7sg_js_file'])));
     }
     if(!empty($_POST['cf7sg_css_file'])){
       //check if the file is changed.
       if(!empty($_POST['cf7sg_prev_css_file']) && file_exists(ABSPATH.$_POST['cf7sg_prev_css_file'])){
         if( !unlink(ABSPATH.$_POST['cf7sg_prev_css_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_css_file']);
       }
-      file_put_contents( get_stylesheet_directory()."/css/{$cf7_key}.css", sanitize_textarea_field(stripslashes($_POST['cf7sg_css_file'])));
+      $path = get_stylesheet_directory()."/css";
+      if (!is_dir($path)) mkdir($path);
+      file_put_contents( $path."/{$cf7_key}.css", sanitize_textarea_field(stripslashes($_POST['cf7sg_css_file'])));
     }
   }
   /**

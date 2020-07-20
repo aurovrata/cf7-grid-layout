@@ -14,11 +14,11 @@ if(is_plugin_active( 'post-my-contact-form-7/cf7-2-post.php' )){
 * @param string $cf7_key  the form unique key.
 * @return array an arra of query terms.
 */
-function {$field_name_slug}_dynamic_list($query_args, $field, $cf7_key){
+function {$field_name_slug}_dynamic_list($query_args, $name, $cf7_key){
   //if you have a dynamic dropdown field with posts as list source.
   //$query_args array to filter query arguments used to populate dynamic dropdown of posts.
   //these arguments are passed to the function get_posts($query_args). (codex: https://codex.wordpress.org/Template_Tags/get_posts)
-  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $field){
+  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $name){
     return $query_args;
   }
   //setup your custom query...
@@ -37,11 +37,30 @@ function {$field_name_slug}_dynamic_list($query_args, $field, $cf7_key){
 */
 function {$field_name_slug}_dynamic_option_label($label, $term, $name, $cf7_key){
   //these are the label users will see when the dropdown opens.
-  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $field){
+  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $name){
     return $label;
   }
   return $label;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option label.','cf7-grid-layout')?>
+</li>
+<li class="cf7sg-tag-dynamic_select-taxonomy">
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_taxonomy_query','{$field_name_slug}_taxonomy_query',10,3);
+/**
+* Filter dropdown taxonomy query parameter.
+* (see https://developer.wordpress.org/reference/classes/wp_term_query/__construct/)
+* @param array $args array of taxonomy query attributes.
+* @param string $name the field name being populated.
+* @param string $cf7_key  the form unique key.
+* @return array of query attributes.
+*/
+function {$field_name_slug}_taxonomy_query($args, $name, $cf7_key){
+  //these are the label users will see when the dropdown opens.
+  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $name){
+    return $args;
+  }
+  //use only the child terms of a parent.
+  return $args['parent']=0;
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the taxonomy query.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-taxonomy">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_attributes','{$field_name_slug}_dynamic_option_attributes',10,4);
@@ -56,7 +75,7 @@ function {$field_name_slug}_dynamic_option_label($label, $term, $name, $cf7_key)
 function {$field_name_slug}_dynamic_option_attributes($attributes, $term, $name, $cf7_key){
   //these are the optional attributes you can add to your dynamic list option when populating from taxonomy terms.
   //this is especially useful in the context of select2 fields, as much richer options can be built.
-  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $field){
+  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $name){
     return $attributes;
   }
   //example: $attributes['class'] = array($term->slug);
@@ -75,7 +94,7 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $term, $name,
 */
 function {$field_name_slug}_dynamic_option_label($label, $post, $name, $cf7_key){
   //these are the label users will see when the dropdown opens.
-  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $field){
+  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $name){
     return $label;
   }
   //setup a custom label
@@ -95,7 +114,7 @@ function {$field_name_slug}_dynamic_option_label($label, $post, $name, $cf7_key)
 function {$field_name_slug}_dynamic_option_attributes($attributes, $post, $name, $cf7_key){
   //these are the optional attributes you can add to your dynamic list option when populating from existing posts.
   //this is especially useful in the conctext of select2 fields, as much richer options can be built.
-  if('{$form_key}'!==$cf7_key && '{$field_name}' !==$field){
+  if('{$form_key}'!==$cf7_key && '{$field_name}' !==$name){
     return $attributes;
   }
   //example: $attributes['class'] = array('author-'.$post->post_author);
@@ -111,8 +130,8 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $post, $name,
 * @param string $cf7_key  the form unique key.
 * @return string the label for the default value, returning a non-null value with display this as the first option.
 */
-function {$field_name_slug}_dynamic_default_option($default, $field, $cf7_key){
-  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $field){
+function {$field_name_slug}_dynamic_default_option($default, $name, $cf7_key){
+  if('{$form_key}'!==$cf7_key && '{$field_name}' !== $name){
     return $default;
   }
   $default = 'Please select an option...';

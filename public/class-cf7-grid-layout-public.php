@@ -171,10 +171,11 @@ class Cf7_Grid_Layout_Public {
       $protocol = is_ssl() ? 'https' : 'http';
       $url_path = "$protocol://cdnjs.cloudflare.com/ajax/libs/jqueryui/{$ui->ver}/";
       wp_register_style('cf7-jquery-ui', $url_path . 'themes/smoothness/jquery-ui.min.css', array(), $ui->ver , 'all');
+      wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui->ver, 'all');
+      wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui->ver, 'all');
     }
 
-    wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui->ver, 'all');
-    wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui->ver, 'all');
+
     /** @since 3.1,0 improve live loading of resources */
     $ff = '';
     $pf='';
@@ -273,6 +274,11 @@ class Cf7_Grid_Layout_Public {
     if('contact-form-7' !== $tag){
       return $output;
     }
+    /** @since 4.0 add page body class for cf7 forms */
+    add_filter('body_class', function($classes){
+      debug_msg('add body class ');
+      return array_push($classes, 'cf7sg-form-page');
+    },10,1);
     //wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     $cf7_id = $attr['id'];
@@ -341,7 +347,8 @@ class Cf7_Grid_Layout_Public {
     $this->localised_data = array(
       'url' => admin_url( 'admin-ajax.php' ),
       'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
-      'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' )
+      'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
+      'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key)
     );
     wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
     //setup classes and id for wrapper.
@@ -639,7 +646,7 @@ class Cf7_Grid_Layout_Public {
   **/
   public function setup_grid_values($data){
     $cf7form = WPCF7_ContactForm::get_current();
-    $data['test']=array('value');
+
     if(empty($cf7form) ){
       if(isset($_POST['_wpcf7']) ){
         $cf7_id = $_POST['_wpcf7'];
@@ -690,7 +697,7 @@ class Cf7_Grid_Layout_Public {
   */
   private function consolidate_grid_submissions_v2($field_tag, $type, &$data){
     //get_post_meta($post_id, '_cf7sg_has_tables', true);
-    if(isset($data['_wpcf7']) ) $cf7_id = $data['_wpcf7'];
+    if(isset($_POST['_wpcf7']) ) $cf7_id = $_POST['_wpcf7'];
     else{
       debug_msg("CF7SG ERROR: fn consolidate_grid_submissions_v2() is unable to load submitted form");
     }
@@ -845,6 +852,11 @@ class Cf7_Grid_Layout_Public {
   *@return array  a filtered array of $index_suffix=>$value pairs for tabs or rows fields, The index suffix is '.row-<index>' for tables and '.tab-<index>' for tabs. This method returns a 2 dimensional array for fields which are both within rowns and tabs.  The 2 dimensional array will list [<tab_suffix>][<row_suffix>]=>$value.  The original field name that was submitted can be reconstructed as $field_name.$index_suffix.  The first field will have an empty string as its $index_suffix.
   */
   private function consolidate_grid_submissions($field_name, $type, &$data){
+    $cf7_key = '';
+    if(isset($_POST['_wpcf7_key'])) $cf7_key = $_POST['_wpcf7_key'];
+    $cf7_id = 0;
+    if(isset($_POST['_wpcf7'])) $cf7_id = $_POST['_wpcf7'];
+
     $values = array();
     $regex = '';
     $submitted_fields=array();
@@ -894,7 +906,7 @@ class Cf7_Grid_Layout_Public {
     $row_idx=1; //[0][0] already set above is this is tab table field
     $tab_idx=0;
     $error_loop=false;
-    $loop_counter_limit = apply_filters('cf7sg_set_max_tabs_limit', 10, $data['_wpcf7_key'], $data['_wpcf7']);
+    $loop_counter_limit = apply_filters('cf7sg_set_max_tabs_limit', 10, $cf7_key, $cf7_id);
     for($idx=1; ($idx <= $max_fields && !$error_loop); $idx++){
       switch($type){
         case 'table':
@@ -1152,12 +1164,13 @@ class Cf7_Grid_Layout_Public {
             case 'captchar': //cannot be called twice, hence see if already invalidated.
               /** @since 3.3.3 check if invalidated previously */
               if( isset($invalids[$tag['name']]) ){
+                $result->invalidate( $tag, $invalids[$tag['name']]['reason']);
                 $validation[$tag['name']] = $invalids[$tag['name']]['reason'];
                 $validated[$tag['name']] = $tag;
               }
               break;
             default:
-              if(!isset($data[$tag['name']])) continue 2; /*likely toggled and unused*/
+              //if(!isset($data[$tag['name']])) continue 2; /*likely toggled and unused*/
               $result= apply_filters( "wpcf7_validate_{$type}", $result, $tag );
               /** @since 3.1.3 */
               $validation[$tag['name']] = $this->strip_cf7_validation($result, $tag['name']);
