@@ -238,13 +238,11 @@
         hasTables = true;
       });
       //var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)\s*(.[^\[]*)\]/img;
-      var tabFields = [];
+      var tabFields = [],toggleInTabs=[];
       $('.container.cf7-sg-tabs-panel', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        var unique = $(this).attr('id');
-        var fields = {};
+        $tab = $(this), unique = $tab.attr('id'),fields = {}, search = $tab.html();
         fields[unique]=[];
-        var search = $(this).html();
         var match = cf7TagRegexp.exec(search);
         while (match != null) {
           //if( -1 === tableFields.indexOf(match[2]) ) /*removed as now want to idenify fields which are both tabs and table fields*/
@@ -254,6 +252,10 @@
         }
         tabFields[tabFields.length] = fields;
         hasTabs = true;
+        /** @since 3.3.5 track toggled sections in tabs */
+        $('.container.cf7sg-collapsible.with-toggle',$tab).each(function(){
+          toggleInTabs[toggleInTabs.length]=$(this).attr('id');
+        });
       });
       /**
       * Track toggled fields to see if they are submitted or not.
@@ -282,6 +284,9 @@
       $this.append('<input type="hidden" name="cf7sg-has-toggles" value="'+hasToggles+'" /> ');
       var disabled = $('#form-editor-tabs').tabs('option','disabled');
       $this.append('<input type="hidden" name="cf7sg-has-grid" value="'+disabled+'" /> ');
+      /** @since 3.3.5 track toggles in tabs */
+      $this.append('<input type="hidden" name="cf7sg-toggle-in-tabs" id="cf7sg-tggl-tabs" /> ');
+      $('#cf7sg-tggl-tabs',$this).val(JSON.stringify(toggleInTabs));
       //update script classes since v3.
       if(hasTabs) scriptClass+="has-tabs,";
       if(hasTables) scriptClass+="has-table,";
