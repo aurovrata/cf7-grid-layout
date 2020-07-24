@@ -77,6 +77,15 @@ class Cf7_Grid_Layout_Public {
    * @var      Array    $array_toggled_panels    The form toggled sections used.
    */
   static private $array_toggled_panels = array();
+	
+  /**
+   * The cf7 array fields.
+   *
+   * @since    3.3.5
+   * @access   private
+   * @var      Array    $array_toggle_in_tabs    The form toggle sections within tabs..
+   */
+  static private $array_toggle_in_tabs = array();
   /**
    * The cf7 array fields.
    *
@@ -148,6 +157,16 @@ class Cf7_Grid_Layout_Public {
   */
   protected function is_submitted($toggle){
     return isset(self::$array_toggled_panels[$this->form_id][$toggle]);
+  }
+  /**
+  * Check if a toggled section was used and its fields submitted.
+  *
+  *@since 3.3.5
+  *@param string $toggle toogle id
+  *@return boolean is the toggle within a tab.
+  */
+  protected function is_tabbed($toggle){
+    return isset(self::$array_toggle_in_tabs[$toggle]);
   }
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
@@ -707,7 +726,9 @@ class Cf7_Grid_Layout_Public {
         for($idx=1;$idx<$max_fields;$idx++){
           $fid=$index_suffix.$idx;
           if(!empty($toggle)){ //check if submitted.
-            $values[$fid] = $this->is_submitted($toggle.$fid) ? $this->get_field_value($field_name.$fid, $data,$field_type) : null;
+            $toggle_id = $toggle; /** @since 3.3.5 track toggles in tabs*/
+            if($this->is_tabbed($toggle)) $toggle_id = $toggle.$fid;
+            $values[$fid] = $this->is_submitted($toggle_id) ? $this->get_field_value($field_name.$fid, $data,$field_type) : null;
           }else $values[$fid] = $this->get_field_value($field_name.$fid, $data,$field_type);
           $purge_fields[$field_name.$fid] = true;
         }
@@ -729,7 +750,9 @@ class Cf7_Grid_Layout_Public {
             $row_suffix= ($jdx>0)?'_row-'.$jdx:'';
             $fid = $tab_suffix.$row_suffix;
             if(!empty($toggle)){ //check if submitted, tab<-toggle<-table.
-              $values[$tab_suffix][$row_suffix] = $this->is_submitted($toggle.$tab_suffix) ? $this->get_field_value( $field_name.$fid, $data, $field_type):null;
+              $toggle_id = $toggle; /** @since 3.3.5 track toggles in tabs*/
+              if($this->is_tabbed($toggle)) $toggle_id = $toggle.$tab_suffix;
+              $values[$tab_suffix][$row_suffix] = $this->is_submitted($toggle_id) ? $this->get_field_value( $field_name.$fid, $data, $field_type):null;
             }else $values[$tab_suffix][$row_suffix] = $this->get_field_value($field_name.$fid, $data,$field_type);
             $purge_fields[$field_name.$fid] = true; //remove from the origina $data.
           }
@@ -806,8 +829,8 @@ class Cf7_Grid_Layout_Public {
     }
     self::$array_grid_fields[$form_id]=$grid_fields;
     //load panel fields.
+    self::$array_toggled_panels[$form_id]=array();
     if( isset($_POST['_cf7sg_version']) && version_compare($_POST['_cf7sg_version'],'2.5.0','>=') ){
-      self::$array_toggled_panels[$form_id]=array();
       $toggled_panels = array();
       if(isset($_POST['_cf7sg_toggles'])){
         $toggled_panels = json_decode( stripslashes($_POST['_cf7sg_toggles']));
@@ -823,6 +846,12 @@ class Cf7_Grid_Layout_Public {
           foreach($pfields as $field) self::$array_toggle_fields[$form_id][$field]=$panel;
         }
       }
+    }
+    /** @since 3.3.5 tack toggle in tabs */
+    self::$array_toggle_in_tabs=array();
+    if( isset($_POST['_cf7sg_version']) && version_compare($_POST['_cf7sg_version'],'3.3.5','>=') ){
+       $toggles_in_tabs = get_post_meta($form_id, '_cf7sg_grid_toggle_in_tabs', true);
+      if(!empty($toggles_in_tabs)) self::$array_toggle_in_tabs = array_fill_keys($toggles_in_tabs,true);
     }
 		return $grid_fields;
 	}
