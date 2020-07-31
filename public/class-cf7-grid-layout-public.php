@@ -816,7 +816,7 @@ class Cf7_Grid_Layout_Public {
 		$subform_keys = get_post_meta($form_id, '_cf7sg_sub_forms', true);
     if(!empty($subform_keys)){
   		foreach($subform_keys as $cf7Key){
-  			$post_id = Cf7_WP_Post_Table::form_id($cf7Key);
+  			$post_id = get_cf7form_id($cf7Key);
   			$grid_fields += self::get_grid_fields($post_id);
   		}
     }
@@ -1306,7 +1306,7 @@ class Cf7_Grid_Layout_Public {
    * @param     Array    $submitted_data    array of field-name=>value pairs submitted in form
   **/
   public function save_select2_custom_options($post_id, $key, $post_fields, $post_meta_fields, $submitted_data){
-    $form_id = Cf7_WP_Post_Table::form_id($key);
+    $form_id = get_cf7form_id($key);
     $tagged_fields = get_post_meta($form_id, '_cf7sg_select2_tagged_fields', true);
     if(empty($tagged_fields)){
       return;
@@ -1516,7 +1516,7 @@ class Cf7_Grid_Layout_Public {
   */
   public function filter_table_tab_mail_tag($replaced, $submitted, $html=false, $mail_tag=null ){
     $cf7form = WPCF7_ContactForm::get_current();
-    $cf7form_key = Cf7_WP_Post_Table::form_key($cf7form->id());
+    $cf7form_key = get_cf7form_key($cf7form->id());
     $submitted_cf7 = WPCF7_Submission::get_instance();
     $submitted_data = $submitted_cf7->get_posted_data();
 
