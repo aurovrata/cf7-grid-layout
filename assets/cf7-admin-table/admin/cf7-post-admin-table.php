@@ -20,15 +20,15 @@
  * @subpackage Cf7_Polylang/admin
  * @author     Aurovrata V. <vrata@syllogic.in>
  */
-if(!class_exists('Cf7_WP_Post_Table')){
+if(!class_exists('CF7SG_WP_Post_Table')){
 
-  class Cf7_WP_Post_Table {
+  class CF7SG_WP_Post_Table {
     /**
   	 * A CF7 list table object.
   	 *
   	 * @since    1.1.0
   	 * @access   private
-  	 * @var      Cf7_WP_Post_Table    $singleton   cf7 admin list table object.
+  	 * @var      CF7SG_WP_Post_Table    $singleton   cf7 admin list table object.
   	 */
   	private static $singleton;
     /**
@@ -51,7 +51,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
 
     protected function __construct(){
       $this->hooks_set= false;
-      $this->version = "1.2";
+      $this->version = "1.3";
     }
     /**
     * get cf7 post type set by cf7 plugin.
@@ -96,7 +96,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
   		    //for the future
           break;
         case 'edit':
-          wp_enqueue_style( 'cf7-post-table-css', plugin_dir_url( __FILE__ ) . 'css/cf7-admin-table.css', false, $this->version );
+          wp_enqueue_style( 'cf7sg-post-table-css', plugin_dir_url( __FILE__ ) . 'css/cf7-admin-table.css', false, $this->version );
           break;
       }
   	}
@@ -124,8 +124,8 @@ if(!class_exists('Cf7_WP_Post_Table')){
             wp_reset_postdata();
           }
           wp_enqueue_script('jquery-effects-core');
-          wp_enqueue_script( 'cf7-post-table-js', plugin_dir_url( __FILE__ ) . 'js/cf7-post-table.js', false, $this->version, true );
-          wp_localize_script('cf7-post-table-js','cf7_2_post_admin', array('keys'=>$keys));
+          wp_enqueue_script( 'cf7sg-post-table-js', plugin_dir_url( __FILE__ ) . 'js/cf7-post-table.js', false, $this->version, true );
+          wp_localize_script('cf7sg-post-table-js','cf7_2_post_admin', array('keys'=>$keys));
           break;
       }
   	}
@@ -531,7 +531,14 @@ if(!class_exists('Cf7_WP_Post_Table')){
       }
     }
   } //end class
-  function get_cf7form_id($cf7_key){
-  	return Cf7_WP_Post_Table::form_id($cf7_key);
+  if(!function_exists('get_cf7form_id')){
+    function get_cf7form_id($cf7_key){
+    	return CF7SG_WP_Post_Table::form_id($cf7_key);
+    }
+  }
+  if(!function_exists('get_cf7form_key')){
+    function get_cf7form_key($cf7_id){
+    	return CF7SG_WP_Post_Table::form_key($cf7_id);
+    }
   }
 }

@@ -32,7 +32,7 @@ foreach($tag->options as $tag_option){
 }
 $options = array();
 $cf7_form = wpcf7_get_current_contact_form();
-$cf7_key = Cf7_WP_Post_Table::form_key($cf7_form->id());
+$cf7_key = get_cf7form_key($cf7_form->id());
 $filter_options = false;
 if(!empty($tag->values)){
   if('taxonomy' == $source['source']){
@@ -230,4 +230,3 @@ if(is_array( $options )){
    $form_classes[] = 'has-nice-select';
  }
  if(!empty($form_classes)) $this->update_form_classes($form_classes, $cf7_form->id());
-

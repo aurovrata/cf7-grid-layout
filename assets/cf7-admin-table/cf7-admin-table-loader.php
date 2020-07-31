@@ -2,7 +2,7 @@
 require_once plugin_dir_path( __FILE__ ) . 'admin/cf7-post-admin-table.php';
 
 //reset the cf7 admin table
-$cf7_admin = Cf7_WP_Post_Table::set_table();
+$cf7_admin = CF7SG_WP_Post_Table::set_table();
 if(!$cf7_admin->hooks()){
   add_action( 'admin_enqueue_scripts', array($cf7_admin , 'enqueue_styles'));
   add_action( 'admin_enqueue_scripts', array($cf7_admin , 'enqueue_script'));
