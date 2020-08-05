@@ -343,7 +343,7 @@ class Cf7_Grid_Layout_Admin {
             )
           )
         );
-        
+
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
         wp_localize_script(
           $this->plugin_name,
@@ -802,23 +802,24 @@ class Cf7_Grid_Layout_Admin {
       update_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', $_POST['cf7sg_js_codemirror_theme']);
     }
     //save js file if used.
+    $path = get_stylesheet_directory();
     if(!empty($_POST['cf7sg_js_file'])){
-      //check if the file is changed.
+      //check if the file name is changed.
       if(!empty($_POST['cf7sg_prev_js_file']) && file_exists(ABSPATH. $_POST['cf7sg_prev_js_file'])){
         if( !unlink(ABSPATH.$_POST['cf7sg_prev_js_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_js_file']);
       }
-      $path = get_stylesheet_directory()."/js";
       if (!is_dir($path)) mkdir($path);
-      file_put_contents( $path."/{$cf7_key}.js", sanitize_textarea_field(stripslashes($_POST['cf7sg_js_file'])));
+      file_put_contents( "$path/js/{$cf7_key}.js", stripslashes($_POST['cf7sg_js_file']) );
+    }else if( file_exists("$path/js/{$cf7_key}.js") ) { //delete file.
+      if( !unlink("$path/js/{$cf7_key}.js") ) debug_msg("CF7SG ADMIN: unable to delete file $path/js/{$cf7_key}.js");
     }
     if(!empty($_POST['cf7sg_css_file'])){
       //check if the file is changed.
       if(!empty($_POST['cf7sg_prev_css_file']) && file_exists(ABSPATH.$_POST['cf7sg_prev_css_file'])){
         if( !unlink(ABSPATH.$_POST['cf7sg_prev_css_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_css_file']);
       }
-      $path = get_stylesheet_directory()."/css";
       if (!is_dir($path)) mkdir($path);
-      file_put_contents( $path."/{$cf7_key}.css", sanitize_textarea_field(stripslashes($_POST['cf7sg_css_file'])));
+      file_put_contents( $path."/css/{$cf7_key}.css", sanitize_textarea_field(stripslashes($_POST['cf7sg_css_file'])));
     }
   }
   /**

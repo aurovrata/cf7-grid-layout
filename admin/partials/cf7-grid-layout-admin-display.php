@@ -13,60 +13,68 @@ $cf7_key = $post->post_name;
   <li id="form-events"><?=__('Form','cf7-grid-layout')?><span>&gt;</span>
     <ul>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'cf7SmartGridReady', function(e){
-/* event fired once the form has been initialised */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'cf7SmartGridReady', function(e){
+/* event fired once the form has been initialised, click to insert helper code into your js file. */
+let $form = $(this); //$jquery form object.
 });" href="javascript:void(0);"><?=__('On form ready','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>
-  <li id="table-events"><?=__('Tables','cf7-grid-layout')?><span>&gt;</span>
+  <li id="table-events" class="display-none"><?=__('Tables','cf7-grid-layout')?><span>&gt;</span>
     <ul>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgTableReady', '.container.cf7-sg-table', function(e){
-/* event fired once a table has been initialised */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTableReady', '.container.cf7-sg-table', function(e){
+/* event fired once a table has been initialised, click to insert helper code into your js file. */
+let $form = $(this), $table = $(e.target);
 });" href="javascript:void(0);"><?=__('On table ready','cf7-grid-layout')?></a>
       </li>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgRowAdded', '.container.cf7-sg-table', function(e){
-/* event fired when a table row has been added */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgRowAdded', '.container.cf7-sg-table', function(e){
+/* event fired when a table row has been added, click to insert helper code into your js file. */
+let $form = $(this), $table = $(e.target);
 });" href="javascript:void(0);"><?=__('On row add','cf7-grid-layout')?></a>
       </li>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgRowDeleted', '.container.cf7-sg-table', function(e){
-/* event fired when a table row has been deleted */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgRowDeleted', '.container.cf7-sg-table', function(e){
+/* event fired when a table row has been deleted, click to insert helper code into your js file. */
+let $form = $(this), $table = $(e.target);
 });" href="javascript:void(0);"><?=__('On row remove','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>
-  <li id="tab-events"><?=__('Tabs','cf7-grid-layout')?><span>&gt;</span>
+  <li id="tab-events" class="display-none"><?=__('Tabs','cf7-grid-layout')?><span>&gt;</span>
     <ul>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgTabsReady', function(e){
-/* event fired once the tabs has been initialised */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabsReady', function(e){
+/* event fired once the tabs has been initialised, click to insert helper code into your js file. */
+let $form = $(this), $tabs = $(e.target);
 });" href="javascript:void(0);"><?=__('On tabs ready','cf7-grid-layout')?></a>
       </li>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgTabAdded', '.cf7-sg-tabs-panel', function(e){
-/* event fired when a new tab is added */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabAdded', '.cf7-sg-tabs-panel', function(e){
+/* event fired when a new tab is added, click to insert helper code into your js file. */
+let $form = $(this), $tabs = $(e.target);
 });" href="javascript:void(0);"><?=__('On tab add','cf7-grid-layout')?></a>
       </li>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgTabRemoved', '.cf7-sg-tabs', function(e){
-/* event fired when a new tab is added */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabRemoved', '.cf7-sg-tabs', function(e){
+/* event fired when a new tab is removed, click to insert helper code into your js file. */
+let $form = $(this), $tabs = $(e.target);
 });" href="javascript:void(0);"><?=__('On tab remove','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>
-  <li id="collapsible-events"><?=__('Collapsible rows','cf7-grid-layout')?><span>&gt;</span>
+  <li id="collapsible-events" class="display-none"><?=__('Collapsible rows','cf7-grid-layout')?><span>&gt;</span>
     <ul>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgCollapsibleRowsReady', function(e){
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgCollapsibleRowsReady', function(e){
 /* event fired once the collapsible rows (accordion/toggle/sections) have been initialised */
+let $form = $(this), $row = $(e.target);
 });" href="javascript:void(0);"><?=__('On section ready','cf7-grid-layout')?></a>
       </li>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'accordionactivate', function(e, ui){
-  /* event fired when a collapsible rows (accordion/toggle/sections) is activated */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'accordionactivate', function(e, ui){
+  /* event fired when a collapsible row (accordion/toggle/section) is activated, click to insert helper code into your js file. */
   //this event is fired if the section is either closed or opened.
   //for single collapsed sections,
   //  when openned, ui.oldPanel is empty and ui.newPanel is the current opened panel.
@@ -74,6 +82,7 @@ $cf7_key = $post->post_name;
   //for accordion with multile rows,
   //  ui.oldPanel is the previous panel (else empty if first actiation), ui.newPanel is the current opened panel.
   //see https://api.jqueryui.com/accordion/#event-activate for more details.
+  let $form = $(this), $row = $(e.target);
   let $this = $(this);
   switch(true){
     case $this.is('.with-toggle'):
@@ -90,40 +99,54 @@ $cf7_key = $post->post_name;
       </li>
     </ul>
   </li>
-  <li id="slider-events"><?=__('Slides','cf7-grid-layout')?><span>&gt;</span>
+  <li id="slider-events" class="display-none"><?=__('Slides','cf7-grid-layout')?><span>&gt;</span>
     <ul>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgSliderReady','.cf7sg-slider-section', function(e){
-/* event fired once the slider has been initialised */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgSliderReady','.cf7sg-slider-section', function(e){
+/* event fired once the slider has been initialised, click to insert helper code into your js file. */
+let $form = $(this), $slider = $(e.target);
 });" href="javascript:void(0);"><?=__('On slider ready','cf7-grid-layout')?></a>
       </li>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgNextSlide','.cf7sg-collapsible', function(e){
-  /* event fired when the next slide is activated */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgNextSlide','.cf7sg-collapsible', function(e){
+  /* event fired when the next slide is activated, click to insert helper code into your js file. */
   //e.detail.prev holds the index to the previous slide, empty on the first slide.
   //e.detail.current holds the index of the current slide
   //e.detail.last holds the index of the last slide.
   //you can add a CSS id to each div.container.cf7sg-collapsible elements
   //  whithin the div.cf7sg-slider-section element to uniquely identify each slide $(this).attr('id');
+  let $form = $(this), $slide = $(e.target);
 });" href="javascript:void(0);"><?=__('Next slide activated','cf7-grid-layout')?></a>
       </li>
       <li>
-        <a class="helper" data-cf72post="$('#{$cf7_key} form.wpcf7-form').on( 'sgPrevSlide','.cf7sg-collapsible', function(e){
-  /* event fired when the previous slide is activated */
+        <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgPrevSlide','.cf7sg-collapsible', function(e){
+  /* event fired when the previous slide is activated, click to insert helper code into your js file. */
   //e.detail.prev holds the index to the previous slide, empty on the first slide.
   //e.detail.current holds the index of the current slide
   //e.detail.last holds the index of the last slide.
   //you can add a CSS id to each div.container.cf7sg-collapsible elements
   //  whithin the div.cf7sg-slider-section element to uniquely identify each slide $(this).attr('id');
+  let $form = $(this), $slide = $(e.target);
 });" href="javascript:void(0);"><?=__('Previous slide activated','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>
   <li id="field-events"><?=__('Form fields','cf7-grid-layout')?><span>&gt;</span>
     <ul>
+      <li>
+        <a class="helper all-fields" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'change',':input', function(e){
+  /* event fired when a field changes value, click to insert helper code into your js file. */
+  let $form = $(e.delegateTarget), $field=$(this), fieldName = $field.attr('name');
+  {$array_field_extraction}
+  // $form is the form jquery object.
+  // $field is the input field jquery object.
+  //
+  switch(fieldName){{$list_of_fields}}
+});" href="javascript:void(0);"><?=__('Value change','cf7-grid-layout')?></a>
+      </li>
     </ul>
   </li>
-  <li id="other-events"><?=__('Others','cf7-grid-layout')?><span>&gt;</span>
+  <li id="other-events" class="display-none"><?=__('Others','cf7-grid-layout')?><span>&gt;</span>
     <ul>
     </ul>
   </li>
@@ -218,10 +241,12 @@ $cf7_key = $post->post_name;
 <input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />
 <input type="hidden" value="" id="cf7sg-table-fields" name="cf7sg-table-fields" />
 <input type="hidden" value="" id="cf7sg-toggle-fields" name="cf7sg-toggle-fields" />
+<div id="bottom-tags">
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();
 ?>
+</div>
 <div id="grid-row">
   <div class="container">
     <div class="row">

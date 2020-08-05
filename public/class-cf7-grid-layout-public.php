@@ -348,7 +348,8 @@ class Cf7_Grid_Layout_Public {
       'url' => admin_url( 'admin-ajax.php' ),
       'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
       'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
-      'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key)
+      'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
+      'debug'=>( defined('WP_DEBUG') && WP_DEBUG )
     );
     wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
     //setup classes and id for wrapper.

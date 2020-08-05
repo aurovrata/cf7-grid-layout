@@ -53,7 +53,7 @@
           var $this = $(this);
           var name = $this.attr('name');
           if(name.length>0){
-            $this.addClass('cf7sg-'+name.replace('[]',''));
+            $this.addClass('cf7sg-'+name.replace('[]','')+' cf7sgrow-field');
           }
         });
 
@@ -160,10 +160,13 @@
            //add class to all fields
           $panel.find(':input').each(function(){
             var $this = $(this);
-            if($this.is('.cf7-sg-table :input')) return;
+            if($this.is('.cf7-sg-table :input')){
+              $this.addClass('cf7sgtab-field');
+              return;
+            }
             var name = $this.attr('name');
             if(name.length>0){
-              $this.addClass('cf7sg-'+name.replace('[]',''));
+              $this.addClass('cf7sg-'+name.replace('[]','')+' cf7sgtab-field');
             }
           });
 
@@ -702,6 +705,28 @@
       }
     }
     return s2options;
+  }
+  //getCF7field function.
+  $.fn.getCF7field = function(name, tab=0,row=0){
+    var $form = $(this);
+    if('undefined' == typeof name || 0==name.length){
+      if(cf7sg.debug) console.log('CF7 Smart-grid ERROR: getCF7field() requires valid field name.');
+      return false;
+    }
+    if(!$form.is('.wpcf7-form')){
+      if(cf7sg.debug) console.log('CF7 Smart-grid ERROR: getCF7field() using unknown form');
+      return false;
+    }
+    switch(true){
+      case (tab>0 && row>0):
+        return $(':input[name="'+name+'_tab-'+tab+'_row-'+row+'"]', $form);
+      case tab>0:
+        return $(':input[name*="'+name+'_tab-'+tab+'"]', $form);
+      case row>0:
+        return $(':input[name*="'+name+'_row-'+row+'"]', $form);
+      default:
+        return $(':input[name*="'+name+'"]', $form);
+    }
   }
 	//datepicker for date fields
 	$.fn.setupDatePicker = function(){

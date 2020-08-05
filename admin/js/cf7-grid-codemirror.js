@@ -10,9 +10,9 @@
       $wpcf7Editor = $('textarea#wpcf7-form-hidden'),
       $editorTabs = $('#form-editor-tabs'),
       $optionals= $('#optional-editors'),
-      codemirrorUpdated = false,
+      codemirrorUpdated = false, formFields={},
       $grid = $('#grid-form'),
-      $topTags =$('#top-tags'),
+      $topTags =$('#top-tags'), $bottomTags =$('#bottom-tags'),
       $jsTags = $('#js-tags'),
       gridTab = '#cf7-editor-grid', //default at load time.
       $jsCodemirror = $('#cf7-js-codemirror'),
@@ -145,6 +145,7 @@
         activate: function( event, ui ) {
           gridTab = ui.newPanel.selector;
           $topTags.show();
+          $bottomTags.show();
           $jsTags.hide();
           $optionals.hide();
           switch(gridTab){
@@ -177,11 +178,48 @@
               break;
             case '#cf7-js-codemirror': //js editor.
               $topTags.hide();
+              $bottomTags.hide();
               $jsTags.show();
+              let $form = $('<div>').html($grid.CF7FormHTML());
+              $('.display-none', $jsTags).removeClass('show-events');
+              switch(true){
+                case $('div.container.cf7-sg-table', $form).length > 0:
+                  $('#table-events', $jsTags).addClass('show-events');
+                case $('div.container.cf7sg-collapsible', $form).length > 0:
+                  $('#collapsible-events', $jsTags).addClass('show-events');
+                case $('div.container.cf7-sg-tabs-panel', $form).length > 0:
+                  $('#tab-events', $jsTags).addClass('show-events');
+              }
+              //scan all fields.
+              let cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"source:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"source:)[^\[]*)\]/img;
+              //reset form fields.
+              formFields={};
+              $('.field', $form).each(function(){
+                let $field = $(this), search = $field.text(), match = cf7TagRegexp.exec(search);
+                while(null != match && match.length>2){
+                  switch(match[1].replace('*','')){
+                    case 'recaptcha':
+                    case 'recaptch':
+                    case 'acceptance':
+                    case 'submit':
+                    case 'save':
+                      match=null;
+                      break;//tags with no fields of interest.
+                    default:
+                      formFields[match[2]] = match[2];
+                      if($field.is('.cf7-sg-tabs .field')) formFields[match[2]] += '_tab';
+                      if($field.is('.container.cf7-sg-table .field')) formFields[match[2]] += '_row';
+                      match = cf7TagRegexp.exec(search); //search next.
+                      break;
+                  }
+                }
+              });
+
               $(window).scrollTop($('#form-panel').offset().top);
               break;
             case '#cf7-css-codemirror': //css editor.
               $topTags.hide();
+              $bottomTags.hide();
               break;
           }
         }
@@ -190,7 +228,7 @@
       $.fn.createNewCMEditor = function(activate=false){
         let $this = $(this);
         $this.each(function(activate){
-          let $this = $(this), ref, $theme, $text, cm, theme, $cm, mode;
+          let $this = $(this), ref, $theme, $text, cm, theme, $cm, mode,regex;
           if(!$this.is('a.button.cf7sg-cmtab')) return $this;
 
           ref = '#'+$this.next('div.display-none').attr('id');
@@ -204,6 +242,14 @@
               $cm = $jsCodemirror;
               mode={name: "javascript", json: true};
               $this.text('JS');
+              //enable helper popups.
+              regex = /(?<=\/\*)(.*?)(?=\s?\*\/)/im;
+              $('a.helper', $jsTags).each(function(){
+                let $helper = $(this), text = regex.exec($helper.data('cf72post'));
+                if('undefined' != typeof text){
+                  $helper.parent().prepend('<span class="display-none">'+text[0]+'</span>');
+                }
+              });
               break;
             case '#cf7-css-codemirror':
               $theme = $cssThemeRadio;
@@ -296,12 +342,79 @@
         }
       });
       $('#js-tags').on('click','a.helper',function(e){
-        let helper = $(this).data('cf72post').replace('{$cf7_key}', $cf7key.val() );
+        let helper = $(this).data('cf72post').replace('{$cf7_key}', $cf7key.val() ), enableArrayFields=false;
+        if($(this).is('.all-fields')){
+          let fieldsText = '\n';
+          $.each(formFields, function(field, fidx){
+            fieldsText += "  case '"+field+"': //"+field+" updated";
+            switch(fidx){
+              case field+'_tab':
+                fieldsText +=", $tab has current tab index.\n";
+                fieldsText +="    //this is a tabbed section field, current tab:you can access,\n";
+                fieldsText +="    //field name in 1st tab:  '"+field+"' \n";
+                fieldsText +="    //field name in 2nd tab:  '"+field+"_tab-1'  and so on...\n";
+                enableArrayFields=true;
+                break;
+              case field+'_row':
+                fieldsText +=", $row has current row index.\n";
+                fieldsText +="    //this is a table field, you can access,\n";
+                fieldsText +="    //field name in 1st row:  '"+field+"' \n";
+                fieldsText +="    //field name in 2nd row:  '"+field+"_row-1'  and so on...\n";
+                enableArrayFields=true;
+                break;
+              case field+'_tab_row':
+                fieldsText +=", $tab has current tab index and $row current row index.\n";
+                fieldsText +="    //this is a table field within a tabbed section, you can access,\n";
+                fieldsText +="    //field name in 1st row, 1st tab:  '"+field+"' \n";
+                fieldsText +="    //field name in 2nd row, 1st tab:  '"+field+"_row-1' \n";
+                fieldsText +="    //field name in 1st row, 2nd tab:  '"+field+"_tab-1' \n";
+                fieldsText +="    //field name in 2nd row, 2nd tab:  '"+field+"_tab-1_row_1' and so on...\n";
+                enableArrayFields=true;
+                break;
+              default:
+                fieldsText +=".\n    //do something\n";
+                break;
+            }
+            fieldsText +="    break;\n"
+          });
+          arrayFields = '';
+          if(enableArrayFields){
+            arrayFields =  "//-----code to extract field name and tab/row index -----------\n";
+            arrayFields += "let search='', tab=0, row=0;\n";
+            arrayFields += "if( $field.is('.cf7sgtab-field') || $field.is('.cf7sgrow-field') ){\n";
+            arrayFields += "  $.each($field.attr('class').split(/\\s+/), function(idx, clss){\n";
+            arrayFields += "    if(0==clss.indexOf('cf7sg-')){\n";
+            arrayFields += "      clss = clss.replace('cf7sg-','');\n";
+            arrayFields += "      search = new RegExp( '(?<='+clss+')(_tab-(\\\\d))?(_row-(\\\\d))?','gi' ).exec(fieldName);\n";
+            arrayFields += "      switch(true){\n";
+            arrayFields += "        case /\\d+/.test(search[2]*search[4]): //table within a tab.\n";
+            arrayFields += "          tab = parseInt(search[2]);\n";
+            arrayFields += "          row = parseInt(search[4]);\n";
+            arrayFields += "          break;\n";
+            arrayFields += "        case /\\d+/.test(search[2]): //tab.\n";
+            arrayFields += "          tab = parseInt(search[2]);\n";
+            arrayFields += "          break;\n";
+            arrayFields += "        case /\\d+/.test(search[4]): //tab.\n";
+            arrayFields += "          row = parseInt(search[4]);\n";
+            arrayFields += "          break;\n";
+            arrayFields += "      }\n";
+            arrayFields += "      fieldName = clss;\n";
+            arrayFields += "      return false; //break out of each loop.\n";
+            arrayFields += "    }\n  });\n";
+            arrayFields += "}\n//------ end of code for field extraction ---------\n";
+          }
+          helper = helper.replace('{$array_field_extraction}', arrayFields);
+          helper = helper.replace('{$list_of_fields}', fieldsText);
+        }
         let line = jscme.getCursor().line;
         if(!jsInsertAtLine) line = 0;
         switch(line){
           case 0:
-            jscme.setCursor({'line':jscme.lastLine(),'ch':0});
+            let il = jscme.lastLine();
+            if(il>1 && jscme.getLine(il).indexOf('(jQuery)')<0){
+              if(jscme.getLine(il-1).indexOf('(jQuery)')>0) il-=1;
+            }
+            jscme.setCursor({'line':il,'ch':0});
             helper += "\n";
             break;
           default:
@@ -449,9 +562,10 @@
       $('#cf7sg-toggle-fields').val(JSON.stringify(toggledFields));
       /** @since 4.0 enable js/css */
       $jstext.text('');//empty.
-      if(jscmUpdated) $jstext.text(jscme.getValue())
+      codeMirror = jscme.getValue();
+      if(jscmUpdated && codeMirror.length>2) $jstext.html(codeMirror);
       $csstext.text('');//empty.
-      if(csscmUpdated) $csstext.text(csscme.getValue());
+      if(csscmUpdated) $csstext.html(csscme.getValue());
 
       // continue the submit unbind preventDefault.
       $this.unbind('submit').submit();
