@@ -83,12 +83,11 @@ let $form = $(this), $row = $(e.target);
   //  ui.oldPanel is the previous panel (else empty if first actiation), ui.newPanel is the current opened panel.
   //see https://api.jqueryui.com/accordion/#event-activate for more details.
   let $form = $(this), $row = $(e.target);
-  let $this = $(this);
   switch(true){
-    case $this.is('.with-toggle'):
+    case $row.is('.with-toggle'):
       //this is a toggled section, identify it by its CSS id $this.attr('id').
       break;
-    case $this.is('.cf7sg-accordion-rows'):
+    case $row.is('.cf7sg-accordion-rows'):
       //this is an accordion with multiple collapsible sections, identify it by its CSS id $this.attr('id')
       break;
     default: //this is a single collapsible section.

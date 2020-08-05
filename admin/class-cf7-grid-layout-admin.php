@@ -813,13 +813,16 @@ class Cf7_Grid_Layout_Admin {
     }else if( file_exists("$path/js/{$cf7_key}.js") ) { //delete file.
       if( !unlink("$path/js/{$cf7_key}.js") ) debug_msg("CF7SG ADMIN: unable to delete file $path/js/{$cf7_key}.js");
     }
+    //save css file.
     if(!empty($_POST['cf7sg_css_file'])){
       //check if the file is changed.
       if(!empty($_POST['cf7sg_prev_css_file']) && file_exists(ABSPATH.$_POST['cf7sg_prev_css_file'])){
         if( !unlink(ABSPATH.$_POST['cf7sg_prev_css_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_css_file']);
       }
       if (!is_dir($path)) mkdir($path);
-      file_put_contents( $path."/css/{$cf7_key}.css", sanitize_textarea_field(stripslashes($_POST['cf7sg_css_file'])));
+      file_put_contents( $path."/css/{$cf7_key}.css", stripslashes($_POST['cf7sg_css_file']));
+    }else if( file_exists("$path/css/{$cf7_key}.css") ) { //delete file.
+      if( !unlink("$path/css/{$cf7_key}.css") ) debug_msg("CF7SG ADMIN: unable to delete file $path/css/{$cf7_key}.css");
     }
   }
   /**
