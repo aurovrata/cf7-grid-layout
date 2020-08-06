@@ -178,9 +178,8 @@
           $(':input', $clonedP).prop('disabled', true);
           cf7sgPanels[$panel.attr('id')] = $clonedP.html();
         }
-      });
-      //trigger tabs ready event
-      $cf7Form_tabs.trigger('sgTabsReady');
+      }).trigger('sgTabsReady');//trigger tabs ready event
+      // $cf7Form_tabs
       //delegate tab addition/deletion
       $cf7Form_tabs.click('ul.ui-tabs-nav li', function(event){
         var $target = $(event.target);

@@ -45,7 +45,7 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgRowDeleted', '.container.cf7-
       <li><?= __('Function: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="/* function to programmatically add a row to a table if fields. */
 //call this function once the table is ready.
-$tabs.cf7sgCloneRow(); //adds an extra row, and fires a row added event." href="javascript:void(0);"><?=__('add a row','cf7-grid-layout')?></a>
+$table.cf7sgCloneRow(); //adds an extra row, and fires a row added event." href="javascript:void(0);"><?=__('add a row','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>
