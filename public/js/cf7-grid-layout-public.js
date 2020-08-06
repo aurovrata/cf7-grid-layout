@@ -6,16 +6,18 @@
   var cf7sgPanels = {}; //object to store cloned panels
   var cf7sgCustomSelect2Templates = (function (ccst) {return ccst;}(cf7sgCustomSelect2Templates || {}));
   /*warning messages used for in-form validation*/
-  $.fn.cf7sgWarning = function(msg){
+  $.fn.cf7sgWarning = function(msg, time=0){
     var $this = $(this);
     if(!$this.is(':input')){
       return $this;
     }
     var $warning = $('<span class="cf7sg-validation-warning">'+msg+'<span class="confirm-button">ok</span></span>');
     $this.after($warning);
-    // $warning.delay(5000).fadeOut('slow', function(){
-    //   $this.remove();
-    // });
+    if(time>0){
+      $warning.delay(time).fadeOut('slow', function(){
+        $this.remove();
+      });
+    }
   }
 
   $(document).ready( function(){
@@ -707,7 +709,7 @@
     return s2options;
   }
   //getCF7field function.
-  $.fn.getCF7field = function(name, tab=0,row=0){
+  $.fn.getCF7field = function(name, obj={}){
     var $form = $(this);
     if('undefined' == typeof name || 0==name.length){
       if(cf7sg.debug) console.log('CF7 Smart-grid ERROR: getCF7field() requires valid field name.');
@@ -717,14 +719,25 @@
       if(cf7sg.debug) console.log('CF7 Smart-grid ERROR: getCF7field() using unknown form');
       return false;
     }
+    var hasTab = ('undefined' != typeof obj.tab), hasRow = ('undefined' != typeof obj.row);
     switch(true){
-      case (tab>0 && row>0):
-        return $(':input[name="'+name+'_tab-'+tab+'_row-'+row+'"]', $form);
-      case tab>0:
-        return $(':input[name*="'+name+'_tab-'+tab+'"]', $form);
-      case row>0:
-        return $(':input[name*="'+name+'_row-'+row+'"]', $form);
-      default:
+      case hasTab && obj.tab>0 && hasRow && obj.row>0: //row x on tab n.
+        return $(':input[name="'+name+'_tab-'+obj.tab+'_row-'+obj.row+'"]', $form);
+      case hasTab && obj.tab>0 && hasRow://row=0 on tab n.
+        return $(':input[name="'+name+'_tab-'+obj.tab+'"]', $form);
+      case hasTab && obj.tab>0://all rows on tab n. | single value on tab n.
+        return $(':input[name*="'+name+'_tab-'+obj.tab+'"], :input[name*="'+name+'_tab-'+obj.tab+'_row-"]', $form);
+      case hasTab://all rows of tab 0. | single value of tab 0.
+        return $(':input[name*="'+name+'_row-"], :input[name="'+name+'"]', $form);
+      case hasRow && obj.row>0 && hasTab: //row n on tab=0;
+        return $(':input[name="'+name+'_row-'+obj.row+'"]', $form);
+      case hasRow && obj.row>0: //row n on all tabs | single value on row n.
+        return $(':input[name="'+name+'_row-'+obj.row+'"],:input[name*="'+name+'_tab-"]:is(:input[name$="_row-'+obj.row+'"])', $form);
+      case hasRow://row 0 for all tabs | single value in row 0.
+        return $(':input[name="'+name+'"], :input[name$="'+name+'_tab-"]', $form);
+      case hasTab && hasRow: //field in first row on first tab
+        return $(':input[name="'+name+'"]', $form);
+      default: //single field in form | all fields in all rows on all tabs.
         return $(':input[name*="'+name+'"]', $form);
     }
   }
@@ -771,6 +784,8 @@
 	}
   //clone table row
   $.fn.cf7sgCloneRow = function(initSelect){
+    /*initSelect is false if called from cf7_2_post field loading script,
+    else if true whehn triggered from the front-end user event.*/
     if(typeof initSelect === 'undefined') initSelect =true;
     var $table = $(this);
     var $footer='';

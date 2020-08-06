@@ -247,7 +247,7 @@
               $('a.helper', $jsTags).each(function(){
                 let $helper = $(this), text = regex.exec($helper.data('cf72post'));
                 if('undefined' != typeof text){
-                  $helper.parent().prepend('<span class="display-none">'+text[0]+'</span>');
+                  $helper.parent().append('<span style="position:relative"><span class="display-none">'+text[0]+'</span></span>');
                 }
               });
               break;
@@ -343,32 +343,24 @@
       });
       $('#js-tags').on('click','a.helper',function(e){
         let helper = $(this).data('cf72post').replace('{$cf7_key}', $cf7key.val() ), enableArrayFields=false;
+        if(!$('#cf7sg-jstags-comments').is(':checked')){
+          helper = helper.replace(/^\n?\s*?\/\/.*\n?/gmi,'').replace(/(?<=.*)\n$/,'');;
+        }
         if($(this).is('.all-fields')){
           let fieldsText = '\n';
           $.each(formFields, function(field, fidx){
             fieldsText += "  case '"+field+"': //"+field+" updated";
             switch(fidx){
               case field+'_tab':
-                fieldsText +=", $tab has current tab index.\n";
-                fieldsText +="    //this is a tabbed section field, current tab:you can access,\n";
-                fieldsText +="    //field name in 1st tab:  '"+field+"' \n";
-                fieldsText +="    //field name in 2nd tab:  '"+field+"_tab-1'  and so on...\n";
+                fieldsText +=", tIdx is tab index.\n";
                 enableArrayFields=true;
                 break;
               case field+'_row':
-                fieldsText +=", $row has current row index.\n";
-                fieldsText +="    //this is a table field, you can access,\n";
-                fieldsText +="    //field name in 1st row:  '"+field+"' \n";
-                fieldsText +="    //field name in 2nd row:  '"+field+"_row-1'  and so on...\n";
+                fieldsText +=", rIdx is row index.\n";
                 enableArrayFields=true;
                 break;
               case field+'_tab_row':
-                fieldsText +=", $tab has current tab index and $row current row index.\n";
-                fieldsText +="    //this is a table field within a tabbed section, you can access,\n";
-                fieldsText +="    //field name in 1st row, 1st tab:  '"+field+"' \n";
-                fieldsText +="    //field name in 2nd row, 1st tab:  '"+field+"_row-1' \n";
-                fieldsText +="    //field name in 1st row, 2nd tab:  '"+field+"_tab-1' \n";
-                fieldsText +="    //field name in 2nd row, 2nd tab:  '"+field+"_tab-1_row_1' and so on...\n";
+                fieldsText +=", tIdx is tab index / rIdx is row index.\n";
                 enableArrayFields=true;
                 break;
               default:
@@ -380,7 +372,7 @@
           arrayFields = '';
           if(enableArrayFields){
             arrayFields =  "//-----code to extract field name and tab/row index -----------\n";
-            arrayFields += "let search='', tab=0, row=0;\n";
+            arrayFields += "let search='', tIdx=0, rIdx=0;\n";
             arrayFields += "if( $field.is('.cf7sgtab-field') || $field.is('.cf7sgrow-field') ){\n";
             arrayFields += "  $.each($field.attr('class').split(/\\s+/), function(idx, clss){\n";
             arrayFields += "    if(0==clss.indexOf('cf7sg-')){\n";
@@ -388,14 +380,14 @@
             arrayFields += "      search = new RegExp( '(?<='+clss+')(_tab-(\\\\d))?(_row-(\\\\d))?','gi' ).exec(fieldName);\n";
             arrayFields += "      switch(true){\n";
             arrayFields += "        case /\\d+/.test(search[2]*search[4]): //table within a tab.\n";
-            arrayFields += "          tab = parseInt(search[2]);\n";
-            arrayFields += "          row = parseInt(search[4]);\n";
+            arrayFields += "          tIdx = parseInt(search[2]);\n";
+            arrayFields += "          rIdx = parseInt(search[4]);\n";
             arrayFields += "          break;\n";
             arrayFields += "        case /\\d+/.test(search[2]): //tab.\n";
-            arrayFields += "          tab = parseInt(search[2]);\n";
+            arrayFields += "          tIdx = parseInt(search[2]);\n";
             arrayFields += "          break;\n";
-            arrayFields += "        case /\\d+/.test(search[4]): //tab.\n";
-            arrayFields += "          row = parseInt(search[4]);\n";
+            arrayFields += "        case /\\d+/.test(search[4]): //row.\n";
+            arrayFields += "          rIdx = parseInt(search[4]);\n";
             arrayFields += "          break;\n";
             arrayFields += "      }\n";
             arrayFields += "      fieldName = clss;\n";
@@ -407,7 +399,7 @@
           helper = helper.replace('{$list_of_fields}', fieldsText);
         }
         let line = jscme.getCursor().line;
-        if(!jsInsertAtLine) line = 0;
+        // if(!jsInsertAtLine) line = 0;
         switch(line){
           case 0:
             let il = jscme.lastLine();
@@ -563,10 +555,14 @@
       /** @since 4.0 enable js/css */
       $jstext.text('');//empty.
       codeMirror = jscme.getValue();
-      if(jscmUpdated && codeMirror.length>2) $jstext.html(codeMirror);
+      if(jscmUpdated){
+        if(codeMirror.length>2) $jstext.html(codeMirror);
+      }else $jstext.prop('disabled',true);
       $csstext.text('');//empty.
-      if(csscmUpdated) $csstext.html(csscme.getValue());
-
+      codeMirror = csscme.getValue();
+      if(csscmUpdated){
+        if(codeMirror.length>2) $csstext.html(csscme.getValue());
+      }else $csstext.prop('disabled',true);
       // continue the submit unbind preventDefault.
       $this.unbind('submit').submit();
    });

@@ -810,7 +810,7 @@ class Cf7_Grid_Layout_Admin {
       }
       if (!is_dir($path)) mkdir($path);
       file_put_contents( "$path/js/{$cf7_key}.js", stripslashes($_POST['cf7sg_js_file']) );
-    }else if( file_exists("$path/js/{$cf7_key}.js") ) { //delete file.
+    }else if( isset($_POST['cf7sg_js_file']) && file_exists("$path/js/{$cf7_key}.js") ) { //delete file.
       if( !unlink("$path/js/{$cf7_key}.js") ) debug_msg("CF7SG ADMIN: unable to delete file $path/js/{$cf7_key}.js");
     }
     //save css file.
@@ -821,9 +821,12 @@ class Cf7_Grid_Layout_Admin {
       }
       if (!is_dir($path)) mkdir($path);
       file_put_contents( $path."/css/{$cf7_key}.css", stripslashes($_POST['cf7sg_css_file']));
-    }else if( file_exists("$path/css/{$cf7_key}.css") ) { //delete file.
+    }else if( isset($_POST['cf7sg_css_file']) && file_exists("$path/css/{$cf7_key}.css") ) { //delete file.
       if( !unlink("$path/css/{$cf7_key}.css") ) debug_msg("CF7SG ADMIN: unable to delete file $path/css/{$cf7_key}.css");
     }
+    //jstags comments.
+    if(empty($_POST['cf7sg_jstags_comments'])) update_post_meta($post->ID, '_cf7sg_disable_jstags_comments',1);
+    else update_post_meta($post->ID, '_cf7sg_disable_jstags_comments',0);
   }
   /**
   * Print default js template,

@@ -5,13 +5,18 @@
 	margin-top: 8px;
 }
 #optional-editors a.button {font-weight: bold;}
-#js-tags > li {
+#js-tags > li:not(#last-item) {
 	display: inline-block;
 	vertical-align: top;
 	border: solid 2px #007cba;
 	background: white;
 	padding: 5px 8px;
 	border-radius: 3px;
+}
+#last-item {
+	display: inline-block;
+	margin-top: 5px;
+	margin-left: 3px;
 }
 #js-tags > li:hover > span {
   transform: rotate(90deg);
@@ -34,7 +39,7 @@
 	z-index: 10;
 }
 #js-tags > li:hover > ul > li:hover{position: relative}
-#js-tags > li:hover > ul > li:hover > span{
+#js-tags > li:hover > ul > li:hover > span > span{
   display:block;
   position: absolute;
 	background: white;
@@ -43,8 +48,8 @@
   border-radius: 3px;
 	z-index: 20;
 	width: 225px;
-	left: 85px;
-	top: -6px;
+	left: 4px;
+	top: -3px;
 	font-style: italic;
 }
 .columns.cf7sg-slider-section, .columns.cf7sg-accordion-rows {box-shadow: 0 0 6px #6a0080;}
