@@ -37,6 +37,7 @@
       $(this).toggleClass('full-screen');
       if($editor.is('.full-screen')) $editor.width(bodyWidth);
       else $editor.width('auto');
+      $('#form-editor-tabs .ui-tabs-panel', $editor).trigger('cf7sg-screen-resize');
     });
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     $grid = $('#grid-form');
@@ -816,15 +817,19 @@
   }
   /* some function definitions...*/
   $.fn.closeUIfield = function(){
-    const $this = $(this);
-    if(!$this.is('.cf7-field-inner :input:visible')){
-      return $this;
-    }
-    if($this.parent().is('.cf7-field-type')) changeTextarea();
-    $this.hide().attr('id', '');
-    $this.siblings('.dashicons-no-alt').hide();
-    $this.siblings('.content').show();
-    return $this;
+    let obj = this;
+    if(!Array.isArray(this)) obj=[this];
+    $.each(obj,function(idx, item){
+      const $this = $(item);
+      if(!$this.is('.cf7-field-inner :input:visible')){
+        return $this;
+      }
+      if($this.parent().is('.cf7-field-type')) changeTextarea();
+      $this.hide().attr('id', '');
+      $this.siblings('.dashicons-no-alt').hide();
+      $this.siblings('.content').show();
+    });
+    return true;
   }
   $.fn.showUIfield = function(){
     const $this = $(this);

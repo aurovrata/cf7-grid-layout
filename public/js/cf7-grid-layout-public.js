@@ -148,7 +148,6 @@
       cf7sgPanels = {}; //object to store cloned panels
       $( ".cf7-sg-tabs",  $cf7Form_tabs).each(function(){
         var $this = $(this);
-        $this.tabs();
         //add a button to create more tabs
         var $list = $this.children('.cf7-sg-tabs-list');
         if( 1 == $list.children('li').length){
@@ -178,7 +177,9 @@
           $(':input', $clonedP).prop('disabled', true);
           cf7sgPanels[$panel.attr('id')] = $clonedP.html();
         }
-      }).trigger('sgTabsReady');//trigger tabs ready event
+        //create tab.
+        $this.tabs( {create: function(e){$(this).trigger('sgTabsReady')}} );
+      });//.delay(200).trigger('sgTabsReady');//trigger tabs ready event
       // $cf7Form_tabs
       //delegate tab addition/deletion
       $cf7Form_tabs.click('ul.ui-tabs-nav li', function(event){
@@ -203,7 +204,7 @@
           if($tracker) $tracker.val($container.children('.cf7-sg-tabs-panel').length);
         }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab.
           //add a new tab
-          $container.cf7sgCloneTab();
+          $container.cf7sgCloneTab(true,true);
         }
       });
     }
@@ -338,54 +339,6 @@
       cf7Form_accordion.filter('div.has-toggles form.wpcf7-form').each(function(){
         var form = $(this);
         var toggled_accordion = $('.cf7sg-collapsible.with-toggle', form);
-        toggled_accordion.each(function(){
-          var $button = $(this);
-          var cssId = $button.attr('id');
-          if(typeof cssId == 'undefined'){
-            cssId = randString(6);
-            $button.attr('id', cssId); //assign a random id
-          }
-          var state = $button.data('open');
-          var toggled = false;
-          if(typeof state == 'undefined'){
-            state = false;
-          }else{
-            switch(state){
-              case true:
-                state = 0;
-                toggled = true;
-                break;
-            }
-          }
-          /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
-          *@since 1.1.0
-          */
-          var $cf72post = form.closest('div.cf7_2_post');
-          if( 0 == $cf72post.length){ //disable the input fields in toggled sections.
-            if(!toggled){ //disable fields within a closed toggled section.
-              $(':input', $(this).children('.row')).prop('disabled', true);
-            }
-          }//else deal with toggled fields once cf72post plugin has pre-filled sections.
-          //setup the toggle button
-          $button.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled);
-          //enable the accordion
-          $('#'+cssId).accordion({
-            collapsible:true,
-            icons:false,
-            active:state,
-            header:'> div.cf7sg-collapsible-title',
-            heightStyle: "content",
-            activate: function(event, ui){
-              $(this).trigger('sgContentIncrease');
-            }
-          });
-        }); //end for each toggle section.
-
-        /** @since 2.3.1 move event biding out of each() loop. */
-        //listen for new content added to this accordion
-        toggled_accordion.on('sgContentIncrease', function(){
-          $(this).accordion("refresh");
-        });
         //event delegation on the header click to sync the toggle state
         form.click(toggled_accordion, function(event){
           var $header;
@@ -427,6 +380,10 @@
           }
 
           var toggleSwitch = $header.children('.toggle').data('toggles');
+          if('undefined' == typeof toggleSwitch && cf7sg.debug){
+            console.log('undefined toggleSwitch, header parent:');
+            console.log($header);
+          }
           if( $header.hasClass('ui-state-active') ){
             toggleSwitch.toggle(true);
             $('.row.ui-accordion-content :input', $header.parent()).not('.cf7-sg-cloned-table-row :input').prop('disabled', false);
@@ -449,16 +406,68 @@
             $toggleHiddenStatus.val(JSON.stringify(toggleStatus));
           }
         });//end for toggle click delegation
+
+        toggled_accordion.each(function(){
+          var $button = $(this);
+          var cssId = $button.attr('id');
+          if(typeof cssId == 'undefined'){
+            cssId = randString(6);
+            $button.attr('id', cssId); //assign a random id
+          }
+          var state = $button.data('open');
+          var toggled = false;
+          if(typeof state == 'undefined'){
+            state = false;
+          }else{
+            switch(state){
+              case true:
+                state = 0;
+                toggled = true;
+                break;
+            }
+          }
+          /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
+          *@since 1.1.0
+          */
+          var $cf72post = form.closest('div.cf7_2_post');
+          if( 0 == $cf72post.length){ //disable the input fields in toggled sections.
+            if(!toggled){ //disable fields within a closed toggled section.
+              $(':input', $(this).children('.row')).prop('disabled', true);
+            }
+          }//else deal with toggled fields once cf72post plugin has pre-filled sections.
+          //setup the toggle button
+          $button.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled);
+          //enable the accordion
+          $('#'+cssId).accordion({
+            collapsible:true,
+            icons:false,
+            active:state,
+            header:'> div.cf7sg-collapsible-title',
+            heightStyle: "content",
+            activate: function(event, ui){
+              $(this).trigger('sgContentIncrease');
+            },
+            create: function(e){
+              $(this).trigger('sgCollapsibleRowsReady')
+            }
+          });
+        }); //end for each toggle section.
+
+        /** @since 2.3.1 move event biding out of each() loop. */
+        //listen for new content added to this accordion
+        toggled_accordion.on('sgContentIncrease', function(){
+          $(this).accordion("refresh");
+        });
+
       }); //end collapsible rows with toggle buttons
 
       //now enable the other collapsible rows
-
       cf7Form_accordion.each(function(){
         /** @since 3.4.0 differentiate accordion of collapsible rows*/
-        var rows = $('.cf7sg-collapsible', $(this)).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-accordion-rows .cf7sg-collapsible').not('.cf7sg-slider-section .cf7sg-collapsible');
-        rows = rows.add( $('.cf7sg-accordion-rows', $(this)) );
-
-        rows.each(function(){
+        var $rows = $('.cf7sg-collapsible', $(this)).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-accordion-rows .cf7sg-collapsible').not('.cf7sg-slider-section .cf7sg-collapsible');
+        $rows = $rows.add( $('.cf7sg-accordion-rows', $(this)) );
+        var promises = [];
+        $rows.each(function(){
           var $row = $(this);
           var cssId = $row.attr('id');
           if(typeof cssId == 'undefined'){
@@ -476,7 +485,10 @@
             }
           }
           var options={
-            heightStyle: "content"
+            heightStyle: "content",
+            create: function(e){
+              $(this).trigger('sgCollapsibleRowsReady')
+            }
           };
           /** @since 3.4.0 handle accordion rows for stepped flow */
           if($row.is('.cf7sg-accordion-rows')){
@@ -495,10 +507,10 @@
           //listen for new content added to this accordion
           $row.on('sgContentIncrease', function(){
             $(this).accordion("refresh");
-          });
-        });
-      });
-      cf7Form_accordion.trigger('sgCollapsibleRowsReady')
+          })
+        })
+      })
+      // cf7Form_accordion
     }//end collapsible rows
     var $form_slider = $('div.cf7-smart-grid.has-slider form.wpcf7-form');
     $form_slider.each(function(){
@@ -707,6 +719,19 @@
     }
     return s2options;
   }
+  //toggle a collapsible section.
+  $.fn.activateCF7sgCollapsibleSection = function(activate=true){
+    var $section = $(this), $header;
+    if( !$section.is('.cf7sg-collapsible') ) return false;
+    $header = $section.children('.cf7sg-collapsible-title');
+    switch(true){
+      case ( activate && !$header.is('.ui-state-active') ):
+      case ( !activate && $header.is('.ui-state-active') ):
+        $header.trigger('click'); //toggle.
+        break;
+    }
+    return $section;
+  }
   //getCF7field function.
   $.fn.getCF7field = function(name, obj={}){
     var $form = $(this);
@@ -718,27 +743,36 @@
       if(cf7sg.debug) console.log('CF7 Smart-grid ERROR: getCF7field() using unknown form');
       return false;
     }
-    var hasTab = ('undefined' != typeof obj.tab), hasRow = ('undefined' != typeof obj.row);
+    var hasTab = ('undefined' != typeof obj.tab), hasRow = ('undefined' != typeof obj.row), $result=[];
     switch(true){
       case hasTab && obj.tab>0 && hasRow && obj.row>0: //row x on tab n.
-        return $(':input[name="'+name+'_tab-'+obj.tab+'_row-'+obj.row+'"]', $form);
-      case hasTab && obj.tab>0 && hasRow://row=0 on tab n.
-        return $(':input[name="'+name+'_tab-'+obj.tab+'"]', $form);
-      case hasTab && obj.tab>0://all rows on tab n. | single value on tab n.
-        return $(':input[name*="'+name+'_tab-'+obj.tab+'"], :input[name*="'+name+'_tab-'+obj.tab+'_row-"]', $form);
-      case hasTab://all rows of tab 0. | single value of tab 0.
-        return $(':input[name*="'+name+'_row-"], :input[name="'+name+'"]', $form);
-      case hasRow && obj.row>0 && hasTab: //row n on tab=0;
-        return $(':input[name="'+name+'_row-'+obj.row+'"]', $form);
-      case hasRow && obj.row>0: //row n on all tabs | single value on row n.
-        return $(':input[name="'+name+'_row-'+obj.row+'"],:input[name*="'+name+'_tab-"]:is(:input[name$="_row-'+obj.row+'"])', $form);
-      case hasRow://row 0 for all tabs | single value in row 0.
-        return $(':input[name="'+name+'"], :input[name$="'+name+'_tab-"]', $form);
+        $result = $(':input[name="'+name+'_tab-'+obj.tab+'_row-'+obj.row+'"]', $form);
+        break;
       case hasTab && hasRow: //field in first row on first tab
-        return $(':input[name="'+name+'"]', $form);
+        $result = $(':input[name="'+name+'"]', $form);
+        break;
+      case hasTab && obj.tab>0 && hasRow://row=0 on tab n.
+        $result = $(':input[name="'+name+'_tab-'+obj.tab+'"]', $form);
+        break;
+      case hasTab && obj.tab>0://all rows on tab n. | single value on tab n.
+        $result = $(':input[name*="'+name+'_tab-'+obj.tab+'"], :input[name*="'+name+'_tab-'+obj.tab+'_row-"]', $form);
+        break;
+      case hasTab://all rows of tab 0. | single value of tab 0.
+        $result = $(':input[name*="'+name+'_row-"], :input[name="'+name+'"]', $form);
+        break;
+      case hasRow && obj.row>0 && hasTab: //row n on tab=0;
+        $result = $(':input[name="'+name+'_row-'+obj.row+'"]', $form);
+        break;
+      case hasRow && obj.row>0: //row n on all tabs | single value on row n.
+        $result = $(':input[name="'+name+'_row-'+obj.row+'"]', $form).add($(':input[name*="'+name+'_tab-"]', $form).filter(':input[name$="_row-'+obj.row+'"]') );
+        break;
+      case hasRow://row 0 for all tabs | single value in row 0.
+        $result = $(':input[name="'+name+'"], :input[name$="'+name+'_tab-"]', $form);
+        break;
       default: //single field in form | all fields in all rows on all tabs.
-        return $(':input[name*="'+name+'"]', $form);
+        $result = $(':input[name*="'+name+'"]', $form);
     }
+    return $result.not('.cf7-sg-cloned-table-row :input');
   }
 	//datepicker for date fields
 	$.fn.setupDatePicker = function(){
@@ -781,6 +815,23 @@
 		}
 		return $date;
 	}
+  //disable add row button.
+  $.fn.toggleCF7sgTableRowAddition = function(active=false){
+    var $table = $(this);
+    if(!$table.is('.container.cf7-sg-table')) return false;
+    if(!active) $table.next('..cf7-sg-table-button').hide();
+    else $table.next('..cf7-sg-table-button').show();
+    // cf7-sg-table-footer
+    return $table;
+  }
+  // disable rown deletion
+  $.fn.toggleCF7sgTableRowDeletion = function(active=false){
+    var $table = $(this);
+    if(!$table.is('.container.cf7-sg-table')) return false;
+    if(!active) $('.row.cf7-sg-table:nth-last-child(2) .row-control', $table).css('disable','none');
+    else $('.row.cf7-sg-table:nth-last-child(2) .row-control', $table).css('disable','inline');
+    return $table;
+  }
   //clone table row
   $.fn.cf7sgCloneRow = function(initSelect){
     /*initSelect is false if called from cf7_2_post field loading script,
@@ -852,15 +903,28 @@
     if($tracker.length) $tracker.val(rowIdx+1); //rowIdx is zero based.
     return $table;
   }
+  //disable/enable tab addtion
+  $.fn.toggleCF7sgTabAddition = function(active=false){
+    var $tab = $(this);
+    if(!$tab.is('div.cf7-sg-tabs')) return false;
+    if(!active) $('.cf7sg-add-tab', $tab).hide();
+    else $('.cf7sg-add-tab', $tab).show();
+  }
+  //disable/enable tab deletion
+  $.fn.toggleCF7sgTabDeletion = function(active=false){
+    var $tab = $(this);
+    if(!$tab.is('div.cf7-sg-tabs')) return false;
+    if(!active) $('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab', $tab).hide();
+    else $('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab', $tab).show();
+  }
   //clone tabs, called on a div.cf7-sg-tabs
-  $.fn.cf7sgCloneTab = function(initSelect){
+  $.fn.cf7sgCloneTab = function(initSelect, human=false){
     var $tab = $(this);
     if(typeof initSelect === 'undefined') initSelect =true;
     /*initSelect is false if called from cf7_2_post field loading script,
     else if true whehn triggered from the front-end user event.*/
-    if(!$tab.is('div.cf7-sg-tabs')){
-      return $tab;
-    }
+    if(!$tab.is('div.cf7-sg-tabs')) return false;
+
     var $tabList = $tab.children('.cf7-sg-tabs-list');
     var tabCount = $tabList.children('li').length + 1;
     var firstTabId  = $tab.children('.cf7-sg-tabs-panel').first().attr('id');
@@ -957,6 +1021,9 @@
         heightStyle: "content",
         activate: function(event, ui){
           $(this).trigger('sgContentIncrease');
+        },
+        create: function(e){
+          $(this).trigger('sgCollapsibleRowsReady')
         }
       });
       if(!toggled && initSelect){
@@ -970,7 +1037,8 @@
 
 
     $tab.tabs( "refresh" );
-    $tab.tabs( "option", "active", -1 );
+    //if this was from a click, human user, then activate the tab.
+    if(human) $tab.tabs( "option", "active", -1 );
     /** @since 1.2.2 */
     //trigger new tab event for custom js.
     $newPanel.trigger('sgTabAdded',tabCount);

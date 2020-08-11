@@ -271,6 +271,7 @@
           cm.setValue($text.text());
           cm.setOption("mode", mode);
           cm.setSize("100%");
+          $cm.on('cf7sg-screen-resize',function(){cm.refresh()});
           $cm.removeClass('display-none').beautify();
 
           if(theme.user.length>0) cm.setOption('theme',theme.user);
@@ -436,6 +437,8 @@
       const $this = $(this);
       $( window ).off( 'beforeunload' ); //remove event to stop cf7 script from warning on save
       event.preventDefault(); //this will prevent the default submit
+      //close any open UI fields.
+      $('.cf7-field-inner :input:visible').closeUIfield();
       let $embdedForms = '',$formNoEmbeds = '', codeMirror ='';
       if('#cf7-editor-grid' == gridTab){ //set up the code in the cf7 textarea
         const $txta = $('textarea#wpcf7-form');

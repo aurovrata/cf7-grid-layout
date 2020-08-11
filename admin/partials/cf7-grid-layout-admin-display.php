@@ -43,9 +43,22 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgRowDeleted', '.container.cf7-
 });" href="javascript:void(0);"><?=__('row removed','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Function: ','cf7-grid-layout')?>
-        <a class="helper" data-cf72post="/* function to programmatically add a row to a table if fields. */
-//call this function once the table is ready.
-$table.cf7sgCloneRow(); //adds an extra row, and fires a row added event." href="javascript:void(0);"><?=__('add a row','cf7-grid-layout')?></a>
+        <a class="helper" data-cf72post="//call this function once the table is ready.
+//$table is the table sectoin jquery object.
+//adds an extra row, and fires a row added event.
+$table.cf7sgCloneRow(); /* function to programmatically add a row to a table if fields. */" href="javascript:void(0);"><?=__('add a row','cf7-grid-layout')?></a>
+      </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper" data-cf72post="//call this function once the table is ready.
+//$table is the table sectoin jquery object.
+//pass false to hide the button, true to enable the button.
+$table.toggleCF7sgTableRowAddition(false); /* hide/show row addition button. */" href="javascript:void(0);"><?=__('toggle add button','cf7-grid-layout')?></a>
+      </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper" data-cf72post="//call this function once the table is ready.
+//$table is the table sectoin jquery object.
+//pass false to hide the button, true to enable the button.
+$table.toggleCF7sgTableRowDeletion(false); /* hide/show row deletion button. */" href="javascript:void(0);"><?=__('toggle delete button','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>
@@ -79,6 +92,18 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabRemoved', '.cf7-sg-tabs', 
 //adds an extra tab, and fires a tab added event.
 $tabs.cf7sgCloneTab(); /* function to programmatically add a tab. */" href="javascript:void(0);"><?=__('add a tab','cf7-grid-layout')?></a>
       </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper" data-cf72post="
+//call this function once the tabs are ready.
+//to disable the tab addition pass false, to enable it pass true.
+$tabs.toggleCF7sgTabAddition(false); /* disable/enable tab addition. */" href="javascript:void(0);"><?=__('toggle add button','cf7-grid-layout')?></a>
+      </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper" data-cf72post="
+//call this function once the tabs are ready.
+//to disable the tab deletion pass false, to enable it pass true.
+$tabs.toggleCF7sgTabDeletion(false); /* disable/enable tab deletion. */" href="javascript:void(0);"><?=__('toggle delete button','cf7-grid-layout')?></a>
+      </li>
     </ul>
   </li>
   <li id="collapsible-events" class="display-none"><?=__('Collapsible rows','cf7-grid-layout')?><span>&gt;</span>
@@ -86,11 +111,11 @@ $tabs.cf7sgCloneTab(); /* function to programmatically add a tab. */" href="java
       <li><?= __('Event: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="/* event fired once the collapsible rows (accordion/toggle/sections) have been initialised */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgCollapsibleRowsReady', function(e){
-  let $form = $(this), $row = $(e.target);
+  let $form = $(this), $section = $(e.target);
 });" href="javascript:void(0);"><?=__('section ready','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Event: ','cf7-grid-layout')?>
-        <a class="helper" data-cf72post="/* event fired when a collapsible row (accordion/toggle/section) is activated, click to insert helper code into your js file. */
+        <a class="helper" data-cf72post="/* event fired when a collapsible section (accordion/toggle/section) is activated, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'accordionactivate', function(e, ui){
   //this event is fired if the section is either closed or opened.
   //for single collapsed sections,
@@ -99,12 +124,12 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'accordionactivate', function(e,
   //for accordion with multile rows,
   //  ui.oldPanel is the previous panel (else empty if first actiation), ui.newPanel is the current opened panel.
   //see https://api.jqueryui.com/accordion/#event-activate for more details.
-  let $form = $(this), $row = $(e.target);
+  let $form = $(this), $section = $(e.target);
   switch(true){
-    case $row.is('.with-toggle'):
+    case $section.is('.with-toggle'):
       //this is a toggled section, identify it by its CSS id $this.attr('id').
       break;
-    case $row.is('.cf7sg-accordion-rows'):
+    case $section.is('.cf7sg-accordion-rows'):
       //this is an accordion with multiple collapsible sections, identify it by its CSS id $this.attr('id')
       break;
     default: //this is a single collapsible section.
@@ -112,6 +137,12 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'accordionactivate', function(e,
       break;
     }
 });" href="javascript:void(0);"><?=__('section activated','cf7-grid-layout')?></a>
+      </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper all-fields" data-cf72post="
+  // $form is the collapsible section jquery object.
+  // you can either pass true (open, activate), or false (close) to the function.
+  $section.activateCF7sgCollapsibleSection(true);/* toggle open/close a collapsible section. */" href="javascript:void(0);"><?=__('open/close section','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>
