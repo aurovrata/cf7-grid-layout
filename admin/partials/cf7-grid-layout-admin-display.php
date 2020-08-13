@@ -25,21 +25,25 @@ let $form = $(this); //$jquery form object.
       <li><?= __('Event: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTableReady', '.container.cf7-sg-table', function(e){
 /* event fired once a table has been initialised, click to insert helper code into your js file. */
-let $form = $(this), $table = $(e.target);
+let $form = $(e.delegateTarget), $table = $(e.target);
 });" href="javascript:void(0);"><?=__('table ready','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Event: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgRowAdded', '.container.cf7-sg-table', function(e){
 /* event fired when a table row has been added, click to insert helper code into your js file. */
-let $form = $(this), $table = $(e.target);
+//$form current form jquery object.
+//$table table jquery object to which the new row was added.
+//$row newly added row jquery object.
+//rIdx row index (zero based).
+let $form = $(e.delegateTarget), $table = $(e.target), rIdx = e['row'], $row= $table.find('.row[data-row='+rIdx+']');
 });" href="javascript:void(0);"><?=__('row added','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Event: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="/* event fired when a table row has been deleted, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgRowDeleted', '.container.cf7-sg-table', function(e){
   //$form current form jquery object.
-  //table jquery object.
-  let $form = $(this), $table = $(e.target);
+  //$table table jquery object.
+  let $form = $(e.delegateTarget), $table = $(e.target);
 });" href="javascript:void(0);"><?=__('row removed','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Function: ','cf7-grid-layout')?>
@@ -76,13 +80,16 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabsReady', function(e){
         <a class="helper" data-cf72post="/* event fired when a new tab is added, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabAdded', '.cf7-sg-tabs-panel', function(e){
   //$form current form jquery object.
-  //$tabs tabs jquery object.
-  let $form = $(this), $tabs = $(e.target);
+  //$panel newly added panel jquery object.
+  //$panel.attr('id') == <initial-id>-<tIdx> where tab index (tIdx) is greater than 0.
+  let $form = $(this), $panel = $(e.target), tIdx = e['tab-index'];
 });" href="javascript:void(0);"><?=__('tab added','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Event: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="/* event fired when a new tab is removed, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabRemoved', '.cf7-sg-tabs', function(e){
+  //$form current form jquery object.
+  //$tabs tab jquery object from which the panel was removed.
   let $form = $(this), $tabs = $(e.target);
 });" href="javascript:void(0);"><?=__('tab removed','cf7-grid-layout')?></a>
       </li>

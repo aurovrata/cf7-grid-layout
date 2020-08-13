@@ -201,7 +201,7 @@ ul.cf7-sg-tabs-list {
     width: 5px;
     display:none;
 }
-.row.cf7-sg-table:nth-last-child(2) .row-control {
+.row.cf7-sg-table:nth-last-child(2) .row-control:not(.display-none) {
     display: inline;
 }
 .row.cf7-sg-table .row-control .dashicons {

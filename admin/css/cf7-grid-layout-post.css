@@ -609,3 +609,4 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 [data-search="li.cf7sg-tag-all,li.cf7sg-tag-dynamic_select,li.cf7sg-tag-dynamic_select-filter"] + .helper-popup {
     min-width: 300px;
 }
+body.disable-scroll{overflow:hidden;}

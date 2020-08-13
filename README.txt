@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, responsive forms, form maker, form builder
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.4
+Tested up to: 5.5
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -335,6 +335,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * added 'cf7sg_remove_table_row_labels' filter to remove labels in table rows.
 * added 'cf7sg_admin_form_editor_jstags_other_items' for plugin developer.
 * added 'cf7sg_admin_form_editor_jstags_last_item' for plugin developers.
+* enabled javascript helper codes on js editor.
+* added js functionality to further customise tables and tab structures.
+* fixed table id attributes in tabbed sections.
 = 3.3.3 =
 * fix really simple captcha bug.
 * fix cf7 5.2 missing hidden fields in submitted data.

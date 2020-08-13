@@ -51,7 +51,6 @@
     cme.setValue($wpcf7Editor.text());
     cme.setSize("100%");
     // cme.setOption('viewportMargin',Infinity);
-
     $wpcf7Editor.on('grid-ready', function(){ //------ setup the codemirror editor
       //codemirror editor
       CodeMirror.defineMode("shortcode", function(config, parserConfig) {
@@ -108,7 +107,8 @@
 
         $('#contact-form-editor').trigger('cf7sg-form-change');
       });
-
+      //toogle body scroll off/on
+      function toggleBodyScroll(){$('body').toggleClass('disable-scroll')}
       //create tabs
       $editorTabs.tabs({
         beforeActivate: function (event, ui){
@@ -148,6 +148,8 @@
           $bottomTags.show();
           $jsTags.hide();
           $optionals.hide();
+          $(window).scrollTop($('#form-panel').offset().top);
+
           switch(gridTab){
             case '#cf7-editor-grid': //grid editor.
               $optionals.show();
@@ -171,10 +173,10 @@
 
               $codemirror.beautify(cursor);
 
-              if($grid.children('.container').length>0){
-                const scrollPos = $('#form-panel').offset().top;
-                $(window).scrollTop(scrollPos);
-              }
+              // if($grid.children('.container').length>0){
+              //   const scrollPos = $('#form-panel').offset().top;
+              //   $(window).scrollTop(scrollPos);
+              // }
               break;
             case '#cf7-js-codemirror': //js editor.
               $topTags.hide();
@@ -214,14 +216,16 @@
                   }
                 }
               });
-
-              $(window).scrollTop($('#form-panel').offset().top);
               break;
             case '#cf7-css-codemirror': //css editor.
               $topTags.hide();
               $bottomTags.hide();
               break;
           }
+        },
+        create: function(e){
+          // $(window).scrollTop($('#meta-box-main-cf7-editor').offset().top);
+          $('#form-editor-tabs .ui-tabs-panel:not(#cf7-editor-grid)').hover(toggleBodyScroll);
         }
       });
       /** @since 4.0 js cm editor */
@@ -272,6 +276,7 @@
           cm.setOption("mode", mode);
           cm.setSize("100%");
           $cm.on('cf7sg-screen-resize',function(){cm.refresh()});
+          $cm.hover(toggleBodyScroll);
           $cm.removeClass('display-none').beautify();
 
           if(theme.user.length>0) cm.setOption('theme',theme.user);
@@ -415,7 +420,9 @@
             break;
         }
         jscme.replaceSelection(helper);
+        line = jscme.getCursor().line;
         $jsCodemirror.beautify();
+        jscme.setCursor({'line':line,'ch':line.length});
       });
       /*@since 1.1.1 disable grid editor for existing cf7 forms*/
       if(0==$grid.children('.container').length){

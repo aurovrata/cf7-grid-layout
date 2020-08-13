@@ -78,16 +78,16 @@
         //add controls to the row to delete
         $row.append('<span class="row-control"><span class="dashicons dashicons-no-alt"></span></span>');
         //trigger table ready event for custom scripts to change the button text
-        $table.trigger('sgTableReady');
+        $table.trigger({type:'sgTableReady', 'table-id':$table.attr('id')});
 
       });
       //event delegation on table buttons
-      $cf7Form_table.click('.container', function(event){
-        var $button = $(event.target);
+      $cf7Form_table.click('.container', function(e){
+        var $button = $(e.target);
         if( $button.is('div.cf7-sg-table-button a') ){ //----------add a row
           $button = $button.parent();
           /** @since 2.8.0 */
-          if($button.hasClass('disabled')) return false;
+          if($button.hasClass('disabled')) return;
 
           var $table = $button.prev('.container');
           if($table.is('.cf7-sg-table-footer')) $table = $table.prev('.container');
@@ -149,15 +149,15 @@
         var form = $(this);
         var toggled_accordion = $('.cf7sg-collapsible.with-toggle', form);
         //event delegation on the header click to sync the toggle state
-        form.on('click','.cf7sg-collapsible.with-toggle', function(event){
+        form.on('click','.cf7sg-collapsible.with-toggle', function(e){
           var $header;
-          var $target =  $(event.target);
+          var $target =  $(e.target);
           if($target.is('span.cf7sg-title.toggled') || $target.is('.toggle-on') || $target.is('.toggle-off') ){
             $header = $target.closest('.cf7sg-collapsible-title');
           }else if($target.parent().is('.cf7sg-collapsible.with-toggle') ){
             $header = $target;
           }else{
-            return false;
+            return;
           }
           var id = $header.closest('.container.cf7sg-collapsible').attr('id');
           /**
@@ -325,6 +325,32 @@
     var $cf7Form_tabs = $('div.cf7-smart-grid.has-tabs form.wpcf7-form');
     if($cf7Form_tabs.length){
       cf7sgPanels = {}; //object to store cloned panels
+      //delegate tab addition/deletion
+      $cf7Form_tabs.click('ul.ui-tabs-nav li', function(e){
+        var $target = $(e.target);
+        var $container = $target.closest('.cf7-sg-tabs');
+        if($target.is('.cf7sg-close-tab')){ //---------------------- close/delete tab.
+          var panelId = $target.siblings('a').attr('href');
+          var activate = false;
+          $container.children('div'+panelId).remove(); //remove panel
+          if($target.closest('li').remove().is('.ui-state-active')){ //remove tab
+            activate = true;
+            $container.trigger('sgTabRemoved');
+          }
+          //show last close button
+          var $lastClose = $container.find('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab:not(.display-none)');
+          if($lastClose.length > 0) $lastClose.show();
+          if(activate){
+            $container.tabs({active:0}); //activate the last tab
+          }
+          /** @since 2.4.2 udpate the tracker field*/
+          var $tracker = $container.children('.cf7sg-tracker-field');
+          if($tracker) $tracker.val($container.children('.cf7-sg-tabs-panel').length);
+        }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab.
+          //add a new tab
+          $container.cf7sgCloneTab(true,true);
+        }
+      });
       $( ".cf7-sg-tabs",  $cf7Form_tabs).each(function(){
         var $this = $(this);
         //add a button to create more tabs
@@ -358,34 +384,7 @@
         }
         //create tab.
         $this.tabs( {create: function(e){$(this).trigger('sgTabsReady')}} );
-      });//.delay(200).trigger('sgTabsReady');//trigger tabs ready event
-      // $cf7Form_tabs
-      //delegate tab addition/deletion
-      $cf7Form_tabs.click('ul.ui-tabs-nav li', function(event){
-        var $target = $(event.target);
-        var $container = $target.closest('.cf7-sg-tabs');
-        if($target.is('.cf7sg-close-tab')){ //---------------------- close/delete tab.
-          var panelId = $target.siblings('a').attr('href');
-          var activate = false;
-          $container.children('div'+panelId).remove(); //remove panel
-          if($target.closest('li').remove().is('.ui-state-active')){ //remove tab
-            activate = true;
-            $container.trigger('sgTabRemoved');
-          }
-          //show last close button
-          var $lastClose = $container.find('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab');
-          if($lastClose.length > 0) $lastClose.show();
-          if(activate){
-            $container.tabs({active:0}); //activate the last tab
-          }
-          /** @since 2.4.2 udpate the tracker field*/
-          var $tracker = $container.children('.cf7sg-tracker-field');
-          if($tracker) $tracker.val($container.children('.cf7-sg-tabs-panel').length);
-        }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab.
-          //add a new tab
-          $container.cf7sgCloneTab(true,true);
-        }
-      });
+      })
     }
     //enable jquery-ui select menu, any forms.
     var cf7Form_niceSelect = $('div.cf7-smart-grid.has-nice-select form.wpcf7-form');
@@ -605,7 +604,7 @@
               break;
           }
         });
-        $sliderContainer.on('sgRowAdded sgRowDeleted',function(event, row){
+        $sliderContainer.on('sgRowAdded sgRowDeleted',function(e){
           $slider.refresh();
         });
       })
@@ -670,12 +669,12 @@
     /** enable max rows.
     * @since 2.8.0
     */
-    $('div.cf7-smart-grid').on('sgRowAdded', '.container.cf7-sg-table',function(event, row){
+    $('div.cf7-smart-grid').on('sgRowAdded', '.container.cf7-sg-table',function(e){
       var max, msg, $table = $(this);
       max = $table.data('max');
-      if('undefined' == typeof max || max == false) return false;
+      if('undefined' == typeof max || max == false) return;
       max--;
-      if(max==row){
+      if(max==e['row']){
         msg = '<span class="max-limit wpcf7-not-valid-tip">'+cf7sg.max_table_rows+'</span>';
         $table.next('.cf7-sg-table-button').addClass('disabled').prepend(msg);
       }
@@ -683,7 +682,7 @@
     $('div.cf7-smart-grid').on('sgRowDeleted', '.container.cf7-sg-table',function(event){
       var max, row, $table = $(this);
       max = $table.data('max');
-      if('undefined' == typeof max || max == false) return false;
+      if('undefined' == typeof max || max == false) return;
       $table.next('.cf7-sg-table-button').removeClass('disabled').children('.max-limit').remove();
     });
   }); //end on document ready().
@@ -818,8 +817,8 @@
   $.fn.toggleCF7sgTableRowAddition = function(active=false){
     var $table = $(this);
     if(!$table.is('.container.cf7-sg-table')) return false;
-    if(!active) $table.next('..cf7-sg-table-button').hide();
-    else $table.next('..cf7-sg-table-button').show();
+    if(!active) $table.next('.cf7-sg-table-button').hide();
+    else $table.next('.cf7-sg-table-button').show();
     // cf7-sg-table-footer
     return $table;
   }
@@ -827,8 +826,8 @@
   $.fn.toggleCF7sgTableRowDeletion = function(active=false){
     var $table = $(this);
     if(!$table.is('.container.cf7-sg-table')) return false;
-    if(!active) $('.row.cf7-sg-table:nth-last-child(2) .row-control', $table).css('disable','none');
-    else $('.row.cf7-sg-table:nth-last-child(2) .row-control', $table).css('disable','inline');
+    if(!active) $('.row.cf7-sg-table:nth-last-child(2) .row-control', $table).addClass('display-none');
+    else $('.row.cf7-sg-table:nth-last-child(2) .row-control', $table).removeClass('display-none');
     return $table;
   }
   //clone table row
@@ -913,8 +912,8 @@
   $.fn.toggleCF7sgTabDeletion = function(active=false){
     var $tab = $(this);
     if(!$tab.is('div.cf7-sg-tabs')) return false;
-    if(!active) $('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab', $tab).hide();
-    else $('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab', $tab).show();
+    if(!active) $('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab', $tab).addClass('display-none').hide();
+    else $('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab', $tab).removeClass('display-none').show();
   }
   //clone tabs, called on a div.cf7-sg-tabs
   $.fn.cf7sgCloneTab = function(initSelect, human=false){
@@ -1040,7 +1039,13 @@
     if(human) $tab.tabs( "option", "active", -1 );
     /** @since 1.2.2 */
     //trigger new tab event for custom js.
-    $newPanel.trigger('sgTabAdded',tabCount);
+    $newPanel.trigger({type:'sgTabAdded','tab-index':tabCount-1});
+    //trigger new table ready.
+    $('.cf7-sg-table.container', $newPanel).each(function(){
+      var $table = $(this), orgid = $table.attr('id');
+      $table.attr('id',orgid+'_tab-'+(tabCount-1));
+      $table.trigger({type:'sgTableReady', 'table-id':orgid,'tab-index':tabCount-1});
+    });
     /** @since 2.4.2 track tabs and their fields.*/
     //increment tab count tacker.
     var $tracker = $tab.children('.cf7sg-tracker-field');

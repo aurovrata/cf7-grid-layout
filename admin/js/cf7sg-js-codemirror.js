@@ -55,7 +55,6 @@ cme is instantiated as a global variable
       }
     }
     beautifyEditor();
-
     cme.on('changes', function(e){
       codemirrorUpdated = false;
       if(cme.getValue().length>0){
