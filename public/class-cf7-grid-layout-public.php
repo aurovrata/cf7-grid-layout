@@ -347,7 +347,7 @@ class Cf7_Grid_Layout_Public {
     wp_enqueue_style($this->plugin_name);
     wp_enqueue_script($this->plugin_name);
     /** @since 2.6.0 disabled button message*/
-    $form = wpcf7_get_current_contact_form();
+    $form = WPCF7_ContactForm::get_instance($cf7post);
     $messages = $form->prop('messages');
     $this->localised_data = array(
       'url' => admin_url( 'admin-ajax.php' ),
@@ -388,7 +388,7 @@ class Cf7_Grid_Layout_Public {
         //check form saved date, if sub-form is newer, we need to udpate it.
         if(strtotime($post_obj->post_modified ) > $form_time){
           if(empty($cf7_form)){
-            $cf7_form = wpcf7_contact_form($cf7_id);
+            $form = WPCF7_ContactForm::get_instance($cf7_id);
             $form_raw = $cf7_form->prop( 'form' );
           }
           $form_raw = $this->update_sub_form($form_raw, $post_obj);
