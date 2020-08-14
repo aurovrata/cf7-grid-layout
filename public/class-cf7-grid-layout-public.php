@@ -1529,7 +1529,7 @@ class Cf7_Grid_Layout_Public {
   public function filter_table_tab_mail_tag($replaced, $submitted, $html=false, $mail_tag=null ){
     $cf7form = WPCF7_ContactForm::get_current();
     $cf7form_key = get_cf7form_key($cf7form->id());
-    $submitted_cf7 = WPCF7_Submission::get_instance();
+    $submitted_cf7 = WPCF7_Submission::get_instance($cf7form);
     $submitted_data = $submitted_cf7->get_posted_data();
 
     if(empty($mail_tag)) return $replaced;
