@@ -773,6 +773,12 @@ class Cf7_Grid_Layout_Admin {
       }else $sanitised_toggled_fields[] = sanitize_text_field($tgg_field);
   	}
     update_post_meta($post_id, '_cf7sg_grid_toggled_names', $sanitised_toggled_fields);
+    /** @since 4.0.0 track tabbed toggles */
+    $ttgls = json_decode(stripslashes($_POST['cf7sg-tabbed-toggles']));
+    if(empty($ttgls)) $ttgls = array();
+    if(!is_array($ttgls)) $ttgls = array($ttgls);
+    update_post_meta($post_id, '_cf7sg_grid_tabbed_toggles', $ttgls);
+    debug_msg($ttgls, '_cf7sg_grid_tabbed_toggles ');
     //flag tab & tables for more efficient front-end display.
     $has_tabs =  ( 'true' === $_POST['cf7sg-has-tabs']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tabs', $has_tabs);

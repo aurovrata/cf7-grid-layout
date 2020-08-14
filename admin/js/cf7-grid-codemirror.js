@@ -529,11 +529,11 @@
       * Track toggled fields to see if they are submitted or not.
       * @since 2.5 */
 
-      const toggledFields = [];
+      const toggledFields = [], tabbedToggles=[];
       $('.container.cf7sg-collapsible.with-toggle', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        const unique = $(this).attr('id'),
-          fields = {}, search = $(this).html();
+        const $toggle = $(this), unique = $toggle.attr('id'),
+          fields = {}, search = $toggle.html();
         fields[unique]=[];
 
         let match = cf7TagRegexp.exec(search);
@@ -544,6 +544,8 @@
           match = cf7TagRegexp.exec(search); //get the next match.
         }
         toggledFields[toggledFields.length] = fields;
+        /** @since 4.0.0 differentiate toggles in tabed sections.*/
+        if($toggle.is('.cf7-sg-tabs .cf7sg-collapsible')) tabbedToggles[tabbedToggles.length]=unique;
         hasToggles = true;
       });
       //append hidden fields
@@ -562,6 +564,7 @@
       $('#cf7sg-tabs-fields').val(JSON.stringify(tabFields));
       $('#cf7sg-table-fields').val(JSON.stringify(tableFields));
       $('#cf7sg-toggle-fields').val(JSON.stringify(toggledFields));
+      $('#cf7sg-tabbed-toggles').val(JSON.stringify(tabbedToggles));
       /** @since 4.0 enable js/css */
       $jstext.text('');//empty.
       codeMirror = jscme.getValue();

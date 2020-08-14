@@ -325,6 +325,7 @@ $field.cf7sgWarning(message, timeout); /* function to display a dismissible fiel
 <input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />
 <input type="hidden" value="" id="cf7sg-table-fields" name="cf7sg-table-fields" />
 <input type="hidden" value="" id="cf7sg-toggle-fields" name="cf7sg-toggle-fields" />
+<input type="hidden" value="" id="cf7sg-tabbed-toggles" name="cf7sg-tabbed-toggles" />
 <div id="bottom-tags">
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();

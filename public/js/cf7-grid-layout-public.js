@@ -22,12 +22,12 @@
 
   $(document).ready( function(){
     //click delegation for warning windows
-    $('form.wpcf7-form').on('click','.confirm-button', function(event){
-      var $target = $(event.target);
+    $('form.wpcf7-form').on('click','.confirm-button', function(e){
+      var $target = $(e.target);
       if($target.is('.cf7sg-validation-warning .confirm-button')){
         $target.parent().remove();
       }
-    })
+    });
     //.cf7-sg-table structure, smart grid only.
     var $cf7Form_table = $('div.cf7-smart-grid.has-table form.wpcf7-form');
     if($cf7Form_table.length){
@@ -78,8 +78,9 @@
         //add controls to the row to delete
         $row.append('<span class="row-control"><span class="dashicons dashicons-no-alt"></span></span>');
         //trigger table ready event for custom scripts to change the button text
-        $table.trigger({type:'sgTableReady', 'table-id':$table.attr('id')});
-
+        $cf7Form_table.on('cf7SmartGridReady', function(e){
+          $table.trigger({type:'sgTableReady', 'table-id':$table.attr('id')});
+        })
       });
       //event delegation on table buttons
       $cf7Form_table.click('.container', function(e){
@@ -146,10 +147,10 @@
     if(cf7Form_accordion.length>0){
       //enable the toggle buttons
       cf7Form_accordion.filter('div.has-toggles form.wpcf7-form').each(function(){
-        var form = $(this);
-        var toggled_accordion = $('.cf7sg-collapsible.with-toggle', form);
+        var $form = $(this);
+        var toggled_accordion = $('.cf7sg-collapsible.with-toggle', $form);
         //event delegation on the header click to sync the toggle state
-        form.on('click','.cf7sg-collapsible.with-toggle', function(e){
+        $form.on('click','.cf7sg-collapsible.with-toggle', function(e){
           var $header;
           var $target =  $(e.target);
           if($target.is('span.cf7sg-title.toggled') || $target.is('.toggle-on') || $target.is('.toggle-off') ){
@@ -164,7 +165,7 @@
           * @since 1.1.0 track toggle status using toggle ids.
           */
           var toggleStatus = '';
-          var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $(this));
+          var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $form);
           var trackToggle = false;
           if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
             if($toggleHiddenStatus.val().length>0){
@@ -175,7 +176,7 @@
           //close other toggled sections if we have a group.
           var group = $header.parent().data('group');
           if(group){
-            $('.cf7sg-collapsible.with-toggle[data-group="'+group+'"]', form).each(function(){
+            $('.cf7sg-collapsible.with-toggle[data-group="'+group+'"]', $form).each(function(){
               var $toggled = $(this);
               var cid = $toggled.attr('id');
               if(id === cid) return; //current toggle.
@@ -217,13 +218,13 @@
         });//end for toggle click delegation
 
         toggled_accordion.each(function(){
-          var $button = $(this);
-          var cssId = $button.attr('id');
+          var $section = $(this);
+          var cssId = $section.attr('id');
           if(typeof cssId == 'undefined'){
             cssId = randString(6);
-            $button.attr('id', cssId); //assign a random id
+            $section.attr('id', cssId); //assign a random id
           }
-          var state = $button.data('open');
+          var state = $section.data('open');
           var toggled = false;
           if(typeof state == 'undefined'){
             state = false;
@@ -238,14 +239,14 @@
           /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
           *@since 1.1.0
           */
-          var $cf72post = form.closest('div.cf7_2_post');
+          var $cf72post = $form.closest('div.cf7_2_post');
           if( 0 == $cf72post.length){ //disable the input fields in toggled sections.
             if(!toggled){ //disable fields within a closed toggled section.
-              $(':input', $(this).children('.row')).prop('disabled', true);
+              $(':input', $section.children('.row')).prop('disabled', true);
             }
           }//else deal with toggled fields once cf72post plugin has pre-filled sections.
           //setup the toggle button
-          $button.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled);
+          $section.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled);
           //enable the accordion
           $('#'+cssId).accordion({
             collapsible:true,
@@ -273,8 +274,8 @@
       //now enable the other collapsible rows
       cf7Form_accordion.each(function(){
         /** @since 3.4.0 differentiate accordion of collapsible rows*/
-        var $rows = $('.cf7sg-collapsible', $(this)).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-accordion-rows .cf7sg-collapsible').not('.cf7sg-slider-section .cf7sg-collapsible');
-        $rows = $rows.add( $('.cf7sg-accordion-rows', $(this)) );
+        var $form = $(this),$rows = $('.cf7sg-collapsible', $form).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-accordion-rows .cf7sg-collapsible').not('.cf7sg-slider-section .cf7sg-collapsible');
+        $rows = $rows.add( $('.cf7sg-accordion-rows', $form) );
         var promises = [];
         $rows.each(function(){
           var $row = $(this);
@@ -296,7 +297,7 @@
           var options={
             heightStyle: "content",
             create: function(e){
-              $(this).trigger({type:'sgCollapsibleRowsReady','section-id':cssId});
+              $(this).trigger({type:'sgCollapsibleRowsReady','section-id':cssId})
             }
           };
           /** @since 3.4.0 handle accordion rows for stepped flow */
@@ -383,7 +384,7 @@
           cf7sgPanels[$panel.attr('id')] = $clonedP.html();
         }
         //create tab.
-        $this.tabs( {create: function(e){$(this).trigger('sgTabsReady')}} );
+        $this.tabs( {create: function(e){$(this).trigger('sgTabsReady')} } );
       })
     }
     //enable jquery-ui select menu, any forms.
@@ -415,7 +416,9 @@
         $('.wpcf7-form-control.nice-select:enabled', $form).each(function(){
           $(this).niceSelect();
         });
-        $form.trigger('sgNiceSelect');
+        $form.on('cf7SmartGridReady', function(e){
+          $form.trigger('sgNiceSelect')
+        })
       });
     }
     //enabled select2 dropdowns any forms.
@@ -445,7 +448,9 @@
           $select2.select2($select2.cf7sgSelect2Options());
 
         });
-        $this.trigger('sgSelect2');
+        $form.on('cf7SmartGridReady', function(e){
+          $this.trigger('sgSelect2')
+        })
       });
     }
 		//enable datepicker
