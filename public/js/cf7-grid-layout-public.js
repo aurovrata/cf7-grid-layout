@@ -399,7 +399,7 @@
           * @since 1.1.0 track toggle status using toggle ids.
           */
           var toggleStatus = '';
-          var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $(this));
+          var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', form);
           var trackToggle = false;
           if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
             if($toggleHiddenStatus.val().length>0){
