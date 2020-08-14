@@ -1529,8 +1529,6 @@ class Cf7_Grid_Layout_Public {
   public function filter_table_tab_mail_tag($replaced, $submitted, $html=false, $mail_tag=null ){
     $cf7form = WPCF7_ContactForm::get_current();
     $cf7form_key = get_cf7form_key($cf7form->id());
-    $submitted_cf7 = WPCF7_Submission::get_instance($cf7form);
-    $submitted_data = $submitted_cf7->get_posted_data();
 
     if(empty($mail_tag)) return $replaced;
     $field_type = self::field_type($mail_tag->field_name(), $cf7form->id());
@@ -1589,6 +1587,8 @@ class Cf7_Grid_Layout_Public {
         break;
       default: //general fix for cf7 mail tags.
         $tag = $mail_tag->corresponding_form_tag();
+        $submitted_cf7 = WPCF7_Submission::get_instance();
+        $submitted_data = $submitted_cf7->get_posted_data();
         /**
         * Filter the value inserted in the mail tag.
         * @since 2.9.0.
