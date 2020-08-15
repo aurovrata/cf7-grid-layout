@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, responsive forms, form maker, form builder
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.4
+Tested up to: 5.5
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -326,6 +326,13 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 3.3.6 =
+* fix null cf7 form object.
+* bypass cf7 5.2 data consolidation.
+= 3.3.5 =
+* fix array field submission.
+= 3.3.4 =
+* fix multiselect array field.
 = 3.3.3 =
 * fix really simple captcha bug.
 * fix missing hidden fields in CF7 v5.2.
