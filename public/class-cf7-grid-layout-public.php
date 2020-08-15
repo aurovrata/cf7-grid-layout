@@ -165,7 +165,12 @@ class Cf7_Grid_Layout_Public {
   *@return boolean was the toggle section inside a tabbed section.
   */
   protected function is_tabbed($toggle){
-    return isset(self::$array_tabbed_toggles[$this->form_id][$toggle]);
+    /* if the array is not set for this form_id,
+    * then it is because the form is an older version and
+    * should return true for backward compatibility */
+    if(isset(self::$array_tabbed_toggles[$this->form_id])){
+      return isset(self::$array_tabbed_toggles[$this->form_id][$toggle]);
+    }else return true;
   }
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
@@ -703,8 +708,6 @@ class Cf7_Grid_Layout_Public {
           break;
       }
     }
-    debug_msg($_POST,'submitted ');
-    debug_msg($data, 'consolidated ');
     return $data;
   }
   /**
@@ -873,9 +876,11 @@ class Cf7_Grid_Layout_Public {
           foreach($pfields as $field) self::$array_toggle_fields[$form_id][$field]=$panel;
         }
       }
-      if(version_compare($_POST['_cf7sg_version'],'4.0.0','>=')){
+      if(version_compare($_POST['_cf7sg_version'],'4.0.0','>=')){ //track tabbed toggles.
         $tabtgls = get_post_meta($form_id, '_cf7sg_grid_tabbed_toggles', true);
-        self::$array_tabbed_toggles[$form_id]=array_fill_keys($tabtgls,true);
+        if(!empty($tabtgls)) $tabtgls = array_fill_keys($tabtgls,true);
+        else $tabtgls = array();
+        self::$array_tabbed_toggles[$form_id]=$tabtgls;
       }
     }
 		return $grid_fields;

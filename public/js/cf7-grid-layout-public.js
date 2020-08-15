@@ -174,13 +174,14 @@
             trackToggle = true;
           }
           //close other toggled sections if we have a group.
-          var group = $header.parent().data('group');
+          var group = $header.parent().removeClass('collapsed').data('group');
           if(group){
             $('.cf7sg-collapsible.with-toggle[data-group="'+group+'"]', $form).each(function(){
               var $toggled = $(this);
               var cid = $toggled.attr('id');
               if(id === cid) return; //current toggle.
               if(0===$toggled.accordion('option','active')){
+                $toggled.addClass('collapsed');
                 $toggled.accordion('option','active',false);
                 $('.toggle', $toggled).data('toggles').toggle(false);
                 $('.row.ui-accordion-content :input', $toggled).prop('disabled', true);
@@ -196,7 +197,9 @@
           }
           if( $header.hasClass('ui-state-active') ){
             toggleSwitch.toggle(true);
-            $('.row.ui-accordion-content :input', $header.parent()).not('.cf7-sg-cloned-table-row :input').prop('disabled', false);
+            //enable input fields and convert to niceselect.
+            $('.row.ui-accordion-content :input', $header.parent()).not('.cf7-sg-cloned-table-row :input').not('.collapsed :input').prop('disabled', false).filter('.wpcf7-form-control.nice-select:enabled').niceSelect();
+
             if(trackToggle){
               var $text = $header.clone();
               $text.children('.toggle').remove();
@@ -243,6 +246,7 @@
           if( 0 == $cf72post.length){ //disable the input fields in toggled sections.
             if(!toggled){ //disable fields within a closed toggled section.
               $(':input', $section.children('.row')).prop('disabled', true);
+              $section.addClass('collapsed');
             }
           }//else deal with toggled fields once cf72post plugin has pre-filled sections.
           //setup the toggle button
@@ -284,16 +288,20 @@
             cssId = randString(6);
             $row.attr('id', cssId); //assign a random id
           }
-          var state = $row.data('open');
+          var state = $row.data('open'), open =false;
+
           if(typeof state == 'undefined'){
             state = false;
           }else{
             switch(state){
               case true:
                 state = 0;
+                open=true;
                 break;
             }
           }
+          if(!open) $row.addClass('collapsed');
+
           var options={
             heightStyle: "content",
             create: function(e){
@@ -396,14 +404,13 @@
         var nonceID = $form.closest('div.cf7_2_post').attr('id');
         if(nonceID.length>0){
           $form.on(nonceID, function(event){
-            var $this = $(this);
             $('.cf7sg-dynamic-dropdown.ui-select:enabled', $this).each(function(){
               $(this).niceSelect();
             });
             $('.wpcf7-form-control.nice-select:enabled', $this).each(function(){
               $(this).niceSelect();
             });
-            $this.trigger('sgNiceSelect');
+            $(this).trigger('sgNiceSelect');
           });
         }
       });
@@ -520,7 +527,7 @@
       var $form = $(this);
       $('.cf7sg-slider-section').each(function(){
         var $this = $(this).wrapInner('<div class="cf7sg-sy-slider"></div>'),
-          slideCount = 0,
+          slideCount = -1,
           $slider = $('.cf7sg-sy-slider',$this);
 
         var sy = $slider.slippry({
@@ -539,29 +546,25 @@
           adaptiveHeight:false,
           onSliderLoad:function(index){
             slideCount = $slider.getSlideCount()-1;
-            $this.trigger('sgSliderReady');
+            $this.trigger({type:'sgSliderReady','total-slides':$slider.getSlideCount()});
           },
           onSlideAfter:function(slide, old_index, new_index){
-            slide[0].dispatchEvent( new CustomEvent("sgNextSlide", {
-          		bubbles: true,
-          		cancelable: true,
-              detail:{
-                prev:old_index,
-                current:new_index,
-                last:slideCount
-              }
-          	}));
+            if(slideCount<0) return false;
+            slide.trigger({
+              type:'sgAfterSlideChange',
+              'prev-slide':old_index,
+              'current-slide':new_index,
+              'last-slide':slideCount
+            });
           },
           onSlideBefore:function(slide, old_index, new_index){
-            slide[0].dispatchEvent( new CustomEvent("sgPrevSlide", {
-          		bubbles: true,
-          		cancelable: true,
-              detail: {
-                prev:old_index,
-                current:new_index,
-                last:slideCount
-              }
-          	}));
+            if(slideCount<0) return false;
+            slide.trigger({
+              type:'sgBeforeSlideChange',
+              'prev-slide':old_index,
+              'current-slide':new_index,
+              'last-slide':slideCount
+            });
           }
         });
         var $sliderContainer = $slider.closest('.cf7sg-slider-section');
@@ -595,11 +598,11 @@
             $slider.goToNextSlide();
           }
         });
-        $sliderContainer.on('sgNextSlide sgPrevSlide', function(e){
+        $sliderContainer.on('sgBeforeSlideChange', function(e){
           $prev.show();
           $next.show();
           if(isSubmit) $submit.hide();
-          switch(e.detail.current){
+          switch(e['current-slide']){
             case 0: //hide prev button;
               $prev.hide();
               break;
@@ -1016,6 +1019,14 @@
         }
       }
       $('.toggle', $this).setupToggle(toggled);
+      if(!toggled && initSelect){
+        /*disable fields within a closed toggled section.
+        * if toggled, then it is open. if initselect, it is triggered from user event.
+        * else it is triggered from the cf7_2_post script and we need to wait for field values to be filled.
+        */
+        $('.row.ui-accordion-content :input', $this).prop('disabled', true);
+        $this.addClass('collapsed');
+      }
       $('.cf7sg-collapsible', $newPanel).accordion({
         collapsible:true,
         icons:false,
@@ -1029,13 +1040,6 @@
           $(this).trigger({type:'sgCollapsibleRowsReady','section-id':rootId, 'tab-index':tabCount-1});
         }
       });
-      if(!toggled && initSelect){
-        /*disable fields within a closed toggled section.
-        * if toggled, then it is open. if initselect, it is triggered from user event.
-        * else it is triggered from the cf7_2_post script and we need to wait for field values to be filled.
-        */
-        $('.row.ui-accordion-content :input', $this).prop('disabled', true);
-      }
     }); //end collapsible titles.
 
 

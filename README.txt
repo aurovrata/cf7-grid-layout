@@ -5,7 +5,7 @@ Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, 
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.5
-Stable tag: trunk
+Stable tag: 3.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -338,6 +338,13 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * enabled javascript helper codes on js editor.
 * added js functionality to further customise tables and tab structures.
 * fixed table id attributes in tabbed sections.
+= 3.3.6 =
+* fix null cf7 form object.
+* bypass cf7 5.2 data consolidation.
+= 3.3.5 =
+* fix array field submission.
+= 3.3.4 =
+* fix multiselect array field.
 = 3.3.3 =
 * fix really simple captcha bug.
 * fix cf7 5.2 missing hidden fields in submitted data.

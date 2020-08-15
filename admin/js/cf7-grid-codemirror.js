@@ -184,14 +184,19 @@
               $jsTags.show();
               let $form = $('<div>').html($grid.CF7FormHTML());
               $('.display-none', $jsTags).removeClass('show-events');
-              switch(true){
-                case $('div.container.cf7-sg-table', $form).length > 0:
-                  $('#table-events', $jsTags).addClass('show-events');
-                case $('div.container.cf7sg-collapsible', $form).length > 0:
-                  $('#collapsible-events', $jsTags).addClass('show-events');
-                case $('div.container.cf7-sg-tabs-panel', $form).length > 0:
-                  $('#tab-events', $jsTags).addClass('show-events');
+              if( $('div.container.cf7-sg-table', $form).length > 0){
+                $('#table-events', $jsTags).addClass('show-events');
               }
+              if( $('.container.cf7sg-collapsible', $form).not('.cf7sg-slider-section > .cf7sg-collapsible').length > 0){
+                $('#collapsible-events', $jsTags).addClass('show-events');
+              }
+              if( $('div.container.cf7-sg-tabs-panel', $form).length > 0){
+                $('#tab-events', $jsTags).addClass('show-events');
+              }
+              if( $('.cf7sg-slider-section', $form).length > 0){
+                $('#slider-events', $jsTags).addClass('show-events');
+              }
+
               //scan all fields.
               let cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"source:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"source:)[^\[]*)\]/img;
               //reset form fields.
@@ -482,7 +487,7 @@
       if(codeMirror.indexOf("class:sgv-")>0) scriptClass += "has-validation,";
       if(codeMirror.indexOf("class:select2")>0) scriptClass += "has-select2,";
       if(codeMirror.indexOf("class:nice-select")>0) scriptClass += "has-nice-select,";
-      /** @since 3.4.0 enable grouping of collapsible sections as slider */
+      /** @since 4.0 enable grouping of collapsible sections as slider */
       if($('.cf7sg-collapsible', $formNoEmbeds).not('.cf7sg-slider-section .cf7sg-collapsible').length>0){
         scriptClass += "has-accordion,";
       }

@@ -5,7 +5,7 @@
 	margin-top: 8px;
 }
 #optional-editors a.button {font-weight: bold;}
-#js-tags > li:not(#last-item) {
+#js-tags > li.show-events:not(#last-item) {
 	display: inline-block;
 	vertical-align: top;
 	border: solid 2px #007cba;
