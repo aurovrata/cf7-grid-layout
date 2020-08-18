@@ -3,6 +3,14 @@
 	display: inline-block;
 	position: absolute;
 	margin-top: 8px;
+  z-index:2;
+}
+.codemirror-theme label:hover {
+	font-weight: bold;
+}
+.codemirror-theme label {
+	z-index: 10;
+	position: relative;
 }
 #optional-editors a.button {font-weight: bold;}
 #js-tags > li.show-events:not(#last-item) {

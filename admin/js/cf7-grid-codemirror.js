@@ -308,7 +308,7 @@
         jscmUpdated = false;
         if(jscme.getValue().length>0){
           jscmUpdated = true;
-          $jstext.data('form', $cf7key.val()); //set current form slug.
+          $jstext.attr('data-form', $cf7key.val()); //set current form slug.
         }
       });
       csscme.on('changes', function(e, changes){
@@ -319,7 +319,7 @@
         csscmUpdated = false;
         if(csscme.getValue().length>0){
           csscmUpdated = true;
-          $csstext.data('form', $cf7key.val()); //set current form slug.
+          $csstext.attr('data-form', $cf7key.val()); //set current form slug.
         }
       });
       $cf7key.on('change',function(e){
@@ -328,7 +328,7 @@
         if( oldkey.length > 0 && oldkey != $cf7key.val() ){
           /* update editor js */
           jscme.setValue( jscme.getValue().replace('#'+oldkey, '#'+$cf7key.val()) );
-          $jstext.data('form', newkey);
+          $jstext.attr('data-form', newkey);
           jscmUpdated = true;
         }
         //update the file name.
@@ -575,12 +575,12 @@
       codeMirror = jscme.getValue();
       if(jscmUpdated){
         if(codeMirror.length>2) $jstext.html(codeMirror);
-      }else $jstext.prop('disabled',true);
+      }else if(codeMirror.length>1) $jstext.prop('disabled',true);
       $csstext.text('');//empty.
       codeMirror = csscme.getValue();
       if(csscmUpdated){
         if(codeMirror.length>2) $csstext.html(csscme.getValue());
-      }else $csstext.prop('disabled',true);
+      }else if(codeMirror.length>1) $csstext.prop('disabled',true);
       // continue the submit unbind preventDefault.
       $this.unbind('submit').submit();
    });
