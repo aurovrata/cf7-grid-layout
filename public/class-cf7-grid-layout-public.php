@@ -1501,10 +1501,10 @@ class Cf7_Grid_Layout_Public {
   */
   private function remove_hidden_fields_from_conditional_plugin($posted_data){
     /*code taken from cf7cf.php file in cf7-conditional-fields*/
-    if(!isset($posted_data['_wpcf7cf_hidden_group_fields'])){
+    if(!isset($_POST['_wpcf7cf_hidden_group_fields'])){
       return $posted_data;
     }
-    $hidden_fields = json_decode(stripslashes($posted_data['_wpcf7cf_hidden_group_fields']));
+    $hidden_fields = json_decode(stripslashes($_POST['_wpcf7cf_hidden_group_fields']));
     $conditonal_fields = array();
     if (is_array($hidden_fields) && count($hidden_fields) > 0) {
       foreach ($hidden_fields as $field) {
