@@ -5,7 +5,7 @@ Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, 
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.5
-Stable tag: trunk
+Stable tag: 3.3.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -326,6 +326,8 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 3.3.7 =
+* fix conditional hidden fields validation bug.
 = 3.3.6 =
 * fix null cf7 form object.
 * bypass cf7 5.2 data consolidation.
