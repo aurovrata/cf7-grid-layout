@@ -338,6 +338,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * enabled javascript helper codes on js editor.
 * added js functionality to further customise tables and tab structures.
 * fixed table id attributes in tabbed sections.
+* improved grouped toggles.
 = 3.3.6 =
 * fix null cf7 form object.
 * bypass cf7 5.2 data consolidation.

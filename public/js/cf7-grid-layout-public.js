@@ -661,12 +661,13 @@
     * listen for cf7 submit invalid field event, and open parent sections and tabs.
     *@since 1.1.0
     */
-    $('div.cf7-smart-grid').on('wpcf7:invalid', '.wpcf7', function(event, invalids){
-      var $target = $(event.target);
+    $('div.cf7-smart-grid').on('wpcf7:invalid wpcf7invalid', '.wpcf7', function(e, invalids){
+      var $target = $(e.target);
+      if('undefined' == typeof invalids) invalids = e.detail;
       for(var idx in invalids.inputs){
-        var name = invalids.inputs[idx].name;
-        var $input = $(':input[name="'+name+'"]');
-        var $section = $input.closest('.cf7sg-collapsible');
+        var name = invalids.inputs[idx].name,
+          $input = $(':input[name="'+name+'"]'),
+          $section = $input.closest('.cf7sg-collapsible');
         if($section.length>0){
           $section.accordion("option","active",0); //activate.
         }
