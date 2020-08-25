@@ -295,10 +295,10 @@
         const $title = $target.closest('.cf7sg-collapsible-title');
         if($target.is(':checked')){
           $title.append($('#grid-collapsible-with-toggle').html());
-          $title.closest('.container.cf7sg-collapsible').addClass('with-toggle').attr('data-group','');
+          $title.closest('.container.cf7sg-collapsible').addClass('with-toggle').attr('data-group','').attr('data-open','false');
         }else{
           $('.toggle', $title).remove();
-          $title.closest('.container.cf7sg-collapsible').removeClass('with-toggle').removeAttr( 'data-group');
+          $title.closest('.container.cf7sg-collapsible').removeClass('with-toggle').removeAttr( 'data-group').removeAttr( 'data-open');
         }
       }else if($target.is('ul.cf7-sg-tabs-list li label input[type="text"]')){ //------- Tabs title
         $target.parent().siblings('a').text($target.val());
@@ -527,6 +527,7 @@
         }
         //move to text editor.
         $('#form-editor-tabs').tabs('option',{ active:1});
+        $('body').addClass('disable-scroll');
       }else if($target.is('.dashicons-trash.column-control') ){ //-------------------delete column
         $parentColumn.closest('.row').fireGridUpdate('remove','column');
         $parentColumn.remove();
@@ -570,7 +571,7 @@
         $parentColumn = $target.closest('.columns');
         $parentRow = $parentColumn.closest('.row');
         let classList, idx , columns, row, newSize=0, createColumn = true, total = 0;
-        const sizes = [], $newColumn = $('<div class="columns"></div>');
+        let sizes = [], $newColumn = $('<div class="columns"></div>');
         //is the row filled up?
         //first check if the current column fills the entire row
         if( $parentColumn.is('.full') ){
@@ -978,7 +979,7 @@
                   case match[3].indexOf("source:post")>0:
                     source="post";
                     break;
-                  case match[3].indexOf("source:taxonomy")>0:
+                  case match[3].indexOf("slug:")>0:
                     source="taxonomy";
                     break;
                 }

@@ -112,20 +112,20 @@ if(!class_exists('CF7SG_WP_Post_Table')){
           break;
         case 'edit':
           //get all cf7 forms
-          $cf7_posts = get_posts(array(
-            'post_type'=>self::cf7_post_type(),
-            'posts_per_page' => -1,
-          ));
-          $keys=array();
-          if(!empty($cf7_posts)){
-            foreach($cf7_posts as $cf7){
-              $keys[]=$cf7->post_name;
-            }
-            wp_reset_postdata();
-          }
-          wp_enqueue_script('jquery-effects-core');
+          // $cf7_posts = get_posts(array(
+          //   'post_type'=>self::cf7_post_type(),
+          //   'posts_per_page' => -1,
+          // ));
+          // $keys=array();
+          // if(!empty($cf7_posts)){
+          //   foreach($cf7_posts as $cf7){
+          //     $keys[]=$cf7->post_name;
+          //   }
+          //   wp_reset_postdata();
+          // }
+          // wp_enqueue_script('jquery-effects-core');
           wp_enqueue_script( 'cf7sg-post-table-js', plugin_dir_url( __FILE__ ) . 'js/cf7-post-table.js', false, $this->version, true );
-          wp_localize_script('cf7sg-post-table-js','cf7_2_post_admin', array('keys'=>$keys));
+          // wp_localize_script('cf7sg-post-table-js','cf7_2_post_admin', array('keys'=>$keys));
           break;
       }
   	}
@@ -251,8 +251,8 @@ if(!class_exists('CF7SG_WP_Post_Table')){
       remove_submenu_page( 'wpcf7', 'wpcf7' );
       $hook = add_submenu_page(
         'wpcf7',
-        __cf7sg( 'Edit Form Types' ),
-        __cf7sg( 'Form Types' ),
+        __( 'Edit Form Types', 'cf7-grid-layout' ),
+        __( 'Form Types', 'cf7-grid-layout' ),
         'wpcf7_read_contact_forms',
         'edit-tags.php?taxonomy=wpcf7_type&post_type=wpcf7_contact_form'
       );
@@ -297,8 +297,10 @@ if(!class_exists('CF7SG_WP_Post_Table')){
     *
     */
     public function modify_cf7_list_columns($columns){
+      if(isset($columns['title'])) $columns['title'] = __('Form','contact-form-7');
+      if(isset($columns['date'])) unset($columns['date']);
       $columns['shortcode'] = 'Shortcode<br /><span class="cf7-help-tip"><a href="javascript:void();">What\'s this?</a><span class="cf7-short-info">Use this shortcode the same way you would use the contact-form-7 shortcode. (See the plugin page for more information )</span></span>';
-      $columns['cf7_key'] = __cf7sg('Form key');
+      $columns['cf7_key'] = __('Form key', 'cf7-grid-layout');
       return $columns;
     }
     /**

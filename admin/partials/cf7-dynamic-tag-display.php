@@ -173,7 +173,7 @@
             <option value="page"><?=__('Pages','cf7-grid-layout')?></option>
           </select>
           <label><input type="checkbox" id="include-post-links"/><?= __('Include post links','cf7-grid-layout')?></label>
-          
+
   <?php foreach($taxonomy_lists as $type=>$list ):
           if(empty($list)) continue;
     ?>
@@ -191,16 +191,7 @@
         <article>
           <h4><?=__('Custom source','cf7-grid-layout')?></h4>
           <p class="position-relative">
-            <?= __('Hook the following filter to programmatically load the drodown options', 'cf7-grid-layout');?> <a class="helper init" data-cf72post="add_filter('cf7sg_dynamic_dropdown_custom_options', 'filter_options',10,3);
-function filter_options($options, $field_name, $form_key){
-  if($form_key != 'my-form') return $options; //check this is the correct form.
-  if($field_name != 'custom-dropdown') return $options; //check this is the correct field.
-  $options = array();
-  //load your options programmatically, as $value=>$name pairs.
-  $options['val1']='Value 1';
-  $options['val2']='Value 2';
-  return $options;
-}" href="javascript:void(0);">cf7sg_dynamic_dropdown_custom_options</a>
+            <?= __('Copy the following <a href="javascript:void(0);">filter</a> to your <em>functions.php</em> file.', 'cf7-grid-layout');?>
           </p>
         </article>
       </section>

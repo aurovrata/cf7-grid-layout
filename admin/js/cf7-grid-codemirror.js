@@ -108,10 +108,12 @@
         $('#contact-form-editor').trigger('cf7sg-form-change');
       });
       //toogle body scroll off/on
-      function toggleBodyScroll(){$('body').toggleClass('disable-scroll')}
+      function disableBodyScroll(){$('body').addClass('disable-scroll')}
+      function enableBodyScroll(){$('body').removeClass('disable-scroll')}
       //create tabs
       $editorTabs.tabs({
         beforeActivate: function (event, ui){
+          enableBodyScroll();
           //update the codemirror panel
           if('#cf7-codemirror' == ui.newPanel.selector){
 						//finalise any changes in the grid form editor
@@ -125,6 +127,7 @@
     	              });
                 }
 	            cme.setValue(code);
+              // cme.refresh();
 	            //reset the codemirror change flag
 	            codemirrorUpdated = false;
 	            //remove id from textarea
@@ -172,11 +175,7 @@
               const cursor = cme.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cme.firstLine(), 0), {caseFold: true, multiline: true});
 
               $codemirror.beautify(cursor);
-
-              // if($grid.children('.container').length>0){
-              //   const scrollPos = $('#form-panel').offset().top;
-              //   $(window).scrollTop(scrollPos);
-              // }
+              cme.refresh();
               break;
             case '#cf7-js-codemirror': //js editor.
               $topTags.hide();
@@ -230,7 +229,7 @@
         },
         create: function(e){
           // $(window).scrollTop($('#meta-box-main-cf7-editor').offset().top);
-          $('#form-editor-tabs .ui-tabs-panel:not(#cf7-editor-grid)').hover(toggleBodyScroll);
+          $('#form-editor-tabs .ui-tabs-panel:not(#cf7-editor-grid)').hover(disableBodyScroll,enableBodyScroll);
         }
       });
       /** @since 4.0 js cm editor */
@@ -281,7 +280,7 @@
           cm.setOption("mode", mode);
           cm.setSize("100%");
           $cm.on('cf7sg-screen-resize',function(){cm.refresh()});
-          $cm.hover(toggleBodyScroll);
+          $cm.hover(disableBodyScroll);
           $cm.removeClass('display-none').beautify();
 
           if(theme.user.length>0) cm.setOption('theme',theme.user);

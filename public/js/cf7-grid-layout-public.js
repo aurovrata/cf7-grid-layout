@@ -177,13 +177,16 @@
           var group = $header.parent().removeClass('collapsed').data('group');
           if(group){
             $('.cf7sg-collapsible.with-toggle[data-group="'+group+'"]', $form).each(function(){
-              var $toggled = $(this);
+              var $toggled = $(this), $togl = $('.toggle', $toggled);
               var cid = $toggled.attr('id');
-              if(id === cid) return; //current toggle.
+              if(id === cid){
+                $togl.toggleClass('disabled', true);
+                return; //current toggle.
+              }
               if(0===$toggled.accordion('option','active')){
                 $toggled.addClass('collapsed');
                 $toggled.accordion('option','active',false);
-                $('.toggle', $toggled).data('toggles').toggle(false);
+                $togl.toggleClass('disabled', false).data('toggles').toggle(false);
                 $('.row.ui-accordion-content :input', $toggled).prop('disabled', true);
                 if(trackToggle && toggleStatus.hasOwnProperty(cid)) delete toggleStatus[cid];
               }
@@ -227,8 +230,7 @@
             cssId = randString(6);
             $section.attr('id', cssId); //assign a random id
           }
-          var state = $section.data('open');
-          var toggled = false;
+          var state = $section.data('open'), group=$section.data('group'),toggled = false;
           if(typeof state == 'undefined'){
             state = false;
           }else{
@@ -250,7 +252,7 @@
             }
           }//else deal with toggled fields once cf72post plugin has pre-filled sections.
           //setup the toggle button
-          $section.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled);
+          $section.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled, group);
           //enable the accordion
           $('#'+cssId).accordion({
             collapsible:true,
@@ -1018,7 +1020,7 @@
             break;
         }
       }
-      $('.toggle', $this).setupToggle(toggled);
+      $('.toggle', $this).setupToggle(toggled, group);
       if(!toggled && initSelect){
         /*disable fields within a closed toggled section.
         * if toggled, then it is open. if initselect, it is triggered from user event.
@@ -1063,7 +1065,7 @@
   }
 
   //setup toggles
-  $.fn.setupToggle = function(state){
+  $.fn.setupToggle = function(state, group){
     var $this = $(this);
     if(typeof state === 'undefined') state =false;
     if( !$this.is('.toggle') ){
@@ -1079,6 +1081,7 @@
         offText = 'No';
       }
       $this.toggles( { drag:false, text:{ on:onText, off:offText }, on: state});
+      if(group.length>0 && state) $this.toggleClass('disabled',true); //disable active grouped toggle.
     }
     return $this;
   }

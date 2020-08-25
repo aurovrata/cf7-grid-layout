@@ -18,6 +18,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', end
   .cf7sg-container .ui-widget-header {
      background: transparent;
  }
+ .cf7sg-container {	line-height: 1.2;}
  .cf7sg-container a.ui-button {
 	color: inherit;
 }
@@ -84,6 +85,7 @@ span.cf7sg-validation-warning {
     font-size: 80%;
     font-style: italic;
     color: grey;
+    margin: 0 0 5px 0;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
     border-radius: 3px;
@@ -275,10 +277,6 @@ span.cf7sg-validation-warning {
 .cf7-smart-grid.has-grid .field > label {
     display: block;
     margin-bottom: 0;
-}
-
-.cf7-smart-grid.has-grid .info-tip {
-    margin-bottom: 5px;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
     min-height: 34px;

@@ -288,6 +288,21 @@ class Cf7_Grid_Layout_Public {
     return $hidden;
   }
   /**
+  * Filter autop off for grid forms.
+  * hooked to 'wpcf7_autop_or_not'
+  *@since 4.0.0
+  *@param boolean $autop true or false.
+  *@return boolean true or false
+  */
+  public function disable_autop_for_grid($autop){
+    $form = WPCF7_ContactForm::get_current();
+    if(isset($form) && $form->id()>0){
+      $is_grid_form = get_post_meta($form->id(), '_cf7sg_managed_form', true);
+      $autop = ( !$is_grid_form || ''==$is_grid_form );
+    }
+    return $autop;
+  }
+  /**
    * Enqueue scripts requried for cf7 shortcode
    * hooked on 'do_shortcode_tag',
    * @since 1.0.0
@@ -1532,16 +1547,18 @@ class Cf7_Grid_Layout_Public {
   */
   private function remove_hidden_fields_from_conditional_plugin($posted_data){
     /*code taken from cf7cf.php file in cf7-conditional-fields*/
-    if(!isset($posted_data['_wpcf7cf_hidden_group_fields'])){
+    if(!isset($_POST['_wpcf7cf_hidden_group_fields'])){
       return $posted_data;
     }
-    $hidden_fields = json_decode(stripslashes($posted_data['_wpcf7cf_hidden_group_fields']));
-    $conditonal_fields = array();
+
+    $hidden_fields = json_decode(stripslashes($_POST['_wpcf7cf_hidden_group_fields']));
+
     if (is_array($hidden_fields) && count($hidden_fields) > 0) {
       foreach ($hidden_fields as $field) {
-        if (wpcf7cf_endswith($field, '[]')) {
-          $field = substr($field,0,strlen($field)-2);
-        }
+        $field = str_replace('[]', '', $field);
+        // if (wpcf7cf_endswith($field, '[]')) {
+        //   $field = substr($field,0,strlen($field)-2);
+        // }
         unset( $posted_data[$field] );
       }
     }
