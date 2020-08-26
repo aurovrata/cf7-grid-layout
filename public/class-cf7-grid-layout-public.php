@@ -783,7 +783,7 @@ class Cf7_Grid_Layout_Public {
       $pipes = $field_tag->pipes;
       $value = isset($_POST[$field_name]) ? $_POST[$field_name]:'';
 
-      if ( WPCF7_USE_PIPE and $pipes instanceof WPCF7_Pipes and ! $pipes->zero() ){
+      if ( WPCF7_USE_PIPE and $pipes instanceof WPCF7_Pipes and ! $pipes->zero() and !in_array( $field_type, array('map','dynamic_select')) ){
         if(is_array($value)){
           $piped = array();
           foreach($value as $v){
