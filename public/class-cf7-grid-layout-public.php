@@ -682,8 +682,8 @@ class Cf7_Grid_Layout_Public {
         default:
           $toggle = $this->get_toggle($field_name);
           if('unit-contact' ==$field_name) debug_msg($toggle, 'unit contact toggle ');
-          if(!empty($toggle)) $data[$field_name] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type) : null;
-          else $data[$field_name]= $this->get_field_value($field_name, $tag['basetype']);
+          if(!empty($toggle)) $data[$field_name] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type, $tag) : null;
+          else $data[$field_name]= $this->get_field_value($field_name, $tag['basetype'], $tag);
           break;
       }
     }
@@ -720,16 +720,16 @@ class Cf7_Grid_Layout_Public {
         //find the number of rows submitted.
         $max_fields = isset($_POST[$origin]) ? $_POST[$origin]:0;
         if(!empty($toggle)){ //check if submitted.
-          $values[''] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type) : null;
-        }else $values['']= $this->get_field_value($field_name,$field_type);
+          $values[''] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type, $field_tag) : null;
+        }else $values['']= $this->get_field_value($field_name,$field_type, $field_tag);
 
         for($idx=1;$idx<$max_fields;$idx++){
           $fid=$index_suffix.$idx;
           if(!empty($toggle)){ //check if submitted.
             $toggle_id = $toggle; /** @since 3.3.5 track toggles in tabs*/
             if($this->is_tabbed($toggle)) $toggle_id = $toggle.$fid;
-            $values[$fid] = $this->is_submitted($toggle_id) ? $this->get_field_value($field_name.$fid,$field_type) : null;
-          }else $values[$fid] = $this->get_field_value($field_name.$fid,$field_type);
+            $values[$fid] = $this->is_submitted($toggle_id) ? $this->get_field_value($field_name.$fid,$field_type, $field_tag) : null;
+          }else $values[$fid] = $this->get_field_value($field_name.$fid,$field_type, $field_tag);
           $purge_fields[$field_name.$fid] = true;
         }
         break;
@@ -740,8 +740,8 @@ class Cf7_Grid_Layout_Public {
         $max_tabs = isset($_POST[$tab_origin])?$_POST[$tab_origin]:0;
         $values[''] = array(); //init multi-dimensional array
         if(!empty($toggle)){ //check if submitted, tab<-toggle<-table.
-          $values[''][''] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type) : null;
-        }else $values[''][''] = $this->get_field_value($field_name,$field_type);
+          $values[''][''] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type, $field_tag) : null;
+        }else $values[''][''] = $this->get_field_value($field_name,$field_type, $field_tag);
 
         for($idx=0;$idx<$max_tabs;$idx++){ //tables in other tabs.
           $max_fields = ($idx>0) ? $_POST[$table_origin.'_tab-'.$idx]:$_POST[$table_origin];
@@ -752,8 +752,8 @@ class Cf7_Grid_Layout_Public {
             if(!empty($toggle)){ //check if submitted, tab<-toggle<-table.
               $toggle_id = $toggle; /** @since 3.3.5 track toggles in tabs*/
               if($this->is_tabbed($toggle)) $toggle_id = $toggle.$tab_suffix;
-              $values[$tab_suffix][$row_suffix] = $this->is_submitted($toggle_id) ? $this->get_field_value( $field_name.$fid, $field_type):null;
-            }else $values[$tab_suffix][$row_suffix] = $this->get_field_value($field_name.$fid, $field_type);
+              $values[$tab_suffix][$row_suffix] = $this->is_submitted($toggle_id) ? $this->get_field_value( $field_name.$fid, $field_type, $field_tag):null;
+            }else $values[$tab_suffix][$row_suffix] = $this->get_field_value($field_name.$fid, $field_type, $field_tag);
             $purge_fields[$field_name.$fid] = true; //remove from the origina $data.
           }
         }
@@ -775,12 +775,23 @@ class Cf7_Grid_Layout_Public {
   *@param array $data submitted data.
   *@return string text_description
   */
-  private function get_field_value($field_name, $field_type){
+  private function get_field_value($field_name, $field_type, $field_tag){
     $value = '';
     if('file' == $field_type) {
       $value = isset($_FILES[$field_name]) ? $_FILES[$field_name]['name']:'';
     }else{
+      $pipes = $field_tag->pipes;
       $value = isset($_POST[$field_name]) ? $_POST[$field_name]:'';
+
+      if ( WPCF7_USE_PIPE and $pipes instanceof WPCF7_Pipes and ! $pipes->zero() ){
+        if(is_array($value)){
+          $piped = array();
+          foreach($value as $v){
+            $piped[] = $pipes->do_pipe($v);
+          }
+          $value = $piped;
+        }else $value = $pipes->do_pipe($value);
+      }
     }
     return $value;
   }
