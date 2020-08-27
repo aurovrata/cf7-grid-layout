@@ -533,23 +533,24 @@
       * Track toggled fields to see if they are submitted or not.
       * @since 2.5 */
 
-      const toggledFields = [], tabbedToggles=[];
+      const toggledFields = [], tabbedToggles=[], groupedToggles={};
       $('.container.cf7sg-collapsible.with-toggle', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        const $toggle = $(this), unique = $toggle.attr('id'),
+        const $toggle = $(this), unique = $toggle.attr('id'), group = $toggle.data('group'),
           fields = {}, search = $toggle.html();
         fields[unique]=[];
-
+        if(group.length>0){
+          if('undefined' == typeof groupedToggles[group] ) groupedToggles[group] = [];
+          groupedToggles[group].push(unique);
+        }
         let match = cf7TagRegexp.exec(search);
         while (match != null) {
-          //if( -1 === tableFields.indexOf(match[2]) ) /*removed as now want to idenify fields which are both tabs and table fields*/
-          fields[unique][fields[unique].length] = match[2];
-          //ttFields[match[2]] = match[1];
+          fields[unique].push(match[2]);
           match = cf7TagRegexp.exec(search); //get the next match.
         }
-        toggledFields[toggledFields.length] = fields;
+        toggledFields.push(fields);
         /** @since 4.0.0 differentiate toggles in tabed sections.*/
-        if($toggle.is('.cf7-sg-tabs .cf7sg-collapsible')) tabbedToggles[tabbedToggles.length]=unique;
+        if($toggle.is('.cf7-sg-tabs .cf7sg-collapsible')) tabbedToggles.push(unique);
         hasToggles = true;
       });
       //append hidden fields
@@ -569,6 +570,7 @@
       $('#cf7sg-table-fields').val(JSON.stringify(tableFields));
       $('#cf7sg-toggle-fields').val(JSON.stringify(toggledFields));
       $('#cf7sg-tabbed-toggles').val(JSON.stringify(tabbedToggles));
+      $('#cf7sg-grouped-toggles').val(JSON.stringify(groupedToggles));
       /** @since 4.0 enable js/css */
       $jstext.text('');//empty.
       codeMirror = jscme.getValue();

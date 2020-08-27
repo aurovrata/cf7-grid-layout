@@ -231,7 +231,8 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'cf7sg_ui_grid_helper_hooks', $plugin_admin, 'print_helper_hooks');
     /** @since 4.0.0 include default js template */
     $this->loader->add_action( 'cf7sg_default_custom_js_template', $plugin_admin, 'print_default_js', 1,1);
-
+    /** @since 4.0.0 enable toggle mail tags */
+    $this->loader->add_filter( 'wpcf7_collect_mail_tags', $plugin_admin, 'setup_cf7_mailtags');
 	}
 
 	/**

@@ -778,6 +778,12 @@ class Cf7_Grid_Layout_Admin {
     if(empty($ttgls)) $ttgls = array();
     if(!is_array($ttgls)) $ttgls = array($ttgls);
     update_post_meta($post_id, '_cf7sg_grid_tabbed_toggles', $ttgls);
+    /** @since 4.0.0 track grouped toggles */
+    $ttgls = json_decode(stripslashes($_POST['cf7sg-grouped-toggles']));
+    if(empty($ttgls)) $ttgls = array();
+    if(is_object($ttgls)) $ttgls = get_object_vars($ttgls); //convert to array.
+    else $ttgls = array();
+    update_post_meta($post_id, '_cf7sg_grid_grouped_toggles', $ttgls);
     //flag tab & tables for more efficient front-end display.
     $has_tabs =  ( 'true' === $_POST['cf7sg-has-tabs']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tabs', $has_tabs);
@@ -1352,5 +1358,32 @@ class Cf7_Grid_Layout_Admin {
   */
   public function print_helper_hooks(){
     require_once plugin_dir_path( __FILE__ ) .'partials/helpers/cf7sg-form-fields.php';
+  }
+  /**
+  * Setup mailtags or toggles.
+  *
+  *@since 4.0.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function setup_cf7_mailtags($mailtags = array()){
+    // return $mailtags;
+    $contact_form = WPCF7_ContactForm::get_current();
+    $fields = get_post_meta($contact_form->id(), '_cf7sg_grid_toggled_names', true);
+    //update_post_meta($post_id, '_cf7sg_grid_tabbed_toggles', $ttgls);
+    if(!empty($fields)){
+      $toggles = array_keys($fields);
+      $groups = get_post_meta($contact_form->id(), '_cf7sg_grid_grouped_toggles', true);
+      if(!empty($groups)){
+        foreach($groups as $group=>$grp_toggles){
+          $toggles = array_diff($toggles, $grp_toggles);
+          array_push($toggles, $group);
+        }
+      }
+      foreach($toggles as $tgl) $mailtags[]= 'cf7sg-toggle-'.$tgl;
+    }
+    //add a general form tag.
+    $mailtags[]= 'cf7sg-form-'.get_cf7form_key($contact_form->id());
+    return $mailtags;
   }
 }

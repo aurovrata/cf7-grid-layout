@@ -149,30 +149,51 @@
       cf7Form_accordion.filter('div.has-toggles form.wpcf7-form').each(function(){
         var $form = $(this);
         var toggled_accordion = $('.cf7sg-collapsible.with-toggle', $form);
+        /**
+        * @since 1.1.0 track toggle status using toggle ids.
+        */
+        var toggleStatus = '', $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $form);
+        var trackToggle = false, disableGroupActiveToggle = {};
+        if( $toggleHiddenStatus.length>0 ){
+          if($toggleHiddenStatus.val().length>0){
+            toggleStatus = JSON.parse($toggleHiddenStatus.val());
+          }else toggleStatus = {};
+          trackToggle = true;
+        }
+        $.fn.trackToggle = function(track){
+          if(!trackToggle) return false;
+          var $toggledSection = $(this),
+            tid = $toggledSection.attr('id');
+
+          if( !$toggledSection.is('.with-toggle') ) return false;
+          if(track){
+            var $text = $('.cf7sg-collapsible-title', $toggledSection).clone(),
+              onText = $text.children('.toggle').data('on');
+            $text.children('.toggle').remove();
+            toggleStatus[tid] = $text.text().trim() + "|" + onText;
+          }else{
+            if(toggleStatus.hasOwnProperty(tid)) delete toggleStatus[tid];
+          }
+          //store the toggle status in the hidden field.
+          if('undefined' != typeof tid && $toggleHiddenStatus.length>0 ){
+            $toggleHiddenStatus.val(JSON.stringify(toggleStatus));
+          }
+        }
         //event delegation on the header click to sync the toggle state
         $form.on('click','.cf7sg-collapsible.with-toggle', function(e){
           var $header;
           var $target =  $(e.target);
-          if($target.is('span.cf7sg-title.toggled') || $target.is('.toggle-on') || $target.is('.toggle-off') ){
+          if($target.is('span.cf7sg-title.toggled') || $target.is('.toggle-on') || $target.is('.toggle-off') || $target.is('.toggle') ){
             $header = $target.closest('.cf7sg-collapsible-title');
           }else if($target.parent().is('.cf7sg-collapsible.with-toggle') ){
             $header = $target;
           }else{
             return;
           }
-          var id = $header.closest('.container.cf7sg-collapsible').attr('id');
-          /**
-          * @since 1.1.0 track toggle status using toggle ids.
-          */
-          var toggleStatus = '';
-          var $toggleHiddenStatus = $('input[name="_cf7sg_toggles"]', $form);
-          var trackToggle = false;
-          if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
-            if($toggleHiddenStatus.val().length>0){
-              toggleStatus = JSON.parse($toggleHiddenStatus.val());
-            }else toggleStatus = {};
-            trackToggle = true;
-          }
+          //cancel section close if disabled.
+          if($('.toggle', $header).is('.disabled')) return false;
+          var $toggledSection = $header.closest('.container.cf7sg-collapsible'), id= $toggledSection.attr('id');
+
           //close other toggled sections if we have a group.
           var group = $header.parent().removeClass('collapsed').data('group');
           if(group){
@@ -180,15 +201,15 @@
               var $toggled = $(this), $togl = $('.toggle', $toggled);
               var cid = $toggled.attr('id');
               if(id === cid){
-                $togl.toggleClass('disabled', true);
+                if(disableGroupActiveToggle[group]) $togl.toggleClass('disabled', true);
                 return; //current toggle.
               }
               if(0===$toggled.accordion('option','active')){
                 $toggled.addClass('collapsed');
-                $toggled.accordion('option','active',false);
                 $togl.toggleClass('disabled', false).data('toggles').toggle(false);
+                $toggled.accordion('option','active',false);
                 $('.row.ui-accordion-content :input', $toggled).prop('disabled', true);
-                if(trackToggle && toggleStatus.hasOwnProperty(cid)) delete toggleStatus[cid];
+                $toggled.trackToggle(false);
               }
             });
           }
@@ -201,13 +222,11 @@
           if( $header.hasClass('ui-state-active') ){
             toggleSwitch.toggle(true);
             //enable input fields and convert to niceselect.
-            $('.row.ui-accordion-content :input', $header.parent()).not('.cf7-sg-cloned-table-row :input').not('.collapsed :input').prop('disabled', false).filter('.wpcf7-form-control.nice-select:enabled').niceSelect();
-
-            if(trackToggle){
-              var $text = $header.clone();
-              $text.children('.toggle').remove();
-              toggleStatus[id] = $text.text().trim() + "|" + $header.children('.toggle').data('on');
+            var inputs = $('.row.ui-accordion-content :input', $header.parent()).not('.cf7-sg-cloned-table-row :input').not('.collapsed :input').prop('disabled', false);
+            if($form.is('.has-nice-select form')){
+              inputs.filter('.wpcf7-form-control.nice-select:enabled').niceSelect();
             }
+            $toggledSection.trackToggle(true);
           }else{
             toggleSwitch.toggle(false);
             $('.row.ui-accordion-content :input', $header.parent()).each(function(){
@@ -215,11 +234,7 @@
               var val = this.value; //trim the value to remove spaces.
               $(this).val(val.trim()).prop('disabled', true);
             });
-            if(trackToggle && toggleStatus.hasOwnProperty(id)) delete toggleStatus[id];
-          }
-          //store the toggle status in the hidden field.
-          if('undefined' != typeof id && $toggleHiddenStatus.length>0 ){
-            $toggleHiddenStatus.val(JSON.stringify(toggleStatus));
+            $toggledSection.trackToggle(false);
           }
         });//end for toggle click delegation
 
@@ -231,6 +246,10 @@
             $section.attr('id', cssId); //assign a random id
           }
           var state = $section.data('open'), group=$section.data('group'),toggled = false;
+
+          if(group && 'undefined' == typeof disableGroupActiveToggle[group]){
+            disableGroupActiveToggle[group]=false;
+          }
           if(typeof state == 'undefined'){
             state = false;
           }else{
@@ -253,6 +272,10 @@
           }//else deal with toggled fields once cf72post plugin has pre-filled sections.
           //setup the toggle button
           $section.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled, group);
+          if(toggled){
+            $section.trackToggle(true);
+            if(group) disableGroupActiveToggle[group]=true;
+          }
           //enable the accordion
           $('#'+cssId).accordion({
             collapsible:true,
@@ -262,6 +285,9 @@
             heightStyle: "content",
             activate: function(event, ui){
               $(this).trigger('sgContentIncrease');
+            },
+            beforeActivate: function(event, ui){
+              if($('.toggle', ui.oldHeader).is('.disabled')) return false;
             },
             create: function(e){
               $(this).trigger({type:'sgCollapsibleRowsReady','section-id':cssId})
@@ -451,8 +477,8 @@
       });
       //for non cf7 2 post forms, just enable the nice select
       cf7Form_select2.not('div.cf7_2_post form.wpcf7-form').each(function(){
-        var $this = $(this);
-        $('select.wpcf7-form-control.select2:enabled', $this).each(function(){
+        var $form = $(this);
+        $('select.wpcf7-form-control.select2:enabled', $form).each(function(){
           var $select2 = $(this);
           $select2.select2($select2.cf7sgSelect2Options());
 
@@ -666,7 +692,7 @@
       if('undefined' == typeof invalids) invalids = e.detail;
       for(var idx in invalids.inputs){
         var name = invalids.inputs[idx].name,
-          $input = $(':input[name="'+name+'"]'),
+          $input = $(':input[name="'+name+'"]:not(:disabled)'),
           $section = $input.closest('.cf7sg-collapsible');
         if($section.length>0){
           $section.accordion("option","active",0); //activate.
@@ -1022,6 +1048,7 @@
         }
       }
       $('.toggle', $this).setupToggle(toggled, group);
+      if(toggled) $section.trackToggle(true);
       if(!toggled && initSelect){
         /*disable fields within a closed toggled section.
         * if toggled, then it is open. if initselect, it is triggered from user event.
@@ -1038,6 +1065,9 @@
         heightStyle: "content",
         activate: function(event, ui){
           $(this).trigger('sgContentIncrease');
+        },
+        beforeActivate: function(event, ui){
+          if($('.toggle', ui.oldHeader).is('.disabled')) return false;
         },
         create: function(e){
           $(this).trigger({type:'sgCollapsibleRowsReady','section-id':rootId, 'tab-index':tabCount-1});
@@ -1082,7 +1112,7 @@
         offText = 'No';
       }
       $this.toggles( { drag:false, text:{ on:onText, off:offText }, on: state});
-      if(group.length>0 && state) $this.toggleClass('disabled',true); //disable active grouped toggle.
+      if(group && state) $this.toggleClass('disabled',true); //disable active grouped toggle.
     }
     return $this;
   }

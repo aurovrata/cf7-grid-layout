@@ -14,7 +14,7 @@
   $pattern.find('label').html('((\\s*.*)('+required+'){1}|(\\s*.*))');
   $pattern.find('.info-tip').text('(.*\\s*)');
   //console.log('p:'+$pattern.html());
-  const templateRegex = new RegExp($pattern.html(), 'ig');
+  const templateRegex = new RegExp($pattern.html().replace('><','>\\s?<'), 'ig');
   let seekTemplate = false, cssTemplate = 'div.field',
     $template = $('<div id="cf7sg-dummy">').append(cf7grid.preHTML+cf7grid.postHTML);
   $template = $template.children();
@@ -476,7 +476,7 @@
               let key = $('#post_name').val();
               text = text.replace(/\{\$form_key\}/gi, key);
               text = text.replace(/\{\$field_name\}/gi, field);
-              text = text.replace(/\{\$field_name_slug\}/gi, field.replace('-','_'));
+              text = text.replace(/\{\$field_name_slug\}/gi, field.replace(/\-/g,'_'));
               text = text.replace(/\{\$field_type\}/gi, tag);
               text = text.replace(/\[dqt\]/gi, '"');
               return text;
@@ -505,7 +505,7 @@
               let key = $('#post_name').val();
               text = text.replace(/\{\$form_key\}/gi, key);
               text = text.replace(/\{\$field_name\}/gi, field);
-              text = text.replace(/\{\$field_name_slug\}/gi, field.replace('-','_'));
+              text = text.replace(/\{\$field_name_slug\}/gi, field.replace(/\-/g,'_'));
               text = text.replace(/\{\$field_type\}/gi, tag);
               text = text.replace(/\[dqt\]/gi, '"');
               return text;

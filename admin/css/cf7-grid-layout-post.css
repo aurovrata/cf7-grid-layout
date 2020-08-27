@@ -214,9 +214,23 @@ grid layout
 #grid-form .table-row-button {
     display: none;
 }
+/* footer table special styling */
 #grid-form .row.cf7-sg-table .row-controls label.table-row-button {
     display: block;
     text-align: center;
+}
+#grid-form .cf7-sg-table-footer .row {
+	min-height: 66px;
+}
+.cf7-sg-table-footer .cf7-field-label.cf7-field-inner,
+.cf7-sg-table-footer .cf7-field-type.cf7-field-inner,
+.cf7-sg-table-footer .dashicons-move.row-control,
+.cf7-sg-table-footer .button.make-grid.column-control,
+.cf7-sg-table-footer .button.external-form  {
+	display: none;
+}
+.cf7-sg-table-footer .cf7-field-tip.cf7-field-inner {
+	height: 42px;
 }
 #grid-form .form-select {
     display: block;

@@ -84,7 +84,7 @@
           let key = $('#post_name').val();
           text = text.replace(/\{\$form_key\}/gi, key);
           text = text.replace(/\{\$field_name\}/gi, $name.val());
-          text = text.replace(/\{\$field_name_slug\}/gi, $name.val().replace('-','_'));
+          text = text.replace(/\{\$field_name_slug\}/gi, $name.val().replace(/\-/g,'_'));
           text = text.replace(/\[dqt\]/gi, '"');
           return text;
         }
