@@ -1,4 +1,65 @@
 == Changelog ==
+= 3.3.8 =
+fix cf7 submission null object.
+= 3.3.7 =
+* fix conditional hidden fields validation bug.
+= 3.3.6 =
+* fix null cf7 form object.
+* bypass cf7 5.2 data consolidation.
+= 3.3.5 =
+* fix array field submission.
+= 3.3.4 =
+* fix multiselect array field.
+= 3.3.3 =
+* fix really simple captcha bug.
+* fix cf7 5.2 missing hidden fields in submitted data.
+= 3.3.2 =
+* fix locale setting for single non-english langauge sites.
+= 3.3.1 =
+* fix mulsitple select bug.
+= 3.3.0 =
+* added 'cf7sg_ui_grid_helper_hooks' action for plugin integration.
+* added 'cf7sg_ui_grid_js_helper_hooks' action for plugin integration.
+* enabled in-editor js code helpers.
+* updated screenshot 17.
+= 3.2.1 =
+* fix hidden fields.
+* fix wpcf7_submit capability for subscribers_only attribute.
+* upgrade select2 library for iOS touch fix.
+= 3.2.0 =
+* added cf7sg_mailtag_$mail_tag filters.
+* replaced PhpQuery library with SimpleHTMLDom.php (https://github.com/voku/simple_html_dom) library for php 7 compatibility.
+= 3.1.5 =
+* fix continue for PHP 7.3+
+= 3.1.4 =
+* fix continue.
+= 3.1.3 =
+* fix common validation bug.
+* improve 'cf7sg_validate_submission' hook, data array contains file data.
+* redirect cf7 plugin admin pages to smart grid pages.
+= 3.1.2 =
+* instantiate CodeMirror after library load and pass as attribute to anonymous function to fix conflict issue.
+= 3.1.1 =
+* fix helper bug inline filters.
+= 3.1.0 =
+* load minified resources on live sites.
+= 3.0.4 =
+* fix css style on rows/container for DIVI theme.
+= 3.0.3 =
+* fix add_cap bug for deleted roles.
+= 3.0.2 =
+* added 'wpcf7_manage_integration' cap to admin role.
+= 3.0.1 =
+* fix pointers dismiss bug.
+= 3.0.0 =
+* clean-up core integration with cf7 plugin.
+* add WP std capabilities for better role management.
+* automatic detection of required js scripts / css styling when form saved.
+* more efficient loading of front-end resources (js/css).
+* enabling benchmark fields for non-grid forms.
+* enabling dynamic_select fields for non-grid forms.
+* enabling sgv- validation for non-grid forms.
+* added pointers to form edit screen.
 = 2.11.0 =
 * recaptch plugin fix by @netzgestaltung.
 * full-screen form editor button.

@@ -12,16 +12,20 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 This plugins allow pure CSS responsive grid layouts for contact form 7.  It enables rich interlinking of your CMS data via taxonomy/posts populated dropdown fields.  It also enables modular design of complex forms.
 
 == Description ==
-**NOTE WordPress 5.0 & Gutenberg editor update** - this plugin is now compatible with WP 5.0, however, the Gutenberg editor does not recognise [shortcodes with hyphens](https://www.getgutenberg.io/documentation/content/shortcodes/) (dash) characters, so a new shortcode is introduced from v2.5, `[cf7form ...]`. Your form table will now display this new shortcode.  Creating new pages/posts with Gutenberg from now on will require you use this new shortcode.  The old remains active for existing content.
 
 The plugin uses the [smart-grid](http://origin.css.gd/) CSS plugin to build beautiful form layouts.  It introduces a graphical editor to design your forms, as well as a coloured html syntax editor built using the excellent CodeMirror editor.  It is now possible to design smart layouts with ease.
 
+v4.0 introduces a tutorial sections within the dashboard for quick rerefence to various youtube tutorials.  For a full list of available tutorials visit this playlist.
+
+[youtube https://www.youtube.com/playlist?list=PLblJwjs_dFBsynXEstrV3fCIC7GBmK9HW]
+
 In addition, the plugin also introduces multiple smart input functionalities, such as,
 
-* **tabled input sections**: these allow you to group several input fields as table rows, the plugin will automatically add an 'Add Row' button to your front end form, giving your users the ability to add multiple rows of your grouped fields.
-* **tabbed sections**: with this plugin you can build tabbed sections of fields, allowing your users to add additional tabs.  It is a similar concept to the tabled input section above, but in a tabbed layout instead.
+* **tabled input sections**: these allow you to group several **repetitive input fields** as table rows, the plugin will automatically add an 'Add Row' button to your front end form, giving your users the ability to add multiple rows of your grouped fields.
+* **tabbed sections**: with this plugin you can build tabbed sections of **repetitive fields**, allowing your users to add additional tabs.  It is a similar concept to the tabled input section above, but in a tabbed layout instead.
 * **collapsible sections**: for long and complex forms you can now group your front-end fields into collapsible sections, making it easier for user to see the big picture.
 * **toggled collapsible sections** for optional sections.  A toggle with a default Yes/No value is inserted, allowing your users to submit optional fields which within the section can be set to required in your design (See FAQ section for more info).
+* **grouped toggled sections** for either/or optional sections.
 * **reusable sub-forms**: if you have fields which repeat across multiple forms, you can now build a sub-form which you can include in your form, saving you the trouble of redesigning the form each time, but also making large forms much easier to maintain.
 * **form categories**: the plugin introduces form taxonomy to classify your forms for the use of online registration where users may need to be associated with a given set of forms to access.
 * **dynamic dropdown fields**: these are special select fields which you can populate with either existing post titles, or managed lists such as units, or even using a custom filter.  This makes dynamic interlinking of existing CMS data in your dashboard a piece of cake, giving you a very powerful tool for data capture.
@@ -29,7 +33,7 @@ In addition, the plugin also introduces multiple smart input functionalities, su
 * **redesign the form editor**: this plugin now uses the WordPress default post editor page to edit/build forms, therefore making it easier for developer to plugin their functionality on top, while preserving all the hooks of Contact Form 7.
 
 **Looking for Collaborators**
-Are you a WordPress developer or an HTML/JavaScript master?  Want to collaborate on this plugin?  There are some really great pieces of functionality that are in the roadmap for this plugin, but I just don't have the time or resources to get them all on file in a timely manner.  So join me on [GitHub](https://github.com/aurovrata/cf7-grid-layout/wiki/Roadmap) if you want to collaborate.
+Are you a WordPress developer or an HTML/JavaScript wizard?  Want to collaborate on this plugin?  There are some really great pieces of functionality that are in the roadmap for this plugin, but I just don't have the time or resources to get them all on file in a timely manner.  So join me on [GitHub](https://github.com/aurovrata/cf7-grid-layout/wiki/Roadmap) if you want to collaborate.
 
 **For plugin developers**
 If you wish to leverage the in-editor helper code functionality for your CF7 plugin, you need to use the following hooks,
@@ -53,13 +57,9 @@ If you wish to see an example on how to use this, please check the Google Map CF
 
 = Documentation =
 
-This plugin has a substantial set of FAQs and screenshots that is has a lot of information.  Please go through the FAQs and screenshot captions to understand how to use the basic functionality.
+This plugin has a substantial set of [FAQs](https://wordpress.org/plugins/cf7-grid-layout/#faq) and [screenshots](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) that is has a lot of information.  Please go through the FAQs and screenshot captions to understand how to use the basic functionality.
 
-The plugin has a number of hooks (filters and actions) which can be leveraged to further customise your form layouts and fields.  Please refer to the Helper Metabox available in the form post editor when you create/edit a form.  The helpers have commented code snippets which you can copy to and paste in your `functions.php` file to further understand how to use them.
-
-Get in touch in the support forum if you some clarification.
-
-A video will be made available in the near future to further demonstrate how to use this plugin, so what this space!
+The plugin has a number of hooks (filters and actions) which can be leveraged to further customise your form layouts and fields.  Please refer to the Helper Metabox available in the form post editor when you create/edit a form.  The helpers have commented code snippets which you can copy to and paste in your `functions.php` file to further understand how to use them. (See [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #21).
 
 = Support Open-source effort =
 
@@ -344,64 +344,3 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * added a general form mailtag.
 * added html table construct for table/tabbed fields in mailtags.
 * added mailtag for toggles and grouped toggles.
-= 3.3.8 =
-fix cf7 submission null object.
-= 3.3.7 =
-* fix conditional hidden fields validation bug.
-= 3.3.6 =
-* fix null cf7 form object.
-* bypass cf7 5.2 data consolidation.
-= 3.3.5 =
-* fix array field submission.
-= 3.3.4 =
-* fix multiselect array field.
-= 3.3.3 =
-* fix really simple captcha bug.
-* fix cf7 5.2 missing hidden fields in submitted data.
-= 3.3.2 =
-* fix locale setting for single non-english langauge sites.
-= 3.3.1 =
-* fix mulsitple select bug.
-= 3.3.0 =
-* added 'cf7sg_ui_grid_helper_hooks' action for plugin integration.
-* added 'cf7sg_ui_grid_js_helper_hooks' action for plugin integration.
-* enabled in-editor js code helpers.
-* updated screenshot 17.
-= 3.2.1 =
-* fix hidden fields.
-* fix wpcf7_submit capability for subscribers_only attribute.
-* upgrade select2 library for iOS touch fix.
-= 3.2.0 =
-* added cf7sg_mailtag_$mail_tag filters.
-* replaced PhpQuery library with SimpleHTMLDom.php (https://github.com/voku/simple_html_dom) library for php 7 compatibility.
-= 3.1.5 =
-* fix continue for PHP 7.3+
-= 3.1.4 =
-* fix continue.
-= 3.1.3 =
-* fix common validation bug.
-* improve 'cf7sg_validate_submission' hook, data array contains file data.
-* redirect cf7 plugin admin pages to smart grid pages.
-= 3.1.2 =
-* instantiate CodeMirror after library load and pass as attribute to anonymous function to fix conflict issue.
-= 3.1.1 =
-* fix helper bug inline filters.
-= 3.1.0 =
-* load minified resources on live sites.
-= 3.0.4 =
-* fix css style on rows/container for DIVI theme.
-= 3.0.3 =
-* fix add_cap bug for deleted roles.
-= 3.0.2 =
-* added 'wpcf7_manage_integration' cap to admin role.
-= 3.0.1 =
-* fix pointers dismiss bug.
-= 3.0.0 =
-* clean-up core integration with cf7 plugin.
-* add WP std capabilities for better role management.
-* automatic detection of required js scripts / css styling when form saved.
-* more efficient loading of front-end resources (js/css).
-* enabling benchmark fields for non-grid forms.
-* enabling dynamic_select fields for non-grid forms.
-* enabling sgv- validation for non-grid forms.
-* added pointers to form edit screen.
