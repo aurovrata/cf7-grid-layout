@@ -30,7 +30,7 @@ if(! defined('WPCF7_AUTOP') ) define('WPCF7_AUTOP', false);
 
 
 /** @since 2.6.0, NOTIFY USERS of forms requiring udpates */
-define( 'CF7SG_VERSION_FORM_UPDATE', '3.0.0');
+define( 'CF7SG_VERSION_FORM_UPDATE', '3.3.6');
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-cf7-grid-layout-activator.php
