@@ -339,6 +339,11 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * added js functionality to further customise tables and tab structures.
 * fixed table id attributes in tabbed sections.
 * improved grouped toggles.
+* tutorial admin page with embeded youtube videos.
+* new pointers.
+* added a general form mailtag.
+* added html table construct for table/tabbed fields in mailtags.
+* added mailtag for toggles and grouped toggles.
 = 3.3.8 =
 fix cf7 submission null object.
 = 3.3.7 =
