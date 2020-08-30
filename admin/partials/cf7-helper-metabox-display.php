@@ -1,7 +1,11 @@
 <p><?=__('Click on a link to copy the helper snippet code and paste it in your <em>functions.php</em> file.','cf7-grid-layout')?></p>
 <div id="helperdiv" class="postbox">
-  <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?=__('Toggle panel: Helper','cf7-grid-layout')?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
-  <h2 class="hndle ui-sortable-handle"><span><?=__('Pre-form-loading hooks','cf7-grid-layout')?></span></h2>
+  <div class="postbox-header">
+    <h2><span><?=__('Pre-form-loading hooks','cf7-grid-layout')?></span></h2>
+      <div class="handle-actions hide-if-no-js">
+        <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?=__('Toggle panel: Helper','cf7-grid-layout')?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
+    </div>
+  </div>
   <div class="inside">
     <p><?=__('Hooks fired prior to the form loading','cf7-grid-layout')?></p>
     <ol class="cf7sg-hooks helper-list">
@@ -10,8 +14,12 @@
   </div>
 </div>
 <div id="submithelperdiv" class="postbox">
-  <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?=__('Toggle panel: Helper','cf7-grid-layout')?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
-  <h2 class="hndle ui-sortable-handle"><span><?=__('Post-form-submit hooks','cf7-grid-layout')?></span></h2>
+  <div class="postbox-header">
+    <h2 class="hndle ui-sortable-handle"><span><?=__('Post-form-submit hooks','cf7-grid-layout')?></span></h2>
+    <div class="handle-actions hide-if-no-js">
+      <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?=__('Toggle panel: Helper','cf7-grid-layout')?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
+    </div>
+  </div>
   <div class="inside">
     <p><?=__('Hooks fired after the form is submitted','cf7-grid-layout')?></p>
     <ol class="cf7sg-hooks helper-list">

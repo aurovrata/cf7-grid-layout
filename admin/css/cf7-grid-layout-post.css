@@ -1,3 +1,97 @@
+#editors{position: relative;}
+#optional-editors {
+	display: inline-block;
+	position: absolute;
+	margin-top: 8px;
+  z-index:2;
+}
+.codemirror-theme label:hover {
+	font-weight: bold;
+}
+.codemirror-theme label {
+	z-index: 10;
+	position: relative;
+}
+#optional-editors a.button {font-weight: bold;}
+#js-tags > li.show-events:not(#last-item) {
+	display: inline-block;
+	vertical-align: top;
+	border: solid 2px #007cba;
+	background: white;
+	padding: 5px 8px;
+	border-radius: 3px;
+}
+#last-item {
+	display: inline-block;
+	margin-top: 5px;
+	margin-left: 3px;
+}
+#js-tags > li:hover > span {
+  transform: rotate(90deg);
+  display: inline-block;
+}
+#js-tags > li > span {
+  font-weight:bold;
+  transition: 0.2s ease-out;
+  padding: 0 5px;
+}
+#js-tags > li > ul {display: none;}
+#js-tags > li > ul>li {margin:0;}
+#js-tags > li:hover > ul {
+	display: block;
+	position: absolute;
+	background: white;
+	padding: 5px 8px;
+	border: solid 1px;
+  border-radius: 3px;
+	z-index: 100;
+}
+#js-tags > li:hover > ul > li:hover{position: relative}
+#js-tags > li:hover > ul > li:hover > span > span{
+  display:block;
+  position: absolute;
+	background: white;
+	padding: 5px 8px;
+	border: solid 1px;
+  border-radius: 3px;
+	z-index: 20;
+	width: 225px;
+	left: 4px;
+	top: -3px;
+	font-style: italic;
+}
+.columns.cf7sg-slider-section, .columns.cf7sg-accordion-rows {box-shadow: 0 0 6px #6a0080;}
+.columns:not(.full) + .row-controls .grid-controls .make-grid{display:inline-block;}
+.columns.full > .container:not(.cf7sg-collapsible) > .row:not(.cf7-sg-table) > .columns:not(.full) + .row-controls .grid-controls .make-grid,
+.button.make-grid.display-none,
+.display-none, #js-tags > li.display-none:not(.show-events),
+.cf7sg-slider-section .cf7sg-collapsible .collapsible-row-label,
+.cf7sg-accordion-rows .cf7sg-collapsible .collapsible-row-label {display: none;}
+.enable-grouping.grid-column > .grid-controls .grouping-option {
+    display: inline-block;
+}
+.codemirror-theme {
+  position: absolute;
+  top: -26px;
+  padding: 2px 0 2px 5px;
+  background: #eae9e9;
+}
+.codemirror-theme span.file {
+	margin-left: 10px;
+	vertical-align: middle;
+	background: #f7ecb1;
+	padding: 4px 8px;
+	color: black;
+}
+#cf7-codemirror,#cf7-js-codemirror,#cf7-css-codemirror {position: relative;}
+label.accordion-label:hover + span.popup{display: inline;
+position: absolute;
+background: white;
+margin-left: 6px;
+width: 200px;
+border: solid 1px gray;
+border-radius: 3px;
+padding: 1px 5px;}
 #grid-form .js-help + .cf7sg-helper-list{margin-top:39px;}
 span.js-icon.column-control{
   background-image: url('./image/js-sprite.png');
@@ -59,6 +153,8 @@ a.helper:hover + span.helper {display: inline;}
     margin: 0;
     min-width: 100%;
     text-align: right;
+    z-index: 1;
+    position: relative;
 }
 #form-editor-tabs ul li.ui-state-disabled:first-child {
     display: none;
@@ -72,7 +168,7 @@ a.helper:hover + span.helper {display: inline;}
     border-top-left-radius: 3px;
 }
 #form-editor-tabs ul.ui-tabs-nav > li.ui-tabs-active {
-    background: transparent;
+    background: #f5f5f5;
     border-bottom: none;
 }
 .tagsdiv .tagchecklist > span {
@@ -118,9 +214,23 @@ grid layout
 #grid-form .table-row-button {
     display: none;
 }
+/* footer table special styling */
 #grid-form .row.cf7-sg-table .row-controls label.table-row-button {
     display: block;
     text-align: center;
+}
+#grid-form .cf7-sg-table-footer .row {
+	min-height: 66px;
+}
+.cf7-sg-table-footer .cf7-field-label.cf7-field-inner,
+.cf7-sg-table-footer .cf7-field-type.cf7-field-inner,
+.cf7-sg-table-footer .dashicons-move.row-control,
+.cf7-sg-table-footer .button.make-grid.column-control,
+.cf7-sg-table-footer .button.external-form  {
+	display: none;
+}
+.cf7-sg-table-footer .cf7-field-tip.cf7-field-inner {
+	height: 42px;
 }
 #grid-form .form-select {
     display: block;
@@ -152,11 +262,13 @@ textarea.grid-input {
 #grid-form .table-row-button input  {
     max-width: 100%;
 }
-#cf7-codemirror .CodeMirror {
+#cf7-codemirror .CodeMirror,
+#cf7-js-codemirror .CodeMirror,
+#cf7-css-codemirror .CodeMirror {
     height: calc( 100vh - 180px);
 }
 #grid-form .row.cf7-sg-table {
-    box-shadow: 0px 0px 4px #0093ff;
+    box-shadow: 0px 0px 4px #920a03;
 }
 #grid-form .grid-column {
     background-color: #ddd;
@@ -317,12 +429,16 @@ textarea.grid-input {
 #grid-form > .cf7sg-external-form:first-child > .form-controls  .dashicons-trash {
   visibility:hidden;
 }
-.CodeMirror-wrap .cm-shortcode {
-    color: blue;
-}
-.CodeMirror-wrap.cm-s-paraiso-light span.cm-string {
-    color: #fea218;
-}
+
+.CodeMirror-wrap.cm-s-material-ocean .cm-shortcode {color: #4496ff;}
+.CodeMirror-wrap.cm-s-paraiso-light .cm-shortcode {color: blue;}
+.CodeMirror-wrap.cm-s-paraiso-light span.cm-string {color: #937c01;}
+.CodeMirror-wrap.cm-s-paraiso-light span.cm-tag {color: #b70b0b;}
+.CodeMirror-wrap.cm-s-material-ocean .cm-cf7sg-attr {color: #d300ff;}
+.CodeMirror-wrap.cm-s-material-ocean .cm-cf7sg-attr + .cm-string {color: #00f900;}
+.CodeMirror-wrap.cm-s-paraiso-light .cm-cf7sg-attr {color: #228f85;}
+.CodeMirror-wrap.cm-s-paraiso-light .cm-cf7sg-attr + .cm-string {color: #f124ee;}
+
 .disable-button{
   text-decoration: none;
   padding: 0 10px 1px;
@@ -358,11 +474,19 @@ textarea.grid-input {
     text-align: center;
     margin-top: 5px;
 }
+#form-editor-tabs > ul li.ui-tabs-active > a {
+  color:inherit;
+  background-color: inherit;
+}
 #form-editor-tabs > ul li > a {
-    padding: 3px 8px;
-    display: block;
-    color: inherit;
-    text-decoration: none;
+	padding: 1px 8px;
+	display: block;
+	text-decoration: none;
+	min-width: 75px;
+	text-align: center;
+	background-color: #818a99;
+	color: white;
+	min-height: 25px;
 }
 div#form-editor-tabs > ul.ui-tabs-nav li {
     padding: 0;
@@ -464,7 +588,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     content: '\25BC';
     position: absolute;
     right: 13px;
-    font-size: 2em;
+    font-size: 1.1em;
     line-height: 1px;
     top: 12px;
 }
@@ -507,3 +631,4 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 [data-search="li.cf7sg-tag-all,li.cf7sg-tag-dynamic_select,li.cf7sg-tag-dynamic_select-filter"] + .helper-popup {
     min-width: 300px;
 }
+body.disable-scroll{overflow:hidden;}

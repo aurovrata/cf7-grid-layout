@@ -5,7 +5,7 @@ Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, 
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.5
-Stable tag: 3.3.7
+Stable tag: 3.3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,7 @@ This plugin would not have been possible without the following open-source effor
 * [jQuery Select2](https://select2.org/) - this plugin converts dropdowns into powerful searchable dropdown fields.
 * [jQuery Toggles](https://simontabor.com/labs/toggles/) - enables pretty toggle switches on collapsible sections.
 * [PHP Simple HTML Dom](https://github.com/voku/simple_html_dom) - a php library that enables traversing and manipulation of html documents using CSS selectors like jQuery.  This is used to build the modular functionality of form designs.
+* [Slippry jQuery slider](http://slippry.com/) - a light weight fully customisable slider plugin.
 
 = Thanks to =
 Birmania [@birmania](https://profiles.wordpress.org/birmania/) for providing:
@@ -326,6 +327,18 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 4.0.0 =
+* custom js/css editors.
+* added 'cf7sg_dynamic_dropdown_taxonomy_query' filter.
+* slider forms.
+* multi-step forms.
+* added 'cf7sg_remove_table_row_labels' filter to remove labels in table rows.
+* added 'cf7sg_admin_form_editor_jstags_other_items' for plugin developer.
+* added 'cf7sg_admin_form_editor_jstags_last_item' for plugin developers.
+* enabled javascript helper codes on js editor.
+* added js functionality to further customise tables and tab structures.
+* fixed table id attributes in tabbed sections.
+* improved grouped toggles.
 = 3.3.8 =
 fix cf7 submission null object.
 = 3.3.7 =
@@ -339,7 +352,7 @@ fix cf7 submission null object.
 * fix multiselect array field.
 = 3.3.3 =
 * fix really simple captcha bug.
-* fix missing hidden fields in CF7 v5.2.
+* fix cf7 5.2 missing hidden fields in submitted data.
 = 3.3.2 =
 * fix locale setting for single non-english langauge sites.
 = 3.3.1 =

@@ -1,0 +1,145 @@
+/*
+ * jQuery UI CSS Framework 1.8.17
+ *
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Theming/API
+ */
+
+ .container {
+ 	font-size: 1.3em;
+	margin: 20px 0;
+ }
+ .columns > iframe{
+	 margin: 0 auto;
+	 display: block;
+ }
+ .container h3 {
+	line-height: 1.2;
+}
+/* --- Tabs --- */
+
+.ui-tabs {
+	margin: 4px 0px;
+	padding: 4px;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eaeaea'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#eaeaea)); /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #ffffff,  #eaeaea); /* for firefox 3.6+ */
+	background-color: #FCFCFC;/*border-top:0px;height:300px;overflow:auto;*/
+	}
+
+.ui-tabs .ui-tabs-nav h2,
+.ui-tabs .ui-tabs-nav h3,
+.ui-tabs .ui-tabs-hide {
+	display: none;
+	}
+
+.ui-tabs .ui-tabs-nav {
+	font-family: VegurLight,Helvetica,sans-serif;
+	margin:0;
+	display:inline;
+	list-style: none;
+	list-style-image: none;
+	background: none;
+	line-height: normal;
+	height: auto;
+	border: none;
+	text-align:left;
+	}
+
+.ui-tabs .ui-tabs-nav li {
+	margin:0px;
+	padding:0px;
+	list-style:none;
+	list-style-image:none;
+	background:none;
+	display:inline;
+	border: none;
+	}
+
+.ui-tabs .ui-tabs-nav li a,
+.ui-tabs .ui-tabs-nav li a:link {
+	font-size:18px;
+	margin:4px;
+	color:#313035;
+	background:none repeat scroll 0 0 #EDEDED;
+	font-family: VegurLight,Helvetica,sans-serif;
+	-moz-border-radius: 3px 3px 0 0;
+	-webkit-border-radius: 3px 3px 0 0;
+	border-radius: 3px 3px 0 0;
+	padding: 10px 30px 5px;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eaeaea'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#eaeaea)); /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #ffffff,  #eaeaea); /* for firefox 3.6+ */
+	border: 1px solid #D4D4D4;
+	text-shadow: 0px 1px 0px #D4D4D4;
+	height: 30px;
+	text-decoration:none;
+	}
+
+.ui-tabs .ui-tabs-nav li a:visited {
+	font-family: VegurLight,Helvetica,sans-serif;
+	color:#333;
+	}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
+.ui-tabs .ui-tabs-nav li a:hover {
+	font-family: VegurLight,Helvetica,sans-serif;
+	color: #ffffff;
+	background: none repeat scroll 0 0 #2D78D2;
+	-moz-border-radius: 3px 3px 0 0;
+	-webkit-border-radius: 3px 3px 0 0;
+	border-radius: 3px 3px 0 0;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#48A4E9', endColorstr='#2e7ad3'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#48A4E9), to(#2e7ad3)); /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #48A4E9,  #2e7ad3); /* for firefox 3.6+ */
+	text-shadow: 0px 1px 0px #3165a3;
+	border: 1px solid #16549C;
+	}
+
+.ui-tabs .ui-tabs-nav li a:active,
+.ui-tabs .ui-tabs-nav li a:focus {
+	outline:0;
+	color: #000;
+	}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a {
+	font-family: VegurLight,Helvetica,sans-serif;
+	-moz-border-radius: 3px 3px 0 0;
+	-webkit-border-radius: 3px 3px 0 0;
+	border-radius: 3px 3px 0 0;
+    	background: none repeat scroll 0 0 #2D78D2;
+	color: #ffffff;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#48A4E9', endColorstr='#2e7ad3'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#48A4E9), to(#2e7ad3)); /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #48A4E9,  #2e7ad3); /* for firefox 3.6+ */
+	text-shadow: 0px 1px 0px #3165a3;
+	border: 1px solid #16549C;
+	}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a:hover {
+	font-family: VegurLight,Helvetica,sans-serif;
+	color: #ffffff;
+	background: none repeat scroll 0 0 #2D78D2;
+	-moz-border-radius: 3px 3px 0 0;
+	-webkit-border-radius: 3px 3px 0 0;
+	border-radius: 3px 3px 0 0;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2e7ad3', endColorstr='#48A4E9'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#2e7ad3), to(#48A4E9)); /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #2e7ad3,  #48A4E9); /* for firefox 3.6+ */
+	text-shadow: 0px 1px 0px #3165a3;
+	border: 1px solid #16549C;
+	}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected,
+.ui-tabs .ui-tabs-nav li.ui-state-disabled  {
+	font-family: VegurLight, Helvetica, sans-serif;
+	background: none;
+	padding: 0px;
+	margin: 0px;
+	}
+
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs .ui-tabs-hide { display: none !important; }

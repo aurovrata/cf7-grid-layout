@@ -70,6 +70,14 @@ class Cf7_Grid_Layout_Public {
   static private $array_toggle_fields = array();
 
   /**
+  * The cf7 array fields.
+  *
+  * @since    4.0.0
+  * @access   private
+  * @var      Array    $array_tabbed_toggles    The form toggles within tabbed sections.
+  */
+  static private $array_tabbed_toggles = array();
+  /**
    * The cf7 array fields.
    *
    * @since    2.5.0
@@ -77,15 +85,6 @@ class Cf7_Grid_Layout_Public {
    * @var      Array    $array_toggled_panels    The form toggled sections used.
    */
   static private $array_toggled_panels = array();
-
-  /**
-   * The cf7 array fields.
-   *
-   * @since    3.3.5
-   * @access   private
-   * @var      Array    $array_toggle_in_tabs    The form toggle sections within tabs..
-   */
-  static private $array_toggle_in_tabs = array();
   /**
    * The cf7 array fields.
    *
@@ -122,18 +121,7 @@ class Cf7_Grid_Layout_Public {
     }
     $type = 'singular';
     if(isset(self::$array_grid_fields[$form_id][$field])){
-      $type = self::$array_grid_fields[$form_id][$field];
-      switch(true){ /** @since 2.4.2 tables have unique id with time in milliseconds since 1/1/70 */
-        case preg_match('/^cf7-sg-table-[0-9]{3,13}$/', $type):
-          $type = 'table';
-          break;
-        case preg_match('/^cf7-sg-tab-[0-9]{3,13}$/', $type):
-          $type = 'tab';
-          break;
-        default:
-          $type = 'both';
-          break;
-      }
+      $type = self::$array_grid_fields[$form_id][$field][1]; //array(origin_id,type);
     }
     return $type;
   }
@@ -143,7 +131,7 @@ class Cf7_Grid_Layout_Public {
   *
   *@since 2.5.0
   *@param string $field field nav_menu_link_attributes.
-  *@return boolean check if the field is in a toggle section.
+  *@return array null or array of panel ids.
   */
   protected function get_toggle($field){
     return isset(self::$array_toggle_fields[$this->form_id][$field]) ? self::$array_toggle_fields[$this->form_id][$field]: null;
@@ -156,17 +144,22 @@ class Cf7_Grid_Layout_Public {
   *@return boolean was the toggle section submitted.
   */
   protected function is_submitted($toggle){
-    return isset(self::$array_toggled_panels[$this->form_id][$toggle]);
+    return !empty( array_intersect( array_keys(self::$array_toggled_panels[$this->form_id]), $toggle) );
   }
   /**
   * Check if a toggled section was used and its fields submitted.
   *
-  *@since 3.3.5
+  *@since 4.0.0
   *@param string $toggle toogle id
-  *@return boolean is the toggle within a tab.
+  *@return boolean was the toggle section inside a tabbed section.
   */
   protected function is_tabbed($toggle){
-    return isset(self::$array_toggle_in_tabs[$toggle]);
+    /* if the array is not set for this form_id,
+    * then it is because the form is an older version and
+    * should return true for backward compatibility */
+    if(isset(self::$array_tabbed_toggles[$this->form_id])){
+      return isset(self::$array_tabbed_toggles[$this->form_id][$toggle]);
+    }else return true;
   }
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
@@ -190,10 +183,11 @@ class Cf7_Grid_Layout_Public {
       $protocol = is_ssl() ? 'https' : 'http';
       $url_path = "$protocol://cdnjs.cloudflare.com/ajax/libs/jqueryui/{$ui->ver}/";
       wp_register_style('cf7-jquery-ui', $url_path . 'themes/smoothness/jquery-ui.min.css', array(), $ui->ver , 'all');
+      wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui->ver, 'all');
+      wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui->ver, 'all');
     }
 
-    wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui->ver, 'all');
-    wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui->ver, 'all');
+
     /** @since 3.1,0 improve live loading of resources */
     $ff = '';
     $pf='';
@@ -213,6 +207,8 @@ class Cf7_Grid_Layout_Public {
     }else{
       wp_register_style('select2-style', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', array(), '4.0.13','all');
     }
+    /** @since 3.4.0 enable slippry sliders for slider sections */
+    wp_register_style('slippry-style', $plugin_dir . 'assets/slippry/slippry.css', array(), '1.4.0','all');
 
     //allow custom script registration
     do_action('smart_grid_register_styles');
@@ -244,6 +240,8 @@ class Cf7_Grid_Layout_Public {
     wp_register_script('jquery-nice-select', $plugin_dir . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
+    /** @since 3.4.0 enable slippry sliders for slider sections */
+    wp_register_script('slippry-js', $plugin_dir . 'assets/slippry/slippry.min.js', array('jquery'), '1.4.0',true);
     //allow custom script registration
     do_action('smart_grid_register_scripts');
 	}
@@ -279,6 +277,21 @@ class Cf7_Grid_Layout_Public {
     return $hidden;
   }
   /**
+  * Filter autop off for grid forms.
+  * hooked to 'wpcf7_autop_or_not'
+  *@since 4.0.0
+  *@param boolean $autop true or false.
+  *@return boolean true or false
+  */
+  public function disable_autop_for_grid($autop){
+    $form = WPCF7_ContactForm::get_current();
+    if(isset($form) && $form->id()>0){
+      $is_grid_form = get_post_meta($form->id(), '_cf7sg_managed_form', true);
+      $autop = ( !$is_grid_form || ''==$is_grid_form );
+    }
+    return $autop;
+  }
+  /**
    * Enqueue scripts requried for cf7 shortcode
    * hooked on 'do_shortcode_tag',
    * @since 1.0.0
@@ -288,6 +301,11 @@ class Cf7_Grid_Layout_Public {
     if('contact-form-7' !== $tag){
       return $output;
     }
+    /** @since 4.0 add page body class for cf7 forms */
+    add_filter('body_class', function($classes){
+      debug_msg('add body class ');
+      return array_push($classes, 'cf7sg-form-page');
+    },10,1);
     //wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     $cf7_id = $attr['id'];
@@ -341,6 +359,10 @@ class Cf7_Grid_Layout_Public {
       wp_enqueue_script('jquery-ui-datepicker');
       wp_enqueue_style('cf7-jquery-ui');
     }
+    if(array_search('has-slider',$class, true)!==false){
+      wp_enqueue_script('slippry-js');
+      wp_enqueue_style('slippry-style');
+    }
     //cf7 plugin styles
     wp_enqueue_style('contact-form-7');
     //cf7sg script & style.
@@ -352,7 +374,9 @@ class Cf7_Grid_Layout_Public {
     $this->localised_data = array(
       'url' => admin_url( 'admin-ajax.php' ),
       'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
-      'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' )
+      'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
+      'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
+      'debug'=>( defined('WP_DEBUG') && WP_DEBUG )
     );
     wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
     //setup classes and id for wrapper.
@@ -388,7 +412,7 @@ class Cf7_Grid_Layout_Public {
         //check form saved date, if sub-form is newer, we need to udpate it.
         if(strtotime($post_obj->post_modified ) > $form_time){
           if(empty($cf7_form)){
-            $form = WPCF7_ContactForm::get_instance($cf7_id);
+            $cf7_form = WPCF7_ContactForm::get_instance($cf7_id);
             $form_raw = $cf7_form->prop( 'form' );
           }
           $form_raw = $this->update_sub_form($form_raw, $post_obj);
@@ -650,6 +674,7 @@ class Cf7_Grid_Layout_Public {
   **/
   public function setup_grid_values($data){
     $cf7form = WPCF7_ContactForm::get_current();
+
     if(empty($cf7form) ){
       if(isset($_POST['_wpcf7']) ){
         $cf7_id = $_POST['_wpcf7'];
@@ -665,6 +690,7 @@ class Cf7_Grid_Layout_Public {
 		//debug_msg($grid_fields, 'grid fields...');
     $tags = $cf7form->scan_form_tags();
     foreach($tags as $tag){
+      if(empty($tag->name)) continue;
       $field_name = $tag['name'];
       $field_type = self::field_type($field_name, $cf7_id);
       switch($field_type){
@@ -681,12 +707,27 @@ class Cf7_Grid_Layout_Public {
           break;
         default:
           $toggle = $this->get_toggle($field_name);
-          if('unit-contact' ==$field_name) debug_msg($toggle, 'unit contact toggle ');
-          if(!empty($toggle)) $data[$field_name] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type, $tag) : null;
-          else $data[$field_name]= $this->get_field_value($field_name, $tag['basetype'], $tag);
+          if(!empty($toggle)){
+            $data[$field_name] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type, $tag) : null;
+          }else $data[$field_name]= $this->get_field_value($field_name, $tag['basetype'], $tag);
+
           break;
       }
     }
+    //add toggled sections as submitted values.
+    $groups = get_post_meta($this->form_id, '_cf7sg_grid_grouped_toggles', true);
+
+    foreach($groups as $group=>$grp_toggles){
+      foreach($grp_toggles as $toggle){
+        if( isset(self::$array_toggled_panels[$this->form_id][$toggle]) ){
+          self::$array_toggled_panels[$this->form_id][$group]=self::$array_toggled_panels[$this->form_id][$toggle];
+          break;
+        }
+      }
+    }
+    $data += self::$array_toggled_panels[$this->form_id];
+    // debug_msg($data, 'consolidated + submitted: ');
+    // $this->submitted_data[$this->form_id] = $data;
     return $data;
   }
   /**
@@ -706,7 +747,7 @@ class Cf7_Grid_Layout_Public {
     }
     $field_name = $field_tag['name'];
     $field_type = $field_tag['basetype'];
-    $origin = self::$array_grid_fields[$cf7_id][$field_name];
+    $origin = self::$array_grid_fields[$cf7_id][$field_name][0];//array(origin,type);
     $values = array();
     $regex = '';
     $submitted_fields=array();
@@ -717,19 +758,24 @@ class Cf7_Grid_Layout_Public {
       case 'tab':
       case 'table':
         $index_suffix = ('table'==$type)?'_row-':'_tab-';
+
         //find the number of rows submitted.
         $max_fields = isset($_POST[$origin]) ? $_POST[$origin]:0;
-        if(!empty($toggle)){ //check if submitted.
-          $values[''] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type, $field_tag) : null;
-        }else $values['']= $this->get_field_value($field_name,$field_type, $field_tag);
+
+        if(!empty($toggle) && !$this->is_submitted($toggle)){ //check if submitted.
+          $values[''] = null;
+        }else{
+          $values['']= $this->get_field_value($field_name,$field_type, $field_tag);
+        }
 
         for($idx=1;$idx<$max_fields;$idx++){
           $fid=$index_suffix.$idx;
-          if(!empty($toggle)){ //check if submitted.
-            $toggle_id = $toggle; /** @since 3.3.5 track toggles in tabs*/
-            if($this->is_tabbed($toggle)) $toggle_id = $toggle.$fid;
-            $values[$fid] = $this->is_submitted($toggle_id) ? $this->get_field_value($field_name.$fid,$field_type, $field_tag) : null;
-          }else $values[$fid] = $this->get_field_value($field_name.$fid,$field_type, $field_tag);
+          $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$fid, $toggle) : $toggle;
+          if(!empty($toggle) && !$this->is_submitted($toggle_id)){ //check if submitted.
+            $values[$fid] = null;
+          }else{
+            $values[$fid] = $this->get_field_value($field_name.$fid,$field_type, $field_tag);
+          }
           $purge_fields[$field_name.$fid] = true;
         }
         break;
@@ -739,34 +785,37 @@ class Cf7_Grid_Layout_Public {
         $tab_origin = $origins[1];
         $max_tabs = isset($_POST[$tab_origin])?$_POST[$tab_origin]:0;
         $values[''] = array(); //init multi-dimensional array
-        if(!empty($toggle)){ //check if submitted, tab<-toggle<-table.
-          $values[''][''] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type, $field_tag) : null;
-        }else $values[''][''] = $this->get_field_value($field_name,$field_type, $field_tag);
 
+        if(!empty($toggle) && !$this->is_submitted($toggle)){ //check if submitted, tab<-toggle<-table.
+          $values[''][''] =  null;
+        }else{
+          $values[''][''] = $this->get_field_value($field_name,$field_type,$field_tag);
+        }
         for($idx=0;$idx<$max_tabs;$idx++){ //tables in other tabs.
           $max_fields = ($idx>0) ? $_POST[$table_origin.'_tab-'.$idx]:$_POST[$table_origin];
           $tab_suffix= ($idx>0)? '_tab-'.$idx:'';
           for($jdx=0;$jdx<$max_fields;$jdx++){
             $row_suffix= ($jdx>0)?'_row-'.$jdx:'';
             $fid = $tab_suffix.$row_suffix;
-            if(!empty($toggle)){ //check if submitted, tab<-toggle<-table.
-              $toggle_id = $toggle; /** @since 3.3.5 track toggles in tabs*/
-              if($this->is_tabbed($toggle)) $toggle_id = $toggle.$tab_suffix;
-              $values[$tab_suffix][$row_suffix] = $this->is_submitted($toggle_id) ? $this->get_field_value( $field_name.$fid, $field_type, $field_tag):null;
-            }else $values[$tab_suffix][$row_suffix] = $this->get_field_value($field_name.$fid, $field_type, $field_tag);
-            $purge_fields[$field_name.$fid] = true; //remove from the origina $data.
+            $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$tab_suffix,$toggle) : $toggle;
+
+            if(!empty($toggle) && !$this->is_submitted($toggle_id)){ //check if submitted, tab<-toggle<-table.
+              $values[$tab_suffix][$row_suffix] = null;
+            }else{
+              $values[$tab_suffix][$row_suffix] = $this->get_field_value($field_name.$fid,$field_type, $field_tag);
+            }
+            $purge_fields[$field_name.$fid] = true; //remove from the original $data.
           }
         }
         break;
     }
     //debug_msg($purge_fields, 'purging ');
-    //debug_msg($data);
     $data = array_udiff_uassoc($data, $purge_fields, function($a, $b){return 0;}, function($a, $b){
       if ($a === $b) return 0;
       return ($a > $b)? 1:-1;
     }); //this will remove all the surplus fields
     $data[$field_name] = $values;
-    return $values;
+    return;
   }
   /**
   * Extract either a file name or a field value
@@ -811,8 +860,8 @@ class Cf7_Grid_Layout_Public {
     $fields = get_post_meta($form_id , '_cf7sg_grid_table_names', true);
 		if(!empty($fields)){
       if( is_array( $fields[key($fields)] ) ){
-        foreach($fields as $table=>$table_fields) $grid_fields += array_fill_keys($table_fields, $table);
-      }else $grid_fields += array_fill_keys($fields, 'cf7-sg-table-000');
+        foreach($fields as $table=>$table_fields) $grid_fields += array_fill_keys($table_fields, array($table,'table'));
+      }else $grid_fields += array_fill_keys($fields, array('cf7-sg-table-000','table'));
 		}
     //tabs
 		$fields = get_post_meta($form_id , '_cf7sg_grid_tabs_names', true);
@@ -820,14 +869,14 @@ class Cf7_Grid_Layout_Public {
       if(is_array( $fields[key( $fields)] ) ){ /** @since 2.4.2 */
         foreach($fields as $tab=>$tab_fields){
           foreach($tab_fields as $field){
-            if(isset($grid_fields[$field])) $grid_fields[$field] = $grid_fields[$field].':'.$tab;
-            else $grid_fields[$field] = $tab;
+            if(isset($grid_fields[$field])) $grid_fields[$field] = array($grid_fields[$field].':'.$tab,'both');
+            else $grid_fields[$field] = array($tab,'tab');
           }
         }
       }else{
         foreach($fields as $field){
-          if(isset($grid_fields[$field])) $grid_fields[$field] = $grid_fields[$field].':'.$tab;
-          else $grid_fields[$field] = 'cf7-sg-tab-000';
+          if(isset($grid_fields[$field])) $grid_fields[$field] = array($grid_fields[$field].':'.$tab,'both');
+          else $grid_fields[$field] = array('cf7-sg-tab-000','tab');
         }
       }
 		}
@@ -840,8 +889,8 @@ class Cf7_Grid_Layout_Public {
     }
     self::$array_grid_fields[$form_id]=$grid_fields;
     //load panel fields.
-    self::$array_toggled_panels[$form_id]=array();
     if( isset($_POST['_cf7sg_version']) && version_compare($_POST['_cf7sg_version'],'2.5.0','>=') ){
+      self::$array_toggled_panels[$form_id]=array();
       $toggled_panels = array();
       if(isset($_POST['_cf7sg_toggles'])){
         $toggled_panels = json_decode( stripslashes($_POST['_cf7sg_toggles']));
@@ -854,15 +903,21 @@ class Cf7_Grid_Layout_Public {
       self::$array_toggle_fields[$form_id]=array();
       if(!empty($fields)){
         foreach($fields as $panel=>$pfields){
-          foreach($pfields as $field) self::$array_toggle_fields[$form_id][$field]=$panel;
+          foreach($pfields as $field){
+            if( isset(self::$array_toggle_fields[$form_id][$field]) ){
+              self::$array_toggle_fields[$form_id][$field][] = $panel;
+            }else{
+              self::$array_toggle_fields[$form_id][$field]= array($panel);
+            }
+          }
         }
       }
-    }
-    /** @since 3.3.5 tack toggle in tabs */
-    self::$array_toggle_in_tabs=array();
-    if( isset($_POST['_cf7sg_version']) && version_compare($_POST['_cf7sg_version'],'3.3.5','>=') ){
-       $toggles_in_tabs = get_post_meta($form_id, '_cf7sg_grid_toggle_in_tabs', true);
-      if(!empty($toggles_in_tabs)) self::$array_toggle_in_tabs = array_fill_keys($toggles_in_tabs,true);
+      if(version_compare($_POST['_cf7sg_version'],'4.0.0','>=')){ //track tabbed toggles.
+        $tabtgls = get_post_meta($form_id, '_cf7sg_grid_tabbed_toggles', true);
+        if(!empty($tabtgls)) $tabtgls = array_fill_keys($tabtgls,true);
+        else $tabtgls = array();
+        self::$array_tabbed_toggles[$form_id]=$tabtgls;
+      }
     }
 		return $grid_fields;
 	}
@@ -876,10 +931,11 @@ class Cf7_Grid_Layout_Public {
   *@return array  a filtered array of $index_suffix=>$value pairs for tabs or rows fields, The index suffix is '.row-<index>' for tables and '.tab-<index>' for tabs. This method returns a 2 dimensional array for fields which are both within rowns and tabs.  The 2 dimensional array will list [<tab_suffix>][<row_suffix>]=>$value.  The original field name that was submitted can be reconstructed as $field_name.$index_suffix.  The first field will have an empty string as its $index_suffix.
   */
   private function consolidate_grid_submissions($field_name, $type, &$data){
-		$cf7_key = '';
+    $cf7_key = '';
     if(isset($_POST['_wpcf7_key'])) $cf7_key = $_POST['_wpcf7_key'];
     $cf7_id = 0;
     if(isset($_POST['_wpcf7'])) $cf7_id = $_POST['_wpcf7'];
+
     $values = array();
     $regex = '';
     $submitted_fields=array();
@@ -1187,7 +1243,7 @@ class Cf7_Grid_Layout_Public {
             case 'captchar': //cannot be called twice, hence see if already invalidated.
               /** @since 3.3.3 check if invalidated previously */
               if( isset($invalids[$tag['name']]) ){
-								$result->invalidate( $tag, $invalids[$tag['name']]['reason']);
+                $result->invalidate( $tag, $invalids[$tag['name']]['reason']);
                 $validation[$tag['name']] = $invalids[$tag['name']]['reason'];
                 $validated[$tag['name']] = $tag;
               }
@@ -1200,11 +1256,10 @@ class Cf7_Grid_Layout_Public {
               $validated[$tag['name']] = $tag;
               $submission[$tag['name']] = $this->get_submitted_data($tag['name'], $type, $data[$tag['name']]);
               break;
-	  }
+	        }
           break;
       }
     }
-
     $form_key = '';
     if(isset($_POST['_wpcf7_key'])){
       $form_key = $_POST['_wpcf7_key'];
@@ -1212,53 +1267,54 @@ class Cf7_Grid_Layout_Public {
 
     //allow for more complex validation.
     if(has_filter('cf7sg_validate_submission')){
-			/**
-			* filter to validate the entire submission and check interdependency of fields
-			* @since 1.0.0
-			* @param Array  $validation an array of $field_name=>$validaton_message.
-			* @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs) null values are fields which have not been disabled and not submitted such as those in toggled sections.
-			* @param String  $form_key  unique form key to identify current form.
-			* @param int  $form_id  cf7 form post ID.
-			* @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
-			*/
-			$validation = apply_filters('cf7sg_validate_submission', $validation, $submission, $form_key, $_POST['_wpcf7']);
+      /**
+      * filter to validate the entire submission and check interdependency of fields
+      * @since 1.0.0
+      * @param Array  $validation an array of $field_name=>$validaton_message.
+      * @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs) null values are fields which have not been disabled and not submitted such as those in toggled sections.
+      * @param String  $form_key  unique form key to identify current form.
+      * @param int  $form_id  cf7 form post ID.
+      * @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
+      */
+      $validation = apply_filters('cf7sg_validate_submission', $validation, $submission, $form_key, $_POST['_wpcf7']);
 
-			$result = new WPCF7_Validation();
+      //now that the user has filtered the validatoin, reset the in cf7 inalids.
+      $result = new WPCF7_Validation();
 
-			if(!empty($validation)){
-				foreach($validation as $name=>$msg){
-					switch(true){
-						case is_array($msg):
-							foreach($msg as $idx=>$value){
-								switch(true){
-									case is_array($value):
-										foreach($value as $rdx=>$message){
-											if(empty($message)) continue;
-											$result->invalidate($validated[$name][$idx][$rdx], $message);
-										}
-										break;
-									case is_array($validated[$name][$idx]): //error, expecting array..
-										debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
-										break;
-									case empty($value): //no message, just continue.
-										break;
-									default:
-										$result->invalidate($validated[$name][$idx], $value);
-										break;
-								}
-							}
-							break;
-						case is_array($validated[$name]): //error, we should have an array.
-							debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
-							break;
-						case empty($msg): //no message, just continue.
-							break;
-						default:
-							$result->invalidate($validated[$name], $msg);
-							break;
-					}
-				}
-			}
+      if(!empty($validation)){
+        foreach($validation as $name=>$msg){
+          switch(true){
+            case is_array($msg):
+              foreach($msg as $idx=>$value){
+                switch(true){
+                  case is_array($value):
+                    foreach($value as $rdx=>$message){
+                      if(empty($message)) continue;
+                      $result->invalidate($validated[$name][$idx][$rdx], $message);
+                    }
+                    break;
+                  case is_array($validated[$name][$idx]): //error, expecting array..
+                    debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
+                    break;
+                  case empty($value): //no message, just continue.
+                    break;
+                  default:
+                    $result->invalidate($validated[$name][$idx], $value);
+                    break;
+                }
+              }
+              break;
+            case is_array($validated[$name]): //error, we should have an array.
+              debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
+              break;
+            case empty($msg): //no message, just continue.
+              break;
+            default:
+              $result->invalidate($validated[$name], $msg);
+              break;
+          }
+        }
+      }
     }
     return $result;
   }
@@ -1515,13 +1571,15 @@ class Cf7_Grid_Layout_Public {
     if(!isset($_POST['_wpcf7cf_hidden_group_fields'])){
       return $posted_data;
     }
+
     $hidden_fields = json_decode(stripslashes($_POST['_wpcf7cf_hidden_group_fields']));
-    $conditonal_fields = array();
+
     if (is_array($hidden_fields) && count($hidden_fields) > 0) {
       foreach ($hidden_fields as $field) {
-        if (wpcf7cf_endswith($field, '[]')) {
-          $field = substr($field,0,strlen($field)-2);
-        }
+        $field = str_replace('[]', '', $field);
+        // if (wpcf7cf_endswith($field, '[]')) {
+        //   $field = substr($field,0,strlen($field)-2);
+        // }
         unset( $posted_data[$field] );
       }
     }
@@ -1540,6 +1598,19 @@ class Cf7_Grid_Layout_Public {
   public function filter_table_tab_mail_tag($replaced, $submitted, $html=false, $mail_tag=null ){
     $cf7form = WPCF7_ContactForm::get_current();
     $cf7form_key = get_cf7form_key($cf7form->id());
+    $submitted_cf7 = WPCF7_Submission::get_instance();
+    $submitted_data = array();
+    if(!empty($submitted_cf7)) $submitted_data = $submitted_cf7->get_posted_data();
+
+    switch(true){
+      case 0==strpos($mail_tag->field_name(), 'cf7sg-toggle-'):
+        $toggle = str_replace('cf7sg-toggle-', '', $mail_tag->field_name());
+        if(isset($submitted_data[$toggle])) $replaced = $submitted_data[$toggle];
+        break;
+      case 0==strpos($mail_tag->field_name(), 'cf7sg-form-'):
+        $replaced ="";
+        break;
+    }
 
     if(empty($mail_tag)) return $replaced;
     $field_type = self::field_type($mail_tag->field_name(), $cf7form->id());
@@ -1549,7 +1620,7 @@ class Cf7_Grid_Layout_Public {
       case 'tab':
       case 'table':
         if($html){
-          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, $cf7form_key);
+          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, $cf7form_key, false);
           if(!empty($filtered)){
             $replaced = $filtered;
             break;
@@ -1568,7 +1639,7 @@ class Cf7_Grid_Layout_Public {
         break;
       case 'both':
         if($html){
-          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, $cf7form_key);
+          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, $cf7form_key, true);
           if(!empty($filtered)){
             $replaced = $filtered;
             break;
@@ -1598,10 +1669,7 @@ class Cf7_Grid_Layout_Public {
         break;
       default: //general fix for cf7 mail tags.
         $tag = $mail_tag->corresponding_form_tag();
-        $submitted_cf7 = WPCF7_Submission::get_instance();
-        $submitted_data = array();
-        if( !empty($submitted_cf7) ) $submitted_data = $submitted_cf7->get_posted_data();
-        
+
         /**
         * Filter the value inserted in the mail tag.
         * @since 2.9.0.

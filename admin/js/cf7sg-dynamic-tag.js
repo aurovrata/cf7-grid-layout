@@ -14,8 +14,7 @@
     $id = $('input[name="id"]', $form),
     $cl = $('input[name="class"]', $form),
     $post = $(' select.post-list', $form),
-    selectType = 'select',
-    multiple='';
+    selectType = 'select', multiple='';
 
   $('select.post-list').on('change', function(){
     $('div.post-taxonomies').hide();
@@ -72,14 +71,24 @@
       source = 'post';
     }else if($tab.is('#custom-tab')){
       source = 'filter';
-      $('a.helper.init', $tab.parent()).each(function(){
-        new Clipboard($(this)[0], {
-          text: function(trigger) {
-            return $(trigger).data('cf72post');;
-          }
-        });
-        $(this).removeClass('init');
-      });
+      let $a = $('p.position-relative a', $tab.parent());
+      if( !$a.is('.init') ){
+        $a.attr('data-cf72post', $('#fieldhelperdiv li.cf7sg_filter_source a').data('cf72post') );
+        $a.addClass('init').addClass('helper');
+      }
+      new Clipboard($a[0], {
+        text: function(t) {
+          let $f = $(t);
+          let text = $f.data('cf72post');
+          //get post slug
+          let key = $('#post_name').val();
+          text = text.replace(/\{\$form_key\}/gi, key);
+          text = text.replace(/\{\$field_name\}/gi, $name.val());
+          text = text.replace(/\{\$field_name_slug\}/gi, $name.val().replace(/\-/g,'_'));
+          text = text.replace(/\[dqt\]/gi, '"');
+          return text;
+        }
+      })
     }
     updateCF7Tag(source);
   });
@@ -122,7 +131,7 @@
     let id=$id.val();
     if(id.length > 0) id =' id:'+id;
 
-    let classes = $cl.val();
+    let classes = $cl.val(), postlinks='';
     if(classes.length > 0){
       let classArr = classes.split(','), idx;
       classes='';
@@ -140,7 +149,8 @@
       case 'post':
         if($post.val().length > 0){
           let $tax = $('div#'+$post.val()+' > select.select2');
-          //.val();
+          /** @since 4.0 */
+          if($('#include-post-links').is(':checked')) postlinks = ' permalinks';
           values = ' "source:post:'+$post.val()+'"';
           if(null != $tax.val()){
             let term='';
@@ -174,6 +184,6 @@
     let type = 'dynamic_select ';
     if($('#select-multiple').is(':checked')) multiple=' multiple';
     if($req.is(':checked')) type = 'dynamic_select* ';
-    $tag.val('[' + type + $name.val() + multiple + id + classes + values +']');
+    $tag.val('[' + type + $name.val() + multiple + postlinks + id + classes + values +']');
   }
 })( jQuery );

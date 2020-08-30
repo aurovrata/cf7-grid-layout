@@ -1,5 +1,5 @@
 <?php
-global $post;
+global $post, $pagenow;
 $cf7_key = $post->post_name;
  ?>
 <h2><?php echo esc_html( __cf7sg( 'Form' ) ); ?></h2>
@@ -9,19 +9,90 @@ $cf7_key = $post->post_name;
   $tag_generator->print_buttons();
 ?>
 </div>
-<div id="form-editor-tabs">
-  <ul>
-    <li><a href="#cf7-editor-grid"><?=__('Grid','cf7-grid-layout')?></a></li>
-    <li><a href="#cf7-codemirror"><?=__('Text','cf7-grid-layout')?></a></li>
-  </ul>
-  <div id="cf7-editor-grid">
-    <div id="grid-form"></div>
+<?php require_once plugin_dir_path( __FILE__ ) .'helpers/cf7sg-js-events.php'; ?>
+<div id="editors">
+  <?php
+  $js_file = str_replace(ABSPATH, '', get_stylesheet_directory()."/js/{$cf7_key}.js");
+  $js_file_exists = file_exists(ABSPATH.$js_file);
+  $jscm_required = $js_file_exists ? ' required':'';
+  $editor_disable = ('post-new.php'==$pagenow) ? ' disabled':'';
+  $css_file = str_replace(ABSPATH, '', get_stylesheet_directory()."/css/{$cf7_key}.css");
+  $css_file_exists = file_exists(ABSPATH.$css_file);
+  $csscm_required = $css_file_exists ? ' required':'';
+  ?>
+
+  <div id="optional-editors">
+    <a class="button jstab cf7sg-cmtab<?=$jscm_required.$editor_disable?>" href="javascript:void(0);"><?=__('Add custom JS','cf7-grid-layout')?></a>
+    <div id="cf7-js-codemirror" class="display-none">
+      <div  class="codemirror-theme"><?=__('Editor theme:','cf7-grid-layout')?>
+        <?php $user_js_theme = get_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', true); ?>
+        <label>
+          <input type="radio" value="light" name="cf7sg_js_codemirror_theme"<?=('light'==$user_js_theme ? ' checked' : '')?>/><?=__('Light','cf7-grid-layout')?>
+        </label>
+        <label>
+          <input type="radio" value="dark" name="cf7sg_js_codemirror_theme" <?=('dark'==$user_js_theme ? ' checked' : '')?>/><?=__('Dark','cf7-grid-layout')?>
+        </label>
+        <input type="hidden" name="cf7sg_prev_js_file" class="prev-file" />
+      </div>
+      <textarea id="cf7-form-js" class="cf7-sg-hidden" data-file="<?=__('File','cf7-grid-layout')?>&nbsp;&gt;&gt;&nbsp;/<?=$js_file?>" name="cf7sg_js_file" data-form="">
+        <?php
+        if($js_file_exists){
+          $file = file_get_contents(ABSPATH.$js_file);
+          echo esc_textarea( $file );
+        }else{
+          do_action('cf7sg_default_custom_js_template', $cf7_key);
+        }
+        ?>
+      </textarea>
+    </div>
+    <a class="button csstab cf7sg-cmtab<?=$csscm_required.$editor_disable?>" href=""><?=__('Add custom CSS','cf7-grid-layout')?></a>
+    <div id="cf7-css-codemirror" class="display-none">
+      <div  class="codemirror-theme"><?=__('Editor theme:','cf7-grid-layout')?>
+        <?php $user_css_theme = get_user_meta(get_current_user_id(),'_cf7sg_css_cm_theme', true); ?>
+        <label>
+          <input type="radio" value="light" name="cf7sg_css_codemirror_theme"<?=('light'==$user_css_theme ? ' checked' : '')?>/><?=__('Light','cf7-grid-layout')?>
+        </label>
+        <label>
+          <input type="radio" value="dark" name="cf7sg_css_codemirror_theme" <?=('dark'==$user_css_theme ? ' checked' : '')?>/><?=__('Dark','cf7-grid-layout')?>
+        </label>
+        <input type="hidden" name="cf7sg_prev_css_file" class="prev-file" />
+      </div>
+      <textarea id="cf7-form-css" class="cf7-sg-hidden" data-file="<?=__('File','cf7-grid-layout')?>&nbsp;&gt;&gt;&nbsp;/<?=$css_file?>" name="cf7sg_css_file" data-form="">
+        <?php
+        if($css_file_exists){
+          $file = file_get_contents(ABSPATH.$css_file);
+          echo esc_textarea( $file );
+        }else{
+          do_action('cf7sg_default_custom_css_template', $cf7_key);
+        }
+        ?>
+      </textarea>
+    </div>
   </div>
-  <div id="cf7-codemirror">
-    <textarea id="wpcf7-form" class="cf7-sg-hidden codemirror-cf7-update">
-      <?= esc_textarea( $form_post->prop( 'form' ) );
-      /** @since 2.8.3 rename codemirror textarea##wpcf7-form adn initially popullate with form.  */?>
-    </textarea>
+
+  <div id="form-editor-tabs">
+    <ul>
+      <li><a class="button" href="#cf7-editor-grid"><?=__('Grid','cf7-grid-layout')?></a></li>
+      <li><a class="button" href="#cf7-codemirror">&lt;HTML/&gt;</a></li>
+    </ul>
+    <div id="cf7-editor-grid">
+      <div id="grid-form"></div>
+    </div>
+    <div id="cf7-codemirror">
+      <div  class="codemirror-theme"><?=__('Editor theme:','cf7-grid-layout')?>
+        <?php $user_theme = get_user_meta(get_current_user_id(),'_cf7sg_cm_theme', true);?>
+        <label>
+          <input type="radio" value="light" name="cf7sg_codemirror_theme"<?=('light'==$user_theme ? ' checked' : '')?>/><?=__('Light','cf7-grid-layout')?>
+        </label>
+        <label>
+          <input type="radio" value="dark" name="cf7sg_codemirror_theme" <?=('dark'==$user_theme ? ' checked' : '')?>/><?=__('Dark','cf7-grid-layout')?>
+        </label>
+      </div>
+      <textarea id="wpcf7-form" class="cf7-sg-hidden codemirror-cf7-update">
+        <?= esc_textarea( $form_post->prop( 'form' ) );
+        /** @since 2.8.3 rename codemirror textarea##wpcf7-form adn initially popullate with form.  */?>
+      </textarea>
+    </div>
   </div>
 </div>
 <textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden large-text code" data-config-field="form.body"><?= esc_textarea( $form_post->prop( 'form' ) );?></textarea>
@@ -30,10 +101,14 @@ $cf7_key = $post->post_name;
 <input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />
 <input type="hidden" value="" id="cf7sg-table-fields" name="cf7sg-table-fields" />
 <input type="hidden" value="" id="cf7sg-toggle-fields" name="cf7sg-toggle-fields" />
+<input type="hidden" value="" id="cf7sg-tabbed-toggles" name="cf7sg-tabbed-toggles" />
+<input type="hidden" value="" id="cf7sg-grouped-toggles" name="cf7sg-grouped-toggles" />
+<div id="bottom-tags">
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();
 ?>
+</div>
 <div id="grid-row">
   <div class="container">
     <div class="row">
@@ -65,6 +140,7 @@ $cf7_key = $post->post_name;
             <?=__('Tabbed section','cf7-grid-layout')?>
             <input type="checkbox" class="tabs-row" />
           </label>
+          <a class="display-none button make-grid row-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
         </div>
       </div>
     </div>
@@ -164,8 +240,10 @@ $cf7_key = $post->post_name;
         <option value="eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
         <option value="full" selected><?=__('full wifth','cf7-grid-layout')?></option>
       </select>
-      <a id="new-row" class="button make-grid" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
+      <a id="new-row" class="button make-grid column-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
       <a class="button external-form" href="javascript:void(0);"><?= __('Insert form', 'cf7-grid-layout');?></a>
+      <label class="display-none accordion-label grouping-option"><input type="checkbox" name="grouping-option" class="accordion-rows column-control" /><?=__('Enable accordion','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Group collapsible rows as jQuery accordion','cf7-smart-grid')?></span>
+      <label class="display-none slider-label grouping-option"><input type="checkbox" name="grouping-option" class="slider-rows column-control" /><?=__('Enable slider','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Convert collapsible rows into sides','cf7-smart-grid')?></span>
     </div>
     <div class="cf7-field-label cf7-field-inner">
       <p class="content"><?=__('Field label','cf7-grid-layout')?></p>
@@ -174,7 +252,7 @@ $cf7_key = $post->post_name;
     </div>
     <div class="cf7-field-type cf7-field-inner">
       <p class="content"><?=__('[select a field]','cf7-grid-layout')?></p>
-      <textarea placeholder="<?=__('select a field','cf7-grid-layout')?>"></textarea>
+      <textarea class="field-entry" placeholder="<?=__('select a field','cf7-grid-layout')?>"></textarea>
       <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
     <div class="cf7-field-tip cf7-field-inner">

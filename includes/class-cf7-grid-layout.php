@@ -229,7 +229,10 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'admin_init', $plugin_admin, 'enable_cf7_editor_role', 5,0 );
     /** @since 3.3.0 helper hooks added via action hook */
     $this->loader->add_action( 'cf7sg_ui_grid_helper_hooks', $plugin_admin, 'print_helper_hooks');
-
+    /** @since 4.0.0 include default js template */
+    $this->loader->add_action( 'cf7sg_default_custom_js_template', $plugin_admin, 'print_default_js', 1,1);
+    /** @since 4.0.0 enable toggle mail tags */
+    $this->loader->add_filter( 'wpcf7_collect_mail_tags', $plugin_admin, 'setup_cf7_mailtags');
 	}
 
 	/**
@@ -282,6 +285,8 @@ class Cf7_Grid_Layout {
 		$this->loader->add_action('cf7_2_post_form_posted', $plugin_public, 'save_toggle_status', 10, 5 );
     /** @since 2.4.1 attache array file fields to mails */
     $this->loader->add_filter( 'wpcf7_mail_components', $plugin_public, 'wpcf7_mail_components' , 999,3);
+    /** @since 4.0.0 enable/disable autop with filter */
+    $this->loader->add_filter( 'wpcf7_autop_or_not', $plugin_public, 'disable_autop_for_grid' ,5,1);
 
 	}
 

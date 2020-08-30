@@ -112,20 +112,20 @@ if(!class_exists('CF7SG_WP_Post_Table')){
           break;
         case 'edit':
           //get all cf7 forms
-          $cf7_posts = get_posts(array(
-            'post_type'=>self::cf7_post_type(),
-            'posts_per_page' => -1,
-          ));
-          $keys=array();
-          if(!empty($cf7_posts)){
-            foreach($cf7_posts as $cf7){
-              $keys[]=$cf7->post_name;
-            }
-            wp_reset_postdata();
-          }
-          wp_enqueue_script('jquery-effects-core');
+          // $cf7_posts = get_posts(array(
+          //   'post_type'=>self::cf7_post_type(),
+          //   'posts_per_page' => -1,
+          // ));
+          // $keys=array();
+          // if(!empty($cf7_posts)){
+          //   foreach($cf7_posts as $cf7){
+          //     $keys[]=$cf7->post_name;
+          //   }
+          //   wp_reset_postdata();
+          // }
+          // wp_enqueue_script('jquery-effects-core');
           wp_enqueue_script( 'cf7sg-post-table-js', plugin_dir_url( __FILE__ ) . 'js/cf7-post-table.js', false, $this->version, true );
-          wp_localize_script('cf7sg-post-table-js','cf7_2_post_admin', array('keys'=>$keys));
+          // wp_localize_script('cf7sg-post-table-js','cf7_2_post_admin', array('keys'=>$keys));
           break;
       }
   	}
@@ -246,18 +246,33 @@ if(!class_exists('CF7SG_WP_Post_Table')){
     *
     */
     public function add_cf7_sub_menu(){
-
       //remove_submenu_page( $menu_slug, $submenu_slug );
       remove_submenu_page( 'wpcf7', 'wpcf7' );
       $hook = add_submenu_page(
         'wpcf7',
-        __cf7sg( 'Edit Form Types' ),
-        __cf7sg( 'Form Types' ),
+        __( 'Edit Form Types', 'cf7-grid-layout' ),
+        __( 'Form Types', 'cf7-grid-layout' ),
         'wpcf7_read_contact_forms',
         'edit-tags.php?taxonomy=wpcf7_type&post_type=wpcf7_contact_form'
       );
+      /** @since 4.0.0 helper sub-menu */
+      $hook = add_submenu_page(
+        'wpcf7',
+        __( 'Smart Grid Helper Tutorials ', 'cf7-grid-layout' ),
+        __( 'Tutorials', 'cf7-grid-layout' ),
+        'wpcf7_read_contact_forms',
+        'admin.php?page=cf7sg_help',
+        array($this, 'display_helper_page')
+      );
     }
-
+    /**
+    * Display helper tutorial page
+    * called by add_sbuenu_page()
+    *@since 4.0.0
+    */
+    public function display_helper_page(){
+      require_once plugin_dir_path( __FILE__ ) .'partials/cf7sg-tutorial-page.php';
+    }
     /**
     * Change the submenu order
     * @since 1.0.0
@@ -297,8 +312,10 @@ if(!class_exists('CF7SG_WP_Post_Table')){
     *
     */
     public function modify_cf7_list_columns($columns){
+      if(isset($columns['title'])) $columns['title'] = __('Form','contact-form-7');
+      if(isset($columns['date'])) unset($columns['date']);
       $columns['shortcode'] = 'Shortcode<br /><span class="cf7-help-tip"><a href="javascript:void();">What\'s this?</a><span class="cf7-short-info">Use this shortcode the same way you would use the contact-form-7 shortcode. (See the plugin page for more information )</span></span>';
-      $columns['cf7_key'] = __cf7sg('Form key');
+      $columns['cf7_key'] = __('Form key', 'cf7-grid-layout');
       return $columns;
     }
     /**
@@ -443,7 +460,7 @@ if(!class_exists('CF7SG_WP_Post_Table')){
         }
         return do_shortcode('[contact-form-7 id="'.$id.'"'.$attributes.']');
       }else{
-        return '<em>' . __('cf7-form shortcode key error, unable to find form','cf7-admin-table') . '</em>';
+        return '<em>' . __('cf7form shortcode key error, unable to find form, did you update your form key?','cf7-grid-layout') . '</em>';
       }
     }
 
