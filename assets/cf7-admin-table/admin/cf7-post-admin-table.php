@@ -246,7 +246,6 @@ if(!class_exists('CF7SG_WP_Post_Table')){
     *
     */
     public function add_cf7_sub_menu(){
-
       //remove_submenu_page( $menu_slug, $submenu_slug );
       remove_submenu_page( 'wpcf7', 'wpcf7' );
       $hook = add_submenu_page(
@@ -256,8 +255,24 @@ if(!class_exists('CF7SG_WP_Post_Table')){
         'wpcf7_read_contact_forms',
         'edit-tags.php?taxonomy=wpcf7_type&post_type=wpcf7_contact_form'
       );
+      /** @since 4.0.0 helper sub-menu */
+      $hook = add_submenu_page(
+        'wpcf7',
+        __( 'Smart Grid Helper Tutorials ', 'cf7-grid-layout' ),
+        __( 'Tutorials', 'cf7-grid-layout' ),
+        'wpcf7_read_contact_forms',
+        'admin.php?page=cf7sg_help',
+        array($this, 'display_helper_page')
+      );
     }
-
+    /**
+    * Display helper tutorial page
+    * called by add_sbuenu_page()
+    *@since 4.0.0
+    */
+    public function display_helper_page(){
+      require_once plugin_dir_path( __FILE__ ) .'partials/cf7sg-tutorial-page.php';
+    }
     /**
     * Change the submenu order
     * @since 1.0.0
@@ -445,7 +460,7 @@ if(!class_exists('CF7SG_WP_Post_Table')){
         }
         return do_shortcode('[contact-form-7 id="'.$id.'"'.$attributes.']');
       }else{
-        return '<em>' . __('cf7-form shortcode key error, unable to find form','cf7-admin-table') . '</em>';
+        return '<em>' . __('cf7form shortcode key error, unable to find form, did you update your form key?','cf7-grid-layout') . '</em>';
       }
     }
 

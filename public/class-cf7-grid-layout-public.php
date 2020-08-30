@@ -121,18 +121,7 @@ class Cf7_Grid_Layout_Public {
     }
     $type = 'singular';
     if(isset(self::$array_grid_fields[$form_id][$field])){
-      $type = self::$array_grid_fields[$form_id][$field];
-      switch(true){ /** @since 2.4.2 tables have unique id with time in milliseconds since 1/1/70 */
-        case preg_match('/^cf7-sg-table-[0-9]{3,13}$/', $type):
-          $type = 'table';
-          break;
-        case preg_match('/^cf7-sg-tab-[0-9]{3,13}$/', $type):
-          $type = 'tab';
-          break;
-        default:
-          $type = 'both';
-          break;
-      }
+      $type = self::$array_grid_fields[$form_id][$field][1]; //array(origin_id,type);
     }
     return $type;
   }
@@ -758,7 +747,7 @@ class Cf7_Grid_Layout_Public {
     }
     $field_name = $field_tag['name'];
     $field_type = $field_tag['basetype'];
-    $origin = self::$array_grid_fields[$cf7_id][$field_name];
+    $origin = self::$array_grid_fields[$cf7_id][$field_name][0];//array(origin,type);
     $values = array();
     $regex = '';
     $submitted_fields=array();
@@ -871,8 +860,8 @@ class Cf7_Grid_Layout_Public {
     $fields = get_post_meta($form_id , '_cf7sg_grid_table_names', true);
 		if(!empty($fields)){
       if( is_array( $fields[key($fields)] ) ){
-        foreach($fields as $table=>$table_fields) $grid_fields += array_fill_keys($table_fields, $table);
-      }else $grid_fields += array_fill_keys($fields, 'cf7-sg-table-000');
+        foreach($fields as $table=>$table_fields) $grid_fields += array_fill_keys($table_fields, array($table,'table'));
+      }else $grid_fields += array_fill_keys($fields, array('cf7-sg-table-000','table'));
 		}
     //tabs
 		$fields = get_post_meta($form_id , '_cf7sg_grid_tabs_names', true);
@@ -880,14 +869,14 @@ class Cf7_Grid_Layout_Public {
       if(is_array( $fields[key( $fields)] ) ){ /** @since 2.4.2 */
         foreach($fields as $tab=>$tab_fields){
           foreach($tab_fields as $field){
-            if(isset($grid_fields[$field])) $grid_fields[$field] = $grid_fields[$field].':'.$tab;
-            else $grid_fields[$field] = $tab;
+            if(isset($grid_fields[$field])) $grid_fields[$field] = array($grid_fields[$field].':'.$tab,'both');
+            else $grid_fields[$field] = array($tab,'tab');
           }
         }
       }else{
         foreach($fields as $field){
-          if(isset($grid_fields[$field])) $grid_fields[$field] = $grid_fields[$field].':'.$tab;
-          else $grid_fields[$field] = 'cf7-sg-tab-000';
+          if(isset($grid_fields[$field])) $grid_fields[$field] = array($grid_fields[$field].':'.$tab,'both');
+          else $grid_fields[$field] = array('cf7-sg-tab-000','tab');
         }
       }
 		}

@@ -483,9 +483,7 @@
           $select2.select2($select2.cf7sgSelect2Options());
 
         });
-        $form.on('cf7SmartGridReady', function(e){
-          $this.trigger('sgSelect2')
-        })
+        $form.on('cf7SmartGridReady', function(e){ $form.trigger('sgSelect2')})
       });
     }
 		//enable datepicker
