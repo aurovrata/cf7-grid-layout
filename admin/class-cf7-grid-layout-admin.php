@@ -1224,6 +1224,11 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-update-forms.php';
     $content =ob_get_contents();
     $pointers['update_forms_pointer'] = array($content, 'left', 'center','');
+    /* tutorials */
+    ob_clean();
+    include_once 'partials/pointers/cf7sg-pointer-tutorials.php';
+    $content =ob_get_contents();
+    $pointers['tutorials_pointer'] = array($content, 'left', 'center','a[href="admin.php?page=admin.php?page=cf7sg_help"]');
     /* shortcodes */
     ob_clean();
     include_once 'partials/pointers/cf7sg-pointer-shortcodes.php';
@@ -1266,6 +1271,11 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php';
     $content = ob_get_contents();
     $pointers['dynamic_dropdown'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="dynamic-dropdown"]');
+    ob_clean();
+    /* #optional-editors */
+    include_once 'partials/pointers/cf7sg-pointers-editor-optional-js-css.php';
+    $content = ob_get_contents();
+    $pointers['js_css_editors'] = array($content, 'left', 'center','#optional-editors');
     ob_clean();
     include_once 'partials/pointers/cf7sg-pointer-tag-benchmark.php';
     $content = ob_get_clean();
