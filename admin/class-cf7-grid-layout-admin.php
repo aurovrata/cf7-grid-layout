@@ -124,7 +124,9 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_style('cf7sg-benchmark-tag-css', $plugin_dir . 'admin/css/cf7sg-benchmark-tag.css', array(), $this->version, 'all' );
         //codemirror
         wp_enqueue_style( "codemirror-css", $plugin_dir . 'assets/codemirror/codemirror.css', array(), $this->version, 'all' );
-        wp_enqueue_style( "codemirror-theme-css", $plugin_dir . 'assets/codemirror/theme/paraiso-light.css', array(), $this->version, 'all' );
+        /** @since 4.0 enable dark theme */
+        wp_enqueue_style( "codemirror-theme-light-css", $plugin_dir . 'assets/codemirror/theme/paraiso-light.css', array(), $this->version, 'all' );
+        wp_enqueue_style( "codemirror-theme-dark-css", $plugin_dir . 'assets/codemirror/theme/material-ocean.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-foldgutter-css", $plugin_dir . 'assets/codemirror/addon/fold/foldgutter.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-dialog-css", $plugin_dir . 'assets/codemirror/addon/dialog/dialog.css', array(), $this->version, 'all' );
         wp_enqueue_style( "codemirror-matchesonscrollbar-css", $plugin_dir . 'assets/codemirror/addon/search/matchesonscrollbar.css', array(), $this->version, 'all' );
@@ -167,21 +169,26 @@ class Cf7_Grid_Layout_Admin {
         );
         /** @since 3.1.2 initialise codemirror after library load and parse as attribute to anonymous functtion in cf7-grid-codemirror.js */
         wp_add_inline_script('cf7-codemirror-js',
-        'var codeMirror_5_32 = CodeMirror(document.getElementById("cf7-codemirror"),
-        {
-          value: "",
-          extraKeys: {"Ctrl-Space": "autocomplete"},
-          lineNumbers: true,
-          styleActiveLine: true,
-          matchBrackets: true,
-          tabSize:2,
-          mode: "htmlmixed",
-          lineWrapping: true,
-          addModeClass: true,
-          foldGutter: true,
-          autofocus:false,
+        'const cmInitialSettings = {
+          value:"",matchTags: {bothTags: true},autoCloseTags:true,
+          extraKeys: {"Ctrl-Space": "autocomplete", "Ctrl-/": "toggleComment", "Ctrl-J": "toMatchingTag"},
+          lineNumbers: true, styleActiveLine: true,
+          matchBrackets: true, tabSize:2, lineWrapping: true, addModeClass: true,
+          foldGutter: true, autofocus:false,
           gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });');
+        }
+        const codeMirror_5_32 = CodeMirror(document.getElementById("cf7-codemirror"),cmInitialSettings);
+        const cssCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-css-codemirror"),cmInitialSettings);
+        const jsCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-js-codemirror"),cmInitialSettings);');
+        //matchtags.
+        wp_enqueue_script( 'codemirror-matchtag-js',
+          $plugin_dir . 'assets/codemirror/edit/matchtags.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-closetag-js',
+          $plugin_dir . 'assets/codemirror/edit/closetag.js',
+          array('cf7-codemirror-js'), $this->version, true
+        );
         //fold code
         wp_enqueue_script( 'codemirror-foldcode-js',
           $plugin_dir . 'assets/codemirror/addon/fold/foldcode.js',
@@ -267,7 +274,49 @@ class Cf7_Grid_Layout_Admin {
           array('beautify-js'), $this->version, true
         );
         wp_enqueue_script('jquery-select2', $plugin_dir . 'assets/select2/js/select2.min.js', array( 'jquery' ), $this->version, true );
-
+        /** @since 4.0 enable dark theme */
+        $cm_light = apply_filters('cf7sg_admin_editor_theme', '');
+        $user_theme = get_user_meta(get_current_user_id(),'_cf7sg_cm_theme', true);
+        if(!empty($cm_light) && file_exists(get_stylesheet_directory().'/'.$cm_light) ){
+          wp_enqueue_style( "codemirror-theme-css", get_stylesheet_directory_uri().'/'.$cm_light, array(), $this->version, 'all' );
+          $user_theme = basename($cm_light, '.css');
+          update_user_meta(get_current_user_id(),'_cf7sg_cm_theme', '');
+        }else{
+          if(empty($user_theme)){
+            $user_theme = 'paraiso-light';
+            update_user_meta(get_current_user_id(),'_cf7sg_cm_theme', 'light');
+          }else{
+            $user_theme = ('light'==$user_theme ? 'paraiso-light' : 'material-ocean');
+          }
+        }
+        $cm_js_light = apply_filters('cf7sg_admin_js_editor_theme', '');
+        $user_js_theme = get_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', true);
+        if(!empty($cm_js_light) && file_exists(get_stylesheet_directory().'/'.$cm_js_light) ){
+          wp_enqueue_style( "codemirror-js-theme-css", get_stylesheet_directory_uri().'/'.$cm_js_light, array(), $this->version, 'all' );
+          $user_js_theme = basename($cm_js_light, '.css');
+          update_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', '');
+        }else{
+          if(empty($user_js_theme)){
+            $user_js_theme = 'paraiso-light';
+            update_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', 'light');
+          }else{
+            $user_js_theme = ('light'==$user_js_theme ? 'paraiso-light' : 'material-ocean');
+          }
+        }
+        $cm_css_light = apply_filters('cf7sg_admin_css_editor_theme', '');
+        $user_css_theme = get_user_meta(get_current_user_id(),'_cf7sg_css_cm_theme', true);
+        if(!empty($cm_css_light) && file_exists(get_stylesheet_directory().'/'.$cm_css_light) ){
+          wp_enqueue_style( "codemirror-css-theme-css", get_stylesheet_directory_uri().'/'.$cm_css_light, array(), $this->version, 'all' );
+          $user_css_theme = basename($cm_css_light, '.css');
+          update_user_meta(get_current_user_id(),'_cf7sg_css_cm_theme', '');
+        }else{
+          if(empty($user_css_theme)){
+            $user_css_theme = 'paraiso-light';
+            update_user_meta(get_current_user_id(),'_cf7sg_css_cm_theme', 'light');
+          }else{
+            $user_css_theme = ('light'==$user_css_theme ? 'paraiso-light' : 'material-ocean');
+          }
+        }
         //enqueue the cf7 scripts.
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
@@ -277,9 +326,24 @@ class Cf7_Grid_Layout_Admin {
           'cf7sgeditor',
           array(
             'mode' => apply_filters('cf7sg_admin_editor_mode', 'shortcode', $post->post_name),
-            'theme' => apply_filters('cf7sg_admin_editor_theme', 'paraiso-light', $post->post_name)
+            'theme' => array(
+               'light'=>'paraiso-light',
+               'dark'=>'material-ocean',
+               'user'=>$user_theme
+            ),
+            'jstheme' => array(
+               'light'=>'paraiso-light',
+               'dark'=>'material-ocean',
+               'user'=>$user_js_theme
+            ),
+            'csstheme' => array(
+               'light'=>'paraiso-light',
+               'dark'=>'material-ocean',
+               'user'=>$user_css_theme
+            )
           )
         );
+
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
         wp_localize_script(
           $this->plugin_name,
@@ -493,6 +557,7 @@ class Cf7_Grid_Layout_Admin {
       }
       $args['locale'] =$locale;
     }else $args['locale'] = get_locale();
+
     WPCF7_ContactForm::get_template( $args);
   }
   /**
@@ -630,7 +695,8 @@ class Cf7_Grid_Layout_Admin {
       'data-*'=>1,
     );
     $allowed_tags['script']=array('type'=>1);
-    $allowed_tags = apply_filters('cf7sg_kses_allowed_html',$allowed_tags, $_POST['post_name']);
+    $cf7_key = sanitize_text_field($_POST['post_name']);
+    $allowed_tags = apply_filters('cf7sg_kses_allowed_html',$allowed_tags, $cf7_key);
     if(isset( $_POST['wpcf7-form'] )){
       $args['form'] = wp_kses($_POST['wpcf7-form'], $allowed_tags);
     }
@@ -707,6 +773,17 @@ class Cf7_Grid_Layout_Admin {
       }else $sanitised_toggled_fields[] = sanitize_text_field($tgg_field);
   	}
     update_post_meta($post_id, '_cf7sg_grid_toggled_names', $sanitised_toggled_fields);
+    /** @since 4.0.0 track tabbed toggles */
+    $ttgls = json_decode(stripslashes($_POST['cf7sg-tabbed-toggles']));
+    if(empty($ttgls)) $ttgls = array();
+    if(!is_array($ttgls)) $ttgls = array($ttgls);
+    update_post_meta($post_id, '_cf7sg_grid_tabbed_toggles', $ttgls);
+    /** @since 4.0.0 track grouped toggles */
+    $ttgls = json_decode(stripslashes($_POST['cf7sg-grouped-toggles']));
+    if(empty($ttgls)) $ttgls = array();
+    if(is_object($ttgls)) $ttgls = get_object_vars($ttgls); //convert to array.
+    else $ttgls = array();
+    update_post_meta($post_id, '_cf7sg_grid_grouped_toggles', $ttgls);
     //flag tab & tables for more efficient front-end display.
     $has_tabs =  ( 'true' === $_POST['cf7sg-has-tabs']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_tabs', $has_tabs);
@@ -731,8 +808,51 @@ class Cf7_Grid_Layout_Admin {
     // debug_msg($classes, 'script classes');
     update_post_meta($post_id, '_cf7sg_script_classes', $classes);
     /**
-    *@since 2.3.0 the duplicate functionality has been isntored and therefore any new meta fields added to this plugin needs to be added to the duplication properties too.
+    *@since 2.3.0 the duplicate functionality has been instored and therefore any new meta fields added to this plugin needs to be added to the duplication properties too.
     */
+    /** @since 4.0.0 save user theme pref */
+    if(isset($_POST['cf7sg_codemirror_theme'])){
+      update_user_meta(get_current_user_id(),'_cf7sg_cm_theme', $_POST['cf7sg_codemirror_theme']);
+    }
+    if(isset($_POST['cf7sg_js_codemirror_theme'])){
+      update_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', $_POST['cf7sg_js_codemirror_theme']);
+    }
+    //save js file if used.
+    $path = get_stylesheet_directory();
+    if(!empty($_POST['cf7sg_js_file'])){
+      //check if the file name is changed.
+      if(!empty($_POST['cf7sg_prev_js_file']) && file_exists(ABSPATH. $_POST['cf7sg_prev_js_file'])){
+        if( !unlink(ABSPATH.$_POST['cf7sg_prev_js_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_js_file']);
+      }
+      if (!is_dir($path)) mkdir($path);
+      file_put_contents( "$path/js/{$cf7_key}.js", stripslashes($_POST['cf7sg_js_file']) );
+    }else if( isset($_POST['cf7sg_js_file']) && file_exists("$path/js/{$cf7_key}.js") ) { //delete file.
+      if( !unlink("$path/js/{$cf7_key}.js") ) debug_msg("CF7SG ADMIN: unable to delete file $path/js/{$cf7_key}.js");
+    }
+    //save css file.
+    if(!empty($_POST['cf7sg_css_file'])){
+      //check if the file is changed.
+      if(!empty($_POST['cf7sg_prev_css_file']) && file_exists(ABSPATH.$_POST['cf7sg_prev_css_file'])){
+        if( !unlink(ABSPATH.$_POST['cf7sg_prev_css_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_css_file']);
+      }
+      if (!is_dir($path)) mkdir($path);
+      file_put_contents( $path."/css/{$cf7_key}.css", stripslashes($_POST['cf7sg_css_file']));
+    }else if( isset($_POST['cf7sg_css_file']) && file_exists("$path/css/{$cf7_key}.css") ) { //delete file.
+      if( !unlink("$path/css/{$cf7_key}.css") ) debug_msg("CF7SG ADMIN: unable to delete file $path/css/{$cf7_key}.css");
+    }
+    //jstags comments.
+    if(empty($_POST['cf7sg_jstags_comments'])) update_post_meta($post->ID, '_cf7sg_disable_jstags_comments',1);
+    else update_post_meta($post->ID, '_cf7sg_disable_jstags_comments',0);
+  }
+  /**
+  * Print default js template,
+  * Hooked to 'cf7sg_default_custom_js_template'
+  *@since 4.0.0
+  *@param string $form_key form key.
+  */
+  public function print_default_js($form_key){
+    $js_file = str_replace(ABSPATH, '', get_stylesheet_directory()."/js/{$form_key}.js");
+    include_once 'partials/cf7-default-js.php';
   }
   /**
   *
@@ -1109,6 +1229,11 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-update-forms.php';
     $content =ob_get_contents();
     $pointers['update_forms_pointer'] = array($content, 'left', 'center','');
+    /* tutorials */
+    ob_clean();
+    include_once 'partials/pointers/cf7sg-pointer-tutorials.php';
+    $content =ob_get_contents();
+    $pointers['tutorials_pointer'] = array($content, 'left', 'center','a[href="admin.php?page=admin.php?page=cf7sg_help"]');
     /* shortcodes */
     ob_clean();
     include_once 'partials/pointers/cf7sg-pointer-shortcodes.php';
@@ -1151,6 +1276,11 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php';
     $content = ob_get_contents();
     $pointers['dynamic_dropdown'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="dynamic-dropdown"]');
+    ob_clean();
+    /* #optional-editors */
+    include_once 'partials/pointers/cf7sg-pointers-editor-optional-js-css.php';
+    $content = ob_get_contents();
+    $pointers['js_css_editors'] = array($content, 'left', 'center','#optional-editors');
     ob_clean();
     include_once 'partials/pointers/cf7sg-pointer-tag-benchmark.php';
     $content = ob_get_clean();
@@ -1243,5 +1373,32 @@ class Cf7_Grid_Layout_Admin {
   */
   public function print_helper_hooks(){
     require_once plugin_dir_path( __FILE__ ) .'partials/helpers/cf7sg-form-fields.php';
+  }
+  /**
+  * Setup mailtags or toggles.
+  *
+  *@since 4.0.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function setup_cf7_mailtags($mailtags = array()){
+    // return $mailtags;
+    $contact_form = WPCF7_ContactForm::get_current();
+    $fields = get_post_meta($contact_form->id(), '_cf7sg_grid_toggled_names', true);
+    //update_post_meta($post_id, '_cf7sg_grid_tabbed_toggles', $ttgls);
+    if(!empty($fields)){
+      $toggles = array_keys($fields);
+      $groups = get_post_meta($contact_form->id(), '_cf7sg_grid_grouped_toggles', true);
+      if(!empty($groups)){
+        foreach($groups as $group=>$grp_toggles){
+          $toggles = array_diff($toggles, $grp_toggles);
+          array_push($toggles, $group);
+        }
+      }
+      foreach($toggles as $tgl) $mailtags[]= 'cf7sg-toggle-'.$tgl;
+    }
+    //add a general form tag.
+    $mailtags[]= 'cf7sg-form-'.get_cf7form_key($contact_form->id());
+    return $mailtags;
   }
 }

@@ -28,7 +28,7 @@ jQuery(document).ready( function($) {
   }
   var pobj, pids, id, pidx, pointers = cf7sg_pointers.pointers;
   pids = Object.keys(pointers);
-  if(pids.length>1){
+  if(pids.length>0){
     pidx=0;
     id = pids[pidx];
     pobj=createPointer(id, pointers[id]);

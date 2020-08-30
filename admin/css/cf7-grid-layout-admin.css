@@ -1,6 +1,4 @@
- .display-none {
-    display: none;
-}
+ .display-none {display: none;}
 #full-screen-cf7 {
     float: right;
     position: absolute;

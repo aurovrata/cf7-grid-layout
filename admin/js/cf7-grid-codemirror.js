@@ -3,80 +3,99 @@
  Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
  @since 3.1.2 introduce instaiated cm editor as attribute in anonymous function.
 */
-(function( $, cme ) {
+(function( $, cme, jscme, csscme ) {
 
   $(document).ready( function(){
-    var $codemirror = $('#cf7-codemirror');
-    var $wpcf7Editor = $('textarea#wpcf7-form-hidden');
-    var codemirrorUpdated = false;
-    var $grid = $('#grid-form');
-    var gridTab = '#cf7-editor-grid'; //default at load time.
+    let $codemirror = $('#cf7-codemirror'),
+      $wpcf7Editor = $('textarea#wpcf7-form-hidden'),
+      $editorTabs = $('#form-editor-tabs'),
+      $optionals= $('#optional-editors'),
+      codemirrorUpdated = false, formFields={},
+      $grid = $('#grid-form'),
+      $topTags =$('#top-tags'), $bottomTags =$('#bottom-tags'),
+      $jsTags = $('#js-tags'),
+      gridTab = '#cf7-editor-grid', //default at load time.
+      $jsCodemirror = $('#cf7-js-codemirror'),
+      $cssCodemirror = $('#cf7-css-codemirror'),
+      $jstext = $('textarea#cf7-form-js'),
+      $csstext = $('textarea#cf7-form-css'),
+      jscmUpdated = false, jsInsertAtLine = false,
+      csscmUpdated = false, cssInsertAtLine = false,
+      $jsThemeRadio = $('.codemirror-theme', $jsCodemirror),
+      $cssThemeRadio = $('.codemirror-theme', $cssCodemirror);
+
+    const $cf7key = $('#post_name');
+    $.fn.beautify = function(cursor){
+      let cm = cme, $this=$(this);
+      if($this.is('#cf7-js-codemirror')) cm = jscme;
+      else if($this.is('#cf7-css-codemirror')) cm = csscme;
+      cm.setSelection({
+        'line':cm.firstLine(),
+        'ch':0,
+        'sticky':null
+      },{
+        'line':cm.lastLine(),
+        'ch':0,
+        'sticky':null
+      },
+      {scroll: false});
+      cm.indentSelection("smart");
+      cm.setCursor(cm.firstLine(),0,{scroll: false});
+      if('undefined' != typeof cursor && cursor.find(false)){
+        const from = cursor.from(), to = cursor.to();
+        cm.setSelection(CodeMirror.Pos(from.line, 0), to);
+        cm.scrollIntoView({from: from, to: CodeMirror.Pos(to.line + 10, 0)});
+      }
+    }
     //set codemirror editor value;
     cme.setValue($wpcf7Editor.text());
-
+    cme.setSize("100%");
+    // cme.setOption('viewportMargin',Infinity);
     $wpcf7Editor.on('grid-ready', function(){ //------ setup the codemirror editor
       //codemirror editor
       CodeMirror.defineMode("shortcode", function(config, parserConfig) {
-        var cf7Overlay = {
+        let scOverlay = {
           token: function(stream, state) {
-            var ch;
+            let ch;
             if (stream.match(/^\[([a-zA-Z0-9_]+)\*?\s?/)) {
-              while ((ch = stream.next()) != null)
+              while ((ch = stream.next()) != null){
                 if (ch == "]" ) {
                   //stream.eat("]");
                   return "shortcode";
                 }
+              }
+            }else if(stream.match(/data-([a-z0-9_]+)/)){
+              while ((ch = stream.next()) != null){
+                if (ch == '=' ) {
+                  //stream.eat("]");
+                  return "cf7sg-attr";
+                }
+              }
             }
-            while (stream.next() != null && !stream.match(/^\[([a-zA-Z0-9_]+)\*?\s?/, false)) {}
+            while (stream.next() != null && !stream.match(/^\[([a-zA-Z0-9_]+)\*?\s?/, false) && !stream.match(/data-([a-z0-9_]+)/,false) ) {}
             return null;
           }
         };
-        return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), cf7Overlay);
+        return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), scOverlay);
       });
-      // var cmConfig =
+
       if(cf7sgeditor.mode.length>0) cme.setOption('mode',cf7sgeditor.mode);
-      if(cf7sgeditor.theme.length>0) cme.setOption('theme',cf7sgeditor.theme);
-      // cmEditor = CodeMirror( $codemirror.get(0), cmConfig);
-
-      /*  TODO: enable shortcode edit at a future date
-      $('.cm-shortcode',$codemirror).each(function(){
-        $(this).append('<span class="dashicons dashicons-edit"></span>');
-      });
-      $('.dashicons-edit', $codemirror).on('click', function(){
-        alert('shortcode '+ $(this).parent().text());
-      });
-      */
-      $.fn.beautify = function(cursor){
-        cme.setSelection({
-          'line':cme.firstLine(),
-          'ch':0,
-          'sticky':null
-        },{
-          'line':cme.lastLine(),
-          'ch':0,
-          'sticky':null
-        },
-        {scroll: false});
-        cme.indentSelection("smart");
-        cme.setCursor(cme.firstLine(),0);
-        if('undefined' != typeof cursor && cursor.find(false)){
-          var from = cursor.from();
-          var to = cursor.to();
-          cme.setSelection(CodeMirror.Pos(from.line, 0), to);
-          cme.scrollIntoView({from: from, to: CodeMirror.Pos(to.line + 10, 0)});
-        }
-      }
+      if(cf7sgeditor.theme.user.length>0) cme.setOption('theme',cf7sgeditor.theme.user);
+      /** @since 4.0.0 manage user theme pref */
+      let $themeRadio = $('.codemirror-theme', $codemirror);
+      if($(':input:checked', $themeRadio).length>0){
+        $themeRadio.on('change',':input',function(e){
+          cme.setOption("theme",cf7sgeditor.theme[e.target.value]);
+        });
+      }else $(':input',$themeRadio).prop('disabled',true);
       $codemirror.beautify();
-
-      //var cur = cme.getCursor();
-      //cme.setCursor(99, cur.ch);
 
       cme.on('changes', function(){
         codemirrorUpdated = true;
-        var disabled = $('#form-editor-tabs').tabs('option','disabled');
+        const disabled = $('#form-editor-tabs').tabs('option','disabled');
 
         if(true===disabled){
-          var changes = $('<div>').append(cme.getValue());
+          const changes = $('<div>').append(cme.getValue());
           if(0===changes.children().length || changes.children('.container').length>0){
             $('#form-editor-tabs').tabs('option',{disabled:false});
             /**
@@ -88,15 +107,18 @@
 
         $('#contact-form-editor').trigger('cf7sg-form-change');
       });
-
+      //toogle body scroll off/on
+      function disableBodyScroll(){$('body').addClass('disable-scroll')}
+      function enableBodyScroll(){$('body').removeClass('disable-scroll')}
       //create tabs
-      $('#form-editor-tabs').tabs({
+      $editorTabs.tabs({
         beforeActivate: function (event, ui){
+          enableBodyScroll();
           //update the codemirror panel
           if('#cf7-codemirror' == ui.newPanel.selector){
 						//finalise any changes in the grid form editor
             $grid.on('cf7grid-form-ready', function(){
-                var code = $grid.CF7FormHTML();
+                let code = $grid.CF7FormHTML();
                 if($grid.children('.container').length > 0){ //beautify.
 	              code = html_beautify(code ,
     	              {
@@ -105,6 +127,7 @@
     	              });
                 }
 	            cme.setValue(code);
+              // cme.refresh();
 	            //reset the codemirror change flag
 	            codemirrorUpdated = false;
 	            //remove id from textarea
@@ -124,63 +147,312 @@
         },
         activate: function( event, ui ) {
           gridTab = ui.newPanel.selector;
-          if('#cf7-editor-grid' == ui.newPanel.selector){
-            if(codemirrorUpdated){
-              //update the hidden textarea
-              $wpcf7Editor.text(cme.getValue());
-              //trigger rebuild grid event
-              $grid.trigger('build-grid');
-            }else{ //try to set the focus on the 'cf7sgfocus element'
-              var $focus = $('.cf7sgfocus', $grid);
-              if($focus.length>0){
-                var scrollPos = $focus.offset().top - $(window).height()/2 + $focus.height()/2;
-                //console.log(scrollPos);
-                $(window).scrollTop(scrollPos);
-                $focus.removeClass('cf7sgfocus');
+          $topTags.show();
+          $bottomTags.show();
+          $jsTags.hide();
+          $optionals.hide();
+          $(window).scrollTop($('#form-panel').offset().top);
+
+          switch(gridTab){
+            case '#cf7-editor-grid': //grid editor.
+              $optionals.show();
+              if(codemirrorUpdated){
+                //update the hidden textarea
+                $wpcf7Editor.text(cme.getValue());
+                //trigger rebuild grid event
+                $grid.trigger('build-grid');
+              }else{ //try to set the focus on the 'cf7sgfocus element'
+                const $focus = $('.cf7sgfocus', $grid);
+                if($focus.length>0){
+                  const scrollPos = $focus.offset().top - $(window).height()/2 + $focus.height()/2;
+                  //console.log(scrollPos);
+                  $(window).scrollTop(scrollPos);
+                  $focus.removeClass('cf7sgfocus');
+                }
               }
-            }
-          }else if('#cf7-codemirror' == ui.newPanel.selector){
-            var cursor = cme.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cme.firstLine(), 0), {caseFold: true, multiline: true});
+              break;
+            case '#cf7-codemirror': //HTML editor.
+              const cursor = cme.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cme.firstLine(), 0), {caseFold: true, multiline: true});
 
-            $codemirror.beautify(cursor);
+              $codemirror.beautify(cursor);
+              cme.refresh();
+              break;
+            case '#cf7-js-codemirror': //js editor.
+              $topTags.hide();
+              $bottomTags.hide();
+              $jsTags.show();
+              let $form = $('<div>').html($grid.CF7FormHTML());
+              $('.display-none', $jsTags).removeClass('show-events');
+              if( $('div.container.cf7-sg-table', $form).length > 0){
+                $('#table-events', $jsTags).addClass('show-events');
+              }
+              if( $('.container.cf7sg-collapsible', $form).not('.cf7sg-slider-section > .cf7sg-collapsible').length > 0){
+                $('#collapsible-events', $jsTags).addClass('show-events');
+              }
+              if( $('div.container.cf7-sg-tabs-panel', $form).length > 0){
+                $('#tab-events', $jsTags).addClass('show-events');
+              }
+              if( $('.cf7sg-slider-section', $form).length > 0){
+                $('#slider-events', $jsTags).addClass('show-events');
+              }
 
-            if($grid.children('.container').length>0){
-              var scrollPos = $('#form-panel').offset().top;
-              $(window).scrollTop(scrollPos);
-            }
+              //scan all fields.
+              let cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"source:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"source:)[^\[]*)\]/img;
+              //reset form fields.
+              formFields={};
+              $('.field', $form).each(function(){
+                let $field = $(this), search = $field.text(), match = cf7TagRegexp.exec(search);
+                while(null != match && match.length>2){
+                  switch(match[1].replace('*','')){
+                    case 'recaptcha':
+                    case 'recaptch':
+                    case 'acceptance':
+                    case 'submit':
+                    case 'save':
+                      match=null;
+                      break;//tags with no fields of interest.
+                    default:
+                      formFields[match[2]] = match[2];
+                      if($field.is('.cf7-sg-tabs .field')) formFields[match[2]] += '_tab';
+                      if($field.is('.container.cf7-sg-table .field')) formFields[match[2]] += '_row';
+                      match = cf7TagRegexp.exec(search); //search next.
+                      break;
+                  }
+                }
+              });
+              break;
+            case '#cf7-css-codemirror': //css editor.
+              $topTags.hide();
+              $bottomTags.hide();
+              break;
           }
+        },
+        create: function(e){
+          // $(window).scrollTop($('#meta-box-main-cf7-editor').offset().top);
+          $('#form-editor-tabs .ui-tabs-panel:not(#cf7-editor-grid)').hover(disableBodyScroll,enableBodyScroll);
         }
+      });
+      /** @since 4.0 js cm editor */
+      $.fn.createNewCMEditor = function(activate=false){
+        let $this = $(this);
+        $this.each(function(activate){
+          let $this = $(this), ref, $theme, $text, cm, theme, $cm, mode,regex;
+          if(!$this.is('a.button.cf7sg-cmtab')) return $this;
+
+          ref = '#'+$this.next('div.display-none').attr('id');
+          $this.attr('href',ref);
+          switch(ref){
+            case '#cf7-js-codemirror':
+              $theme = $jsThemeRadio;
+              $text = $jstext;
+              cm = jscme;
+              theme = cf7sgeditor.jstheme;
+              $cm = $jsCodemirror;
+              mode={name: "javascript", json: true};
+              $this.text('JS');
+              //enable helper popups.
+              regex = /(?<=\/\*)(.*?)(?=\s?\*\/)/im;
+              $('a.helper', $jsTags).each(function(){
+                let $helper = $(this), text = regex.exec($helper.data('cf72post'));
+                if('undefined' != typeof text){
+                  $helper.parent().append('<span style="position:relative"><span class="display-none">'+text[0]+'</span></span>');
+                }
+              });
+              break;
+            case '#cf7-css-codemirror':
+              $theme = $cssThemeRadio;
+              $text = $csstext;
+              cm = csscme;
+              theme = cf7sgeditor.csstheme;
+              $cm = $cssCodemirror;
+              mode = "css";
+              $this.text('CSS');
+              break;
+          }
+          $theme.append('<span class="file">'+$text.data('file')+'</span>');
+          //convert to css editor.
+          $editorTabs.append($this.next('div.display-none').remove());
+          $text.data('form', $cf7key.val());
+          $this = $this.remove().wrap('<li></li>');
+          $editorTabs.children('ul').append($this.closest('li'));
+          //set codemirror editor value;
+          cm.setValue($text.text());
+          cm.setOption("mode", mode);
+          cm.setSize("100%");
+          $cm.on('cf7sg-screen-resize',function(){cm.refresh()});
+          $cm.hover(disableBodyScroll);
+          $cm.removeClass('display-none').beautify();
+
+          if(theme.user.length>0) cm.setOption('theme',theme.user);
+          if($(':input:checked', $theme).length>0){
+            $theme.on('change',':input',function(e){
+              cm.setOption("theme",theme[e.target.value]);
+            });
+          }else $(':input',$theme).prop('disabled',true);
+          $editorTabs.tabs('refresh');
+          // if(activate) $this.delay(300).click();
+        });
+        return $this;
+      }
+      //add requried cm editors.
+      $('a.cf7sg-cmtab.required', $optionals).createNewCMEditor();
+      //else listen for user requirement.
+      $optionals.click('a.cf7sg-cmtab',function(e){ $(e.target).createNewCMEditor(true) });
+
+      jscme.on('changes', function(e, changes){
+        jsInsertAtLine = false;
+        let last = jscme.getLine(changes[changes.length-1].to.line);
+        if('undefined'!= typeof last && ""==last.trim()) jsInsertAtLine = true;
+
+        jscmUpdated = false;
+        if(jscme.getValue().length>0){
+          jscmUpdated = true;
+          $jstext.attr('data-form', $cf7key.val()); //set current form slug.
+        }
+      });
+      csscme.on('changes', function(e, changes){
+        cssInsertAtLine = false;
+        let last = csscme.getLine(changes[changes.length-1].to.line);
+        if(""==last.trim()) cssInsertAtLine = true;
+
+        csscmUpdated = false;
+        if(csscme.getValue().length>0){
+          csscmUpdated = true;
+          $csstext.attr('data-form', $cf7key.val()); //set current form slug.
+        }
+      });
+      $cf7key.on('change',function(e){
+        let oldkey = $jstext.data('form'),
+          newkey = $(this).val(), filepath;
+        if( oldkey.length > 0 && oldkey != $cf7key.val() ){
+          /* update editor js */
+          jscme.setValue( jscme.getValue().replace('#'+oldkey, '#'+$cf7key.val()) );
+          $jstext.attr('data-form', newkey);
+          jscmUpdated = true;
+        }
+        //update the file name.
+        oldkey =   $('.file',$jsThemeRadio).text();
+        oldkey = oldkey.substring(oldkey.indexOf('js/')+3, oldkey.indexOf('.js'));
+        $('.file',$jsThemeRadio).text( $jstext.data('file').replace(oldkey, newkey) );
+        filepath = $jstext.data('file');
+        filepath = filepath.substring(filepath.indexOf('>>')+3);
+        $('.prev-file:input', $jsThemeRadio).val(filepath);
+        //css cm update.
+        $('.file',$cssThemeRadio).text( $csstext.data('file').replace(oldkey, newkey) );
+        filepath = $csstext.data('file');
+        filepath = filepath.substring(filepath.indexOf('>>')+3);
+        $('.prev-file:input', $cssThemeRadio).val(filepath);
+
+        oldkey = $csstext.data('form');
+        if( oldkey.length > 0 && oldkey != $cf7key.val() ){
+          /* update editor js */
+          csscme.setValue( csscme.getValue().replace('#'+oldkey, '#'+$cf7key.val()) );
+          $csstext.data('form', newkey);
+          csscmUpdated = true;
+        }
+      });
+      $('#js-tags').on('click','a.helper',function(e){
+        let helper = $(this).data('cf72post').replace('{$cf7_key}', $cf7key.val() ), enableArrayFields=false;
+        if(!$('#cf7sg-jstags-comments').is(':checked')){
+          helper = helper.replace(/^\n?\s*?\/\/.*\n?/gmi,'').replace(/(?<=.*)\n$/,'');;
+        }
+        if($(this).is('.all-fields')){
+          let fieldsText = '\n';
+          $.each(formFields, function(field, fidx){
+            fieldsText += "  case '"+field+"': //"+field+" updated";
+            switch(fidx){
+              case field+'_tab':
+                fieldsText +=", tIdx is tab index.\n";
+                enableArrayFields=true;
+                break;
+              case field+'_row':
+                fieldsText +=", rIdx is row index.\n";
+                enableArrayFields=true;
+                break;
+              case field+'_tab_row':
+                fieldsText +=", tIdx is tab index / rIdx is row index.\n";
+                enableArrayFields=true;
+                break;
+              default:
+                fieldsText +=".\n    //do something\n";
+                break;
+            }
+            fieldsText +="    break;\n"
+          });
+          arrayFields = '';
+          if(enableArrayFields){
+            arrayFields =  "//-----code to extract field name and tab/row index -----------\n";
+            arrayFields += "let search='', tIdx=0, rIdx=0;\n";
+            arrayFields += "if( $field.is('.cf7sgtab-field') || $field.is('.cf7sgrow-field') ){\n";
+            arrayFields += "  $.each($field.attr('class').split(/\\s+/), function(idx, clss){\n";
+            arrayFields += "    if(0==clss.indexOf('cf7sg-')){\n";
+            arrayFields += "      clss = clss.replace('cf7sg-','');\n";
+            arrayFields += "      search = new RegExp( '(?<='+clss+')(_tab-(\\\\d))?(_row-(\\\\d))?','gi' ).exec(fieldName);\n";
+            arrayFields += "      switch(true){\n";
+            arrayFields += "        case /\\d+/.test(search[2]*search[4]): //table within a tab.\n";
+            arrayFields += "          tIdx = parseInt(search[2]);\n";
+            arrayFields += "          rIdx = parseInt(search[4]);\n";
+            arrayFields += "          break;\n";
+            arrayFields += "        case /\\d+/.test(search[2]): //tab.\n";
+            arrayFields += "          tIdx = parseInt(search[2]);\n";
+            arrayFields += "          break;\n";
+            arrayFields += "        case /\\d+/.test(search[4]): //row.\n";
+            arrayFields += "          rIdx = parseInt(search[4]);\n";
+            arrayFields += "          break;\n";
+            arrayFields += "      }\n";
+            arrayFields += "      fieldName = clss;\n";
+            arrayFields += "      return false; //break out of each loop.\n";
+            arrayFields += "    }\n  });\n";
+            arrayFields += "}\n//------ end of code for field extraction ---------\n";
+          }
+          helper = helper.replace('{$array_field_extraction}', arrayFields);
+          helper = helper.replace('{$list_of_fields}', fieldsText);
+        }
+        let line = jscme.getCursor().line;
+        // if(!jsInsertAtLine) line = 0;
+        switch(line){
+          case 0:
+            let il = jscme.lastLine();
+            if(il>1 && jscme.getLine(il).indexOf('(jQuery)')<0){
+              if(jscme.getLine(il-1).indexOf('(jQuery)')>0) il-=1;
+            }
+            jscme.setCursor({'line':il,'ch':0});
+            helper += "\n";
+            break;
+          default:
+            helper += "\n";
+            break;
+        }
+        jscme.replaceSelection(helper);
+        line = jscme.getCursor().line;
+        $jsCodemirror.beautify();
+        jscme.setCursor({'line':line,'ch':line.length});
       });
       /*@since 1.1.1 disable grid editor for existing cf7 forms*/
       if(0==$grid.children('.container').length){
-        $('#form-editor-tabs').tabs('option',{ active:1, disabled:true});
-        /**
-        * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
-        */
+        $('#form-editor-tabs').tabs('option',{ active:1, disabled:[0]});
+        /** @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.*/
         $('#is-cf7sg-form').val('false');
       }
-
       //update the codemirror when tags are inserted
       $('form.tag-generator-panel .button.insert-tag').on('click', function(){
-        var $textarea = $('textarea#wpcf7-form');
+        const $textarea = $('textarea#wpcf7-form');
         if($textarea.is('.codemirror-cf7-update')){
-          var tag = $textarea.delay(100).val();
+          const tag = $textarea.delay(100).val();
           cme.replaceSelection(tag);
-          //update codemirror.
           $textarea.val(''); //clear.
         }
       });
     }); //-----------end codemirror editor setup
-
     $('form#post').submit(function(event) {
-      var $this = $(this);
+      const $this = $(this);
       $( window ).off( 'beforeunload' ); //remove event to stop cf7 script from warning on save
       event.preventDefault(); //this will prevent the default submit
-      var $embdedForms = '';
-      var $formNoEmbeds = '';
-      var codeMirror ='';
+      //close any open UI fields.
+      $('.cf7-field-inner :input:visible').closeUIfield();
+      let $embdedForms = '',$formNoEmbeds = '', codeMirror ='';
       if('#cf7-editor-grid' == gridTab){ //set up the code in the cf7 textarea
-        var $txta = $('textarea#wpcf7-form');
+        const $txta = $('textarea#wpcf7-form');
         $txta.html($txta.val()+'\n');
         codeMirror = html_beautify(
           $grid.CF7FormHTML(),
@@ -200,33 +472,36 @@
       $('.cf7sgfocus', $formNoEmbeds).removeClass('cf7sgfocus');
       $embdedForms = $formNoEmbeds.find('.cf7sg-external-form').remove();
       //setup sub-forms hidden field.
-      var embeds = [];
-      var hasTables = false, hasTabs = false, hasToggles=false;
+      const embeds = [];
+      let hasTables = false, hasTabs = false, hasToggles=false;
       if($embdedForms.length>0){
         $embdedForms.each(function(){
           embeds[embeds.length] = $(this).data('form');
         });
       }
       $('#cf7sg-embeded-forms').val(JSON.stringify(embeds));
-      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img;
+      const cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img;
       /** @since 3.0.0 determine scripts required */
-      var scriptClass ="";
+      let scriptClass ="";
       if(codeMirror.indexOf("class:sgv-")>0) scriptClass += "has-validation,";
       if(codeMirror.indexOf("class:select2")>0) scriptClass += "has-select2,";
       if(codeMirror.indexOf("class:nice-select")>0) scriptClass += "has-nice-select,";
-      if($('.cf7sg-collapsible', $formNoEmbeds).length>0) scriptClass += "has-accordion,";
+      /** @since 4.0 enable grouping of collapsible sections as slider */
+      if($('.cf7sg-collapsible', $formNoEmbeds).not('.cf7sg-slider-section .cf7sg-collapsible').length>0){
+        scriptClass += "has-accordion,";
+      }
+      if($('.cf7sg-slider-section', $formNoEmbeds).length>0) scriptClass += "has-slider,";
       if(codeMirror.indexOf("[benchmark")>0) scriptClass += "has-benchmark,";
       if(codeMirror.indexOf("[date")>0 || 0<codeMirror.search(/\[text([^\]]+?)class:datepicker/ig)) scriptClass += "has-date,";
 
       //scan and submit tabs & tables fields.
-      var tableFields = [];
+      const tableFields = [];
       $('.row.cf7-sg-table', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        var unique = $(this).closest('.container.cf7-sg-table').attr('id');
-        var fields = {};
+        const unique = $(this).closest('.container.cf7-sg-table').attr('id'),
+          fields = {}, search = $(this).html();
         fields[unique]=[];
-        var search = $(this).html();
-        var match = cf7TagRegexp.exec(search);
+        let match = cf7TagRegexp.exec(search);
         //console.log('search:'+search);
         while (match != null) {
           //ttFields[ match[2] ] = match[1];
@@ -237,13 +512,14 @@
         tableFields[tableFields.length] = fields;
         hasTables = true;
       });
-      //var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)\s*(.[^\[]*)\]/img;
-      var tabFields = [],toggleInTabs=[];
+
+      const tabFields = [];
       $('.container.cf7-sg-tabs-panel', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        $tab = $(this), unique = $tab.attr('id'),fields = {}, search = $tab.html();
+        const unique = $(this).attr('id'),fields = {}, search = $(this).html();
         fields[unique]=[];
-        var match = cf7TagRegexp.exec(search);
+
+        let match = cf7TagRegexp.exec(search);
         while (match != null) {
           //if( -1 === tableFields.indexOf(match[2]) ) /*removed as now want to idenify fields which are both tabs and table fields*/
           fields[unique][fields[unique].length] = match[2];
@@ -252,41 +528,37 @@
         }
         tabFields[tabFields.length] = fields;
         hasTabs = true;
-        /** @since 3.3.5 track toggled sections in tabs */
-        $('.container.cf7sg-collapsible.with-toggle',$tab).each(function(){
-          toggleInTabs[toggleInTabs.length]=$(this).attr('id');
-        });
       });
       /**
       * Track toggled fields to see if they are submitted or not.
       * @since 2.5 */
 
-      var toggledFields = [];
+      const toggledFields = [], tabbedToggles=[], groupedToggles={};
       $('.container.cf7sg-collapsible.with-toggle', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        var unique = $(this).attr('id');
-        var fields = {};
+        const $toggle = $(this), unique = $toggle.attr('id'), group = $toggle.data('group'),
+          fields = {}, search = $toggle.html();
         fields[unique]=[];
-        var search = $(this).html();
-        var match = cf7TagRegexp.exec(search);
+        if(group.length>0){
+          if('undefined' == typeof groupedToggles[group] ) groupedToggles[group] = [];
+          groupedToggles[group].push(unique);
+        }
+        let match = cf7TagRegexp.exec(search);
         while (match != null) {
-          //if( -1 === tableFields.indexOf(match[2]) ) /*removed as now want to idenify fields which are both tabs and table fields*/
-          fields[unique][fields[unique].length] = match[2];
-          //ttFields[match[2]] = match[1];
+          fields[unique].push(match[2]);
           match = cf7TagRegexp.exec(search); //get the next match.
         }
-        toggledFields[toggledFields.length] = fields;
+        toggledFields.push(fields);
+        /** @since 4.0.0 differentiate toggles in tabed sections.*/
+        if($toggle.is('.cf7-sg-tabs .cf7sg-collapsible')) tabbedToggles.push(unique);
         hasToggles = true;
       });
       //append hidden fields
       $this.append('<input type="hidden" name="cf7sg-has-tabs" value="'+hasTabs+'" /> ');
       $this.append('<input type="hidden" name="cf7sg-has-tables" value="'+hasTables+'" /> ');
       $this.append('<input type="hidden" name="cf7sg-has-toggles" value="'+hasToggles+'" /> ');
-      var disabled = $('#form-editor-tabs').tabs('option','disabled');
+      const disabled = $('#form-editor-tabs').tabs('option','disabled');
       $this.append('<input type="hidden" name="cf7sg-has-grid" value="'+disabled+'" /> ');
-      /** @since 3.3.5 track toggles in tabs */
-      $this.append('<input type="hidden" name="cf7sg-toggle-in-tabs" id="cf7sg-tggl-tabs" /> ');
-      $('#cf7sg-tggl-tabs',$this).val(JSON.stringify(toggleInTabs));
       //update script classes since v3.
       if(hasTabs) scriptClass+="has-tabs,";
       if(hasTables) scriptClass+="has-table,";
@@ -297,8 +569,19 @@
       $('#cf7sg-tabs-fields').val(JSON.stringify(tabFields));
       $('#cf7sg-table-fields').val(JSON.stringify(tableFields));
       $('#cf7sg-toggle-fields').val(JSON.stringify(toggledFields));
-
-      //alert(ttFields);
+      $('#cf7sg-tabbed-toggles').val(JSON.stringify(tabbedToggles));
+      $('#cf7sg-grouped-toggles').val(JSON.stringify(groupedToggles));
+      /** @since 4.0 enable js/css */
+      $jstext.text('');//empty.
+      codeMirror = jscme.getValue();
+      if(jscmUpdated){
+        if(codeMirror.length>2) $jstext.html(codeMirror);
+      }else if(codeMirror.length>1) $jstext.prop('disabled',true);
+      $csstext.text('');//empty.
+      codeMirror = csscme.getValue();
+      if(csscmUpdated){
+        if(codeMirror.length>2) $csstext.html(csscme.getValue());
+      }else if(codeMirror.length>1) $csstext.prop('disabled',true);
       // continue the submit unbind preventDefault.
       $this.unbind('submit').submit();
    });
@@ -306,17 +589,16 @@
    Function to convert the UI form into its html final form for editing in the codemirror and/or saving to the CF7 plugin.
    */
     $.fn.CF7FormHTML = function(){
-      var $this = $(this);
+      const $this = $(this);
       if( !$this.is('#grid-form') ){
         return '';
       }
-      var $form = $('<div>').append(  $this.html() );
-      var text='';
+      const $form = $('<div>').append(  $this.html() );
+      let text='';
       //remove the external forms
-      var external = {};
+      const external = {};
       $('.cf7sg-external-form', $form).each(function(){
-        var $exform = $(this);
-        var id = $exform.data('form');
+        const $exform = $(this), id = $exform.data('form');
         external[id] = $exform.children('.cf7sg-external-form-content').remove();
         $exform.children('.form-controls').remove();
       });
@@ -325,12 +607,10 @@
 
       //remove the collapsible input
       $('.container.cf7sg-collapsible', $form).each(function(){
-        var $this = $(this);
-        var cid = $this.attr('id');
-        var $title = $this.children('.cf7sg-collapsible-title');
-        var text = $title.children('label').children('input[type="hidden"]').val();
+        const $this = $(this),cid = $this.attr('id'), $title = $this.children('.cf7sg-collapsible-title');
+        let text = $title.children('label').children('input[type="hidden"]').val();
         $title.children('label').remove();
-        var toggle = '';
+        let toggle = '';
         if($this.is('.with-toggle')){
           toggle=' toggled';
         }
@@ -340,41 +620,40 @@
       //remove tabs inputs
       $('ul.cf7-sg-tabs-list li label', $form).remove();
 
-      var cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img;
-      var cf7sgToggleRegex = /class:cf7sg-toggle-(.[^\s]+)/i;
+      const cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img,
+        cf7sgToggleRegex = /class:cf7sg-toggle-(.[^\s]+)/i;
       //remove textarea and embed its content
       $('.columns', $form).each(function(){
-        var $this = $(this);
+        const $this = $(this), $gridCol = $this.children('.grid-column'),
+          $text = $('textarea.grid-input', $gridCol);
         $this.removeClass('ui-sortable');
-        var $gridCol = $this.children('.grid-column');
-        var $text = $('textarea.grid-input', $gridCol);
         if($text.length>0){
-          text = $text.text();
+          let text = $text.text();
           //verify if this column is within a toggled section.
-          var $toggle = $this.closest('.container.cf7sg-collapsible.with-toggle');
+          const $toggle = $this.closest('.container.cf7sg-collapsible.with-toggle');
           if($toggle.length>0){
-            var cid = $toggle.attr('id');
+            const cid = $toggle.attr('id');
             /**
             * track toggled checkbox/radio fields, because they are not submitted when not filled.
             *@since 2.1.5
             */
-            var $field = $text.siblings('div.cf7-field-type');
-            var isToggled = false;
+            const $field = $text.siblings('div.cf7-field-type');
+            let isToggled = false;
+
             if($field.length>0){
               if($field.is('.checkbox.required') || $field.is('.radio') || $field.is('.file.required')) isToggled = true;
             }else isToggled = true; //custom column, needs checking.
+
             if(isToggled){
-              var search = text;
-              var match = cf7TagRegexp.exec(search);
-              //var hasRadios = false;
+              let search = text, match = cf7TagRegexp.exec(search);
               while (match != null) {
                 switch(match[1]){
                   case 'checkbox*':
                   case 'radio':
                   case 'file*':
-                    var options = '';
+                    let options = '';
                     if(match.length>4){
-                      var tglmatch = cf7sgToggleRegex.exec(match[4]);
+                      const tglmatch = cf7sgToggleRegex.exec(match[4]);
                       if(tglmatch != null){
                         if(tglmatch[1] == cid) break;
                         options =match[4].replace(tglmatch[0],'class:cf7sg-toggle-'+cid);
@@ -399,8 +678,8 @@
       });
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
-        var $this = $(this);
-        var id = $this.data('form');
+        const $this = $(this);
+        let id = $this.data('form');
         $this.append( external[id] );
       });
       text = $form.html();
@@ -411,4 +690,4 @@
     }
   });//dcoument ready end
 
-})( jQuery, codeMirror_5_32);
+})( jQuery, codeMirror_5_32, jsCodeMirror_5_32, cssCodeMirror_5_32);

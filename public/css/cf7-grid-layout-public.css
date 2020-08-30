@@ -2,33 +2,157 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+ /*------ style rules -----*/
+/* .cf7sg-container .ui-widget-content .ui-state-default{
+ background: rgb(252,252,252);
+background: -moz-linear-gradient(top,  rgba(252, 252, 252, 0.33) 0%,rgba(219, 219, 219, 0.61) 50%,rgba(209, 209, 209, 0.61) 51%,rgba(254, 254, 254, 0.33) 100%);
+background: -webkit-linear-gradient(top,  rgba(252, 252, 252, 0.33) 0%,rgba(219, 219, 219, 0.61) 50%,rgba(209, 209, 209, 0.61) 51%,rgba(254, 254, 254, 0.33) 100%);
+background: linear-gradient(to bottom, rgba(252, 252, 252, 0.33) 0%,rgba(219, 219, 219, 0.61) 50%,rgba(209, 209, 209, 0.61) 51%,rgba(254, 254, 254, 0.33) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#fefefe',GradientType=0 );
+ }*/
+ .cf7sg-container .ui-widget-content,
+ .cf7sg-container .ui-widget-content .ui-state-active,
+ .cf7sg-container .toggle-light .toggle-off,
+ .cf7sg-container .ui-widget-content .ui-state-default,
+ .cf7sg-container .ui-tabs-active .ui-tabs-anchor,
+  .cf7sg-container .ui-widget-header {
+     background: transparent;
+ }
+ .cf7sg-container {	line-height: 1.2;}
+ .cf7sg-container a.ui-button {
+	color: inherit;
+}
+.cf7sg-container .cf7sg-add-tab .ui-state-default {
+	border: solid 1px #aaa;
+}
+ .cf7sg-container .ui-tabs-anchor{ background: #aaa5}
+
+ .cf7sg-container .ui-widget{ font: inherit; font-size:inherit}
+ .cf7sg-slider-section .slider-control.slider-prev{float:left}
+ .cf7sg-slider-section .slider-control.slider-next{float:right}
+ .cf7sg-slide-active{z-index: 100;}
+ .cf7sg-slider-section .slider-control:hover{cursor: pointer;}
  .cf7-smart-grid.has-grid .ui-button {
     border-radius: 3px;
+    border: 1px solid #aaa;
+    padding: 8px 12px;
 }
 .cf7-sg-table-button.disabled .ui-button {
     color: gray;
     cursor: not-allowed;
     text-decoration-line: none;
 }
-.cf7-sg-table-button .max-limit.wpcf7-not-valid-tip {
-    display: inline;
-    margin-right: 30px;
-}
-/*
-.cf7-sg-tabs-list li span.cf7sg-close-tab {display: none !important;}
-.cf7-sg-tabs-list li:last-child span.cf7sg-close-tab {display: inline-block !important;}
-*/
 ul.cf7-sg-tabs-list li .dashicons.dashicons-no-alt {
-    position: absolute;
-    right: 0;
     border-left: solid 1px grey;
     border-bottom: solid 1px grey;
     border-bottom-left-radius: 14px;
     border-top-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+.row.cf7-sg-table .row-control {
+    border: solid 1px #b9b9b9;
+    border-left: none;
+}
+.row.cf7-sg-table .row-control .dashicons {
+    background-color: white;
+    border-radius: 50%;
+    border: solid 1px #b9b9b9;
+    color: #848484;
+}
+.cf7-smart-grid.has-grid div.field span.wpcf7-not-valid-tip {
+    background: #e9e9e9;
+    border-radius: 3px;
+}
+span.cf7sg-validation-warning {
+    font-size: 80%;
+    color: #626262;
+    border-radius: 3px;
+    border: solid 1px #656565;
+    background: #f2f2f2;
+}
+.cf7sg-validation-warning .confirm-button {
+    background: white;
+    border: #989898 solid 2px;
+    border-radius: 5px;
+    color: #8f0000;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+.cf7-smart-grid.has-grid .field > label em {
+    color: red;
+}
+.cf7-smart-grid.has-grid .info-tip {
+    font-size: 80%;
+    font-style: italic;
+    color: grey;
+    margin: 0 0 5px 0;
+}
+.cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
+    border-radius: 3px;
+}
+.cf7-smart-grid.has-grid .wpcf7-submit {
+    background: #383838;
+    border: solid 1px #383838;
+    border-radius: 3px;
+    font-size: 110%;
+    font-weight: bold;
+    color: white;
+}
+.cf7sg-collapsible .ui-state-default {
+    background: transparent;
+}
+.cf7-smart-grid.has-grid .wpcf7-form-control-wrap .select2-selection--single .select2-selection__rendered {
+    font-size: 0.9em;
+}
+.cf7-smart-grid.has-grid .select2-results__option {
+    font-size: 0.8em;
+}
+.cf7-smart-grid.has-grid .wpcf7-save {
+    background: transparent;
+    color: #383838;
+}
+.cf7sg-collapsible .toggle-light .toggle-on,
+.cf7sg-collapsible .toggle-light .toggle-off {
+  font-size: 0.75em;
+}
+span.cf7sg-popup {
+  background: rgba(227, 227, 227, 0.81);
+  font-size: 1.2em;
+  border-radius: 3px;
+}
+ /*------ layout rules ----*/
+ .sy-slide > .cf7sg-collapsible-title {
+	margin-bottom: 10px;
+}
+ .cf7sg-container .slider-control {
+	margin-top: 5px;
+}
+ .cf7sg-container .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+  padding: .2em 1em;
+}
+.cf7sg-slide-filler .ajax-loader {
+	float: right;
+}
+.cf7-smart-grid.has-grid .cf7sg-slide-filler > input.wpcf7-submit {
+    float: right;
+    width: auto;
+}
+.cf7-smart-grid.has-grid input.select2-search__field {
+    min-width: 1.3em;
+}
+.cf7-sg-table-button .max-limit.wpcf7-not-valid-tip {
+    display: inline;
+    margin-right: 30px;
+}
+ul.cf7-sg-tabs-list li .dashicons.dashicons-no-alt {
+    position: absolute;
+    right: 0;
+}
+.cf7sg-add-tab.ui-tabs-nav .ui-tabs-anchor {
+    padding: .2em 1em;
+}
 .ui-tabs .cf7-sg-tabs-list.ui-tabs-nav .ui-tabs-anchor {
-    padding: .5em 20px;
+    padding: .2em 20px;
 }
 ul.cf7-sg-tabs-list li {
     position: relative;
@@ -43,7 +167,6 @@ ul.cf7-sg-tabs-list li {
 .ui-tabs .cf7sg-add-tab.ui-tabs-nav {
     display: inline-block;
     padding-left: 0;
-    margin-left: -0.4em;
 }
 ul.cf7-sg-tabs-list {
     display: inline-block;
@@ -77,12 +200,10 @@ ul.cf7-sg-tabs-list {
     top: 0;
     right: 0;
     margin-right: -15px;
-    border: solid 1px #b9b9b9;
-    border-left: none;
     width: 5px;
     display:none;
 }
-.row.cf7-sg-table:nth-last-child(2) .row-control {
+.row.cf7-sg-table:nth-last-child(2) .row-control:not(.display-none) {
     display: inline;
 }
 .row.cf7-sg-table .row-control .dashicons {
@@ -90,36 +211,24 @@ ul.cf7-sg-tabs-list {
     top: 50%;
     margin-top: -10px;
     margin-left: -5px;
-    background-color: white;
-    border-radius: 50%;
-    border: solid 1px #b9b9b9;
-    color: #848484;
 }
-
 .cf7-smart-grid.has-grid div.field span.wpcf7-not-valid-tip {
     display: inherit;
     position: absolute;
     left: 0;
     top: 115%;
-    background: #e9e9e9;
     padding: 3px 10px;
-    border-radius: 3px;
     min-width: 195px;
     line-height: 1.2em;
     z-index: 7777;
 }
 span.cf7sg-validation-warning {
     display: block;
-    font-size: 80%;
-    color: #626262;
     position: absolute;
     right: 50%;
     top: 25px;
     width: 140px;
     height: auto;
-    border-radius: 3px;
-    border: solid 1px #656565;
-    background: #f2f2f2;
     margin-right: -70px;
     z-index:999;
     padding: 2px 3px;
@@ -128,13 +237,7 @@ span.cf7sg-validation-warning {
     position: absolute;
     bottom: -13px;
     right: -19px;
-    background: white;
     padding: 1px 5px;
-    border: #989898 solid 2px;
-    border-radius: 5px;
-    color: #8f0000;
-    text-transform: uppercase;
-    font-size: 0.9em;
     cursor:pointer;
 }
 .cf7-smart-grid.has-grid input.select2-search__field{
@@ -150,7 +253,7 @@ span.cf7sg-validation-warning {
 .cf7-smart-grid.has-grid .field {
     width: 100%;
 }
-.cf7-smart-grid.has-grid .wpcf7-form-control {
+.cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
     width: 100%;
 }
 .cf7-smart-grid.has-grid .select2 {
@@ -164,7 +267,8 @@ span.cf7sg-validation-warning {
   max-width: 200px;
   width: 50%;
 }
-.cf7sg-container .cf7-smart-grid.has-grid .row.cf7-sg-table > .columns > .container > .container {
+.cf7sg-container .cf7-smart-grid.has-grid .row.cf7-sg-table > .columns > .container > .container,
+.cf7sg-container .cf7-smart-grid.has-grid .columns .container {
     padding: 0;
 }
 .cf7-smart-grid.has-grid .field .wpcf7-form-control-wrap + .wpcf7-form-control-wrap {
@@ -174,18 +278,8 @@ span.cf7sg-validation-warning {
     display: block;
     margin-bottom: 0;
 }
-.cf7-smart-grid.has-grid .field > label em {
-    color: red;
-}
-.cf7-smart-grid.has-grid .info-tip {
-    margin-bottom: 5px;
-    font-size: 90%;
-    font-style: italic;
-    color: grey;
-}
-.cf7-smart-grid.has-grid .wpcf7-form-control {
+.cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
     min-height: 34px;
-    border-radius: 3px;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control.nice-select {
     line-height: 32px;
@@ -196,10 +290,6 @@ span.cf7sg-validation-warning {
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control-wrap .select2-selection--single .select2-selection__rendered {
     line-height: 34px;
-    font-size: 0.9em;
-}
-.cf7-smart-grid.has-grid .select2-results__option {
-    font-size: 0.8em;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control-wrap .select2-selection.select2-selection--single {
     min-height: 34px;
@@ -212,25 +302,13 @@ span.cf7sg-validation-warning {
     right: .5em;
     left: unset;
 }
-.cf7sg-collapsible .ui-state-default {
-    background: transparent;
-}
-.cf7-smart-grid.has-grid .wpcf7-submit {
-    background: #383838;
-    border: solid 1px #383838;
-    border-radius: 3px;
-    font-size: 110%;
-    font-weight: bold;
-    color: white;
-}
-.cf7-smart-grid.has-grid .wpcf7-save {
-    background: transparent;
-    color: #383838;
-}
 .cf7sg-collapsible .toggle {
   display: inline-block;
   vertical-align: middle;
   float: right;
+}
+.cf7sg-collapsible .toggle .toggle-inner {
+    height: auto;
 }
 @media (min-width: 481px) {}
 .cf7sg-collapsible .cf7sg-title+.toggle {
@@ -248,10 +326,6 @@ span.cf7sg-validation-warning {
 /*smomehow the icon accordion have a larger left padding*/
 .ui-accordion .ui-accordion-icons {
     padding-left: .7em;
-}
-.cf7sg-collapsible .toggle-light .toggle-on,
-.cf7sg-collapsible .toggle-light .toggle-off {
-  font-size: 0.75em;
 }
 .cf7sg-external-form {
     margin-bottom: 5px;
@@ -272,21 +346,12 @@ a.cf7sg-button {
     display: inline-block;
     width: 100%;
     text-align: center;
-    background: #383838;
-    color: white;
-    border: solid 1px #383838;
-    border-radius: 3px;
-    font-weight: bold;
-    font-size: 110%;
 }
 .cf7sg-popup{
   position: relative;
 }
 .display-none{display: none;}
 span.cf7sg-popup {
-  background: rgba(227, 227, 227, 0.81);
-  font-size: 1.2em;
-  border-radius: 3px;
   bottom: -1.2em;
   max-height: 200px;
   left: 0;
@@ -296,3 +361,11 @@ span.cf7sg-popup {
   white-space: nowrap;
 }
 .wpcf7-form-control.wpcf7-submit:disabled:hover+span.cf7sg-popup {display: block;}
+a.cf7sg-button {
+    background: #383838;
+    color: white;
+    border: solid 1px #383838;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 110%;
+}
