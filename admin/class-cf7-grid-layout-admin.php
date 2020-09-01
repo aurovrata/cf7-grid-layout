@@ -819,7 +819,6 @@ class Cf7_Grid_Layout_Admin {
     }
     //save js file if used.
     $path = get_stylesheet_directory();
-    debug_msg($path, 'path ');
     if(!empty($_POST['cf7sg_js_file'])){
       //check if the file name is changed.
       if(!empty($_POST['cf7sg_prev_js_file']) && file_exists(ABSPATH. $_POST['cf7sg_prev_js_file'])){
