@@ -674,7 +674,7 @@ class Cf7_Grid_Layout_Public {
   **/
   public function setup_grid_values($data){
     $cf7form = WPCF7_ContactForm::get_current();
-
+    // debug_msg($_POST);
     if(empty($cf7form) ){
       if(isset($_POST['_wpcf7']) ){
         $cf7_id = $_POST['_wpcf7'];
@@ -869,13 +869,14 @@ class Cf7_Grid_Layout_Public {
       if(is_array( $fields[key( $fields)] ) ){ /** @since 2.4.2 */
         foreach($fields as $tab=>$tab_fields){
           foreach($tab_fields as $field){
-            if(isset($grid_fields[$field])) $grid_fields[$field] = array($grid_fields[$field].':'.$tab,'both');
-            else $grid_fields[$field] = array($tab,'tab');
+            if(isset($grid_fields[$field])){
+              $grid_fields[$field] = array($grid_fields[$field][0].':'.$tab,'both');
+            }else $grid_fields[$field] = array($tab,'tab');
           }
         }
       }else{
         foreach($fields as $field){
-          if(isset($grid_fields[$field])) $grid_fields[$field] = array($grid_fields[$field].':'.$tab,'both');
+          if(isset($grid_fields[$field])) $grid_fields[$field] = array($grid_fields[$field][0].':cf7-sg-tab-000','both');
           else $grid_fields[$field] = array('cf7-sg-tab-000','tab');
         }
       }

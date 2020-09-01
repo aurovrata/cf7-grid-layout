@@ -5,7 +5,7 @@ Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, 
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.5
-Stable tag: 3.3.8
+Stable tag: 4.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -327,6 +327,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 4.0.1 =
+* tables in tabs data consolidation bug fix.
+* custom css/js dir creation fix.
 = 4.0.0 =
 * custom js/css editors.
 * added 'cf7sg_dynamic_dropdown_taxonomy_query' filter.

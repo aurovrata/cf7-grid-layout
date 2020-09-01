@@ -819,12 +819,13 @@ class Cf7_Grid_Layout_Admin {
     }
     //save js file if used.
     $path = get_stylesheet_directory();
+    debug_msg($path, 'path ');
     if(!empty($_POST['cf7sg_js_file'])){
       //check if the file name is changed.
       if(!empty($_POST['cf7sg_prev_js_file']) && file_exists(ABSPATH. $_POST['cf7sg_prev_js_file'])){
         if( !unlink(ABSPATH.$_POST['cf7sg_prev_js_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_js_file']);
       }
-      if (!is_dir($path)) mkdir($path);
+      if( !is_dir("$path/js/") ) mkdir("$path/js/");
       file_put_contents( "$path/js/{$cf7_key}.js", stripslashes($_POST['cf7sg_js_file']) );
     }else if( isset($_POST['cf7sg_js_file']) && file_exists("$path/js/{$cf7_key}.js") ) { //delete file.
       if( !unlink("$path/js/{$cf7_key}.js") ) debug_msg("CF7SG ADMIN: unable to delete file $path/js/{$cf7_key}.js");
@@ -835,7 +836,7 @@ class Cf7_Grid_Layout_Admin {
       if(!empty($_POST['cf7sg_prev_css_file']) && file_exists(ABSPATH.$_POST['cf7sg_prev_css_file'])){
         if( !unlink(ABSPATH.$_POST['cf7sg_prev_css_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_css_file']);
       }
-      if (!is_dir($path)) mkdir($path);
+      if( !is_dir("$path/css/") ) mkdir("$path/css/");
       file_put_contents( $path."/css/{$cf7_key}.css", stripslashes($_POST['cf7sg_css_file']));
     }else if( isset($_POST['cf7sg_css_file']) && file_exists("$path/css/{$cf7_key}.css") ) { //delete file.
       if( !unlink("$path/css/{$cf7_key}.css") ) debug_msg("CF7SG ADMIN: unable to delete file $path/css/{$cf7_key}.css");

@@ -280,7 +280,7 @@
           cm.setOption("mode", mode);
           cm.setSize("100%");
           $cm.on('cf7sg-screen-resize',function(){cm.refresh()});
-          $cm.hover(disableBodyScroll);
+          $cm.hover(disableBodyScroll, enableBodyScroll);
           $cm.removeClass('display-none').beautify();
 
           if(theme.user.length>0) cm.setOption('theme',theme.user);

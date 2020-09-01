@@ -218,6 +218,8 @@
           if('undefined' == typeof toggleSwitch && cf7sg.debug){
             console.log('undefined toggleSwitch, header parent:');
             console.log($header);
+            console.log('e.target:');
+            console.log(e.target);
           }
           if( $header.hasClass('ui-state-active') ){
             toggleSwitch.toggle(true);
@@ -1022,18 +1024,18 @@
 
     //enable the collapsible titles & toggle buttons
     $('.cf7sg-collapsible.with-toggle', $newPanel).each(function(){
-      var $this = $(this);
+      var $section = $(this);
       /**
       * @since 1.1.0 grouped toggles/disabled inputs.
       */
-      var rootId = $this.attr('id'), id = rootId +'_tab-'+(tabCount-1);
-      $this.attr('id',id);//reset unique id.
-      var group = $this.data('group');
+      var rootId = $section.attr('id'), id = rootId +'_tab-'+(tabCount-1);
+      $section.attr('id',id);//reset unique id.
+      var group = $section.data('group');
       if(group){
         group = group+'_tab-'+(tabCount-1);
-        $this.attr('data-group', group);
+        $section.attr('data-group', group);
       }
-      var state = $this.data('open');
+      var state = $section.data('open');
       var toggled = false;
       if(typeof state == 'undefined'){
         state = false;
@@ -1045,15 +1047,15 @@
             break;
         }
       }
-      $('.toggle', $this).setupToggle(toggled, group);
+      $('.toggle', $section).setupToggle(toggled, group);
       if(toggled) $section.trackToggle(true);
       if(!toggled && initSelect){
         /*disable fields within a closed toggled section.
         * if toggled, then it is open. if initselect, it is triggered from user event.
         * else it is triggered from the cf7_2_post script and we need to wait for field values to be filled.
         */
-        $('.row.ui-accordion-content :input', $this).prop('disabled', true);
-        $this.addClass('collapsed');
+        $('.row.ui-accordion-content :input', $section).prop('disabled', true);
+        $section.addClass('collapsed');
       }
       $('.cf7sg-collapsible', $newPanel).accordion({
         collapsible:true,
@@ -1130,11 +1132,8 @@
         'id': $('input[name="_wpcf7"]', $form).val()
       }
     });
-    // serverRequest.done(function(msg){
-    //   console.log('success');
-    // });
     serverRequest.fail(function(jqXHR, textStatus){
       console.log('CF7 Smart Grid ERROR sending grid fields to server: '+textStatus);
-    });
-  });
-})( jQuery );
+    })
+  })
+})( jQuery )
