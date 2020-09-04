@@ -108,13 +108,19 @@ class Cf7_Grid_Layout_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles($page) {
+
     if( in_array($page, array('toplevel_page_wpcf7', 'contact_page_wpcf7-new')) ) return;
 
     $screen = get_current_screen();
+    $plugin_dir = plugin_dir_url( __DIR__ );
+    if('plugins'==$screen->base){
+      /** @since 4.1.0 */
+      wp_enqueue_style('plugin-update',$plugin_dir . 'admin/css/cf7sg-plugin-update.css', array(), $this->version, 'all');
+      return;
+    }
     if (empty($screen) || $this->cf7_post_type() != $screen->post_type){
       return;
     }
-    $plugin_dir = plugin_dir_url( __DIR__ );
     switch( $screen->base ){
       case 'post':
         wp_enqueue_style( "cf7-grid-post-css", $plugin_dir . 'admin/css/cf7-grid-layout-post.css', array(), $this->version, 'all' );
@@ -148,17 +154,28 @@ class Cf7_Grid_Layout_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts($page) {
-		global $post;
-    //debug_msg($screen, $this->custom_type );
+
     $plugin_dir = plugin_dir_url( __DIR__ );
     if( in_array($page, array('toplevel_page_wpcf7', 'contact_page_wpcf7-new')) ){
       wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array( 'jquery' ), $this->version, true );
       return;
     }
     $screen = get_current_screen();
+    if('plugins'==$screen->base){
+      /** @since 4.1.0 */
+        wp_enqueue_script('cf7sg-plugin-update', $plugin_dir . 'admin/js/cf7sg-plugin-update.js', array('jquery'));
+        /* translators: message displayed when succesful update to validate new version */
+        wp_localize_script('cf7sg-plugin-update', 'cf7sg',array(
+          'msg'=> __('Validating your update...','cf7-grid-layout'),
+          'nonce'=> wp_create_nonce( 'cf7sg_udpate_plugin' ),
+          'error'=>__('Unable to validate, please reload!', 'cf7-grid-layout')
+        ));
+      return;
+    }
     if ($this->cf7_post_type() != $screen->post_type){
       return;
     }
+
     switch( $screen->base ){
       case 'post':
         /* register codemirror editor & addons. */
@@ -325,7 +342,7 @@ class Cf7_Grid_Layout_Admin {
           'cf7-grid-codemirror-js',
           'cf7sgeditor',
           array(
-            'mode' => apply_filters('cf7sg_admin_editor_mode', 'shortcode', $post->post_name),
+            'mode' =>  'shortcode',
             'theme' => array(
                'light'=>'paraiso-light',
                'dark'=>'material-ocean',
@@ -343,6 +360,7 @@ class Cf7_Grid_Layout_Admin {
             )
           )
         );
+        global $post;
 
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
         wp_localize_script(
@@ -365,7 +383,7 @@ class Cf7_Grid_Layout_Admin {
             'filter'=> __('Filter mailTag %s', 'cf7-grid-layout')
           )
         );
-        /** @since 3.3.0enqueue ui-grid helpers js */
+        /** @since 3.3.0 enqueue ui-grid helpers js */
         wp_enqueue_script('ui-grid-helpers-js', $plugin_dir.'admin/js/ui-custom-helper.js', array('jquery'));
         do_action('cf7sg_enqueue_admin_editor_scripts');
         break;
@@ -1400,5 +1418,138 @@ class Cf7_Grid_Layout_Admin {
     //add a general form tag.
     $mailtags[]= 'cf7sg-form-'.get_cf7form_key($contact_form->id());
     return $mailtags;
+  }
+  /**
+  * Funciton to to initialise admin notices.
+  * hooked on 'admin_init'
+  *@since 4.1.0
+  *@param boolean $init initiliase notices or not
+  */
+  public function init_notices(){
+    $grid_settings = get_option('cf7sg-plugin-version', array());
+    $warning = false;
+    if(isset($grid_settings['update']) and CF7SG_VERSION_FORM_UPDATE==CF7_GRID_VERSION){
+      $warning = true;
+    }else if(isset($grid_settings['fv']) ) {
+      if(version_compare($grid_settings['fv'], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
+    }else{ //check the forms directly
+      global $wpdb;
+      $result = $wpdb->get_col("SELECT pm.meta_value FROM {$wpdb->postmeta} as pm
+        INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id
+        WHERE p.post_type = 'wpcf7_contact_form'
+        AND pm.meta_key = '_cf7sg_version'
+        ORDER BY pm.meta_key
+      ");
+      if(!empty($result) and version_compare($result[0], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
+    }
+    if($warning){
+      $notices= array(
+        'admin.php'=>array(),
+        'plugins.php'=>array(),
+        'post.php'=>array(),
+        'edit.php'=>array(),
+      );
+      $nonce = wp_create_nonce( 'cf7sg_notice-'.CF7_GRID_VERSION ); //unique.
+      $link = admin_url('edit.php?post_type=wpcf7_contact_form');
+      /* translators: %s is the url to the forms admin table */
+      $msg = __('You need to <strong>update</strong> your <a href="%s">forms</a>','cf7-grid-layout');
+      $notice = array(
+        'nonce'=>$nonce,
+        'type'=>'notice-warning', //[notice-update|notice-error]
+        'msg'=>sprintf($msg , $link)
+      );
+      $notices['plugins.php']['cf7sg']=$notice;
+      $notices['edit.php']['post_type=wpcf7_contact_form']=$notice;
+
+      update_option('cf7sg-admin-notices', $notices);
+    }
+
+    update_option('cf7sg-plugin-version', array(
+      'gv'=>CF7_GRID_VERSION,
+      'fv'=>CF7SG_VERSION_FORM_UPDATE
+    ));
+  }
+  /**
+	* Display admin notices
+	* Hooked on 'admin_notices'
+	*@since 4.1.0
+	*@param string $param text_description
+	*@return string text_description
+	*/
+	public function admin_notices(){
+		//check if we have any notices.
+		global $pagenow;
+		$notices = get_option('cf7sg-admin-notices', array());
+		if(empty($notices)) return;
+
+		if(!isset($notices[$pagenow])) return;
+
+    // debug_msg($notices[$pagenow], $pagenow);
+
+		foreach($notices[$pagenow] as $key=>$notice){
+			switch(true){
+				case strpos($key, 'page=') !== false && isset($_GET['page']) && $_GET['page'] === str_replace('page=','',$key):
+				case strpos($key, 'post_type=') !== false && isset($_GET['post_type']) && $_GET['post_type'] === str_replace('post_type=','',$key):
+				case $key==='any':
+        case $key==='cf7sg':
+					$dismiss = $notice['nonce'].'-forever';
+					if ( ! PAnD::is_admin_notice_active( $dismiss ) ) {
+						unset($notices[$pagenow]);
+						update_option('cf7sg-admin-notices', $notices);
+						continue 2; //continue foreach loop.
+					}
+					?>
+					<div data-dismissible="<?=$dismiss?>" class="notice <?=$notice['type']?> is-dismissible"><p><?=$notice['msg']?></p></div>
+					<?php
+					break;
+			}
+		}
+	}
+  /**
+	* ajax request to validate plugin update.
+	* Hooked on 'wp_ajax_validate_cf7sg_version_update'
+	* @since 4.1.0
+  */
+  public function validate_cf7sg_version_update(){
+    if( !isset($_POST['nonce']) or !wp_verify_nonce($_POST['nonce'], 'cf7sg_udpate_plugin') ){
+      echo 'error, nonce failed, try to reload the page.';
+      wp_die();
+    }
+    $grid_settings = get_option('cf7sg-plugin-version', array());
+    $warning = false;
+    if(isset($grid_settings['fv']) ) {
+      if(version_compare($grid_settings['fv'], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
+    }
+    $grid_settings['fv'] = CF7SG_VERSION_FORM_UPDATE;
+    $grid_settings['gv'] = CF7_GRID_VERSION;
+    $grid_settings['update'] = true;
+    update_option('cf7sg-plugin-version', $grid_settings);
+    $update_msg = __('Version validated, thank you!','cf7-grid-layout');
+    if($warning){
+      $link = admin_url('edit.php?post_type=wpcf7_contact_form');
+      /* translators: %s link to form table */
+      $update_msg = __('You need to <strong>update</strong> your <a href="%s">forms</a>','cf7-grid-layout');
+      $update_msg = sprintf( $update_msg, $link);
+    }
+    echo $update_msg;
+    wp_die();
+  }
+  /**
+  * Check if plugin is getting updated.
+  * Hooked to 'upgrader_post_install'.
+  *@since 4.1.0
+  *@param array $param text_description
+  *@param array $extras text_description
+  *@param array $result text_description
+  *@return array responses for the upgrade process
+  */
+  public function post_plugin_upgrade($response, $extras, $result){
+    if( ( isset($response['destination_name']) and 'cf7-grid-layout' == $response['destination_name'] )
+    or ( isset($extras['plugin']) and 'cf7-grid-layout/cf7-grid-layout.php' == $extras['plugin'] ) ){
+      $grid_settings = get_option('cf7sg-plugin-version', array());
+      $grid_settings['update'] = true;
+      update_option('cf7sg-plugin-version', $grid_settings);
+    }
+    return $response;
   }
 }

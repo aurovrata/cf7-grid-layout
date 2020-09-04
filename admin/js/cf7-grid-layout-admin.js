@@ -4,6 +4,7 @@
  Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
 */
 (function( $ ) {
+  'use strict';
   const offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'],
     columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
   let $wpcf7Editor,$grid,$rowControl = null;
@@ -1035,7 +1036,7 @@
     * setup fields for tag specific filters/actions.
     */
     //for each tag get corresponding set of filters.
-    let helperUsed = false, jsHelperUsed=false,len = type.length;
+    let helperUsed = false, jsHelperUsed=false,len = type.length, jlen=0;
     search = '';
     for (let i = 0; i < len; i++) {
       for (let j=0, jlen = hooks[i].length; j<jlen; j++){

@@ -301,11 +301,6 @@ class Cf7_Grid_Layout_Public {
     if('contact-form-7' !== $tag){
       return $output;
     }
-    /** @since 4.0 add page body class for cf7 forms */
-    add_filter('body_class', function($classes){
-      debug_msg('add body class ');
-      return array_push($classes, 'cf7sg-form-page');
-    },10,1);
     //wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     $cf7_id = $attr['id'];
@@ -1604,19 +1599,21 @@ class Cf7_Grid_Layout_Public {
     if(!empty($submitted_cf7)) $submitted_data = $submitted_cf7->get_posted_data();
 
     switch(true){
-      case 0==strpos($mail_tag->field_name(), 'cf7sg-toggle-'):
+      case 0===strpos($mail_tag->field_name(), 'cf7sg-toggle-'):
         $toggle = str_replace('cf7sg-toggle-', '', $mail_tag->field_name());
         if(isset($submitted_data[$toggle])) $replaced = $submitted_data[$toggle];
         break;
-      case 0==strpos($mail_tag->field_name(), 'cf7sg-form-'):
+      case 0===strpos($mail_tag->field_name(), 'cf7sg-form-'):
         $replaced ="";
         break;
     }
 
     if(empty($mail_tag)) return $replaced;
+
     $field_type = self::field_type($mail_tag->field_name(), $cf7form->id());
     $label = '';
     $build = false;
+
     switch($field_type){
       case 'tab':
       case 'table':

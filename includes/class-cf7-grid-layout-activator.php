@@ -21,22 +21,21 @@
  * @author     Aurovrata V. <vrata@syllogic.in>
  */
 class Cf7_Grid_Layout_Activator {
-
-	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function activate() {
-		if(!is_plugin_active( 'contact-form-7/wp-contact-form-7.php' )){
+  /**
+  * Short Description. (use period)
+  *
+  * Long Description.
+  *
+  * @since    1.0.0
+  */
+  public static function activate() {
+	if(!is_plugin_active( 'contact-form-7/wp-contact-form-7.php' )){
       if(is_multisite()){
-        exit('Contact Form 7 plugin needs to be activated first. If you have activated it on select sites,
-        you will need to activate the Post My CF7 Form plugin on those sites only');
+        exit(__('Contact Form 7 plugin needs to be activated first. If you have activated it on select sites,
+        you will need to activate the Smart Grid-layout plugin on those sites only','cf7-grid-alyout'));
       }
-      exit('This plugin requires the Contact Form 7 plugin to be activated first');
+      exit(__('This plugin requires the Contact Form 7 plugin to be activated first', 'cf7-grid-layout') );
     }
-	}
+  }
 
 }

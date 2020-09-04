@@ -134,6 +134,11 @@ class Cf7_Grid_Layout {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cf7-grid-layout-admin.php';
     require_once plugin_dir_path( dirname( __FILE__ ) ) . 'assets/cf7-admin-table/cf7-admin-table-loader.php';
+    /**
+    * Persist admin notices:
+    * @since 4.0.2
+    */
+    require_once  plugin_dir_path( dirname( __FILE__ ) ) . '/assets/persist-admin-notices/persist-admin-notices-dismissal.php';
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
@@ -233,6 +238,13 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'cf7sg_default_custom_js_template', $plugin_admin, 'print_default_js', 1,1);
     /** @since 4.0.0 enable toggle mail tags */
     $this->loader->add_filter( 'wpcf7_collect_mail_tags', $plugin_admin, 'setup_cf7_mailtags');
+    /** persist admin notices plugin. @since 4.1.0 */
+    $this->loader->add_action( 'admin_init',  'PAnD', 'init' );
+    $this->loader->add_action( 'admin_init',  $plugin_admin, 'init_notices' );
+    $this->loader->add_action( 'admin_notices', $plugin_admin, 'admin_notices' );
+    $this->loader->add_action('wp_ajax_validate_cf7sg_version_update', $plugin_admin, 'validate_cf7sg_version_update');
+    $this->loader->add_filter('upgrader_post_install', $plugin_admin, 'post_plugin_upgrade',10,3);
+
 	}
 
 	/**

@@ -4,6 +4,7 @@
  @since 3.1.2 introduce instaiated cm editor as attribute in anonymous function.
 */
 (function( $, cme, jscme, csscme ) {
+  'use strict';
 
   $(document).ready( function(){
     let $codemirror = $('#cf7-codemirror'),

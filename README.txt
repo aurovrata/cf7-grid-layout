@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, responsive forms, form maker, form builder
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.5
-Stable tag: 4.0.1
+Tested up to: 5.5.1
+Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -327,9 +327,13 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 4.1.0 =
+* added admin notices for plugin upgrade validation.
+* fix singular fields with array values mail bug.
 = 4.0.1 =
 * tables in tabs data consolidation bug fix.
 * custom css/js dir creation fix.
+* css/js editor window sroll lock fix.
 = 4.0.0 =
 * custom js/css editors.
 * added 'cf7sg_dynamic_dropdown_taxonomy_query' filter.
