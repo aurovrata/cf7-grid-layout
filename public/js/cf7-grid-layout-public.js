@@ -687,7 +687,7 @@
     * listen for cf7 submit invalid field event, and open parent sections and tabs.
     *@since 1.1.0
     */
-    $('div.cf7-smart-grid').on('wpcf7:invalid wpcf7invalid', '.wpcf7', function(e, invalids){
+    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid', '.wpcf7', function(e, invalids){
       var $target = $(e.target);
       if('undefined' == typeof invalids) invalids = e.detail;
       for(var idx in invalids.inputs){
@@ -702,11 +702,11 @@
     /** on hover popup message for disabled submit buttons
     * @since 2.6.0
     */
-    $('div.cf7-smart-grid .wpcf7-submit').after('<span class="cf7sg-popup display-none">'+cf7sg.submit_disabled+'</span>').parent().addClass('cf7sg-popup');
+    $('div.cf7-smart-grid.has-grid .wpcf7-submit').after('<span class="cf7sg-popup display-none">'+cf7sg.submit_disabled+'</span>').parent().addClass('cf7sg-popup');
     /** enable max rows.
     * @since 2.8.0
     */
-    $('div.cf7-smart-grid').on('sgRowAdded', '.container.cf7-sg-table',function(e){
+    $('div.cf7-smart-grid.has-table').on('sgRowAdded', '.container.cf7-sg-table',function(e){
       var max, msg, $table = $(this);
       max = $table.data('max');
       if('undefined' == typeof max || max == false) return;
@@ -716,7 +716,7 @@
         $table.next('.cf7-sg-table-button').addClass('disabled').prepend(msg);
       }
     });
-    $('div.cf7-smart-grid').on('sgRowDeleted', '.container.cf7-sg-table',function(event){
+    $('div.cf7-smart-grid.has-table').on('sgRowDeleted', '.container.cf7-sg-table',function(event){
       var max, row, $table = $(this);
       max = $table.data('max');
       if('undefined' == typeof max || max == false) return;

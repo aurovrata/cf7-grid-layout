@@ -307,16 +307,7 @@ class Cf7_Grid_Layout_Public {
     //get the key
     $cf7post = get_post($cf7_id);
     $cf7_key = $cf7post->post_name;
-    //load custom css/js script from theme css folder.
-    $themepath = get_stylesheet_directory();
-    $themeuri = get_stylesheet_directory_uri();
-    if( file_exists($themepath.'/css/'.$cf7_key.'.css') ){
-      wp_enqueue_style( $cf7_key.'-css' , $themeuri.'/css/'.$cf7_key.'.css', array($this->plugin_name), null, 'all');
-    }
-    if( file_exists($themepath.'/js/'.$cf7_key.'.js') ){
-      wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', array($this->plugin_name), null, true);
-      do_action('smart_grid_register_custom_script', $cf7_key);
-    }
+
     /** @since 3.0.0 load scripts only for required classes */
     $class = get_post_meta($cf7_id, '_cf7sg_script_classes', true);
     if(empty($class)){
@@ -324,6 +315,7 @@ class Cf7_Grid_Layout_Public {
     }
     //check classes required for sub-forms.
     $sub_forms = array();
+    $use_grid_js = false;
     $sub_form_keys = get_post_meta($cf7_id, '_cf7sg_sub_forms', true);
     if(!empty($sub_form_keys)){
       $args = array(
@@ -340,57 +332,84 @@ class Cf7_Grid_Layout_Public {
     if(array_search('has-select2',$class, true)!==false){
       wp_enqueue_script('jquery-select2');
       wp_enqueue_style('select2-style');
+      $use_grid_js=true;
     }
     //nice-select
     if(array_search('has-nice-select',$class, true)!==false){
       wp_enqueue_script('jquery-nice-select');
       wp_enqueue_style('jquery-nice-select-css');
+      $use_grid_js=true;
     }
     //benchmark
     if(array_search('has-benchmark',$class, true)!==false){
       wp_enqueue_script('js-cf7sg-benchmarking');
+      $use_grid_js=true;
     }
     if(array_search('has-date',$class, true)!==false){
       wp_enqueue_script('jquery-ui-datepicker');
       wp_enqueue_style('cf7-jquery-ui');
+      $use_grid_js=true;
     }
-    if(array_search('has-slider',$class, true)!==false){
-      wp_enqueue_script('slippry-js');
-      wp_enqueue_style('slippry-style');
-    }
-    //cf7 plugin styles
-    wp_enqueue_style('contact-form-7');
-    //cf7sg script & style.
-    wp_enqueue_style($this->plugin_name);
-    wp_enqueue_script($this->plugin_name);
-    /** @since 2.6.0 disabled button message*/
-    $form = WPCF7_ContactForm::get_instance($cf7post);
-    $messages = $form->prop('messages');
-    $this->localised_data = array(
-      'url' => admin_url( 'admin-ajax.php' ),
-      'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
-      'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
-      'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
-      'debug'=>( defined('WP_DEBUG') && WP_DEBUG )
-    );
-    wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
-    //setup classes and id for wrapper.
-    $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
     /**
     * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
     */
     $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
-    if(''===$is_form || !$is_form){
-      wp_enqueue_style('contact-form-7'); //default cf7 plugin css.
+    if($use_grid_js) debug_msg('use grid 1');
+    $use_grid_js = $use_grid_js or $is_form;
+    if($use_grid_js) debug_msg('use grid 2');
+
+    //cf7 plugin styles.
+    wp_enqueue_style('contact-form-7');
+
+    /** @since 2.6.0 disabled button message*/
+    $form = WPCF7_ContactForm::get_instance($cf7post);
+
+    $messages = $form->prop('messages');
+    if($use_grid_js){
+      $this->localised_data = array(
+        'url' => admin_url( 'admin-ajax.php' ),
+        'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
+        'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
+        'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
+        'debug'=>( defined('WP_DEBUG') && WP_DEBUG )
+      );
+      //cf7sg script & style.
+      wp_enqueue_script($this->plugin_name);
+      wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
+    }
+    //load custom css/js script from theme css folder.
+    $themepath = get_stylesheet_directory();
+    $themeuri = get_stylesheet_directory_uri();
+    if( file_exists($themepath.'/css/'.$cf7_key.'.css') ){
+      $dep = array();
+      if($is_form) $dep =array($this->plugin_name);
+      wp_enqueue_style( $cf7_key.'-css' , $themeuri.'/css/'.$cf7_key.'.css', $dep, null, 'all');
+    }
+    if( file_exists($themepath.'/js/'.$cf7_key.'.js') ){
+      $dep = array();
+      if($use_grid_js) $dep =array($this->plugin_name);
+      wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', $dep , null, true);
+      do_action('smart_grid_register_custom_script', $cf7_key);
+    }
+    //setup classes and id for wrapper.
+    $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
+
+    if(empty($is_form) || !$is_form){
       do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
       $classes = implode(' ', $class) .' key_'.$cf7_key;
       $output = '<div class="cf7sg-container"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
       return $output;
     }
+    //grid styling.
+    wp_enqueue_style($this->plugin_name);
     //load required dependencies for grid form.
     wp_enqueue_style('smart-grid');
     wp_enqueue_style('dashicons');
-
+    //slider introduced in 4.0.
+    if(array_search('has-slider',$class, true)!==false){
+      wp_enqueue_script('slippry-js');
+      wp_enqueue_style('slippry-style');
+    }
     //jquery accordion for collapsible rows.
     $has_section = array_search('has-accordion',$class, true) !==false;
     if($has_section){
@@ -460,9 +479,10 @@ class Cf7_Grid_Layout_Public {
     $post_id = $field_values['map_post_id'];
     $toggles = get_post_meta($post_id, 'cf7sg_toggles_status', true);
     //debug_msg($toggles, $post_id.' status ');
-    if(empty($toggles)) $toggles = array();
-    wp_enqueue_script($this->plugin_name);
-    wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script( array('toggles_status' => $toggles)) );
+    if(!empty($toggles)){
+      wp_enqueue_script($this->plugin_name);
+      wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script( array('toggles_status' => $toggles)) );
+    }
     return $field_values;
   }
   /**
