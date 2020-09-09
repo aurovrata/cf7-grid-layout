@@ -354,9 +354,8 @@ class Cf7_Grid_Layout_Public {
     * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
     */
     $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
-    if($use_grid_js) debug_msg('use grid 1');
-    $use_grid_js = $use_grid_js or $is_form;
-    if($use_grid_js) debug_msg('use grid 2');
+
+    $use_grid_js = ($use_grid_js or $is_form);
 
     //cf7 plugin styles.
     wp_enqueue_style('contact-form-7');
@@ -394,7 +393,7 @@ class Cf7_Grid_Layout_Public {
     //setup classes and id for wrapper.
     $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
 
-    if(empty($is_form) || !$is_form){
+    if(empty($is_form) or !$is_form){
       do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
       $classes = implode(' ', $class) .' key_'.$cf7_key;
       $output = '<div class="cf7sg-container"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';

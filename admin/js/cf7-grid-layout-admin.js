@@ -666,19 +666,22 @@
       }
     });
 
-    // capture tab and move to the next field
+    // capture tab and move to the next field.
     if(cf7grid.ui){
-      $grid.keydown('div.cf7-field-inner', function(event){
-        if(9 !== event.which ){//tab
-          return;
-        }
-        $target = $(event.target);
+      $grid.keydown('div.cf7-field-inner', function(e){
+        if(9 !== (e.which || e.keyCode) ) return; //check for tab.
+        let $target = $(e.target);
         if($target.is('div.cf7-field-inner :input')){
           $target.closeUIfield();
-          const $next = $target.parent().next('div.cf7-field-inner');
-          if($next.length>0){
+          $target = $target.parent(); //switch to parent.
+          let found = false, stopSearch = false, $next = $grid.find('div.cf7-field-inner').filter(function(i,el){
+            if(stopSearch) return false;
+            if(found) return (stopSearch = true) ;
+            else if($(el).is($target) ) found = true;
+          });
+          if($next){
             $next.showUIfield();
-            event.preventDefault(); //stop tab focus on this element.
+            e.preventDefault(); //stop tab focus on this element.
           }
         }
       });
