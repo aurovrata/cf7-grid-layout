@@ -306,6 +306,9 @@ class Cf7_Grid_Layout_Public {
     $cf7_id = $attr['id'];
     //get the key
     $cf7post = get_post($cf7_id);
+    if(empty($cf7post) || WPCF7_ContactForm::$post_type != $cf7post->post_type){ //not a form.
+      return $output;
+    }
     $cf7_key = $cf7post->post_name;
 
     /** @since 3.0.0 load scripts only for required classes */
@@ -361,9 +364,11 @@ class Cf7_Grid_Layout_Public {
     wp_enqueue_style('contact-form-7');
 
     /** @since 2.6.0 disabled button message*/
-    $form = WPCF7_ContactForm::get_instance($cf7post);
-
-    $messages = $form->prop('messages');
+    $form = WPCF7_ContactForm::get_instance($cf7_id);
+    $messages = array();
+    if( !empty($form) ) $messages = $form->prop('messages');
+    else debug_msg("CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id");
+    
     if($use_grid_js){
       $this->localised_data = array(
         'url' => admin_url( 'admin-ajax.php' ),
@@ -394,9 +399,10 @@ class Cf7_Grid_Layout_Public {
     $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
 
     if(empty($is_form) or !$is_form){
+      debug_msg('not smart grid form ');
       do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
       $classes = implode(' ', $class) .' key_'.$cf7_key;
-      $output = '<div class="cf7sg-container"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
+      $output = '<div class="cf7sg-container cf7sg-not-grid"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
       return $output;
     }
     //grid styling.
@@ -426,7 +432,8 @@ class Cf7_Grid_Layout_Public {
         if(strtotime($post_obj->post_modified ) > $form_time){
           if(empty($cf7_form)){
             $cf7_form = WPCF7_ContactForm::get_instance($cf7_id);
-            $form_raw = $cf7_form->prop( 'form' );
+            $form_raw = '';
+            if( !empty($cf7_form) ) $form_raw = $cf7_form->prop( 'form' );
           }
           $form_raw = $this->update_sub_form($form_raw, $post_obj);
         }

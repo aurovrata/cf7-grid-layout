@@ -1,10 +1,10 @@
 
-/**
- Javascript to handle grid editor
- Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
-*/
 (function( $ ) {
   'use strict';
+  /**
+  * Javascript to handle grid editor
+  * Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
+  */
   const offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'],
     columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
   let $wpcf7Editor,$grid,$rowControl = null;

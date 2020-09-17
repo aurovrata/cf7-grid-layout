@@ -1,8 +1,3 @@
-/**
- Javascript to handle Codemirror editor
- Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
- @since 3.1.2 introduce instaiated cm editor as attribute in anonymous function.
-*/
 (function( $, cme, jscme, csscme ) {
   'use strict';
 
