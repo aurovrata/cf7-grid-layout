@@ -29,6 +29,7 @@ else do_action( 'load-toplevel_page_wpcf7' );
   <?php wp_nonce_field( 'wpcf7-save-contact-form_' .  $post_id, '_wpcf7nonce' ); ?>
 
   <div id="contact-form-editor">
+    <div class="loading-screen"><h2><?= __('Loading form editor ...','cf7-grid-layout')?><span class="spinner"></span></h2></div>
     <div class="keyboard-interaction"><?php echo sprintf( esc_html( __cf7sg( '%s keys switch panels') ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
 
   <?php

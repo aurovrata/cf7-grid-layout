@@ -357,7 +357,8 @@ class Cf7_Grid_Layout_Admin {
                'light'=>'paraiso-light',
                'dark'=>'material-ocean',
                'user'=>$user_css_theme
-            )
+            ),
+            'jserror'=>__('There is a <strong>Javascript error on the page</strong>, likely due to a conflict, which prevents the editor from loading properly.', 'cf7-grid-layout')
           )
         );
         global $post;

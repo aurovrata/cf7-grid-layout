@@ -316,7 +316,7 @@
           $target.parent().siblings('textarea.grid-input').updateGridForm();
         }
       }
-    });
+    }); //end $grid.on('change');
 
     //grid click event delegation
     $grid.on('click', function(event){
@@ -664,7 +664,7 @@
           changeTextarea();
         }
       }
-    });
+    });//end $grid.on('click').
 
     // capture tab and move to the next field.
     if(cf7grid.ui){

@@ -306,7 +306,7 @@ class Cf7_Grid_Layout_Public {
     $cf7_id = $attr['id'];
     //get the key
     $cf7post = get_post($cf7_id);
-    if(empty($cf7post) || WPCF7_ContactForm::$post_type != $cf7post->post_type){ //not a form.
+    if(empty($cf7post) || WPCF7_ContactForm::post_type != $cf7post->post_type){ //not a form.
       return $output;
     }
     $cf7_key = $cf7post->post_name;
@@ -368,7 +368,7 @@ class Cf7_Grid_Layout_Public {
     $messages = array();
     if( !empty($form) ) $messages = $form->prop('messages');
     else debug_msg("CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id");
-    
+
     if($use_grid_js){
       $this->localised_data = array(
         'url' => admin_url( 'admin-ajax.php' ),

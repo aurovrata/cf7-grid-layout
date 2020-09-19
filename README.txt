@@ -328,7 +328,8 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 
 == Changelog ==
 = 4.1.3 =
-* better control of cf7 form requests.    
+* better control of cf7 form requests.
+* js regex look behind fix.
 = 4.1.2 =
 * fix grid-loading script bug.
 * fix tab navigation in UI editor.

@@ -1,5 +1,17 @@
 (function( $, cme, jscme, csscme ) {
   'use strict';
+  /** @since 4.2.0 manage editor loading errors */
+  const $formEditor = $('#contact-form-editor');
+  let eh = $formEditor.height(), ew =$formEditor.width();
+  $('.loading-screen',$formEditor).css('padding','100px 5px '+(eh-100)+'px 5px');
+  $('#publish').prop('disabled', true);
+
+  window.onerror= function(msg, source, lineno, colno, error){
+    let $loadScreen = $('.loading-screen',$formEditor);
+    if($loadScreen.is(':visible')){
+     $loadScreen.html('<div class="js-error"><p><span class="message">'+cf7sgeditor.jserror+'</span><br/><span class="error">'+msg+'</span><br/>(file: '+source+', line: <strong>'+lineno+'</strong>)</p></div>');
+   }
+  }
 
   $(document).ready( function(){
     let $codemirror = $('#cf7-codemirror'),
@@ -101,7 +113,7 @@
           }
         }
 
-        $('#contact-form-editor').trigger('cf7sg-form-change');
+        $formEditor.trigger('cf7sg-form-change');
       });
       //toogle body scroll off/on
       function disableBodyScroll(){$('body').addClass('disable-scroll')}
@@ -224,8 +236,10 @@
           }
         },
         create: function(e){
-          // $(window).scrollTop($('#meta-box-main-cf7-editor').offset().top);
+          //console.info("Created tab");
           $('#form-editor-tabs .ui-tabs-panel:not(#cf7-editor-grid)').hover(disableBodyScroll,enableBodyScroll);
+          $('.loading-screen',$formEditor).hide();
+          $('#publish').prop('disabled', false);
         }
       });
       /** @since 4.0 js cm editor */
@@ -247,11 +261,12 @@
               mode={name: "javascript", json: true};
               $this.text('JS');
               //enable helper popups.
-              regex = /(?<=\/\*)(.*?)(?=\s?\*\/)/im;
+              // regex = /(?<=\/\*)(.*?)(?=\s?\*\/)/im;
+              regex = /^.*(\/\*)(.*?)(?=\s?\*\/)/im;
               $('a.helper', $jsTags).each(function(){
                 let $helper = $(this), text = regex.exec($helper.data('cf72post'));
-                if('undefined' != typeof text){
-                  $helper.parent().append('<span style="position:relative"><span class="display-none">'+text[0]+'</span></span>');
+                if('undefined' != typeof text[2]){
+                  $helper.parent().append('<span style="position:relative"><span class="display-none">'+text[2]+'</span></span>');
                 }
               });
               break;
@@ -684,6 +699,5 @@
       }
       return text;
     }
-  });//dcoument ready end
-
+  });//document ready end
 })( jQuery, codeMirror_5_32, jsCodeMirror_5_32, cssCodeMirror_5_32);

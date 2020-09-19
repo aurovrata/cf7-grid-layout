@@ -1,4 +1,4 @@
-#editors{position: relative;}
+#editors, #contact-form-editor {position: relative;}
 #optional-editors {
 	display: inline-block;
 	position: absolute;
@@ -12,6 +12,11 @@
 	z-index: 10;
 	position: relative;
 }
+#contact-form-editor .loading-screen{position:absolute;z-index: 100; padding: 100px 5px 850px 5px; width: calc(100% - 10px); background-color: white; text-align: center}
+#contact-form-editor .loading-screen h2{font-size: 20px}
+#contact-form-editor .loading-screen .spinner{visibility: visible; float:none}
+#contact-form-editor .loading-screen .js-error p {text-align: left;font-size: 15px}
+#contact-form-editor .loading-screen .error {color: #b90101}
 #optional-editors a.button {font-weight: bold;}
 #js-tags > li.show-events:not(#last-item) {
 	display: inline-block;
