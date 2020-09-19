@@ -247,11 +247,12 @@
               mode={name: "javascript", json: true};
               $this.text('JS');
               //enable helper popups.
-              regex = /(?<=\/\*)(.*?)(?=\s?\*\/)/im;
+              // regex = /(?<=\/\*)(.*?)(?=\s?\*\/)/im;
+              regex = /^.*(\/\*)(.*?)(?=\s?\*\/)/im;
               $('a.helper', $jsTags).each(function(){
                 let $helper = $(this), text = regex.exec($helper.data('cf72post'));
-                if('undefined' != typeof text){
-                  $helper.parent().append('<span style="position:relative"><span class="display-none">'+text[0]+'</span></span>');
+                if('undefined' != typeof text[2]){
+                  $helper.parent().append('<span style="position:relative"><span class="display-none">'+text[2]+'</span></span>');
                 }
               });
               break;
