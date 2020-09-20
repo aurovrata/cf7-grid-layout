@@ -365,7 +365,7 @@
       $('#js-tags').on('click','a.helper',function(e){
         let helper = $(this).data('cf72post').replace('{$cf7_key}', $cf7key.val() ), enableArrayFields=false;
         if(!$('#cf7sg-jstags-comments').is(':checked')){
-          helper = helper.replace(/^\n?\s*?\/\/.*\n?/gmi,'').replace(/(?<=.*)\n$/,'');;
+          helper = helper.replace(/^\n?\s*?\/\/.*\n?/gmi,'');
         }
         if($(this).is('.all-fields')){
           let fieldsText = '\n';
@@ -390,7 +390,7 @@
             }
             fieldsText +="    break;\n"
           });
-          arrayFields = '';
+          let arrayFields = '';
           if(enableArrayFields){
             arrayFields =  "//-----code to extract field name and tab/row index -----------\n";
             arrayFields += "let search='', tIdx=0, rIdx=0;\n";
@@ -498,7 +498,7 @@
       if(codeMirror.indexOf("class:select2")>0) scriptClass += "has-select2,";
       if(codeMirror.indexOf("class:nice-select")>0) scriptClass += "has-nice-select,";
       /** @since 4.0 enable grouping of collapsible sections as slider */
-      if($('.cf7sg-collapsible', $formNoEmbeds).not('.cf7sg-slider-section .cf7sg-collapsible').length>0){
+      if($('.cf7sg-collapsible', $formNoEmbeds).not('.cf7sg-slider-section > .cf7sg-collapsible').length>0){
         scriptClass += "has-accordion,";
       }
       if($('.cf7sg-slider-section', $formNoEmbeds).length>0) scriptClass += "has-slider,";

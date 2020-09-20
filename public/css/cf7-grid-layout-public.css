@@ -26,7 +26,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', end
 	border: solid 1px #aaa;
 }
  .cf7sg-container .ui-tabs-anchor{ background: #aaa5}
-
+.cf7sg-slider-section .glider{overflow-x: hidden;}
  .cf7sg-container .ui-widget{ font: inherit; font-size:inherit}
  .cf7sg-slider-section .slider-control.slider-prev{float:left}
  .cf7sg-slider-section .slider-control.slider-next{float:right}
@@ -133,7 +133,7 @@ span.cf7sg-popup {
 .cf7sg-slide-filler .ajax-loader {
 	float: right;
 }
-.cf7-smart-grid.has-grid .cf7sg-slide-filler > input.wpcf7-submit {
+.cf7-smart-grid.has-grid .cf7sg-slider-section > input.wpcf7-submit {
     float: right;
     width: auto;
 }

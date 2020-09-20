@@ -207,8 +207,8 @@ class Cf7_Grid_Layout_Public {
     }else{
       wp_register_style('select2-style', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', array(), '4.0.13','all');
     }
-    /** @since 3.4.0 enable slippry sliders for slider sections */
-    wp_register_style('slippry-style', $plugin_dir . 'assets/slippry/slippry.css', array(), '1.4.0','all');
+    /** @since 4.2.0 enable Gliderliders for slider sections */
+    wp_register_style('glider-style', $plugin_dir . 'assets/glider-js/glider.min.css', array(), '1.7.4','all');
 
     //allow custom script registration
     do_action('smart_grid_register_styles');
@@ -240,8 +240,8 @@ class Cf7_Grid_Layout_Public {
     wp_register_script('jquery-nice-select', $plugin_dir . 'assets/jquery-nice-select/js/jquery.nice-select.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
-    /** @since 3.4.0 enable slippry sliders for slider sections */
-    wp_register_script('slippry-js', $plugin_dir . 'assets/slippry/slippry.min.js', array('jquery'), '1.4.0',true);
+    /** @since 4.2.0 enable Glider sliders for slider sections */
+    wp_register_script('glider-js', $plugin_dir . 'assets/glider-js/glider.min.js', null, '1.7.4',true);
     //allow custom script registration
     do_action('smart_grid_register_scripts');
 	}
@@ -412,8 +412,8 @@ class Cf7_Grid_Layout_Public {
     wp_enqueue_style('dashicons');
     //slider introduced in 4.0.
     if(array_search('has-slider',$class, true)!==false){
-      wp_enqueue_script('slippry-js');
-      wp_enqueue_style('slippry-style');
+      wp_enqueue_script('glider-js');
+      wp_enqueue_style('glider-style');
     }
     //jquery accordion for collapsible rows.
     $has_section = array_search('has-accordion',$class, true) !==false;

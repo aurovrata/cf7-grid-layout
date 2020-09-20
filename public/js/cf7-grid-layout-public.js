@@ -308,7 +308,7 @@
       //now enable the other collapsible rows
       cf7Form_accordion.each(function(){
         /** @since 3.4.0 differentiate accordion of collapsible rows*/
-        var $form = $(this),$rows = $('.cf7sg-collapsible', $form).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-accordion-rows .cf7sg-collapsible').not('.cf7sg-slider-section .cf7sg-collapsible');
+        var $form = $(this),$rows = $('.cf7sg-collapsible', $form).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-accordion-rows > .cf7sg-collapsible').not('.cf7sg-slider-section >.cf7sg-collapsible');
         $rows = $rows.add( $('.cf7sg-accordion-rows', $form) );
         var promises = [];
         $rows.each(function(){
@@ -554,94 +554,52 @@
     $form_slider.each(function(){
       var $form = $(this);
       $('.cf7sg-slider-section').each(function(){
-        var $this = $(this).wrapInner('<div class="cf7sg-sy-slider"></div>'),
+        var $slider = $(this).wrapInner('<div class="glider"></div>'),
           slideCount = -1,
-          $slider = $('.cf7sg-sy-slider',$this);
-
-        var sy = $slider.slippry({
-          elements:'div.cf7sg-collapsible',
-          slippryWrapper: '<div class="cf7sg-slider-container" />',
-          slideCrop: '<div class="cf7sg-slide" />',
-          boxClass: 'cf7sg-slide-list',
-          activeClass: 'cf7sg-slide-active',
-          fillerClass: 'cf7sg-slide-filler',
-          loop: false,
-          captions: false,
-          pager:false,
-          controls: false,
-          useCSS: true,
-          auto:false,
-          adaptiveHeight:false,
-          onSliderLoad:function(index){
-            slideCount = $slider.getSlideCount()-1;
-            $this.trigger({type:'sgSliderReady','total-slides':$slider.getSlideCount()});
-          },
-          onSlideAfter:function(slide, old_index, new_index){
-            if(slideCount<0) return false;
-            slide.trigger({
-              type:'sgAfterSlideChange',
-              'prev-slide':old_index,
-              'current-slide':new_index,
-              'last-slide':slideCount
-            });
-          },
-          onSlideBefore:function(slide, old_index, new_index){
-            if(slideCount<0) return false;
-            slide.trigger({
-              type:'sgBeforeSlideChange',
-              'prev-slide':old_index,
-              'current-slide':new_index,
-              'last-slide':slideCount
-            });
-          }
-        });
-        var $sliderContainer = $slider.closest('.cf7sg-slider-section');
-        var $prev = $('<span class="slider-control slider-prev"></span>');
-        if($sliderContainer.data("prev").length>0){
-          $prev.text($sliderContainer.data("prev"));
+          $glider = $('.glider',$slider),
+          $prev = $('<span class="slider-control slider-prev"></span>'),
+          $next = $('<span class="slider-control slider-next"></span>'),
+          isSubmit=false, $submit=null;
+        if($slider.data("prev").length>0){
+          $prev.text($slider.data("prev")).addClass('ui-button');
         }else $prev.addClass("dashicons dashicons-arrow-left-alt");
-
-        var $next = $('<span class="slider-control slider-next"></span>');
-        if($sliderContainer.data("next").length>0){
-          $next.text($sliderContainer.data("next"));
+        if($slider.data("next").length>0){
+          $next.text($slider.data("next")).addClass('ui-button');
         }else $next.addClass("dashicons dashicons-arrow-right-alt");
-
-        $('.cf7sg-slide-filler',$sliderContainer).append($prev).append($next);
+        $slider.append($prev).append($next);
+        // $slider.append('<div role="tablist" class="dots"></div>');
         $prev.hide(); //hide on first slide.
 
-        var isSubmit=false, $submit=null;
-        if($sliderContainer.data('submit').length>0){
+        if($slider.data('submit').length>0){
           isSubmit = true;
-          $submit = $('<input type="submit" value="'+$sliderContainer.data('submit')+'" class="wpcf7-form-control wpcf7-submit">');
+          $submit = $('<input type="submit" value="'+$slider.data('submit')+'" class="wpcf7-form-control wpcf7-submit">');
           $next.after($submit);
           let m = ($submit.outerHeight() - 16)/2;
           $submit.hide().after('<span style="margin:'+m+'px 5px;" class="ajax-loader"></span>');
         }
-
-        $('.slider-control', $sliderContainer).on('click', function(e){
-          var $control = $(e.target);
-          if($control.is('.slider-prev')){
-            $slider.goToPrevSlide();
-          }else if($control.is('.slider-next')){
-            $slider.goToNextSlide();
+        var glider = new Glider($glider[0],{
+          arrows: {
+            prev: '.slider-prev',
+            next: '.slider-next'
           }
         });
-        $sliderContainer.on('sgBeforeSlideChange', function(e){
+
+        $slider.on('glider-slide-visible', function(e){
           $prev.show();
           $next.show();
           if(isSubmit) $submit.hide();
-          switch(e['current-slide']){
+          switch(e.detail.slide){
             case 0: //hide prev button;
               $prev.hide();
               break;
-            case slideCount:
+            case glider.slides.length-1:
               $next.hide();
               if(isSubmit) $submit.show();
               break;
           }
         });
-        $sliderContainer.on('sgRowAdded sgRowDeleted',function(e){
-          $slider.refresh();
+        $slider.on('sgRowAdded sgRowDeleted',function(e){
+          glider.refresh(true);
         });
       })
     });
