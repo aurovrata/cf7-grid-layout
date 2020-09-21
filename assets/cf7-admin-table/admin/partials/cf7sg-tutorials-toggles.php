@@ -4,7 +4,9 @@
 <div class="container">
   <div class="row">
     <div class="columns one-third">
-      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/p-N3tKRXjL4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="iframe">
+        <iframe src="https://www.youtube-nocookie.com/embed/p-N3tKRXjL4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
       <h3>
         Section forms or create optional toggled sections.  Group toggle sections for either/or scenarios
       </h3>

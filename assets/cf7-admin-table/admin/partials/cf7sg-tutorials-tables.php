@@ -4,7 +4,9 @@
 <div class="container">
   <div class="row">
     <div class="columns one-third">
-      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/mcC36e69-eM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="iframe">
+        <iframe src="https://www.youtube-nocookie.com/embed/mcC36e69-eM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
       <h3>
         Use a table construct for a simple row of repetitive fields, or a tab construct for an entire section of fields.
       </h3>

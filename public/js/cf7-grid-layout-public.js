@@ -577,14 +577,13 @@
           let m = ($submit.outerHeight() - 16)/2;
           $submit.hide().after('<span style="margin:'+m+'px 5px;" class="ajax-loader"></span>');
         }
-        var glider = new Glider($glider[0],{
-          arrows: {
-            prev: '.slider-prev',
-            next: '.slider-next'
-          }
-        });
-
-        $slider.on('glider-slide-visible', function(e){
+        //bind events.
+        $glider.on('glider-loaded',function(e){
+          $slider.trigger({
+            type:'sgSliderReady',
+            'total': $glider.find('.glider-slide').length
+          })
+        }).on('glider-slide-visible', function(e){
           $prev.show();
           $next.show();
           if(isSubmit) $submit.hide();
@@ -597,12 +596,47 @@
               if(isSubmit) $submit.show();
               break;
           }
+          $(e.target).find('.glider-slide.active').trigger({
+            type:'sgSlideChange',
+            'current':e.detail.slide,
+            'last': glider.slides.length-1
+          })
         });
+        //init slider.
+        var glider = new Glider($glider[0],{
+          arrows: {
+            prev: '.slider-prev',
+            next: '.slider-next'
+          }
+        });
+
         $slider.on('sgRowAdded sgRowDeleted',function(e){
           glider.refresh(true);
-        });
+        })
       })
     });
+    $.fn.sgCurrentSlide = function(){
+      var $slider = $(this);
+      if( !$slider.is('.cf7sg-slider-section') ) return false;
+      return parseInt($slider.find('.glider-slide.active').data('gslide'));
+    }
+    $.fn.sgChangeSlide = function(slide){
+      var $slider = $(this);
+      if( !$slider.is('.cf7sg-slider-section') ) return $slider;
+      var go = Glider($('.glider', $slider)[0]),
+        current = $slider.sgCurrentSlide(),
+        empty = typeof slide === 'number' ? isNaN(slide) : !Boolean(slide);
+      //empty checks for undefined, null, false, NaN, ''
+      if(empty){ //if empty move to next slide
+        if(current<go.slides.length) go.scrollItem(current++)
+      }else if(slide < 0){ //move to previous slide.
+        if(current > 0) go.scrollItem(current--)
+      }else{ //move to slide index.
+        slide = parseInt(slide);
+        if(slide>=0 && slide <= go.slides.length) go.scrollItem(slide);
+      }
+      return $slider;
+    }
     /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
     *@since 1.1.0
     */

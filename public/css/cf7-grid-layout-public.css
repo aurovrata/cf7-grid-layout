@@ -26,13 +26,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', end
 	border: solid 1px #aaa;
 }
  .cf7sg-container .ui-tabs-anchor{ background: #aaa5}
-.cf7sg-slider-section .glider{overflow-x: hidden;}
+.cf7sg-slider-section .glider{overflow-x: hidden;padding-bottom:10px}
  .cf7sg-container .ui-widget{ font: inherit; font-size:inherit}
  .cf7sg-slider-section .slider-control.slider-prev{float:left}
  .cf7sg-slider-section .slider-control.slider-next{float:right}
  .cf7sg-slide-active{z-index: 100;}
  .cf7sg-slider-section .slider-control:hover{cursor: pointer;}
  .glider-slide > .cf7sg-collapsible-title {margin-bottom: 10px;}
+ .cf7sg-container .cf7-smart-grid.has-grid .columns .container.glider-slide{padding:0 25px 0 10px}
+ .cf7sg-container .slider-control {margin-top: 10px}
+ .cf7-smart-grid.has-grid .cf7sg-slider-section > input.wpcf7-submit {float: right;width: auto}
+
  .cf7-smart-grid.has-grid .ui-button {
     border-radius: 3px;
     border: 1px solid #aaa;
@@ -125,18 +129,11 @@ span.cf7sg-popup {
  .sy-slide > .cf7sg-collapsible-title {
 	margin-bottom: 10px;
 }
- .cf7sg-container .slider-control {
-	margin-top: 5px;
-}
  .cf7sg-container .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
   padding: .2em 1em;
 }
 .cf7sg-slide-filler .ajax-loader {
 	float: right;
-}
-.cf7-smart-grid.has-grid .cf7sg-slider-section > input.wpcf7-submit {
-    float: right;
-    width: auto;
 }
 .cf7-smart-grid.has-grid input.select2-search__field {
     min-width: 1.3em;

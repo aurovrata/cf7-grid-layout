@@ -155,42 +155,35 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'accordionactivate', function(e,
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgSliderReady','.cf7sg-slider-section', function(e){
   // $form is the form jquery object.
   //the $slider is the div.cf7sg-slider-section element jquery object.
-  let $form = $(e.delegateTarget), $slider = $(this);
+  //slides is the total number of slides.
+  let $form = $(e.delegateTarget), $slider = $(this), slides = e.total;
 });" href="javascript:void(0);"><?=__('slider ready','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Event: ','cf7-grid-layout')?>
-        <a class="helper" data-cf72post="/* event fired after a new slide is active, click to insert helper code into your js file. */
-$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgAfterSlideChange','.cf7sg-slider-section', function(e){
-  //e['prev-slide'] holds the index to the previous slide, empty on the first slide.
-  //e['current-slide'] holds the index of the current slide
-  //e['last-slide'] holds the index of the last slide.
+        <a class="helper" data-cf72post="/* event fired when a new slide is active, click to insert helper code into your js file. */
+$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgSlideChange','.cf7sg-slider-section', function(e){
+  //slide indexes are 0 based.
+  //e['current'] holds the index of the current slide
+  //e['last'] holds the index of the last slide.
   //you can add a CSS id to each div.container.cf7sg-collapsible elements
   //  whithin the div.cf7sg-slider-section element to uniquely identify each slide $slide.attr('id');
   // $form is the form jquery object.
-  let $form = $(e.delegateTarget), $slider=$(this), $slide = $(e.target);
-});" href="javascript:void(0);"><?=__('after slide change','cf7-grid-layout')?></a>
-      </li>
-      <li><?= __('Event: ','cf7-grid-layout')?>
-        <a class="helper" data-cf72post="/* event fired before a new slide is activated, click to insert helper code into your js file. */
-$('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgBeforeSlideChange','.cf7sg-slider-section', function(e){
-  //e['prev-slide'] holds the index to the previous slide, empty on the first slide.
-  //e['current-slide'] holds the index of the current slide
-  //e['last-slide'] holds the index of the last slide.
-  //you can add a CSS id to each div.container.cf7sg-collapsible elements
-  //  whithin the div.cf7sg-slider-section element to uniquely identify each slide $(this).attr('id');
-  let $form = $(this), $slider=$(this), $slide = $(e.target);
-  //check if this is the last slide:  e['current-slide']==e['last-slide']
-});" href="javascript:void(0);"><?=__('before slide change','cf7-grid-layout')?></a>
+  let $form = $(e.delegateTarget), $slider=$(this), $slide = $(e.target),
+    current = e.current, last = e.last;
+});" href="javascript:void(0);"><?=__('on slide change','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Function: ','cf7-grid-layout')?>
         <a class="helper slider" data-cf72post="
-  // $slider is the slider jquery object.
-  $slider.goToNextSlide();/* activate the next slide. */" href="javascript:void(0);"><?=__('activate next slide','cf7-grid-layout')?></a>
+  // $slider is the slider jquery object. Function can be chained.
+  //index can either be empty/null, which will move to the next clide.
+  //a positive index of an existing slide to move (slide index is 0 based) or,
+  // -1 to move to the previous slide.
+  $slider.sgChangeSlide(index);/* change slides. */" href="javascript:void(0);"><?=__('change slide','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Function: ','cf7-grid-layout')?>
         <a class="helper slider" data-cf72post="
-  // $slider is the slider jquery object.
-  $slider.goToPrevSlide();/* activate the previous slide. */" href="javascript:void(0);"><?=__('activate prev slide','cf7-grid-layout')?></a>
+  // $slider is the slider jquery object.  The slide index is 0 based,
+  let idx = $slider.sgCurrentSlide();/* get the current slide index. */" href="javascript:void(0);"><?=__('current slide index','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>

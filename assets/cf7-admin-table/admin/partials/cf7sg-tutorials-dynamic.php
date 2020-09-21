@@ -4,7 +4,9 @@
 <div class="container">
   <div class="row">
     <div class="columns one-third">
-      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/t9he4Tca5o8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="iframe">
+        <iframe src="https://www.youtube-nocookie.com/embed/t9he4Tca5o8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
       <h3>
         Dynamic lists are built using the <code class="cf7tag">[dynamic_dropdown]</code> tag, leveraging the CMS power of WordPress to manage large lists.
       </h3>

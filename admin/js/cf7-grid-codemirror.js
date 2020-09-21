@@ -100,12 +100,12 @@
 
       cme.on('changes', function(){
         codemirrorUpdated = true;
-        const disabled = $('#form-editor-tabs').tabs('option','disabled');
+        const disabled = $editorTabs.tabs('option','disabled');
 
         if(true===disabled){
           const changes = $('<div>').append(cme.getValue());
           if(0===changes.children().length || changes.children('.container').length>0){
-            $('#form-editor-tabs').tabs('option',{disabled:false});
+            $editorTabs.tabs('option',{disabled:false});
             /**
             * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
             */
@@ -116,8 +116,15 @@
         $formEditor.trigger('cf7sg-form-change');
       });
       //toogle body scroll off/on
-      function disableBodyScroll(){$('body').addClass('disable-scroll')}
-      function enableBodyScroll(){$('body').removeClass('disable-scroll')}
+      function disableBodyScroll(){
+        let $post = $('form#post');
+        $post.css('width',$post.width()+'px');
+        $('body').addClass('disable-scroll')
+      }
+      function enableBodyScroll(){
+        $('form#post').css('width','auto');
+        $('body').removeClass('disable-scroll')
+      }
       //create tabs
       $editorTabs.tabs({
         beforeActivate: function (event, ui){
@@ -237,7 +244,7 @@
         },
         create: function(e){
           //console.info("Created tab");
-          $('#form-editor-tabs .ui-tabs-panel:not(#cf7-editor-grid)').hover(disableBodyScroll,enableBodyScroll);
+          $('.ui-tabs-panel:not(#cf7-editor-grid)',$editorTabs).hover(disableBodyScroll, enableBodyScroll);
           $('.loading-screen',$formEditor).hide();
           $('#publish').prop('disabled', false);
         }
@@ -441,7 +448,7 @@
       });
       /*@since 1.1.1 disable grid editor for existing cf7 forms*/
       if(0==$grid.children('.container').length){
-        $('#form-editor-tabs').tabs('option',{ active:1, disabled:[0]});
+        $editorTabs.tabs('option',{ active:1, disabled:[0]});
         /** @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.*/
         $('#is-cf7sg-form').val('false');
       }
@@ -568,7 +575,7 @@
       $this.append('<input type="hidden" name="cf7sg-has-tabs" value="'+hasTabs+'" /> ');
       $this.append('<input type="hidden" name="cf7sg-has-tables" value="'+hasTables+'" /> ');
       $this.append('<input type="hidden" name="cf7sg-has-toggles" value="'+hasToggles+'" /> ');
-      const disabled = $('#form-editor-tabs').tabs('option','disabled');
+      const disabled = $editorTabs.tabs('option','disabled');
       $this.append('<input type="hidden" name="cf7sg-has-grid" value="'+disabled+'" /> ');
       //update script classes since v3.
       if(hasTabs) scriptClass+="has-tabs,";

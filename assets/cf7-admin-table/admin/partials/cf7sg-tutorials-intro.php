@@ -4,7 +4,9 @@
 <div class="container">
   <div class="row">
     <div class="columns one-third">
-      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/snKSPByqbBM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="iframe">
+        <iframe src="https://www.youtube-nocookie.com/embed/snKSPByqbBM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
       <h3>
         Overview of the Smart Grid and type of forms that can be achieved using this extension.
       </h3>
@@ -18,7 +20,9 @@
       </ul>
     </div>
     <div class="columns one-third">
-      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/vBSsfra2s48" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="iframe">
+        <iframe src="https://www.youtube-nocookie.com/embed/vBSsfra2s48" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
       <h3>
         Basic introduction to the Smart Grid UI editor and the colour HTML text editor.
       </h3>
@@ -37,7 +41,9 @@
   <!--/div>
   <div class="row" -->
     <div class="columns one-third">
-      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/0DYxRpWc_F0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="iframe">
+        <iframe src="https://www.youtube-nocookie.com/embed/0DYxRpWc_F0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
       <h3>
         Example how to design a 2-column form layout
       </h3>
