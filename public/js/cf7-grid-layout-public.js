@@ -645,15 +645,22 @@
     * listen for cf7 submit invalid field event, and open parent sections and tabs.
     *@since 1.1.0
     */
-    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid', '.wpcf7', function(e, invalids){
-      var $target = $(e.target);
-      if('undefined' == typeof invalids) invalids = e.detail;
-      for(var idx in invalids.inputs){
-        var name = invalids.inputs[idx].name,
-          $input = $(':input[name="'+name+'"]:not(:disabled)'),
-          $section = $input.closest('.cf7sg-collapsible');
-        if($section.length>0){
-          $section.accordion("option","active",0); //activate.
+    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid', '.wpcf7', function(e){
+      var $target = $(e.target), invalids = e.detail;
+      /** @since cf7 5.2 */
+      if('undefined' != typeof invalids.apiResponse){
+        invalids = invalids.apiResponse.invalid_fields;
+        for(var idx in invalids){
+          var $input = $(invalids[idx].into),
+            $section = $input.closest('.cf7sg-collapsible:not(.glider-slide)');
+          if($section.length>0){
+            $section.accordion("option","active",0); //activate.
+          }
+          $section = $input.closest('.cf7sg-slider-section');
+          if($section.length>0){
+            // $input.closest('.glider-slide').data('gslide');
+            Glider($('.glider', $section)[0]).scrollItem($input.closest('.glider-slide').data('gslide'))
+          }
         }
       }
     });

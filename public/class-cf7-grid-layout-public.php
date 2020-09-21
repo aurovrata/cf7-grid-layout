@@ -241,7 +241,7 @@ class Cf7_Grid_Layout_Public {
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
     /** @since 4.2.0 enable Glider sliders for slider sections */
-    wp_register_script('glider-js', $plugin_dir . 'assets/glider-js/glider.min.js', null, '1.7.4',true);
+    wp_register_script('glider-js', $plugin_dir . 'assets/glider-js/glider.js', null, '1.7.4',true);
     //allow custom script registration
     do_action('smart_grid_register_scripts');
 	}

@@ -32,6 +32,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', end
  .cf7sg-slider-section .slider-control.slider-next{float:right}
  .cf7sg-slide-active{z-index: 100;}
  .cf7sg-slider-section .slider-control:hover{cursor: pointer;}
+ .glider-slide > .cf7sg-collapsible-title {margin-bottom: 10px;}
  .cf7-smart-grid.has-grid .ui-button {
     border-radius: 3px;
     border: 1px solid #aaa;
