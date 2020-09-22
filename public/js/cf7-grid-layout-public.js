@@ -6,11 +6,12 @@
   var cf7sgPanels = {}; //object to store cloned panels
   var cf7sgCustomSelect2Templates = (function (ccst) {return ccst;}(cf7sgCustomSelect2Templates || {}));
   /*warning messages used for in-form validation*/
-  $.fn.cf7sgWarning = function(msg, time=0){
+  $.fn.cf7sgWarning = function(msg, time){
     var $this = $(this);
     if(!$this.is(':input')){
       return $this;
     }
+    if(isEmpty(time)) time=0;
     var $warning = $('<span class="cf7sg-validation-warning">'+msg+'<span class="confirm-button">ok</span></span>');
     $this.after($warning);
     if(time>0){
@@ -574,7 +575,7 @@
           isSubmit = true;
           $submit = $('<input type="submit" value="'+$slider.data('submit')+'" class="wpcf7-form-control wpcf7-submit">');
           $next.after($submit);
-          let m = ($submit.outerHeight() - 16)/2;
+          let m = ( $submit.outerHeight() - 16 )/2;
           $submit.hide().after('<span style="margin:'+m+'px 5px;" class="ajax-loader"></span>');
         }
         //bind events.
@@ -624,10 +625,9 @@
       var $slider = $(this);
       if( !$slider.is('.cf7sg-slider-section') ) return $slider;
       var go = Glider($('.glider', $slider)[0]),
-        current = $slider.sgCurrentSlide(),
-        empty = typeof slide === 'number' ? isNaN(slide) : !Boolean(slide);
-      //empty checks for undefined, null, false, NaN, ''
-      if(empty){ //if empty move to next slide
+        current = $slider.sgCurrentSlide();
+
+      if(isEmpty(slide)){ //if empty move to next slide
         if(current<go.slides.length) go.scrollItem(current++)
       }else if(slide < 0){ //move to previous slide.
         if(current > 0) go.scrollItem(current--)
@@ -1135,4 +1135,8 @@
       console.log('CF7 Smart Grid ERROR sending grid fields to server: '+textStatus);
     })
   })
+  //empty checks for undefined, null, false, NaN, ''
+  function isEmpty(v){
+    return typeof v === 'number' ? isNaN(v) : !Boolean(v);
+  }
 })( jQuery )

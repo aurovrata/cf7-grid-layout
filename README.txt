@@ -1,7 +1,7 @@
 === Smart Grid-Layout Design for Contact Form 7 ===
 Contributors: aurovrata
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EDV4MEJLPT4VY
-Tags: contact form 7, contact form 7 module, styling, contact form 7 extension, responsive forms, form maker, form builder
+Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitie fields, form custom javascript
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.5.1
@@ -73,7 +73,7 @@ This plugin would not have been possible without the following open-source effor
 * [jQuery Select2](https://select2.org/) - this plugin converts dropdowns into powerful searchable dropdown fields.
 * [jQuery Toggles](https://simontabor.com/labs/toggles/) - enables pretty toggle switches on collapsible sections.
 * [PHP Simple HTML Dom](https://github.com/voku/simple_html_dom) - a php library that enables traversing and manipulation of html documents using CSS selectors like jQuery.  This is used to build the modular functionality of form designs.
-* [Slippry jQuery slider](http://slippry.com/) - a light weight fully customisable slider plugin.
+* [Glider.js slider](https://nickpiscitelli.github.io/Glider.js/) - a A blazingly fast, crazy small, fully responsive, mobile-friendly, dependency free, native scrolling list with paging controls!
 
 = Thanks to =
 Birmania [@birmania](https://profiles.wordpress.org/birmania/) for providing:
@@ -327,6 +327,10 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 4.2.0 =
+* fix regex look back for Safari browser.
+* replaced slider js plugin with Glider-js.
+* added new video tutorial for slider forms.
 = 4.1.4 =
 * fix static reference.
 = 4.1.3 =

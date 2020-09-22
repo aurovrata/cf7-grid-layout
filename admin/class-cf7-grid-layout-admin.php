@@ -1424,7 +1424,6 @@ class Cf7_Grid_Layout_Admin {
   * Funciton to to initialise admin notices.
   * hooked on 'admin_init'
   *@since 4.1.0
-  *@param boolean $init initiliase notices or not
   */
   public function init_notices(){
     $grid_settings = get_option('cf7sg-plugin-version', array());
@@ -1443,13 +1442,13 @@ class Cf7_Grid_Layout_Admin {
       ");
       if(!empty($result) and version_compare($result[0], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
     }
+    $notices= array(
+      'admin.php'=>array(),
+      'plugins.php'=>array(),
+      'post.php'=>array(),
+      'edit.php'=>array(),
+    );
     if($warning){
-      $notices= array(
-        'admin.php'=>array(),
-        'plugins.php'=>array(),
-        'post.php'=>array(),
-        'edit.php'=>array(),
-      );
       $nonce = wp_create_nonce( 'cf7sg_notice-'.CF7_GRID_VERSION ); //unique.
       $link = admin_url('edit.php?post_type=wpcf7_contact_form');
       /* translators: %s is the url to the forms admin table */
@@ -1461,9 +1460,19 @@ class Cf7_Grid_Layout_Admin {
       );
       $notices['plugins.php']['cf7sg']=$notice;
       $notices['edit.php']['post_type=wpcf7_contact_form']=$notice;
-
-      update_option('cf7sg-admin-notices', $notices);
     }
+    /** @since 4.2.0 new sliders tutorial */
+    $notice = array(
+      'nonce'=>wp_create_nonce( "cf7sg_siders_tutorial" ),
+      'type'=>'notice-update', //[notice-update|notice-error]
+      /* translators: %s is the link to the tuorial page*/
+      'msg'=>sprintf( __('There is a new tutorial for <a href="%s">multistep slider forms</a>','cf7-grid-layout'), admin_url('admin.php?page=cf7sg_help')),
+      'html'=>'<div class="inline-top"><iframe width="230" height="130" src="https://www.youtube.com/embed/WiweQRhOr0g" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="inline-top"><strong>Learn how to create multi-step multi-slide CF7 forms using a slider construct functionality of the Smart Grid-layout extension plugin.</strong></div>'
+    );
+    $notices['plugins.php']['cf7sg']=$notice;
+    $notices['edit.php']['post_type=wpcf7_contact_form']=$notice;
+
+    update_option('cf7sg-admin-notices', $notices);
 
     update_option('cf7sg-plugin-version', array(
       'gv'=>CF7_GRID_VERSION,
@@ -1474,8 +1483,6 @@ class Cf7_Grid_Layout_Admin {
 	* Display admin notices
 	* Hooked on 'admin_notices'
 	*@since 4.1.0
-	*@param string $param text_description
-	*@return string text_description
 	*/
 	public function admin_notices(){
 		//check if we have any notices.
@@ -1499,8 +1506,10 @@ class Cf7_Grid_Layout_Admin {
 						update_option('cf7sg-admin-notices', $notices);
 						continue 2; //continue foreach loop.
 					}
+          if(!isset($notice['html'])) $notice['html'] = '';
 					?>
-					<div data-dismissible="<?=$dismiss?>" class="notice <?=$notice['type']?> is-dismissible"><p><?=$notice['msg']?></p></div>
+          <style>.notice .inline-top{display: inline-block;vertical-align: top;margin-right: 10px;max-width: 300px;}</style>
+					<div data-dismissible="<?=$dismiss?>" class="notice <?=$notice['type']?> is-dismissible"><p><?=$notice['msg']?></p><?=$notice['html']?></div>
 					<?php
 					break;
 			}

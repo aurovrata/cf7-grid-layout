@@ -261,7 +261,7 @@ if(!class_exists('CF7SG_WP_Post_Table')){
         __( 'Smart Grid Helper Tutorials ', 'cf7-grid-layout' ),
         __( 'Tutorials', 'cf7-grid-layout' ),
         'wpcf7_read_contact_forms',
-        'admin.php?page=cf7sg_help',
+        'cf7sg_help',
         array($this, 'display_helper_page')
       );
     }
