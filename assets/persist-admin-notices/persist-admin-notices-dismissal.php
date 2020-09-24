@@ -78,7 +78,6 @@ if ( ! class_exists( 'PAnD' ) ) {
 		public static function dismiss_admin_notice() {
 			$option_name        = sanitize_text_field( $_POST['option_name'] );
 			$dismissible_length = sanitize_text_field( $_POST['dismissible_length'] );
-			debug_msg($option_name, ' length:'.$dismissible_length.' dismising ');
 			$transient          = 0;
 
 			if ( 'forever' != $dismissible_length ) {

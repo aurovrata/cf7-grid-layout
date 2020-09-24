@@ -24,6 +24,22 @@ class Cf7_Grid_Layout_Admin {
   /**
   * The ID of this plugin.
   *
+  * @since    4.2.1
+  * @access   private
+  * @var      string    $plugin_name    The ID of this plugin.
+  */
+  private static $admin_notice_pages = array(
+    'admin.php'=>array('cf7sg_help'=>'page'),
+    'edit.php'=>array('wpcf7_contact_form'=>'post_type'),
+    'post.php'=> 'wpcf7_contact_form',
+    'edit-tags.php'=>array('wpcf7_contact_form'=>'post_type'),
+    'index.php'=>'',//dashboard ,
+    'plugins.php'=>'',
+    //'options-general.php'=>'page=',
+  );
+  /**
+  * The ID of this plugin.
+  *
   * @since    1.0.0
   * @access   private
   * @var      string    $plugin_name    The ID of this plugin.
@@ -1426,53 +1442,50 @@ class Cf7_Grid_Layout_Admin {
   *@since 4.1.0
   */
   public function init_notices(){
-    $grid_settings = get_option('cf7sg-plugin-version', array());
+    $grid_settings = get_option( 'cf7sg-plugin-version', array());
+    //if plugin settings exists and this is not an update, then no need to run.
+    if( !empty($grid_settings) and !isset($grid_settings['update']) ) return;
+
     $warning = false;
+    $notices = array();
+
     if(isset($grid_settings['update']) and CF7SG_VERSION_FORM_UPDATE==CF7_GRID_VERSION){
       $warning = true;
     }else if(isset($grid_settings['fv']) ) {
       if(version_compare($grid_settings['fv'], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
     }else{ //check the forms directly
       global $wpdb;
+      $post_type = $this->cf7_post_type();
       $result = $wpdb->get_col("SELECT pm.meta_value FROM {$wpdb->postmeta} as pm
         INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id
-        WHERE p.post_type = 'wpcf7_contact_form'
+        WHERE p.post_type = '{$post_type}'
         AND pm.meta_key = '_cf7sg_version'
         ORDER BY pm.meta_key
       ");
       if(!empty($result) and version_compare($result[0], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
     }
-    $notices= array(
-      'admin.php'=>array(),
-      'plugins.php'=>array(),
-      'post.php'=>array(),
-      'edit.php'=>array(),
-    );
+
     if($warning){
-      $nonce = wp_create_nonce( 'cf7sg_notice-'.CF7_GRID_VERSION ); //unique.
       $link = admin_url('edit.php?post_type=wpcf7_contact_form');
       /* translators: %s is the url to the forms admin table */
       $msg = __('You need to <strong>update</strong> your <a href="%s">forms</a>','cf7-grid-layout');
-      $notice = array(
-        'nonce'=>$nonce,
+      $notices['cf7sg_notice-'.CF7_GRID_VERSION] = array(
         'type'=>'notice-warning', //[notice-update|notice-error]
-        'msg'=>sprintf($msg , $link)
+        'msg'=>sprintf($msg , $link),
+        'pages'=>array('plugins.php','edit.php')
       );
-      $notices['plugins.php']['cf7sg']=$notice;
-      $notices['edit.php']['post_type=wpcf7_contact_form']=$notice;
     }
     /** @since 4.2.0 new sliders tutorial */
-    $notice = array(
-      'nonce'=>wp_create_nonce( "cf7sg_siders_tutorial" ),
-      'type'=>'notice-update', //[notice-update|notice-error]
-      /* translators: %s is the link to the tuorial page*/
-      'msg'=>sprintf( __('There is a new tutorial for <a href="%s">multistep slider forms</a>','cf7-grid-layout'), admin_url('admin.php?page=cf7sg_help')),
-      'html'=>'<div class="inline-top"><iframe width="230" height="130" src="https://www.youtube.com/embed/WiweQRhOr0g" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="inline-top"><strong>Learn how to create multi-step multi-slide CF7 forms using a slider construct functionality of the Smart Grid-layout extension plugin.</strong></div>'
-    );
-    $notices['plugins.php']['cf7sg']=$notice;
-    $notices['edit.php']['post_type=wpcf7_contact_form']=$notice;
-
-    update_option('cf7sg-admin-notices', $notices);
+    if(empty($grid_settings)) {
+      $notices['cf7sg_sliders_tutorial'] = array(
+        'type'=>'notice-update', //[notice-update|notice-error]
+        /* translators: %s is the link to the tuorial page*/
+        'msg'=>sprintf( __('There is a new tutorial for <a href="%s">multistep slider forms</a>','cf7-grid-layout'), admin_url('admin.php?page=cf7sg_help')),
+        'html'=>'<div class="inline-top"><iframe width="230" height="130" src="https://www.youtube.com/embed/WiweQRhOr0g" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="inline-top"><strong>Learn how to create multi-step multi-slide CF7 forms using a slider construct functionality of the Smart Grid-layout extension plugin.</strong></div>',
+        'pages'=>array('plugins.php','edit.php')
+      );
+    }
+    if(!empty($notices)) update_option('cf7sg-admin-notices', $notices);
 
     update_option('cf7sg-plugin-version', array(
       'gv'=>CF7_GRID_VERSION,
@@ -1490,29 +1503,37 @@ class Cf7_Grid_Layout_Admin {
 		$notices = get_option('cf7sg-admin-notices', array());
 		if(empty($notices)) return;
 
-		if(!isset($notices[$pagenow])) return;
+		if(!isset(self::$admin_notice_pages[$pagenow])) return;
 
-    // debug_msg($notices[$pagenow], $pagenow);
+    $notify=false;
+    $rule = self::$admin_notice_pages[$pagenow];
+    // debug_msg($rule, 'notice rules ');
+    if($pagenow=='post.php'){
+      $screen = get_current_screen();
+      if($this->cf7_post_type() == $screen->post_type) $notify=true;
+    }else if( !empty($rule) and is_array($rule) ){
+      foreach($rule as $key=>$type){
+        if( isset($_GET[$type]) and $_GET[$type]==$key ) $notify=true;
+      }
+    }else $notify = true; //default.
 
-		foreach($notices[$pagenow] as $key=>$notice){
-			switch(true){
-				case strpos($key, 'page=') !== false && isset($_GET['page']) && $_GET['page'] === str_replace('page=','',$key):
-				case strpos($key, 'post_type=') !== false && isset($_GET['post_type']) && $_GET['post_type'] === str_replace('post_type=','',$key):
-				case $key==='any':
-        case $key==='cf7sg':
-					$dismiss = $notice['nonce'].'-forever';
-					if ( ! PAnD::is_admin_notice_active( $dismiss ) ) {
-						unset($notices[$pagenow]);
-						update_option('cf7sg-admin-notices', $notices);
-						continue 2; //continue foreach loop.
-					}
-          if(!isset($notice['html'])) $notice['html'] = '';
-					?>
-          <style>.notice .inline-top{display: inline-block;vertical-align: top;margin-right: 10px;max-width: 300px;}</style>
-					<div data-dismissible="<?=$dismiss?>" class="notice <?=$notice['type']?> is-dismissible"><p><?=$notice['msg']?></p><?=$notice['html']?></div>
-					<?php
-					break;
+    if(!$notify) return; //rules don't match;
+
+    //do we have any notices to display?
+		foreach($notices as $id=>$notice){
+      if( isset($notice['pages']) and !in_array($pagenow, $notice['pages'])) continue;
+      $time = isset($notice['time']) ? $notice['time']: 'forever';
+			$dismiss = "$id-$time";
+			if ( ! PAnD::is_admin_notice_active( $dismiss ) ) {
+				unset($notices[$id]);
+				update_option('cf7sg-admin-notices', $notices);
+				continue ; //continue foreach loop.
 			}
+      if(!isset($notice['html'])) $notice['html'] = '';
+			?>
+      <style>.notice .inline-top{display: inline-block;vertical-align: top;margin-right: 10px;max-width: 300px;}</style>
+			<div data-dismissible="<?=$dismiss?>" class="notice <?=$notice['type']?> is-dismissible"><p><?=$notice['msg']?></p><?=$notice['html']?></div>
+			<?php
 		}
 	}
   /**
