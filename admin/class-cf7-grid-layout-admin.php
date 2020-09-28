@@ -827,10 +827,10 @@ class Cf7_Grid_Layout_Admin {
     $has_toggles = ( 'true' === $_POST['cf7sg-has-toggles']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_toggles', $has_toggles);
     /** @since 3.3.5 track toggles in tabs */
-    $toggle_in_tabs = json_decode(stripslashes($_POST['cf7sg-toggle-in-tabs']));
-    if(empty($toggle_in_tabs)) $toggle_in_tabs = array();
-    if(!is_array($toggle_in_tabs)) $toggle_in_tabs = array($toggle_in_tabs);
-    update_post_meta($post_id, '_cf7sg_grid_toggle_in_tabs', $toggle_in_tabs);
+    // $toggle_in_tabs = json_decode(stripslashes($_POST['cf7sg-toggle-in-tabs']));
+    // if(empty($toggle_in_tabs)) $toggle_in_tabs = array();
+    // if(!is_array($toggle_in_tabs)) $toggle_in_tabs = array($toggle_in_tabs);
+    // update_post_meta($post_id, '_cf7sg_grid_toggle_in_tabs', $toggle_in_tabs);
     /**
     * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
     */
