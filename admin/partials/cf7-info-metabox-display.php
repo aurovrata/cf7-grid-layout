@@ -11,6 +11,17 @@ if(!empty($post)){
   <a href="<?= __cf7sg( 'https://contactform7.com/faq/' )?>"><?= __cf7sg( 'FAQ' )?></a>&nbsp;
   <a href="<?= __cf7sg( 'https://contactform7.com/support/' )?>"><?= __cf7sg( 'Support' )?></a>
 </p>
+<?php /** @since 4.3.0 preview link */
+$preview_id = get_post_meta($post->ID, '_cf7sg_form_page',true);
+$preview = '<em>'.__('Update your form to preview','cf7-grid-layout').'</em>';
+if( !empty($preview_id) ){
+  /*translators: link to preview page with form*/
+  $preview = sprintf(__('Preview <a href="%s">form</a>','cf7-grid-layout'), get_preview_post_link($preview_id));
+}
+?>
+<p id="preview-form-link">
+  <strong><?= $preview?></strong>
+</p>
 <?php
 $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
 $show_dropdown = array();

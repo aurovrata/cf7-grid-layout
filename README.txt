@@ -327,6 +327,10 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 
 == Changelog ==
+= 4.3.0 =
+* added filter 'cf7sg_new_cf7_form_template_arguments' to enable new form template arguments, cf7-polylang can set locale.
+* fixed toggle in accordion row field disabled bug.
+* enable preview link for forms with cf7sg_page custom post type.
 = 4.2.1 =
 * fix notice dismissal bug.
 = 4.2.0 =

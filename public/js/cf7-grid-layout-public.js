@@ -331,7 +331,7 @@
                 break;
             }
           }
-          if(!open) $row.addClass('collapsed');
+          // if(!open) $row.addClass('collapsed');
 
           var options={
             heightStyle: "content",

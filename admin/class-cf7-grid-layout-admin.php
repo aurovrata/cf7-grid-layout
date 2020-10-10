@@ -426,7 +426,7 @@ class Cf7_Grid_Layout_Admin {
       'post-new.php?post_type=wpcf7_contact_form'
     );
     //initial cf7 object when creating new form
-    add_action( 'load-' . $hook, array($this, 'setup_cf7_object'));
+    //add_action( 'load-' . $hook, array($this, 'setup_cf7_object'));
     //remove_submenu_page( $menu_slug, $submenu_slug );
     remove_submenu_page( 'wpcf7', 'wpcf7-new' );
     remove_meta_box('slugdiv', $this->cf7_post_type(), 'normal');
@@ -565,36 +565,7 @@ class Cf7_Grid_Layout_Admin {
       );
     }
   }
-  /**
-   * Function called on page load when new form is created
-   * hooked to 'load-{page-hook}'
-   * @since 1.0.0
-  **/
-  public function setup_cf7_object(){
-    $args = array();
-    /**
-    * Fix locale setup for new forms using polylang.
-    * @since 2.1.4
-    */
-    if(isset($_GET['locale'])){
-      $args['locale'] = $_GET['locale'];
-    }else if(isset($_GET['new_lang'])){
-      //check for polylang
-      $locale = $_GET['new_lang'];
-      if(function_exists('pll_languages_list')){
-        $langs = pll_languages_list();
-        $locales = pll_languages_list(array('fields'=>'locale'));
-        foreach($langs as $idx => $lang){
-          if($lang == $locale){
-            $locale = $locales[$idx];
-          }
-        }
-      }
-      $args['locale'] =$locale;
-    }else $args['locale'] = get_locale();
 
-    WPCF7_ContactForm::get_template( $args);
-  }
   /**
   * Callback function to disolay the main editor meta box
   * @since 1.0.0
@@ -605,9 +576,9 @@ class Cf7_Grid_Layout_Admin {
     }
     $post_id = $post->ID;
     $cf7_form = wpcf7_get_current_contact_form();
-
   	if ( ! $cf7_form ) {
-  		$cf7_form = WPCF7_ContactForm::get_template();
+      $args = apply_filters('cf7sg_new_cf7_form_template_arguments', array());
+  		$cf7_form = WPCF7_ContactForm::get_template($args);
   	}
 
   	// if(empty($post)){
@@ -689,6 +660,19 @@ class Cf7_Grid_Layout_Admin {
     require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-grid-layout-admin-display.php';
   }
   /**
+  * Clean up post meta, delete sgcf7 corresponding view post.
+  * Hooked to action 'before_delete_post'.
+  *@since 4.3.0
+  *@param int $post_id post ID.
+  *@param WP_Post post object.
+  */
+  public function delete_post($post_id, $post){
+    if($post->post_type != WPCF7_ContactForm::post_type) return;
+    //remove viwing post.
+    $preview_id = get_post_meta($post->ID, '_cf7sg_form_page',true);
+    if(!empty($preview_id)) wp_delete_post($preview_id);
+  }
+  /**
    * Save cf7 post using ajax
    * Hooked to 'save_post_wpcf7_contact_form'
    * @since 1.0.0
@@ -730,7 +714,7 @@ class Cf7_Grid_Layout_Admin {
       'data-*'=>1,
     );
     $allowed_tags['script']=array('type'=>1);
-    $cf7_key = sanitize_text_field($_POST['post_name']);
+    $cf7_key = $post->post_name;
     $allowed_tags = apply_filters('cf7sg_kses_allowed_html',$allowed_tags, $cf7_key);
     if(isset( $_POST['wpcf7-form'] )){
       $args['form'] = wp_kses($_POST['wpcf7-form'], $allowed_tags);
@@ -878,6 +862,22 @@ class Cf7_Grid_Layout_Admin {
     //jstags comments.
     if(empty($_POST['cf7sg_jstags_comments'])) update_post_meta($post->ID, '_cf7sg_disable_jstags_comments',1);
     else update_post_meta($post->ID, '_cf7sg_disable_jstags_comments',0);
+    /** @since 4.3.0 create/update a preview form post for this form */
+    $preview_id = get_post_meta($post->ID, '_cf7sg_form_page',true);
+    $prev_page = array(
+      'post_title'=>sanitize_text_field($_POST['post_title']),
+      'post_content'=>'[cf7form cf7key="'.$cf7_key.'"]',
+      'post_status'=>'draft',
+      'post_type'=>'cf7sg_page'
+    );
+    if(empty($cf7_key)) $prev_page['post_content'] = '[contact-form-7 id="'.$post->ID.'"]';
+    if( !empty($preview_id) ){
+      $prev_page['ID'] = $preview_id;
+    }
+    $preview_id = wp_insert_post($prev_page, true);
+    if(!is_wp_error($preview_id)){
+      update_post_meta($post->ID, '_cf7sg_form_page',$preview_id);
+    }
   }
   /**
   * Print default js template,
@@ -1302,6 +1302,14 @@ class Cf7_Grid_Layout_Admin {
       $pointers['row_controls'] = array($content, 'right', 'center','#grid-form>.container>.row>.row-controls');
       ob_clean();
     }
+    /* preview form */
+    ob_clean();
+    include_once 'partials/pointers/cf7sg-pointer-editor-preview-form.php';
+    $content = ob_get_contents();
+    if(!empty($content)){
+      $pointers['preview_form'] = array($content, 'right', 'center','#preview-form-link');
+      ob_clean();
+    }
     include_once 'partials/pointers/cf7sg-pointer-editor-column-control.php';
     $content = ob_get_contents();
     if(!empty($content)){
@@ -1582,5 +1590,70 @@ class Cf7_Grid_Layout_Admin {
       update_option('cf7sg-plugin-version', $grid_settings);
     }
     return $response;
+  }
+  /**
+  * Preview form post type creation.
+  * hooked on action 'init'.
+  *@since 4.3.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  // Register Custom Post Type
+  function register_form_preview_posttype() {
+
+  	$labels = array(
+  		'name'                  => _x( 'CF7 Forms', 'Post Type General Name', 'cf7-grid-layout' ),
+  		'singular_name'         => _x( 'CF7 Form', 'Post Type Singular Name', 'cf7-grid-layout' ),
+  		'menu_name'             => __( 'CF7 Forms', 'cf7-grid-layout' ),
+  		'name_admin_bar'        => __( 'CF7 Form', 'cf7-grid-layout' ),
+  		'parent_item_colon'     => __( 'Parent Item:', 'cf7-grid-layout' ),
+  		'all_items'             => __( 'All Form Pages', 'cf7-grid-layout' ),
+  		'add_new_item'          => __( 'Add New Form Page', 'cf7-grid-layout' ),
+  		'add_new'               => __( 'Add New', 'cf7-grid-layout' ),
+  		'new_item'              => __( 'New Form Page', 'cf7-grid-layout' ),
+  		'edit_item'             => __( 'Edit Form Page', 'cf7-grid-layout' ),
+  		'update_item'           => __( 'Update Form Page', 'cf7-grid-layout' ),
+  		'view_item'             => __( 'View Form Page', 'cf7-grid-layout' ),
+  		'view_items'            => __( 'View Form Pages', 'cf7-grid-layout' ),
+  		'search_items'          => __( 'Search Form Page', 'cf7-grid-layout' ),
+  		'not_found'             => __( 'Not found', 'cf7-grid-layout' ),
+  		'not_found_in_trash'    => __( 'Not found in Trash', 'cf7-grid-layout' ),
+  	);
+  	$rewrite = array(
+  		'slug'                  => 'sgform',
+  		'with_front'            => true,
+  		'pages'                 => true,
+  		'feeds'                 => false,
+  	);
+  	$capabilities = array(
+  		'edit_post'             => 'edit_post',
+  		'read_post'             => 'read_post',
+  		'delete_post'           => 'delete_post',
+  		'edit_posts'            => 'edit_posts',
+  		'edit_others_posts'     => 'edit_others_posts',
+  		'publish_posts'         => 'publish_posts',
+  		'read_private_posts'    => 'read_private_posts',
+  	);
+  	$args = array(
+  		'label'                 => __( 'CF7 Form', 'cf7-grid-layout' ),
+  		'description'           => __( 'Preview/View CF7 forms on the front-end', 'cf7-grid-layout' ),
+  		'labels'                => $labels,
+  		'supports'              => array( 'title', 'editor' ),
+  		'hierarchical'          => true,
+  		'public'                => true,
+  		'show_ui'               => false,
+  		'show_in_menu'          => false,
+  		'show_in_admin_bar'     => false,
+  		'show_in_nav_menus'     => true,
+  		'can_export'            => false,
+  		'has_archive'           => false,
+  		'exclude_from_search'   => true,
+  		'publicly_queryable'    => true,
+  		'query_var'             => 'sgcf7',
+  		'rewrite'               => $rewrite,
+  		'capabilities'          => $capabilities,
+  	);
+  	register_post_type( 'cf7sg_page', $args );
+
   }
 }

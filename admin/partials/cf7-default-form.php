@@ -55,12 +55,12 @@
 <?php
 $template = ob_get_clean();
 $template = sprintf( $template,
-__( 'Name', 'cf7-grid-layout' ),
+  __( 'Your Name', 'contact-form-7' ),
   __( 'Enter your full name', 'cf7-grid-layout' ),
-  __( 'E-mail', 'cf7-grid-layout' ),
+  __( 'Your Email', 'contact-form-7' ),
   __( 'Enter a valid email', 'cf7-grid-layout' ),
-	__( 'Send', 'cf7-grid-layout' ),
-   __( 'Subject', 'cf7-grid-layout' ),
+  __( 'Send', 'contact-form-7' ),
+  __( 'Subject', 'contact-form-7' ),
 	__( 'the topic of your message', 'cf7-grid-layout' ),
-  __( 'Message', 'cf7-grid-layout' ),
+  __( 'Your Message', 'contact-form-7' ),
 	__( 'Enter a brief message', 'cf7-grid-layout' ));

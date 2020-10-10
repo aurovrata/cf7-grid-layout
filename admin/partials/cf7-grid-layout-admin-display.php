@@ -238,7 +238,7 @@ $cf7_key = $post->post_name;
         <option value="nine"><?=__('nine (3/4<sup>ths</sup>)','cf7-grid-layout')?></option>
         <option value="ten"><?=__('ten (5/6<sup>ths</sup>)','cf7-grid-layout')?></option>
         <option value="eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="full" selected><?=__('full wifth','cf7-grid-layout')?></option>
+        <option value="full" selected><?=__('full width','cf7-grid-layout')?></option>
       </select>
       <a id="new-row" class="button make-grid column-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
       <a class="button external-form" href="javascript:void(0);"><?= __('Insert form', 'cf7-grid-layout');?></a>
