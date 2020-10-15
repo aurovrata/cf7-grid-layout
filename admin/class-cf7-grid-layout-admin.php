@@ -1485,12 +1485,19 @@ class Cf7_Grid_Layout_Admin {
       );
     }
     /** @since 4.2.0 new sliders tutorial */
-    if(empty($grid_settings)) {
+    if( isset($grid_settings['update']) ){
       $notices['cf7sg_sliders_tutorial'] = array(
         'type'=>'notice-update', //[notice-update|notice-error]
         /* translators: %s is the link to the tuorial page*/
         'msg'=>sprintf( __('There is a new tutorial for <a href="%s">multistep slider forms</a>','cf7-grid-layout'), admin_url('admin.php?page=cf7sg_help')),
         'html'=>'<div class="inline-top"><iframe width="230" height="130" src="https://www.youtube.com/embed/WiweQRhOr0g" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="inline-top"><strong>Learn how to create multi-step multi-slide CF7 forms using a slider construct functionality of the Smart Grid-layout extension plugin.</strong></div>',
+        'pages'=>array('plugins.php','edit.php')
+      );
+      $notices['cf7sg_modular_tutorial'] = array(
+        'type'=>'notice-update', //[notice-update|notice-error]
+        /* translators: %s is the link to the tuorial page*/
+        'msg'=>sprintf( __('There is a new tutorial for <a href="%s">modular form construct</a>','cf7-grid-layout'), admin_url('admin.php?page=cf7sg_help')),
+        'html'=>'<div class="inline-top"><iframe width="230" height="130" src="https://www.youtube.com/embed/vPc3M5Emro4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="inline-top"><strong>Learn how to use modular form construct functionality allowing complex forms to be assembled from other child forms.</strong></div>',
         'pages'=>array('plugins.php','edit.php')
       );
     }
