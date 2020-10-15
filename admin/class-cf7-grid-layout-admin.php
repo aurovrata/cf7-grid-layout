@@ -868,7 +868,8 @@ class Cf7_Grid_Layout_Admin {
       'post_title'=>sanitize_text_field($_POST['post_title']),
       'post_content'=>'[cf7form cf7key="'.$cf7_key.'"]',
       'post_status'=>'draft',
-      'post_type'=>'cf7sg_page'
+      'post_type'=>'cf7sg_page',
+      // 'post_name' => sanitize_title( $title ),
     );
     if(empty($cf7_key)) $prev_page['post_content'] = '[contact-form-7 id="'.$post->ID.'"]';
     if( !empty($preview_id) ){
@@ -1625,33 +1626,21 @@ class Cf7_Grid_Layout_Admin {
   		'pages'                 => true,
   		'feeds'                 => false,
   	);
-  	$capabilities = array(
-  		'edit_post'             => 'edit_post',
-  		'read_post'             => 'read_post',
-  		'delete_post'           => 'delete_post',
-  		'edit_posts'            => 'edit_posts',
-  		'edit_others_posts'     => 'edit_others_posts',
-  		'publish_posts'         => 'publish_posts',
-  		'read_private_posts'    => 'read_private_posts',
-  	);
-  	$args = array(
+    $args = array(
   		'label'                 => __( 'CF7 Form', 'cf7-grid-layout' ),
   		'description'           => __( 'Preview/View CF7 forms on the front-end', 'cf7-grid-layout' ),
   		'labels'                => $labels,
-  		'supports'              => array( 'title', 'editor' ),
-  		'hierarchical'          => true,
   		'public'                => true,
   		'show_ui'               => false,
   		'show_in_menu'          => false,
   		'show_in_admin_bar'     => false,
-  		'show_in_nav_menus'     => true,
+  		'show_in_nav_menus'     => false,
   		'can_export'            => false,
   		'has_archive'           => false,
   		'exclude_from_search'   => true,
   		'publicly_queryable'    => true,
-  		'query_var'             => 'sgcf7',
+  		// 'query_var'             => 'sgcf7',
   		'rewrite'               => $rewrite,
-  		'capabilities'          => $capabilities,
   	);
   	register_post_type( 'cf7sg_page', $args );
 

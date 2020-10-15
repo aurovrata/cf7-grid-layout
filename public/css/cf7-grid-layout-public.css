@@ -58,6 +58,12 @@ ul.cf7-sg-tabs-list li .dashicons.dashicons-no-alt {
     border: solid 1px #b9b9b9;
     border-left: none;
 }
+.container.cf7sg-collapsible + .container > .row:first-child > .columns.full > .container.cf7-sg-table {
+    margin-top: 10px;
+}
+.container.cf7sg-collapsible>.ui-accordion .ui-accordion-content{
+  padding: 0.5em 1em;
+}
 .row.cf7-sg-table .row-control .dashicons {
     background-color: white;
     border-radius: 50%;
@@ -308,7 +314,7 @@ span.cf7sg-validation-warning {
 .cf7sg-collapsible .toggle .toggle-inner {
     height: auto;
 }
-@media (min-width: 481px) {}
+
 .cf7sg-collapsible .cf7sg-title+.toggle {
     float: none;
     position: absolute;
@@ -366,4 +372,12 @@ a.cf7sg-button {
     border-radius: 3px;
     font-weight: bold;
     font-size: 110%;
+}
+@media (max-width: 480px) {
+  .cf7sg-container .cf7-smart-grid.has-grid .wpcf7[dir="rtl"] .row {
+    transform: rotate(180deg);
+  }
+  .cf7sg-container .cf7-smart-grid.has-grid .wpcf7[dir="rtl"] .columns {
+  	transform: rotate(-180deg);
+  }
 }

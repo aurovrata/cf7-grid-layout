@@ -297,6 +297,9 @@ existing forms are not editable in the grid editor.
 Create a new form to be able to leverage the grid editor functionality.
 
 this plugin allows you to create grid layout forms by creating a HTML markup and a CSS stylesheet which displays your form fields in a responsive grid.
+= 19. Form previews throws 404 page not found error =
+
+You need to refresh your permalinks, please go to Settings->Permalinks in your dashboard, scroll down and hit the 'Save' button.
 
 == Screenshots ==
 
@@ -325,7 +328,6 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
-
 == Changelog ==
 = 4.3.0 =
 * added filter 'cf7sg_new_cf7_form_template_arguments' to enable new form template arguments, cf7-polylang can set locale.
