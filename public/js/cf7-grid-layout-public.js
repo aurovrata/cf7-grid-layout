@@ -555,7 +555,7 @@
     $form_slider.each(function(){
       var $form = $(this);
       $('.cf7sg-slider-section').each(function(){
-        var $slider = $(this).wrapInner('<div class="glider"></div>'),
+        var glider, $slider = $(this).wrapInner('<div class="glider"></div>'),
           slideCount = -1,
           $glider = $('.glider',$slider),
           $prev = $('<span class="slider-control slider-prev"></span>'),
@@ -600,11 +600,11 @@
           $(e.target).find('.glider-slide.active').trigger({
             type:'sgSlideChange',
             'current':e.detail.slide,
-            'last': glider.slides.length-1
+            'last': $(e.target).find('.glider-slide').length-1
           })
         });
         //init slider.
-        var glider = new Glider($glider[0],{
+        glider = new Glider($glider[0],{
           arrows: {
             prev: '.slider-prev',
             next: '.slider-next'
