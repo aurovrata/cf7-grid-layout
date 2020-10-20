@@ -329,6 +329,17 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
+= 4.4.0 =
+* added action 'cf7sg_enqueue_admin_editor_styles'
+* added action 'cf7sg_enqueue_admin_table_styles'
+* added action 'cf7sg_enqueue_admin_table_scripts'
+* added filter 'cf7sg_include_hidden_form_fields'.
+* added filter 'cf7sg_prefill_form_fields'.
+* differentiate preview forms on submission.
+* fix rtl full-screen/custom editors buttons.
+* improve full-screen.
+* enabled pre-fill of form fields.
+
 = 4.3.2 =
 * fix js slider bug.
 = 4.3.1 =

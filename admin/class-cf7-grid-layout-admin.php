@@ -155,10 +155,13 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_style( 'smart-grid-css', $plugin_dir . 'assets/css.gs/smart-grid.admin.css', array(), $this->version, 'all');
         wp_enqueue_style('dashicons');
         wp_enqueue_style('select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), $this->version, 'all' );
+        /** @since 4.4.0 Enabled user style enqueue */
+        do_action('cf7sg_enqueue_admin_editor_styles');
         break;
       case 'edit': //table.
         wp_enqueue_style( $this->plugin_name, $plugin_dir . 'admin/css/cf7-grid-layout-admin.css', array(), $this->version, 'all' );
-
+        /** @since 4.4.0 Enabled user style enqueue */
+        do_action('cf7sg_enqueue_admin_table_styles');
         break;
     }
 
@@ -406,7 +409,8 @@ class Cf7_Grid_Layout_Admin {
         break;
       case 'edit':
         //wp_enqueue_script( $this->plugin_name.'-quick-edit', plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-quick-edit.js', false, $this->version, true );
-
+        /** @since 4.4.0 Enabled user script enqueue */
+        do_action('cf7sg_enqueue_admin_table_scripts');
         break;
     }
 	}

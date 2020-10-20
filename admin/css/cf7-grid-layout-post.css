@@ -5,6 +5,7 @@
 	margin-top: 8px;
   z-index:2;
 }
+*[dir="rtl"] #optional-editors {left: 0}
 .codemirror-theme label:hover {
 	font-weight: bold;
 }
@@ -80,6 +81,7 @@
   top: -26px;
   padding: 2px 0 2px 5px;
   background: #eae9e9;
+	width: calc( 100% - 313px);
 }
 .codemirror-theme span.file {
 	margin-left: 10px;
@@ -87,6 +89,10 @@
 	background: #f7ecb1;
 	padding: 4px 8px;
 	color: black;
+  max-width: calc( 100% - 216px );
+  display: inline-block;
+  overflow-x: hidden;
+  height: 20px;
 }
 #cf7-codemirror,#cf7-js-codemirror,#cf7-css-codemirror {position: relative;}
 label.accordion-label:hover + span.popup{display: inline;
@@ -136,22 +142,32 @@ a.helper:hover + span.helper {display: inline;}
     position: absolute;
     top: -39px;
     left: 160px;
+		z-index: 100;
 }
 #full-screen-cf7.full-screen {
-    position: absolute;
-    top: auto;
-    left: auto;
-    right: 0;
-    bottom: -58px;
+  position: absolute;
+  top: auto;
+  left: auto;
+  right: 0;
+  bottom: -58px;
+}
+*[dir="rtl"] #full-screen-cf7.full-screen {
+	right: auto;
+	left: 0;
 }
 #cf7sg-editor.full-screen {
-    top: 5px;
-    z-index: 10;
-    position: fixed;
-    overflow: auto;
-    height: 100%;
-    margin-left: -15px;
-  }
+  top: 5px;
+  z-index: 10;
+  position: fixed;
+  overflow: auto;
+  height: 100%;
+  margin-left: -15px;
+  right:0;
+  width: calc( 100% - 170px);
+}
+.folded #cf7sg-editor.full-screen{
+	width: calc( 100% - 46px);
+}
 #form-editor-tabs ul.ui-tabs-nav {
     border-bottom: 1px solid #ddd;
     padding: 7px 0px 0 3px;

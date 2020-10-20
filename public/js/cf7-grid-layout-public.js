@@ -28,12 +28,15 @@
       if($target.is('.cf7sg-validation-warning .confirm-button')){
         $target.parent().remove();
       }
+    }).each(function(){ /** @since 4.4 setup form id */
+      var $form = $(this), id = $form.closest('div.cf7-smart-grid').attr('id');
+      $form.attr('id','wpcf7-'+id);
     });
     //.cf7-sg-table structure, smart grid only.
     var $cf7Form_table = $('div.cf7-smart-grid.has-table form.wpcf7-form');
     if($cf7Form_table.length){
       $('.container.cf7-sg-table', $cf7Form_table).each(function(){
-        var $table = $(this);
+        var $table = $(this), fid = $table.closest('div.cf7-smart-grid').attr('id');
         if($table[0].hasAttribute('id')){ /** @since 2.4.2 track table fields*/
           var $tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $table.attr('id'));
           $table.prepend($tracker);
@@ -54,9 +57,14 @@
         //  if($cf7Form_table.is('div.has-update form.wpcf7-form')) trackFields = 'table';
         $row.find(':input').each(function(){
           var $this = $(this);
-          var name = $this.attr('name');
+          var name = $this.attr('name').replace('[]','');
           if(name.length>0){
-            $this.addClass('cf7sg-'+name.replace('[]','')+' cf7sgrow-field');
+            $this.addClass('cf7sg-'+name+' cf7sgrow-field');
+          }
+          /** @since 4.4 prefill */
+          if( !isEmpty(cf7sg[fid][name]) ){
+            $this.prefillCF7Field(cf7sg[fid][name], fid);
+            delete cf7sg[fid][name];
           }
         });
 
@@ -75,7 +83,11 @@
         $row.attr('data-row','-1');
         $table.append($row.hide());
         //disable all inputs from the clone row
-        $(':input', $row).prop('disabled', true);
+        $(':input', $row).each(function(){ /** @since 4.4 */
+          var $input = $(this).prop('disabled', true),
+            name = '_cf7sgcloned_'+$input.attr('name');
+          $input.attr('name',name);
+        });
         //add controls to the row to delete
         $row.append('<span class="row-control"><span class="dashicons dashicons-no-alt"></span></span>');
         //trigger table ready event for custom scripts to change the button text
@@ -109,10 +121,17 @@
     //inline validation any forms
     var cf7Form_validation = $('div.cf7-smart-grid.has-validation form.wpcf7-form');
     if(cf7Form_validation.length){
+
       var validation = $('input[type="number"][class*="sgv-"]', cf7Form_validation)
       validation.each(function(){
-        var $this = $(this);
-        var val = $this.attr('value');
+        var $this = $(this), name = $this.attr('name'),
+          fid = $this.closest('div.cf7-smart-grid').attr('id'),
+          val = $this.attr('value');
+        if( !isEmpty( cf7sg[fid][name] ) ){
+          $this.prefillCF7Field(cf7sg[fid][name], fid);
+          val = cf7sg[fid][name];
+          delete cf7sg[fid][name];
+        }
         $this.data('current',val);
       });
       cf7Form_validation.change( 'input[type="number"]', function( event ) {
@@ -266,13 +285,22 @@
           /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
           *@since 1.1.0
           */
-          var $cf72post = $form.closest('div.cf7_2_post');
-          if( 0 == $cf72post.length){ //disable the input fields in toggled sections.
-            if(!toggled){ //disable fields within a closed toggled section.
-              $(':input', $section.children('.row')).prop('disabled', true);
-              $section.addClass('collapsed');
+          var $cf72post = $form.closest('div.cf7_2_post'),
+            disableFields = ( 0 == $cf72post.length) && !toggled,
+            fid = $section.closest('div.cf7-smart-grid').attr('id');
+
+          if(!toggled) $section.addClass('collapsed');
+          //disable fields within a closed toggled section
+
+          $(':input', $section.children('.row')).each(function(){
+            var $field = $(this), name = $field.attr('name').replace('[]','');
+            if( !isEmpty( cf7sg[fid][name] ) ){
+              $field.prefillCF7Field(cf7sg[fid][name], fid);
+              delete cf7sg[fid][name];
             }
-          }//else deal with toggled fields once cf72post plugin has pre-filled sections.
+            if(disableFields) $field.prop('disabled', true);
+          });
+
           //setup the toggle button
           $section.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled, group);
           if(toggled){
@@ -392,7 +420,7 @@
         }
       });
       $( ".cf7-sg-tabs",  $cf7Form_tabs).each(function(){
-        var $this = $(this);
+        var $this = $(this), fid = $this.closest('div.cf7-smart-grid').attr('id');
         //add a button to create more tabs
         var $list = $this.children('.cf7-sg-tabs-list');
         if( 1 == $list.children('li').length){
@@ -410,22 +438,36 @@
               $this.addClass('cf7sgtab-field');
               return;
             }
-            var name = $this.attr('name');
+            var name = $this.attr('name').replace('[]','');
             if(name.length>0){
-              $this.addClass('cf7sg-'+name.replace('[]','')+' cf7sgtab-field');
+              $this.addClass('cf7sg-'+name+' cf7sgtab-field');
+              /** @since 4.4 prefill fields */
+              if( !isEmpty( cf7sg[fid][name] ) ){
+                $this.prefillCF7Field(cf7sg[fid][name],fid);
+                delete cf7sg[fid][name];
+              }
             }
           });
 
           //finally store a clone of the panel to be able to add new tabs
           var $clonedP = $('<div>').append($panel.clone());
           //disable all inputs in the cloned panel so they don't get submitted.
-          $(':input', $clonedP).prop('disabled', true);
+          $(':input', $clonedP).prop('disabled', true),
           cf7sgPanels[$panel.attr('id')] = $clonedP.html();
         }
         //create tab.
         $this.tabs( {create: function(e){$(this).trigger('sgTabsReady')} } );
       })
     }
+    /** @since 4.4 prefill fields */
+    $('div.cf7-smart-grid').each(function(){
+      var $form= $(this), fid = $form.attr('id');
+      if( !isEmpty( cf7sg[fid] ) ){
+        Object.keys(cf7sg[fid]).forEach(function(f){
+          $('.'+f+' :input', $form).prefillCF7Field(cf7sg[fid][f], fid);
+        })
+      }
+    });
     //enable jquery-ui select menu, any forms.
     var cf7Form_niceSelect = $('div.cf7-smart-grid.has-nice-select form.wpcf7-form');
     if(cf7Form_niceSelect.length > 0){
@@ -670,8 +712,9 @@
       return text;
     }
 
-    /*
-     Smart Grid is now ready
+    /**
+    * Smart Grid is now ready
+    * @since 4.4.0 enable form pre-load.
     */
     $('div.cf7-smart-grid form.wpcf7-form').trigger("cf7SmartGridReady");
 
@@ -730,6 +773,43 @@
     if (!state.id) { return state.text; }
     var $option=$(state.element);
     return $('<a href="' + $option.data('permalink') + '">' + state.text + '</a>');
+  }
+  /** @since 4.4 prefill fields */
+  $.fn.prefillCF7Field = function(val, formID){
+    var $field = $(this);
+    if(! $field.is(':input') ) return false;
+
+    var $form = $(this), fname = $field.attr('name'),
+      field = document.forms['wpcf7-'+formID].elements[fname],
+      ftype = field.type;
+    // for(fname of Object.keys(values)){
+    if(isEmpty(field)){
+      if(cf7sg.debug) console.log('CF7SG ERROR: Unable to retrieve form element '+fname);
+      return $field;
+    }
+
+    if(field.length>0) ftype = field[0].type
+    switch(ftype){
+      case 'select-multiple':
+      case 'select':
+        if(!Array.isArray(val)) val = [val];
+        val.forEach(function(v){
+          field.querySelector('option[value="'+v+'"]').selected=true;
+        });
+        break;
+      case 'checkbox':
+      case 'radio':
+        field = $(field).closest('.' + fname.replace('[]','')).get(0);
+        if(!Array.isArray(val)) val = [val];
+        val.forEach(function(v){
+          field.querySelector('input[value="'+v+'"]').checked=true;
+        });
+        break;
+      default:
+        field.value = val;
+        break;
+    }
+    return $field;
   }
   $.fn.cf7sgSelect2Options = function(){
     var $select2 = $(this), s2options = {tags: $select2.is('.tags')}, field = $select2.attr('name').replace('[]','');
@@ -909,7 +989,7 @@
       var $input = $(this);
       //enable inputs
       $input.prop('disabled', false);
-      var name = $input.attr('name');
+      var name = $input.attr('name').replace('_cf7sgcloned_',''); /** @since 4.4 */
       var suffix = '';
       if(name.endsWith('[]')){
         name = name.replace('[]','');
@@ -976,12 +1056,12 @@
     $newPanel.attr('id', panelId);
     //add input name as class to parent span
     $(':input', $newPanel).each(function(){
-      var $this = $(this);
-      var isCloneRow = $this.is('.cf7-sg-cloned-table-row :input');
+      var $this = $(this),
+        isCloneRow = $this.is('.cf7-sg-cloned-table-row :input'),
+        name = $this.attr('name'),
+        suffix = '';
       //enable inputs
       if(!isCloneRow) $this.prop('disabled', false);
-      var name = $this.attr('name');
-      var suffix = '';
       if(name.endsWith('[]')){
         name = name.replace('[]','');
         suffix = '[]';
@@ -1116,7 +1196,7 @@
     return $this;
   }
 
-  // if this is an updated form (due to chagen in embeded forms), send grid fields back to server.
+  // if this is an updated form (due to chages in embeded forms), send grid fields back to server.
   $('div.cf7-smart-grid.has-update form.wpcf7-form').on('cf7SmartGridReady', function(){
     var $form = $(this);
     var serverRequest = $.ajax({
@@ -1136,7 +1216,5 @@
     })
   })
   //empty checks for undefined, null, false, NaN, ''
-  function isEmpty(v){
-    return typeof v === 'number' ? isNaN(v) : !Boolean(v);
-  }
+  function isEmpty(v){ return typeof v === 'number' ? isNaN(v) : !Boolean(v);}
 })( jQuery )

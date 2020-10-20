@@ -20,3 +20,10 @@
     width: 100%;
     z-index: 10;
 }
+.wp-admin.edit-php.post-type-wpcf7_contact_form th#cf7sg-submissions {
+	width: 50px;
+  text-align: center;
+}
+.wp-admin.edit-php.post-type-wpcf7_contact_form .column-cf7sg-submissions {
+	text-align: center;
+}

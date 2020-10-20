@@ -111,19 +111,6 @@ if(!class_exists('CF7SG_WP_Post_Table')){
   		    //for the future
           break;
         case 'edit':
-          //get all cf7 forms
-          // $cf7_posts = get_posts(array(
-          //   'post_type'=>self::cf7_post_type(),
-          //   'posts_per_page' => -1,
-          // ));
-          // $keys=array();
-          // if(!empty($cf7_posts)){
-          //   foreach($cf7_posts as $cf7){
-          //     $keys[]=$cf7->post_name;
-          //   }
-          //   wp_reset_postdata();
-          // }
-          // wp_enqueue_script('jquery-effects-core');
           wp_enqueue_script( 'cf7sg-post-table-js', plugin_dir_url( __FILE__ ) . 'js/cf7-post-table.js', false, $this->version, true );
           // wp_localize_script('cf7sg-post-table-js','cf7_2_post_admin', array('keys'=>$keys));
           break;
@@ -442,8 +429,35 @@ if(!class_exists('CF7SG_WP_Post_Table')){
       $a = array_merge( array(
           'cf7key' => '',
       ), $atts );
+
       if(empty($a['cf7key'])){
         return '<em>' . __('cf7-form shortcode missing key attribute','cf7-admin-table') . '</em>';
+      }
+      /** @since 4.4.0 enable field values */
+      $hidden = apply_filters('cf7sg_include_hidden_form_fields', array(),$a['cf7key']);
+      $fields = array();
+      foreach($atts as $key=>$atts_val){
+        $field = explode('/',$atts_val);
+        if(is_array($field) && 'cf7sg'==$field[0]){
+          switch(count($field)){
+            case 2:
+              $field = explode('=',$field[1]);
+              $fields[$field[0]] = isset($field[1]) ? trim($field[1],'"'):'';
+              break;
+            case 3:
+              if('hidden'==$field[1]){
+                $field = explode('=',$field[2]);
+                $hidden[$field[0]] = isset($field[1]) ? trim($field[1],'"'):'';
+              }
+              break;
+          }
+          unset($a[$key]);
+        }
+      }
+      if(!empty($fields)){
+        add_filter('cf7sg_prefill_form_fields', function($pairs, $key) use ($fields, $a){
+          if($a['cf7key']==$key) return array_merge($pairs, $fields);
+        },5,2);
       }
       //else get the post ID
       $form = get_posts(array(
@@ -452,11 +466,22 @@ if(!class_exists('CF7SG_WP_Post_Table')){
       ));
       if(!empty($form)){
         $id = apply_filters('cf7_form_shortcode_form_id',$form[0]->ID, $atts);
-
         wp_reset_postdata();
         $attributes ='';
         foreach($a as $key=>$value){
           $attributes .= ' '.$key.'="'.$value.'"';
+        }
+        /** @since 4.4.0 diffrentiate preview forms */
+        if( isset($_GET['post_type']) && 'cf7sg_page'==$_GET['post_type'] && isset($_GET['preview']) ){
+          $hidden['_cf7sg_preview']=true;
+        }
+        if(!empty($hidden)){
+          add_filter('wpcf7_form_hidden_fields', function($fields) use ($hidden, $id) {
+            $form = wpcf7_get_current_contact_form();
+            if(empty($form)) return $fields;
+            if($form->id()!=$id) return $fields;
+            return array_merge($fields, $hidden);
+          },20,1);
         }
         return do_shortcode('[contact-form-7 id="'.$id.'"'.$attributes.']');
       }else{

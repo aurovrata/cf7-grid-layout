@@ -274,6 +274,8 @@ class Cf7_Grid_Layout_Public {
     $hidden['_wpcf7_key'] = $post->post_name;
     $hidden['_cf7sg_toggles'] = '';
     $hidden['_cf7sg_version'] = $this->version;
+    /** @since 4.4.0 enable rest authentication for logged in users. */
+    $hidden['_wpnonce'] = wp_create_nonce('wp_rest');
     return $hidden;
   }
   /**
@@ -368,14 +370,16 @@ class Cf7_Grid_Layout_Public {
     $messages = array();
     if( !empty($form) ) $messages = $form->prop('messages');
     else debug_msg("CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id");
-
+    //setup classes and id for wrapper.
+    $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
     if($use_grid_js){
       $this->localised_data = array(
         'url' => admin_url( 'admin-ajax.php' ),
         'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
         'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
         'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
-        'debug'=>( defined('WP_DEBUG') && WP_DEBUG )
+        'debug'=>( defined('WP_DEBUG') && WP_DEBUG ),
+        $css_id => apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key) /** @since 4.4.0 */
       );
       //cf7sg script & style.
       wp_enqueue_script($this->plugin_name);
@@ -395,13 +399,20 @@ class Cf7_Grid_Layout_Public {
       wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', $dep , null, true);
       do_action('smart_grid_register_custom_script', $cf7_key);
     }
-    //setup classes and id for wrapper.
-    $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
 
     if(empty($is_form) or !$is_form){
       do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
       $classes = implode(' ', $class) .' key_'.$cf7_key;
       $output = '<div class="cf7sg-container cf7sg-not-grid"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
+      /** @since 4.4.0 */
+      $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
+      if(!empty($prefill)){
+        $prefill = 'var cf7sg = '.json_encode( $prefill ).';';
+        $prefill = '(function($){'.$prefill.'for(var [field,value] of Object.entries(cf7sg){';
+        $prefill .= '$(":input[name="+field+"]").val(value);';
+        $prefill .='}})(jQuery)';
+        $output.='<script type="text/javascript">'.$prefill.'</script>';
+      }
       return $output;
     }
     //grid styling.
@@ -440,7 +451,6 @@ class Cf7_Grid_Layout_Public {
       if(!empty($cf7_form)){ //redraw the form.
         $cf7_form = wpcf7_save_contact_form(array('id'=>$cf7_id, 'form'=>$form_raw));
         //reload the form
-        //$cf7_form = wpcf7_contact_form($cf7_id);
         $output = $cf7_form->form_html($attr);
         $class[]= 'has-update';
         //actino for other plugin notification.

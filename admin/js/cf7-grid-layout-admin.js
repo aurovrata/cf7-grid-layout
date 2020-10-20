@@ -31,13 +31,13 @@
 	$(document).ready( function(){
     //change the form id to mimic cf7 plugin custom admin page.
     /** @since 2.11.0 full screen button*/
-    let $editor = $('#cf7sg-editor'), bodyWidth = $('#wpbody').width();
+    let $editor = $('#cf7sg-editor') ;
     $editor.css('background-color',$('body').css('background-color'));
     $('#full-screen-cf7').on('click', function(){
       $editor.toggleClass('full-screen');
       $(this).toggleClass('full-screen');
-      if($editor.is('.full-screen')) $editor.width(bodyWidth);
-      else $editor.width('auto');
+      // if($editor.is('.full-screen')) $editor.width($('#wpbody').width());
+      // else $editor.width('auto');
       $('#form-editor-tabs .ui-tabs-panel', $editor).trigger('cf7sg-screen-resize');
     });
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
