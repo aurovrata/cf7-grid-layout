@@ -1801,4 +1801,23 @@ class Cf7_Grid_Layout_Public {
     $components['attachments'] = $attachments;
     return $components;
   }
+  /**
+  * Track form field value submissions for preview forms.
+  * Hooked to action 'wpcf7_before_send_mail'
+  *@since 4.4.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function prefill_preview_forms($form){
+    if(empty($form)) return;
+    if( !isset($_POST['_cf7sg_preview']) ) return;
+    $prefill = array();
+    foreach( $form->scan_form_tags() as $tag){
+      if( isset($_POST[$tag->name]) and !empty($_POST[$tag->name]) ){
+          $prefill[$tag->name] = $_POST[$tag->name];
+      }
+    }
+    if(!empty($prefill)) setcookie($_POST['_wpcf7_key'], json_encode($prefill),0,'/');
+  }
+
 }

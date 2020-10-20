@@ -788,7 +788,7 @@
       return $field;
     }
 
-    if(field.length>0) ftype = field[0].type
+    if($field.length>0) ftype = $field[0].type
     switch(ftype){
       case 'select-multiple':
       case 'select':

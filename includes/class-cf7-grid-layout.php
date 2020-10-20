@@ -303,6 +303,8 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter( 'wpcf7_mail_components', $plugin_public, 'wpcf7_mail_components' , 999,3);
     /** @since 4.0.0 enable/disable autop with filter */
     $this->loader->add_filter( 'wpcf7_autop_or_not', $plugin_public, 'disable_autop_for_grid' ,5,1);
+    /** @since 4.4 prefill preview forms */
+    $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'prefill_preview_forms');
 
 	}
 

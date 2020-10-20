@@ -454,11 +454,7 @@ if(!class_exists('CF7SG_WP_Post_Table')){
           unset($a[$key]);
         }
       }
-      if(!empty($fields)){
-        add_filter('cf7sg_prefill_form_fields', function($pairs, $key) use ($fields, $a){
-          if($a['cf7key']==$key) return array_merge($pairs, $fields);
-        },5,2);
-      }
+
       //else get the post ID
       $form = get_posts(array(
         'post_type' => self::cf7_post_type(),
@@ -474,14 +470,22 @@ if(!class_exists('CF7SG_WP_Post_Table')){
         /** @since 4.4.0 diffrentiate preview forms */
         if( isset($_GET['post_type']) && 'cf7sg_page'==$_GET['post_type'] && isset($_GET['preview']) ){
           $hidden['_cf7sg_preview']=true;
+          if(isset($_COOKIE[$a['cf7key']])){
+            $fields = array_merge( json_decode( stripslashes($_COOKIE[$a['cf7key']]), true),$fields);
+          }
         }
         if(!empty($hidden)){
-          add_filter('wpcf7_form_hidden_fields', function($fields) use ($hidden, $id) {
+          add_filter('wpcf7_form_hidden_fields', function($hide) use ($hidden, $id) {
             $form = wpcf7_get_current_contact_form();
-            if(empty($form)) return $fields;
-            if($form->id()!=$id) return $fields;
-            return array_merge($fields, $hidden);
-          },20,1);
+            if(empty($form)) return $hide;
+            if($form->id()!=$id) return $hide;
+            return array_merge($hide, $hidden);
+          },PHP_INT_MAX,1);
+        }
+        if(!empty($fields)){
+          add_filter('cf7sg_prefill_form_fields', function($pairs, $key) use ($fields, $a){
+            if($a['cf7key']==$key) return array_merge($pairs, $fields);
+          },PHP_INT_MAX,2);
         }
         return do_shortcode('[contact-form-7 id="'.$id.'"'.$attributes.']');
       }else{
