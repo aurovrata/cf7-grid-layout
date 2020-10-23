@@ -198,7 +198,7 @@ class Cf7_Grid_Layout {
     //save the post
     $this->loader->add_action('save_post_wpcf7_contact_form', $plugin_admin, 'save_post', 10,3);
     /** delete post @since 4.3.0 */
-    $this->loader->add_action('before_delete_post', $plugin_admin, 'delete_post',10,2);
+    $this->loader->add_action('before_delete_post', $plugin_admin, 'delete_post');
     //ajax load cf7 form content
     $this->loader->add_action('wp_ajax_get_cf7_content', $plugin_admin, 'get_cf7_content');
     //hook for adding fields to sumit action metabox
@@ -248,7 +248,8 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter('upgrader_post_install', $plugin_admin, 'post_plugin_upgrade',10,3);
     /** @since 4.3.0 enable previews/views of forms */
     $this->loader->add_action( 'init',  $plugin_admin, 'register_form_preview_posttype', 0 );
-
+    /** @since 4.4 load translation files */
+    $this->loader->add_action( 'cf7pll_load_plugin_translation_resource', $plugin_admin, 'load_translation_files');
 	}
 
 	/**

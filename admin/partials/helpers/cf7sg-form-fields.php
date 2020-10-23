@@ -1,5 +1,13 @@
 <?php
 //helper snippets
+/*
+Available replacement varaibles:
+{$form_key}  - unique form key.
+{$form_key_slug}  - unique form key slug for function names.
+($field_name) - unique field name.
+($field_name_slug) - unique field name slug for function names.
+[dqt] - double quote for html attributes.
+*/
 $post_my_form_only = ' no-post-my-form';
 if(is_plugin_active( 'post-my-contact-form-7/cf7-2-post.php' )){
   $post_my_form_only='';

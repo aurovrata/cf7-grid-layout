@@ -339,6 +339,11 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * fix rtl full-screen/custom editors buttons.
 * improve full-screen.
 * enabled pre-fill of form fields.
+* add auto re-fill for preview/demo forms.
+* enable toggle fields within sliders/accordions.
+* added filter 'cf7sg_max_form_width' to change max width of form.
+* added filter 'cf7sg_responsive_width'  to change responsive width cutoff limit.
+* updated translations PO files.
 
 = 4.3.2 =
 * fix js slider bug.

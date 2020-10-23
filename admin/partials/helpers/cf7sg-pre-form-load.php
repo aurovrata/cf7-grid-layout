@@ -2,6 +2,14 @@
 /*
 List of helpers for hooks fired prior to the form loading.
 */
+/*
+Available replacement varaibles:
+{$form_key}  - unique form key.
+{$form_key_slug}  - unique form key slug for function names.
+($field_name) - unique field name.
+($field_name_slug) - unique field name slug for function names.
+[dqt] - double quote for html attributes.
+*/
 ?>
 <li>
   <a class="helper" data-cf72post="add_filter( 'cf7sg_pre_cf7_field_html', 'filter_pre_html', 10, 2);
@@ -46,4 +54,30 @@ function form_wrapper_id($css_id, $cf7_key){
   }
   return $css_id;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the form wrapper css id.','cf7-grid-layout')?>
+</li>
+<li>
+  <a class="helper" data-cf72post="add_filter('cf7sg_include_hidden_form_fields', 'insert_hidden_cf7sg_{$form_key_slug}',10,2);
+function prefill_cf7sg_{$form_key_slug}($hidden, $cf7_key){
+  if('{$form_key}' != $cf7_key) return $values;
+  //return an array of field-name=>value pairs.
+  $hidden_values = array(
+    'my-secret-field' => 'default value',
+  );
+  //you may retrieve a hidden field in the client side using javascript:
+  // $('input[name=[dqt]my-secret-field[dqt]]');
+  return array_merge($hidden, $hidden_values);
+}" href="javascript:void(0);"><?=__('Insert','cf7-grid-layout')?></a> <?=__('hidden fields.','cf7-grid-layout')?>
+</li>
+<li>
+  <a class="helper" data-cf72post="add_filter('cf7sg_prefill_form_fields', 'prefill_cf7sg_{$form_key_slug}',10,2);
+function prefill_cf7sg_{$form_key_slug}($values, $cf7_key){
+  if('{$form_key}' != $cf7_key) return $values;
+  //return an array of field-name=>value pairs.
+  //fields with multiple selections such as checkboxes and dropdown menu can take an array as a value.
+  $custom_values = array(
+    'your-name' => 'test name',
+    'select-type' => array('House', 'Office'),
+  );
+  return array_merge($values, $custom_values);
+}" href="javascript:void(0);"><?=__('Prefill','cf7-grid-layout')?></a> <?=__('form fields.','cf7-grid-layout')?>
 </li>

@@ -14,7 +14,7 @@
     $id = $('input[name="id"]', $form),
     $cl = $('input[name="class"]', $form),
     $post = $(' select.post-list', $form),
-    selectType = 'select', multiple='';
+    selectType = 'select';
 
   $('select.post-list').on('change', function(){
     $('div.post-taxonomies').hide();
@@ -53,10 +53,10 @@
     }else if($target.is('input.select-type')){ //---------select-type
       selectType = $('input.select-type:checked').val();
       if('select2' == selectType){
-        $('input#select2-tags', $form).prop('disabled', false);
+        $('input#select2-tags', $form).prop('disabled', false).parent().show();
       }else{
         $('input#select2-tags', $form).prop('checked', false);
-        $('input#select2-tags', $form).prop('disabled', true);
+        $('input#select2-tags', $form).prop('disabled', true).parent().hide();
       }
       if( $target.is('#nice-select:checked')  ){
         //no multiple in nice-select.
@@ -181,7 +181,7 @@
     }
 
     //update tag.
-    let type = 'dynamic_select ';
+    let type = 'dynamic_select ', multiple='';
     if($('#select-multiple').is(':checked')) multiple=' multiple';
     if($req.is(':checked')) type = 'dynamic_select* ';
     $tag.val('[' + type + $name.val() + multiple + postlinks + id + classes + values +']');

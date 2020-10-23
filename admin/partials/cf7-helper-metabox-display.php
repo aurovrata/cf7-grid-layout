@@ -48,7 +48,10 @@
           var text = $target.data('cf72post');
           //get post slug
           var key = $('#post_name').val();
-          return text.replace(/\{\$form_key\}/gi, key);
+          text = text.replace(/\{\$form_key\}/gi, key);
+          text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
+          text = text.replace(/\[dqt\]/gi, '"');
+          return text;
         }
       });
     });

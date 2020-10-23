@@ -372,6 +372,11 @@ class Cf7_Grid_Layout_Public {
     else debug_msg("CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id");
     //setup classes and id for wrapper.
     $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
+
+    /** @since 4.4.0 enable prefilling of form fields*/
+    $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
+    if( !empty($prefill) and is_array($prefill) ) $use_grid_js = true;
+
     if($use_grid_js){
       $this->localised_data = array(
         'url' => admin_url( 'admin-ajax.php' ),
@@ -379,7 +384,7 @@ class Cf7_Grid_Layout_Public {
         'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
         'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
         'debug'=>( defined('WP_DEBUG') && WP_DEBUG ),
-        $css_id => apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key) /** @since 4.4.0 */
+        $css_id => $prefill,
       );
       //cf7sg script & style.
       wp_enqueue_script($this->plugin_name);
@@ -404,21 +409,16 @@ class Cf7_Grid_Layout_Public {
       do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
       $classes = implode(' ', $class) .' key_'.$cf7_key;
       $output = '<div class="cf7sg-container cf7sg-not-grid"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
-      /** @since 4.4.0 */
-      $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
-      if(!empty($prefill)){
-        $prefill = 'var cf7sg = '.json_encode( $prefill ).';';
-        $prefill = '(function($){'.$prefill.'for(var [field,value] of Object.entries(cf7sg){';
-        $prefill .= '$(":input[name="+field+"]").val(value);';
-        $prefill .='}})(jQuery)';
-        $output.='<script type="text/javascript">'.$prefill.'</script>';
-      }
       return $output;
     }
     //grid styling.
     wp_enqueue_style($this->plugin_name);
     //load required dependencies for grid form.
     wp_enqueue_style('smart-grid');
+    /** @since 4.4.0 set max-width of forms dynamically */
+    $max_width = apply_filters('cf7sg_max_form_width', 940, $cf7_key);
+    $mobile_cutoff = apply_filters('cf7sg_responsive_width', 480, $cf7_key);
+    wp_add_inline_style('smart-grid', ":root {--max-cf7sg-form-width: {$max_width}px } @media (max-width: {$mobile_cutoff}px) {.cf7sg-container .cf7-smart-grid.has-grid form .container .row .columns {float: none;margin: 0;width: 100%;}}");
     wp_enqueue_style('dashicons');
     //slider introduced in 4.0.
     if(array_search('has-slider',$class, true)!==false){
@@ -775,9 +775,11 @@ class Cf7_Grid_Layout_Public {
     else{
       debug_msg("CF7SG ERROR: fn consolidate_grid_submissions_v2() is unable to load submitted form");
     }
+    $is_used = false;
     $field_name = $field_tag['name'];
     $field_type = $field_tag['basetype'];
     $origin = self::$array_grid_fields[$cf7_id][$field_name][0];//array(origin,type);
+    // debug_msg($origin, "$field_name origin ");
     $values = array();
     $regex = '';
     $submitted_fields=array();
@@ -796,6 +798,7 @@ class Cf7_Grid_Layout_Public {
           $values[''] = null;
         }else{
           $values['']= $this->get_field_value($field_name,$field_type, $field_tag);
+          $is_used = true;
         }
 
         for($idx=1;$idx<$max_fields;$idx++){
@@ -805,6 +808,7 @@ class Cf7_Grid_Layout_Public {
             $values[$fid] = null;
           }else{
             $values[$fid] = $this->get_field_value($field_name.$fid,$field_type, $field_tag);
+            $is_used = true;
           }
           $purge_fields[$field_name.$fid] = true;
         }
@@ -815,14 +819,19 @@ class Cf7_Grid_Layout_Public {
         $tab_origin = $origins[1];
         $max_tabs = isset($_POST[$tab_origin])?$_POST[$tab_origin]:0;
         $values[''] = array(); //init multi-dimensional array
-
-        if(!empty($toggle) && !$this->is_submitted($toggle)){ //check if submitted, tab<-toggle<-table.
-          $values[''][''] =  null;
-        }else{
-          $values[''][''] = $this->get_field_value($field_name,$field_type,$field_tag);
-        }
+        // not required since it is set in the for loop below.
+        // if(!empty($toggle) && !$this->is_submitted($toggle)){ //check if submitted, tab<-toggle<-table.
+        //   $values[''][''] =  null;
+        // }else{
+        //   $values[''][''] = $this->get_field_value($field_name,$field_type,$field_tag);
+        // }
         for($idx=0;$idx<$max_tabs;$idx++){ //tables in other tabs.
-          $max_fields = ($idx>0) ? $_POST[$table_origin.'_tab-'.$idx]:$_POST[$table_origin];
+          $max_fields = 0;
+          if(0==$idx && isset($_POST[$table_origin])){
+            $max_fields = $_POST[$table_origin];
+          }else if($idx>0 && isset($_POST[$table_origin.'_tab-'.$idx])){
+            $max_fields = $_POST[$table_origin.'_tab-'.$idx];
+          }
           $tab_suffix= ($idx>0)? '_tab-'.$idx:'';
           for($jdx=0;$jdx<$max_fields;$jdx++){
             $row_suffix= ($jdx>0)?'_row-'.$jdx:'';
@@ -833,18 +842,21 @@ class Cf7_Grid_Layout_Public {
               $values[$tab_suffix][$row_suffix] = null;
             }else{
               $values[$tab_suffix][$row_suffix] = $this->get_field_value($field_name.$fid,$field_type, $field_tag);
+              $is_used = true;
             }
             $purge_fields[$field_name.$fid] = true; //remove from the original $data.
           }
         }
         break;
     }
+    $purge_fields[$field_name] = true;
     //debug_msg($purge_fields, 'purging ');
     $data = array_udiff_uassoc($data, $purge_fields, function($a, $b){return 0;}, function($a, $b){
       if ($a === $b) return 0;
       return ($a > $b)? 1:-1;
     }); //this will remove all the surplus fields
-    $data[$field_name] = $values;
+    if( $is_used ) $data[$field_name] = $values;
+    else
     return;
   }
   /**

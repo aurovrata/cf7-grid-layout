@@ -670,10 +670,10 @@ class Cf7_Grid_Layout_Admin {
   *@param int $post_id post ID.
   *@param WP_Post post object.
   */
-  public function delete_post($post_id, $post){
-    if($post->post_type != WPCF7_ContactForm::post_type) return;
+  public function delete_post($post_id){
+    if(get_post_type($post_id) != WPCF7_ContactForm::post_type) return;
     //remove viwing post.
-    $preview_id = get_post_meta($post->ID, '_cf7sg_form_page',true);
+    $preview_id = get_post_meta($post_id, '_cf7sg_form_page',true);
     if(!empty($preview_id)) wp_delete_post($preview_id);
   }
   /**
@@ -1655,5 +1655,16 @@ class Cf7_Grid_Layout_Admin {
   	);
   	register_post_type( 'cf7sg_page', $args );
 
+  }
+  /**
+  * Load translation files for the CF7 Polylang extension.
+  * Hoooked to ''
+  *@since 4.4.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function load_translation_files($trans){
+    $trans[$this->plugin_name]=CF7SG_TRANSLATED_VERSION;
+    return $trans;
   }
 }

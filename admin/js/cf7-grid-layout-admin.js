@@ -476,6 +476,7 @@
               //get post slug
               let key = $('#post_name').val();
               text = text.replace(/\{\$form_key\}/gi, key);
+              text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
               text = text.replace(/\{\$field_name\}/gi, field);
               text = text.replace(/\{\$field_name_slug\}/gi, field.replace(/\-/g,'_'));
               text = text.replace(/\{\$field_type\}/gi, tag);
@@ -505,6 +506,7 @@
               //get post slug
               let key = $('#post_name').val();
               text = text.replace(/\{\$form_key\}/gi, key);
+              text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
               text = text.replace(/\{\$field_name\}/gi, field);
               text = text.replace(/\{\$field_name_slug\}/gi, field.replace(/\-/g,'_'));
               text = text.replace(/\{\$field_type\}/gi, tag);
