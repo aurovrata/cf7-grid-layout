@@ -470,13 +470,14 @@ if(!class_exists('CF7SG_WP_Post_Table')){
         /** @since 4.4.0 diffrentiate preview forms */
         if( isset($_GET['post_type']) && 'cf7sg_page'==$_GET['post_type'] && isset($_GET['preview']) ){
           $hidden['_cf7sg_preview']=true;
-          if(isset($_COOKIE[$a['cf7key']])){
-            $fields = array_merge( json_decode( stripslashes($_COOKIE[$a['cf7key']]), true),$fields);
+          if(isset($_COOKIE['_cf7sg_'.$a['cf7key']])){
+            $fields = array_merge( json_decode( stripslashes($_COOKIE['_cf7sg_'.$a['cf7key']]), true),$fields);
           }
         }
         if(!empty($hidden)){
           add_filter('wpcf7_form_hidden_fields', function($hide) use ($hidden, $id) {
             $form = wpcf7_get_current_contact_form();
+            // debug_msg($hidden, "$form->id() add hidden " );
             if(empty($form)) return $hide;
             if($form->id()!=$id) return $hide;
             return array_merge($hide, $hidden);

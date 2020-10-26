@@ -376,7 +376,6 @@ class Cf7_Grid_Layout_Public {
     /** @since 4.4.0 enable prefilling of form fields*/
     $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
     if( !empty($prefill) and is_array($prefill) ) $use_grid_js = true;
-
     if($use_grid_js){
       $this->localised_data = array(
         'url' => admin_url( 'admin-ajax.php' ),
@@ -1828,8 +1827,10 @@ class Cf7_Grid_Layout_Public {
       if( isset($_POST[$tag->name]) and !empty($_POST[$tag->name]) ){
           $prefill[$tag->name] = $_POST[$tag->name];
       }
+      $prefill['_cf7sg_toggles'] = self::$array_toggled_panels[$form->id()];
     }
-    if(!empty($prefill)) setcookie($_POST['_wpcf7_key'], json_encode($prefill),0,'/');
+
+    if(!empty($prefill)) setcookie('_cf7sg_'.$_POST['_wpcf7_key'], json_encode($prefill),0,'/');
   }
 
 }

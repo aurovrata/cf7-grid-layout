@@ -289,18 +289,19 @@
             disableFields = ( 0 == $cf72post.length) && !toggled,
             fid = $section.closest('div.cf7-smart-grid').attr('id');
 
-          if(!toggled) $section.addClass('collapsed');
-          //disable fields within a closed toggled section
-
           $(':input', $section.children('.row')).each(function(){
             var $field = $(this), name = $field.attr('name').replace('[]','');
-            if( !isEmpty( cf7sg[fid][name] ) ){
+            if( !isEmpty( cf7sg[fid][name] ) && !isEmpty(cf7sg[fid]['_cf7sg_toggles'][cssId]) ){
               $field.prefillCF7Field(cf7sg[fid][name], fid);
+              state = 0;
+              toggled = true;
               delete cf7sg[fid][name];
             }
             if(disableFields) $field.prop('disabled', true);
           });
 
+          if(!toggled) $section.addClass('collapsed');
+          //disable fields within a closed toggled section
           //setup the toggle button
           $section.children('.cf7sg-collapsible-title').children('.toggle').setupToggle(toggled, group);
           if(toggled){
@@ -780,8 +781,7 @@
     if(! $field.is(':input') ) return false;
 
     var $form = $(this), fname = $field.attr('name'),
-      field = document.forms['wpcf7-'+formID].elements[fname],
-      ftype = field.type;
+      field = $field[0], ftype = field.type;
     // for(fname of Object.keys(values)){
     if(isEmpty(field)){
       if(cf7sg.debug) console.log('CF7SG ERROR: Unable to retrieve form element '+fname);
