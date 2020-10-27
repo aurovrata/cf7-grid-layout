@@ -35,6 +35,9 @@ $path = plugin_dir_url(__FILE__).'/images/';
           <img class="hex" src="<?=$path?>/hex.png" />
         </li>
       </ul>
+      <p class="intro">
+        For more information reach out to <u style="color:blue">vrata at syllogic dot in</u>.
+      </p>
     </div>
     <div class="columns one-third">
     </div>
