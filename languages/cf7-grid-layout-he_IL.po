@@ -1,0 +1,431 @@
+# Translation of Plugins - Smart Grid-Layout Design for Contact Form 7 - Development (trunk) in Hebrew
+# This file is distributed under the same license as the Plugins - Smart Grid-Layout Design for Contact Form 7 - Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-10-27 16:10+0530\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 2.2.1\n"
+"Language: he_IL\n"
+"Project-Id-Version: Plugins - Smart Grid-Layout Design for Contact Form 7 - Development (trunk)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+
+#: assets/cf7-admin-table/admin/partials/cf7sg-tutorial-page.php:32
+msgid "Advanced forms"
+msgstr "טפסים מתקדמים"
+
+#: assets/cf7-admin-table/admin/partials/cf7sg-tutorial-page.php:31
+msgid "Multi-slide forms"
+msgstr "טפסים מרובי סליידים"
+
+#: assets/cf7-admin-table/admin/partials/cf7sg-tutorial-page.php:30
+msgid "Repetitive fields"
+msgstr "שדות חוזרים"
+
+#: assets/cf7-admin-table/admin/partials/cf7sg-tutorial-page.php:29
+msgid "Optional sections"
+msgstr "אזורים אופציונאליים"
+
+#: assets/cf7-admin-table/admin/partials/cf7sg-tutorial-page.php:28
+msgid "Dynamic lists"
+msgstr "רשימות דינמיות"
+
+#: assets/cf7-admin-table/admin/partials/cf7sg-tutorial-page.php:27
+msgid "Start"
+msgstr "התחלה"
+
+#: assets/cf7-admin-table/admin/cf7-post-admin-table.php:262
+msgid "Tutorials"
+msgstr "מדריכים"
+
+#: assets/cf7-admin-table/admin/cf7-post-admin-table.php:261
+msgid "Smart Grid Helper Tutorials "
+msgstr "מדריכים של Smart Grid"
+
+#: admin/partials/cf7-dynamic-tag-display.php:194
+msgid "Copy the following <a href=\"javascript:void(0);\">filter</a> to your <em>functions.php</em> file."
+msgstr "העתק את ה <a href=\"javascript:void(0);\">פילטר</a>הזה ל<em>functions.php</em> file."
+
+#: admin/partials/cf7-dynamic-tag-display.php:175
+msgid "Include post links"
+msgstr "הכלל קישורי פוסט"
+
+#: admin/partials/pointers/cf7sg-pointer-tutorials.php:5
+msgid "Online video tutorials with step-by-step instructions on how leverage the full power of the smart grid cf7 form editor."
+msgstr "הדרכות וידאו אונליין שמסבירות שלב אחר שלב איך לנצל את מלוא הכוח  של עורך הטפסים Smart Grid CF7."
+
+#: admin/partials/pointers/cf7sg-pointer-tutorials.php:4
+msgid "Online video tutorials"
+msgstr "מדריכי וידאו אונליין"
+
+#: admin/partials/pointers/cf7sg-pointers-editor-optional-js-css.php:4
+msgid "Customise your form"
+msgstr "התאימו אישית את הטופס שלכם"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:246
+msgid "Convert collapsible rows into sides"
+msgstr "המר שורות מתקפלות לצדדים"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:246
+msgid "Enable slider"
+msgstr "הפעל סליידר"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:245
+msgid "Group collapsible rows as jQuery accordion"
+msgstr "קבץ שורות מתקפלות כאקודיון JQuery"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:245
+msgid "Enable accordion"
+msgstr "הפעל אקורדיון"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:48
+msgid "Add custom CSS"
+msgstr "הוסף CSS מותאם אישית"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:37
+#: admin/partials/cf7-grid-layout-admin-display.php:60
+msgid "File"
+msgstr "קובץ"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:33
+#: admin/partials/cf7-grid-layout-admin-display.php:56
+#: admin/partials/cf7-grid-layout-admin-display.php:88
+msgid "Dark"
+msgstr "כהה"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:30
+#: admin/partials/cf7-grid-layout-admin-display.php:53
+#: admin/partials/cf7-grid-layout-admin-display.php:85
+msgid "Light"
+msgstr "בהיר"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:27
+#: admin/partials/cf7-grid-layout-admin-display.php:50
+#: admin/partials/cf7-grid-layout-admin-display.php:82
+msgid "Editor theme:"
+msgstr "תבנית העורך:"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:25
+msgid "Add custom JS"
+msgstr "הוסף JS מותאם אישית"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:252
+msgid "custom options ."
+msgstr "אפשרויות מותאמות."
+
+#: admin/partials/helpers/cf7sg-form-fields.php:142
+msgid "the option list."
+msgstr "רשימת האפשרויות"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:64
+msgid "the taxonomy query."
+msgstr "שאילתת ה- taxonomy."
+
+#: admin/partials/helpers/cf7sg-js-events.php:235
+msgid "Show comments in helper code"
+msgstr "הראה תגובות בקוד ה- helper"
+
+#: admin/partials/helpers/cf7sg-js-events.php:223
+msgid "Others"
+msgstr "אחרים"
+
+#: admin/partials/helpers/cf7sg-js-events.php:219
+msgid "display a message"
+msgstr "הצג הודעה"
+
+#: admin/partials/helpers/cf7sg-js-events.php:213
+msgid "get form field"
+msgstr "הבא שדה טופס"
+
+#: admin/partials/helpers/cf7sg-js-events.php:201
+msgid "value change"
+msgstr "שינוי ערך"
+
+#: admin/partials/helpers/cf7sg-js-events.php:190
+msgid "Form fields"
+msgstr "שדות הטופס"
+
+#: admin/partials/helpers/cf7sg-js-events.php:160
+msgid "slider ready"
+msgstr "הסליידר מוכן"
+
+#: admin/partials/helpers/cf7sg-js-events.php:151
+msgid "Slides"
+msgstr "שיקופיות"
+
+#: admin/partials/helpers/cf7sg-js-events.php:147
+msgid "open/close section"
+msgstr "פתח/סגור אזור"
+
+#: admin/partials/helpers/cf7sg-js-events.php:141
+msgid "section activated"
+msgstr "אזור הופעל"
+
+#: admin/partials/helpers/cf7sg-js-events.php:117
+msgid "section ready"
+msgstr "האזור מוכן"
+
+#: admin/partials/helpers/cf7sg-js-events.php:111
+msgid "Collapsible rows"
+msgstr "שורות מתקפלות"
+
+#: admin/partials/helpers/cf7sg-js-events.php:95
+msgid "add a tab"
+msgstr "הוסף טאב"
+
+#: admin/partials/helpers/cf7sg-js-events.php:89
+msgid "tab removed"
+msgstr "טאב הוסר"
+
+#: admin/partials/helpers/cf7sg-js-events.php:81
+msgid "tab added"
+msgstr "טאב הוסף"
+
+#: admin/partials/helpers/cf7sg-js-events.php:72
+msgid "tabs ready"
+msgstr "הטאבים מוכנים"
+
+#: admin/partials/helpers/cf7sg-js-events.php:64
+msgid "Tabs"
+msgstr "טאבים"
+
+#: admin/partials/helpers/cf7sg-js-events.php:60
+#: admin/partials/helpers/cf7sg-js-events.php:107
+msgid "toggle delete button"
+msgstr "החלף כפתור מחיקה"
+
+#: admin/partials/helpers/cf7sg-js-events.php:54
+#: admin/partials/helpers/cf7sg-js-events.php:101
+msgid "toggle add button"
+msgstr "החלף כפתור הוספה"
+
+#: admin/partials/helpers/cf7sg-js-events.php:48
+msgid "add a row"
+msgstr "הוסף שורה"
+
+#: admin/partials/helpers/cf7sg-js-events.php:44
+#: admin/partials/helpers/cf7sg-js-events.php:50
+#: admin/partials/helpers/cf7sg-js-events.php:56
+#: admin/partials/helpers/cf7sg-js-events.php:91
+#: admin/partials/helpers/cf7sg-js-events.php:97
+#: admin/partials/helpers/cf7sg-js-events.php:103
+#: admin/partials/helpers/cf7sg-js-events.php:143
+#: admin/partials/helpers/cf7sg-js-events.php:175
+#: admin/partials/helpers/cf7sg-js-events.php:183
+#: admin/partials/helpers/cf7sg-js-events.php:203
+#: admin/partials/helpers/cf7sg-js-events.php:215
+msgid "Function: "
+msgstr "פונקציה:"
+
+#: admin/partials/helpers/cf7sg-js-events.php:42
+msgid "row removed"
+msgstr "שורה הוסרה"
+
+#: admin/partials/helpers/cf7sg-js-events.php:34
+msgid "row added"
+msgstr "שורה נוספה"
+
+#: admin/partials/helpers/cf7sg-js-events.php:24
+msgid "table ready"
+msgstr "הטבלה מוכנה"
+
+#: admin/partials/helpers/cf7sg-js-events.php:18
+msgid "Tables"
+msgstr "טבלאות"
+
+#: admin/partials/helpers/cf7sg-js-events.php:14
+msgid "form ready"
+msgstr "טופס מוכן"
+
+#: admin/partials/helpers/cf7sg-js-events.php:10
+#: admin/partials/helpers/cf7sg-js-events.php:20
+#: admin/partials/helpers/cf7sg-js-events.php:26
+#: admin/partials/helpers/cf7sg-js-events.php:36
+#: admin/partials/helpers/cf7sg-js-events.php:66
+#: admin/partials/helpers/cf7sg-js-events.php:74
+#: admin/partials/helpers/cf7sg-js-events.php:83
+#: admin/partials/helpers/cf7sg-js-events.php:113
+#: admin/partials/helpers/cf7sg-js-events.php:119
+#: admin/partials/helpers/cf7sg-js-events.php:153
+#: admin/partials/helpers/cf7sg-js-events.php:162
+#: admin/partials/helpers/cf7sg-js-events.php:192
+msgid "Event: "
+msgstr "אירוע:"
+
+#: admin/partials/cf7-dynamic-tag-display.php:75
+msgid "Enable multiple selection"
+msgstr "הפעל בחירה מרובה"
+
+#: admin/partials/cf7-dynamic-tag-display.php:72
+msgid "Mutliple attribute"
+msgstr "תכונות מרובות"
+
+#: admin/class-cf7-grid-layout-admin.php:400
+msgid "Filter mailTag %s"
+msgstr "פילטר תג מייל %s"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:133
+msgid "Add Row"
+msgstr "הוסף שורה"
+
+#: admin/partials/pointers/cf7sg-pointer-editor-rows-control.php:11
+msgid "Row controls"
+msgstr "בקרי השורה"
+
+#: admin/partials/pointers/cf7sg-pointer-editor-tabs.php:11
+#: admin/partials/pointers/cf7sg-pointer-editor-tabs.php:14
+msgid "Switch Editors"
+msgstr "החלף עורכים"
+
+#: admin/partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php:4
+msgid "Dynamic dropdown field"
+msgstr "שדה תפריט נפתח דינמי"
+
+#: admin/partials/pointers/cf7sg-pointer-editor-full-screen.php:5
+msgid "Toggle full-screen mode to ease coding of your form."
+msgstr "עבור למצב מסך מלא כדי לערוך את הטופס בקלות"
+
+#: admin/partials/pointers/cf7sg-pointer-editor-full-screen.php:4
+msgid "Edit in full screen"
+msgstr "ערוך במצב מסך מלא"
+
+#: admin/partials/pointers/cf7sg-pointer-tag-benchmark.php:4
+msgid "Benchmark field"
+msgstr "שדה ביצועים"
+
+#: admin/partials/pointers/cf7sg-pointer-editor-column-control.php:11
+msgid "Column controls"
+msgstr "בקרי עמודה"
+
+#: admin/partials/cf7-admin-editor-display.php:24
+msgid "toggle full screen"
+msgstr "החלף למסך מלא"
+
+#. Author URI of the plugin
+msgid "https://profiles.wordpress.org/aurovrata"
+msgstr "https://profiles.wordpress.org/aurovrata"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:270
+msgid "the mail tag value."
+msgstr "ערך תג המייל"
+
+#: admin/class-cf7-grid-layout-admin.php:1209
+msgid "Message displayed when max tables rows reached."
+msgstr "ההודעה מוצגת כאשר מספר השורות בטבלה הגיע למקסימום."
+
+#: admin/class-cf7-grid-layout-admin.php:1250
+msgid "Next"
+msgstr "הבא"
+
+#: admin/class-cf7-grid-layout-admin.php:1202
+msgid "Hover message for disabled submit/save button"
+msgstr "עבור על ההודעה כדי לכבות את כפתור השליחה/שמירה"
+
+#: admin/partials/cf7-helper-metabox-display.php:6
+#: admin/partials/cf7-helper-metabox-display.php:20
+msgid "Toggle panel: Helper"
+msgstr "החלף פנל: מסייע Helper"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:226
+msgid "user selection with user added option."
+msgstr "בחירת המשתמש עם אפשרות הוספת המשתמש"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:197
+msgid "user added option."
+msgstr "אפשרות הוספת משתמש"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:159
+msgid "the default option label."
+msgstr "תווית אפשרות ברירת המחדל"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:84
+#: admin/partials/helpers/cf7sg-form-fields.php:123
+msgid "the option attributes."
+msgstr "תכונות האפשרות"
+
+#: admin/partials/helpers/cf7sg-form-fields.php:44
+#: admin/partials/helpers/cf7sg-form-fields.php:103
+msgid "the option label."
+msgstr "תווית האפשרות"
+
+#: admin/partials/helpers/cf7sg-post-form-submit.php:32
+#: admin/partials/helpers/cf7sg-post-form-submit.php:55
+#: admin/partials/helpers/cf7sg-post-form-submit.php:115
+#: admin/partials/helpers/cf7sg-pre-form-load.php:15
+#: admin/partials/helpers/cf7sg-pre-form-load.php:26
+#: admin/partials/helpers/cf7sg-pre-form-load.php:37
+#: admin/partials/helpers/cf7sg-pre-form-load.php:48
+#: admin/partials/helpers/cf7sg-form-fields.php:26
+#: admin/partials/helpers/cf7sg-form-fields.php:44
+#: admin/partials/helpers/cf7sg-form-fields.php:64
+#: admin/partials/helpers/cf7sg-form-fields.php:84
+#: admin/partials/helpers/cf7sg-form-fields.php:103
+#: admin/partials/helpers/cf7sg-form-fields.php:123
+#: admin/partials/helpers/cf7sg-form-fields.php:142
+#: admin/partials/helpers/cf7sg-form-fields.php:159
+#: admin/partials/helpers/cf7sg-form-fields.php:197
+#: admin/partials/helpers/cf7sg-form-fields.php:226
+#: admin/partials/helpers/cf7sg-form-fields.php:252
+#: admin/partials/helpers/cf7sg-form-fields.php:270
+msgid "Filter"
+msgstr "פילטר"
+
+#: admin/partials/cf7-info-metabox-display.php:31
+msgid "Manage dynamic lists"
+msgstr "ניהול רשימות דינמיות"
+
+#: admin/partials/cf7-dynamic-tag-display.php:192
+msgid "Custom source"
+msgstr "מקור מותאם"
+
+#: admin/partials/cf7-dynamic-tag-display.php:190
+msgid "Custom"
+msgstr "מותאם"
+
+#: admin/partials/cf7-dynamic-tag-display.php:173
+msgid "Pages"
+msgstr "עמודים"
+
+#: admin/partials/cf7-dynamic-tag-display.php:172
+msgid "Posts"
+msgstr "פוסטים"
+
+#: admin/partials/cf7-dynamic-tag-display.php:134
+msgid "Select a post"
+msgstr "בחר פוסט"
+
+#: admin/partials/cf7-dynamic-tag-display.php:132
+msgid "Post source"
+msgstr "מקור הפוסט"
+
+#: admin/partials/cf7-dynamic-tag-display.php:130
+msgid "Post"
+msgstr "פוסט"
+
+#: admin/partials/cf7-dynamic-tag-display.php:124
+msgid "hierarchical"
+msgstr "היררכיה"
+
+#: admin/partials/cf7-dynamic-tag-display.php:122
+msgid "Slug"
+msgstr "מזהה כתובת"
+
+#: admin/partials/cf7-dynamic-tag-display.php:120
+msgid "Singular Name"
+msgstr "שם יחודי"
+
+#: admin/class-cf7-grid-layout-admin.php:1012
+msgid "benchmark"
+msgstr "קריטריון"
+
+#: admin/class-cf7-grid-layout-admin.php:1007
+msgid "dynamic-dropdown"
+msgstr "תפריט נפתח דינמי"
+
+#: admin/class-cf7-grid-layout-admin.php:637
+msgid "Actions & Filters"
+msgstr "פעולות ופילטרים"

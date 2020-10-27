@@ -344,7 +344,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * added filter 'cf7sg_max_form_width' to change max width of form.
 * added filter 'cf7sg_responsive_width'  to change responsive width cutoff limit.
 * updated translations PO files.
-
+* added tr_TR, de_DE, he_IL locales .po files to languages.
 = 4.3.2 =
 * fix js slider bug.
 = 4.3.1 =

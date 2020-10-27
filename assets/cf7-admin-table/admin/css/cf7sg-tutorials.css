@@ -73,21 +73,22 @@
 
 .ui-tabs .ui-tabs-nav li a,
 .ui-tabs .ui-tabs-nav li a:link {
-	font-size:18px;
-	margin:4px;
+	font-size:1.3em;
+	margin:1px;
 	color:#313035;
 	background:none repeat scroll 0 0 #EDEDED;
 	font-family: VegurLight,Helvetica,sans-serif;
 	-moz-border-radius: 3px 3px 0 0;
 	-webkit-border-radius: 3px 3px 0 0;
 	border-radius: 3px 3px 0 0;
-	padding: 10px 30px 5px;
+	padding: 10px 18px 5px;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eaeaea'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#eaeaea)); /* for webkit browsers */
 	background: -moz-linear-gradient(top,  #ffffff,  #eaeaea); /* for firefox 3.6+ */
 	border: 1px solid #D4D4D4;
 	text-shadow: 0px 1px 0px #D4D4D4;
-	height: 30px;
+	max-width: 16%;
+	display: inline-block;
 	text-decoration:none;
 	}
 
@@ -155,3 +156,23 @@
 
 .ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
 .ui-tabs .ui-tabs-hide { display: none !important; }
+#tab-pro img {
+	max-width: 300px;
+	height: 55px;
+}
+#tab-pro li br, #tab-pro li {
+	margin-bottom: 10px;
+}
+#tab-pro li {
+	font-weight: bold;
+}
+#tab-pro .intro {
+	font-size: 1em;
+	font-weight:bold;
+}
+#tab-pro img.dresner {
+	height: 29px;
+}
+#tab-pro img.rntbci, #tab-pro img.hex {
+	height: 42px;
+}

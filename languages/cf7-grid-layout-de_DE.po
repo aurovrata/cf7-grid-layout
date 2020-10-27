@@ -1,0 +1,403 @@
+# Translation of Plugins - Smart Grid-Layout Design for Contact Form 7 - Stable (latest release) in German
+# This file is distributed under the same license as the Plugins - Smart Grid-Layout Design for Contact Form 7 - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-10-27 16:08+0530\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 2.2.1\n"
+"Language: de\n"
+"Project-Id-Version: Plugins - Smart Grid-Layout Design for Contact Form 7 - Stable (latest release)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+
+#: admin/class-cf7-grid-layout-admin.php:1214
+msgid "Next"
+msgstr "Nächstes"
+
+#: admin/class-cf7-grid-layout-admin.php:976
+msgid "benchmark"
+msgstr "Benchmark"
+
+#: admin/class-cf7-grid-layout-admin.php:631
+msgid "Actions & Filters"
+msgstr "Aktionen und Filter"
+
+#: admin/class-cf7-grid-layout-admin.php:1173
+msgid "Message displayed when max tables rows reached."
+msgstr "Angezeigte Mitteilung, wenn die maximalen Tabellenzeilen erreicht worden sind."
+
+#: admin/class-cf7-grid-layout-admin.php:971
+msgid "dynamic-dropdown"
+msgstr "dynamischer Dropdown"
+
+#: admin/class-cf7-grid-layout-admin.php:1166
+msgid "Hover message for disabled submit/save button"
+msgstr "Hover-Nachricht für einen abgeschalteten Senden- oder Speichern-Button"
+
+#: admin/partials/cf7-helper-metabox-display.php:1
+msgid "Click on a link to copy the helper snippet code and paste it in your <em>functions.php</em> file."
+msgstr "Klick auf den Link, um das Snippet zu kopieren, und füge es in deiner <em>functions.php-Datei</em> ein."
+
+#: admin/partials/helpers/cf7sg-form-fields.php:84
+#: admin/partials/helpers/cf7sg-form-fields.php:123
+msgid "the option attributes."
+msgstr "die Optionseigenschaften."
+
+#: admin/partials/helpers/cf7sg-form-fields.php:44
+#: admin/partials/helpers/cf7sg-form-fields.php:103
+msgid "the option label."
+msgstr "die Options-Bezeichnung."
+
+#: admin/partials/helpers/cf7sg-form-fields.php:159
+msgid "the default option label."
+msgstr "die Standardoptionsbezeichnung."
+
+#: admin/partials/helpers/cf7sg-form-fields.php:197
+msgid "user added option."
+msgstr "durch den Benutzer hinzugefügte Option."
+
+#: admin/partials/helpers/cf7sg-pre-form-load.php:15
+#: admin/partials/helpers/cf7sg-pre-form-load.php:26
+#: admin/partials/helpers/cf7sg-pre-form-load.php:37
+#: admin/partials/helpers/cf7sg-pre-form-load.php:48
+#: admin/partials/helpers/cf7sg-form-fields.php:26
+#: admin/partials/helpers/cf7sg-form-fields.php:44
+#: admin/partials/helpers/cf7sg-form-fields.php:64
+#: admin/partials/helpers/cf7sg-form-fields.php:84
+#: admin/partials/helpers/cf7sg-form-fields.php:103
+#: admin/partials/helpers/cf7sg-form-fields.php:123
+#: admin/partials/helpers/cf7sg-form-fields.php:142
+#: admin/partials/helpers/cf7sg-form-fields.php:159
+#: admin/partials/helpers/cf7sg-form-fields.php:197
+#: admin/partials/helpers/cf7sg-form-fields.php:226
+#: admin/partials/helpers/cf7sg-form-fields.php:252
+#: admin/partials/helpers/cf7sg-form-fields.php:270
+#: admin/partials/helpers/cf7sg-post-form-submit.php:32
+#: admin/partials/helpers/cf7sg-post-form-submit.php:55
+#: admin/partials/helpers/cf7sg-post-form-submit.php:115
+msgid "Filter"
+msgstr "Filter"
+
+#: admin/partials/cf7-info-metabox-display.php:20
+msgid "Manage dynamic lists"
+msgstr "Manage Dynamische Listen"
+
+#: admin/partials/cf7-dynamic-tag-display.php:173
+msgid "Pages"
+msgstr "Seiten"
+
+#: admin/partials/cf7-dynamic-tag-display.php:190
+msgid "Custom"
+msgstr "Benutzerdefiniert"
+
+#: admin/partials/cf7-dynamic-tag-display.php:172
+msgid "Posts"
+msgstr "Beiträge"
+
+#: admin/partials/cf7-dynamic-tag-display.php:130
+msgid "Post"
+msgstr "Beitrag"
+
+#: admin/partials/cf7-dynamic-tag-display.php:122
+msgid "Slug"
+msgstr "Slug"
+
+#: admin/partials/cf7-dynamic-tag-display.php:120
+msgid "Singular Name"
+msgstr "Einzahlform des Namens"
+
+#: admin/partials/cf7-dynamic-tag-display.php:118
+msgid "Plural Name"
+msgstr "Mehrzahlform des Namens"
+
+#: admin/partials/cf7-dynamic-tag-display.php:117
+msgid "New Taxonomy"
+msgstr "Neue Taxonomie"
+
+#: admin/partials/cf7-dynamic-tag-display.php:107
+msgid "Post Categories"
+msgstr "Beitragskategorien"
+
+#: admin/partials/cf7-dynamic-tag-display.php:106
+msgid "Post Tags"
+msgstr "Beitragstags"
+
+#: admin/partials/cf7-dynamic-tag-display.php:124
+msgid "hierarchical"
+msgstr "Hierarchisch"
+
+#: admin/partials/cf7-dynamic-tag-display.php:134
+msgid "Select a post"
+msgstr "Beitrag auswählen"
+
+#: admin/partials/cf7-dynamic-tag-display.php:132
+msgid "Post source"
+msgstr "Beitragsherkunft"
+
+#: admin/partials/cf7-dynamic-tag-display.php:88
+msgid "New Categories"
+msgstr "Neue Kategorien"
+
+#: admin/partials/cf7-dynamic-tag-display.php:87
+msgid "Choose a Taxonomy"
+msgstr "Eine Taxonomie auswählen"
+
+#: admin/partials/cf7-dynamic-tag-display.php:83
+msgid "Taxonomy"
+msgstr "Taxonomie"
+
+#: admin/partials/cf7-dynamic-tag-display.php:45
+msgid "Dropdown style"
+msgstr "Dropdown-Stil"
+
+#: admin/partials/cf7-dynamic-tag-display.php:39
+msgid "Class attribute"
+msgstr "Klassen-Attribut"
+
+#: admin/partials/cf7-dynamic-tag-display.php:33
+msgid "Id attribute"
+msgstr "ID-Attribut"
+
+#: admin/partials/cf7-dynamic-tag-display.php:30
+msgid "Required field"
+msgstr "Pflichtfeld"
+
+#: admin/partials/cf7-dynamic-tag-display.php:29
+msgid "Field type"
+msgstr "Feldtyp"
+
+#: admin/partials/pointers/cf7sg-pointer-shortcodes.php:5
+msgid "CF7 Smart Grid extension replaces the Contact Form 7 shortcodes with a more portable one.  Instead of using an ID, the Smart Grid uses the unique <em>cf7Key</em>, which is non other than the slug of the wpcf7_contact_form post, which remains fixed when you export/import your forms and port them to a new server.  Happy coding!"
+msgstr "CF7 Smart Grid extension ersetzt die in Contact Form 7 enthaltenen Shortcodes.  Anstelle der IDs, benutzt Smart Grid eindeutige <em>cf7Key</em>, was nichts anderes ist als der wpcf7_Kontaktformularname, der auch beim Export/Import Deiner Formulare und dem Übertragen auf einen neuen Server erhalten bleibt.  Happy coding!"
+
+#: admin/partials/pointers/cf7sg-pointer-update-forms.php:4
+msgid "When you upgrade the CF7 Smart Grid Extension, there are certain times when an update to your forms is required. This is due to an update in the meta-data that is being saved with each forms.  Failing to do so may result unexpected behaviour of the form functionality."
+msgstr "Wenn Du ein Upgrade von CF7 Smart Grid Extension durchführst, kann es sein, dass auch ein Update Deiner Formulare notwendig wird. Dies ist bedingt durch ein Update der Meta-Daten, die zusammen mit Deinen Formularen abgespeichert werden. Nichtbeachtung kann zu unerwarteten Funktionsstörungen führen!"
+
+#: admin/partials/pointers/cf7sg-pointer-update-forms.php:5
+msgid "Forms that need to be updated will be <em style=\"color:red;\">highlighted in red</em>."
+msgstr "Formulare, die upgedated werden müssen, <em style=\"color:red;\">werden in rot dargestellt</em>."
+
+#: admin/partials/pointers/cf7sg-pointer-update-forms.php:3
+msgid "Update your forms"
+msgstr "Update Deine Formulare"
+
+#: admin/partials/cf7-default-form.php:66
+msgid "Enter a brief message"
+msgstr "Gib hier eine kurze Mitteilung ein"
+
+#: admin/partials/cf7-default-form.php:65
+msgid "Message"
+msgstr "Mitteilung"
+
+#: admin/partials/cf7-default-form.php:64
+msgid "the topic of your message"
+msgstr "Das Thema Deiner Mitteilung"
+
+#: admin/partials/cf7-default-form.php:63
+msgid "Subject"
+msgstr "Betreff"
+
+#: admin/partials/cf7-default-form.php:62
+msgid "Send"
+msgstr "Absenden"
+
+#: admin/partials/cf7-default-form.php:61
+msgid "Enter a valid email"
+msgstr "Gib eine gültige E-Mail-Adresse ein"
+
+#: admin/partials/cf7-default-form.php:60
+msgid "E-mail"
+msgstr "E-Mail"
+
+#: admin/partials/cf7-default-form.php:59
+msgid "Enter your full name"
+msgstr "Gib Deinen vollständigen Namen ein"
+
+#: admin/partials/cf7-default-form.php:58
+msgid "Name"
+msgstr "Name"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:260
+msgid "describe your field here"
+msgstr "Feldbeschreibung hier eingeben"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:259
+msgid "describe your field"
+msgstr "Beschreibe Dein Feld"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:255
+msgid "select a field"
+msgstr "Ein Feld auswählen"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:254
+msgid "[select a field]"
+msgstr "[Ein Feld auswählen]"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:249
+#: admin/partials/cf7-grid-layout-admin-display.php:250
+msgid "Field label"
+msgstr "Feldbeschriftung"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:244
+msgid "Insert form"
+msgstr "Formular einfügen"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:143
+#: admin/partials/cf7-grid-layout-admin-display.php:243
+msgid "Make grid"
+msgstr "Grid erstellen"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:241
+msgid "full wifth"
+msgstr "volle Breite"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:235
+msgid "half width"
+msgstr "halbe Breite"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:228
+msgid "Column size:"
+msgstr "Spaltengröße"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:226
+#: admin/partials/cf7-grid-layout-admin-display.php:240
+msgid "eleven (11/12<sup>ths</sup>)"
+msgstr "eleven (11/12<sup>ths</sup>)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:193
+msgid "Click-to-copy &amp; paste in your <em>functions.php</em> file."
+msgstr "Klicken zum Kopieren&amp;Einfügen in die <em>functions.php</em>-Datei."
+
+#: admin/partials/cf7-grid-layout-admin-display.php:187
+msgid "Tab label"
+msgstr "Tab-Bezeichnung"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:180
+msgid "Section title"
+msgstr "Abschnittsbezeichnung"
+
+#: admin/class-cf7-grid-layout-admin.php:364
+#: admin/partials/cf7-grid-layout-admin-display.php:192
+#: admin/partials/cf7-grid-layout-admin-display.php:198
+msgid "Click to copy!"
+msgstr "Klicke zum Kopieren!"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:75
+msgid "Grid"
+msgstr "Raster"
+
+#: admin/partials/helpers/cf7sg-js-events.php:8
+#: assets/cf7-admin-table/admin/cf7-post-admin-table.php:315
+msgid "Form"
+msgstr "Formular"
+
+#: admin/class-cf7-grid-layout-admin.php:1175
+#: public/class-cf7-grid-layout-public.php:377
+msgid "You have reached the maximum number of rows."
+msgstr "Sie haben die maximale Anzahl von Reihen erreicht."
+
+#: admin/class-cf7-grid-layout-admin.php:1168
+#: public/class-cf7-grid-layout-public.php:376
+msgid "Disabled!  To enable, check the acceptance field."
+msgstr "Abgeschaltet! Zum Einschalten bestätigen Sie das Zustimmungsfeld."
+
+#: admin/partials/cf7-info-metabox-display.php:24
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: admin/partials/cf7-info-metabox-display.php:7
+#: assets/cf7-admin-table/admin/cf7-post-admin-table.php:318
+msgid "Form key"
+msgstr "Formular Key"
+
+#: assets/cf7-admin-table/admin/cf7-post-admin-table.php:254
+msgid "Form Types"
+msgstr "Formulartyp"
+
+#: assets/cf7-admin-table/admin/cf7-post-admin-table.php:253
+msgid "Edit Form Types"
+msgstr "Formulartypen bearbeiten"
+
+#. Author of the plugin
+msgid "Aurovrata V."
+msgstr "Aurovrata V."
+
+#. Description of the plugin
+msgid "Enabled responsive grid layout designs for Contact Form 7 forms."
+msgstr "Aktiviere responsive Rasterlayout-Designs für Contact Form 7 Formulare."
+
+#. Plugin URI of the plugin
+msgid "http://wordpress.syllogic.in"
+msgstr "http://wordpress.syllogic.in"
+
+#. Plugin Name of the plugin
+msgid "CF7 Smart Grid Design Extension"
+msgstr "CF7 Smart Grid Design Extension"
+
+#: admin/partials/cf7-dynamic-tag-display.php:66
+msgid "Enable user options"
+msgstr "Nutzeroptionen aktivieren"
+
+#: admin/partials/cf7-dynamic-tag-display.php:62
+msgid "jQuery Select2"
+msgstr "jQuery Select2"
+
+#: admin/partials/cf7-dynamic-tag-display.php:56
+msgid "jQuery Nice Select"
+msgstr "jQuery Nice Select"
+
+#: admin/partials/cf7-dynamic-tag-display.php:50
+msgid "HTML Select field"
+msgstr "HTML Auswahlfeld"
+
+#: admin/partials/cf7-dynamic-tag-display.php:21
+msgid "Dynamic Select Dropdown field"
+msgstr "Dynamic Select Dropdown-Feld"
+
+#: admin/partials/pointers/cf7sg-pointer-shortcodes.php:4
+msgid "Portable Shortcodes"
+msgstr "Übertragbare Shortcodes"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:225
+#: admin/partials/cf7-grid-layout-admin-display.php:239
+msgid "ten (5/6<sup>ths</sup>)"
+msgstr "ten (5/6<sup>ths</sup>)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:224
+#: admin/partials/cf7-grid-layout-admin-display.php:238
+msgid "nine (3/4<sup>ths</sup>)"
+msgstr "nine (3/4<sup>ths</sup>)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:223
+#: admin/partials/cf7-grid-layout-admin-display.php:237
+msgid "eight (2/3<sup>rds</sup>)"
+msgstr "eight (2/3<sup>rds</sup>)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:222
+#: admin/partials/cf7-grid-layout-admin-display.php:236
+msgid "seven (7/12<sup>ths</sup>)"
+msgstr "seven (7/12<sup>ths</sup>)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:221
+msgid "half"
+msgstr "half"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:220
+#: admin/partials/cf7-grid-layout-admin-display.php:234
+msgid "five (5/12<sup>ths</sup>)"
+msgstr "five (5/12<sup>ths</sup>)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:219
+#: admin/partials/cf7-grid-layout-admin-display.php:233
+msgid "four (1/3<sup>rd</sup>)"
+msgstr "four (1/3<sup>rd</sup>)"
+
+#: admin/partials/cf7-grid-layout-admin-display.php:218
+#: admin/partials/cf7-grid-layout-admin-display.php:232
+msgid "three (1/4<sup>th</sup>)"
+msgstr "three (1/4<sup>th</sup>)"

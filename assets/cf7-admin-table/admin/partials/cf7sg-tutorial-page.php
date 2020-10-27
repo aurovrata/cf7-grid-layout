@@ -30,6 +30,7 @@ wp_enqueue_style('grid-css', plugin_dir_url( __DIR__ ).'../../css.gs/smart-grid.
        <li><a href="#tab-tables"><?= __('Repetitive fields','cf7-grid-layout')?></a></li>
        <li><a href="#tab-slider"><?= __('Multi-slide forms','cf7-grid-layout')?></a></li>
        <li><a href="#tab-advance"><?= __('Advanced forms','cf7-grid-layout')?></a></li>
+       <li><a href="#tab-pro"><?= __('Pro-help','cf7-grid-layout')?></a></li>
      <?php $idx=0;foreach($tab_titles as $title) : $idx++?>
        <li><a href="#tab-other-<?=$idx?>"><?=$title?></a></li>
      <?php endforeach;?>
@@ -51,6 +52,9 @@ wp_enqueue_style('grid-css', plugin_dir_url( __DIR__ ).'../../css.gs/smart-grid.
      </div>
      <div id="tab-advance">
        <?php require_once plugin_dir_path( __FILE__ ) .'cf7sg-tutorials-advance.php'; ?>
+     </div>
+     <div id="tab-pro">
+       <?php require_once plugin_dir_path( __FILE__ ) .'cf7sg-tutorials-pro.php'; ?>
      </div>
    <?php $idx=0;foreach($tab_panels as $file) : $idx++?>
      <div id="tab-other-<?=$idx?>">

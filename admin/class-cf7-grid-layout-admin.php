@@ -1273,7 +1273,12 @@ class Cf7_Grid_Layout_Admin {
     ob_clean();
     include_once 'partials/pointers/cf7sg-pointer-tutorials.php';
     $content =ob_get_contents();
-    $pointers['tutorials_pointer'] = array($content, 'left', 'center','a[href="admin.php?page=admin.php?page=cf7sg_help"]');
+    $pointers['tutorials_pointer'] = array($content, 'left', 'center','a[href="admin.php?page=cf7sg_help"]');
+    /* new tutorials */
+    ob_clean();
+    include_once 'partials/pointers/cf7sg-pointer-tutorial-advance.php';
+    $content =ob_get_contents();
+    $pointers['new_tutorials_pointer'] = array($content, 'left', 'center','a[href="admin.php?page=cf7sg_help"]');
     /* shortcodes */
     ob_clean();
     include_once 'partials/pointers/cf7sg-pointer-shortcodes.php';
