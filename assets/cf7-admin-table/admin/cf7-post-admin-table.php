@@ -456,12 +456,18 @@ if(!class_exists('CF7SG_WP_Post_Table')){
       }
 
       //else get the post ID
-      $form = get_posts(array(
+      $args = array(
         'post_type' => self::cf7_post_type(),
-        'name' => $a['cf7key']
-      ));
+        'name' => $a['cf7key'],
+
+      );
+      if(isset($a['lang'])) $args['lang'] = $a['lang'];
+      $form = get_posts($args);
       if(!empty($form)){
-        $id = apply_filters('cf7_form_shortcode_form_id',$form[0]->ID, $atts);
+        $id = $form[0]->ID;
+        if( !isset($a['lang']) ){ /** @since 4.4 allow different lang */
+          $id = apply_filters('cf7_form_shortcode_form_id',$id, $atts);
+        }
         wp_reset_postdata();
         $attributes ='';
         foreach($a as $key=>$value){

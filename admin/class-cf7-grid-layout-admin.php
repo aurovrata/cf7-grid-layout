@@ -868,9 +868,11 @@ class Cf7_Grid_Layout_Admin {
     else update_post_meta($post->ID, '_cf7sg_disable_jstags_comments',0);
     /** @since 4.3.0 create/update a preview form post for this form */
     $preview_id = get_post_meta($post->ID, '_cf7sg_form_page',true);
+    $content = '[cf7form cf7key="'.$cf7_key.'"';
+    $content .= isset($_POST['post_lang_choice']) ? ' lang="'.$_POST['post_lang_choice'].'"]':']';
     $prev_page = array(
       'post_title'=>sanitize_text_field($_POST['post_title']),
-      'post_content'=>'[cf7form cf7key="'.$cf7_key.'"]',
+      'post_content'=>$content,
       'post_status'=>'draft',
       'post_type'=>'cf7sg_page',
       // 'post_name' => sanitize_title( $title ),
