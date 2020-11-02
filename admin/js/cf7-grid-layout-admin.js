@@ -940,7 +940,8 @@
       isSubmit = false, hasHidden = false,
       count =0, counth = 0,
       field = '',
-      stopSearch = false;
+      stopSearch = false, isField =true,
+      classes = $('#grid-col div.cf7-field-type').attr('class');
 
     while (match != null && !stopSearch) {
       count++;
@@ -1005,6 +1006,16 @@
           tag+='-input';
           counth++;
           break;
+        case 'group': /** @since 4.4.3 fix conditional groups within */
+          isField = false;
+          classes += " conditional-group";
+          break;
+        case '/grou':
+          isField = false;
+          stopSearch = true;
+          break;
+        default:
+          break;
       }
       /** @since 3.3.0 add extension classes */
       if(undefined !== cf7sgCustomHelperModule[tag]){
@@ -1012,16 +1023,17 @@
         if(Array.isArray(ch.php) && ch.php.length>0) helpers = helpers.concat(ch.php);
         if(Array.isArray(ch.js) && ch.js.length>0) jsHelpers = jsHelpers.concat(ch.js);
       }
-      type[type.length] = tag;
-      fields[fields.length] = field;
-      hooks[hooks.length] = helpers;
-      jshooks[jshooks.length] = jsHelpers;
+      if(isField){
+        type[type.length] = tag;
+        fields[fields.length] = field;
+        hooks[hooks.length] = helpers;
+        jshooks[jshooks.length] = jsHelpers;
+      }
       if('*' === match[1][match[1].length -1]){
         isRequired = true;
       }
       if(!stopSearch) match = cf7TagRegexp.exec(search); //get the next match.
     }
-    let classes = $('#grid-col div.cf7-field-type').attr('class');
     classes += " "+ type.join(' ');
     field = fields.join(' ');
     // $parent.removeClass('required');
