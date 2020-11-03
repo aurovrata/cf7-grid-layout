@@ -331,6 +331,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 == Changelog ==
 = 4.4.3 =
 * fix for conditional groups.
+* fix for condiitonal plugin admin submit.
 = 4.4.2 =
 * fix preview translated forms.
 = 4.4.1 =
