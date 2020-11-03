@@ -602,7 +602,7 @@
       }else if(codeMirror.length>1) $csstext.prop('disabled',true);
       // continue the submit unbind preventDefault.
       /** @since 4.4.3 conditional cf7 plugin hack.*/
-      if (wpcf7cf.currentMode == 'normal' && wpcf7cf.getnumberOfFieldEntries() > 0) {
+      if ('undefined' != typeof wpcf7cf && wpcf7cf.currentMode == 'normal' && wpcf7cf.getnumberOfFieldEntries() > 0) {
         wpcf7cf.copyFieldsToText();
       }
       $this.unbind('submit').submit();
