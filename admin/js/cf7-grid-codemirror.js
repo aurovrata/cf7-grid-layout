@@ -1,26 +1,77 @@
 (function( $, cme, jscme, csscme ) {
   'use strict';
   /** @since 4.2.0 manage editor loading errors */
-  const $formEditor = $('#contact-form-editor');
+  const $codemirror = $('#cf7-codemirror'),
+    $formEditor = $('#contact-form-editor'),
+    $wpcf7Editor = $('textarea#wpcf7-form-hidden'),
+    $editorTabs = $('#form-editor-tabs'),
+    $optionals= $('#optional-editors'),
+    $topTags =$('#top-tags'), $bottomTags =$('#bottom-tags');
+
   let eh = $formEditor.height(), ew =$formEditor.width();
-  $('.loading-screen',$formEditor).css('padding','100px 5px '+(eh-100)+'px 5px');
+  $('.loading-screen',$formEditor).css('padding','250px 5px '+(eh-100)+'px 5px');
   $('#publish').prop('disabled', true);
 
   window.onerror= function(msg, source, lineno, colno, error){
     let $loadScreen = $('.loading-screen',$formEditor);
     if($loadScreen.is(':visible')){
-     $loadScreen.html('<div class="js-error"><p><span class="message">'+cf7sgeditor.jserror+'</span><br/><span class="error">'+msg+'</span><br/>(file: '+source+', line: <strong>'+lineno+'</strong>)</p></div>');
-   }
+      $loadScreen.html('<div class="js-error"><p><span class="message">'+cf7sgeditor.jserror+'</span><br/><span class="error">'+msg+'</span><br/>(file: '+source+', line: <strong>'+lineno+'</strong><br/>'+error+')</p></div>');
+
+      if($codemirror.children('.CodeMirror')){
+        let load = window.confirm(cf7sgeditor.fixhtmlform);
+        if(load){
+          $loadScreen.hide();
+          $editorTabs.children('ul').hide();
+          $optionals.hide();
+          $topTags.hide();
+          $bottomTags.hide();
+          $('#publish').prop('disabled', false);
+        }
+      }
+    }
   }
 
+  CodeMirror.defineMode("shortcode", function(config, parserConfig) {
+    let scOverlay = {
+      token: function(stream, state) {
+        let ch;
+        if (stream.match(/^\[([a-zA-Z0-9_]+)\*?\s?/)) {
+          while ((ch = stream.next()) != null){
+            if (ch == "]" ) {
+              //stream.eat("]");
+              return "shortcode";
+            }
+          }
+        }else if(stream.match(/data-([a-z0-9_]+)/)){
+          while ((ch = stream.next()) != null){
+            if (ch == '=' ) {
+              //stream.eat("]");
+              return "cf7sg-attr";
+            }
+          }
+        }
+        while (stream.next() != null && !stream.match(/^\[([a-zA-Z0-9_]+)\*?\s?/, false) && !stream.match(/data-([a-z0-9_]+)/,false) ) {}
+        return null;
+      }
+    };
+    return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), scOverlay);
+  });
+
+  if(cf7sgeditor.mode.length>0) cme.setOption('mode',cf7sgeditor.mode);
+  if(cf7sgeditor.theme.user.length>0) cme.setOption('theme',cf7sgeditor.theme.user);
+  /** @since 4.4.4 enable tag matching in text editor, set after addon script is loaded */
+  cme.setOption('matchTags', {bothTags: true});
+  /** @since 4.0.0 manage user theme pref */
+  let $themeRadio = $('.codemirror-theme', $codemirror);
+  if($(':input:checked', $themeRadio).length>0){
+    $themeRadio.on('change',':input',function(e){
+      cme.setOption("theme",cf7sgeditor.theme[e.target.value]);
+    });
+  }else $(':input',$themeRadio).prop('disabled',true);
+
   $(document).ready( function(){
-    let $codemirror = $('#cf7-codemirror'),
-      $wpcf7Editor = $('textarea#wpcf7-form-hidden'),
-      $editorTabs = $('#form-editor-tabs'),
-      $optionals= $('#optional-editors'),
-      codemirrorUpdated = false, formFields={},
+    let codemirrorUpdated = false, formFields={},
       $grid = $('#grid-form'),
-      $topTags =$('#top-tags'), $bottomTags =$('#bottom-tags'),
       $jsTags = $('#js-tags'),
       gridTab = '#cf7-editor-grid', //default at load time.
       $jsCodemirror = $('#cf7-js-codemirror'),
@@ -59,43 +110,10 @@
     cme.setValue($wpcf7Editor.text());
     cme.setSize("100%");
     // cme.setOption('viewportMargin',Infinity);
+
+
     $wpcf7Editor.on('grid-ready', function(){ //------ setup the codemirror editor
       //codemirror editor
-      CodeMirror.defineMode("shortcode", function(config, parserConfig) {
-        let scOverlay = {
-          token: function(stream, state) {
-            let ch;
-            if (stream.match(/^\[([a-zA-Z0-9_]+)\*?\s?/)) {
-              while ((ch = stream.next()) != null){
-                if (ch == "]" ) {
-                  //stream.eat("]");
-                  return "shortcode";
-                }
-              }
-            }else if(stream.match(/data-([a-z0-9_]+)/)){
-              while ((ch = stream.next()) != null){
-                if (ch == '=' ) {
-                  //stream.eat("]");
-                  return "cf7sg-attr";
-                }
-              }
-            }
-            while (stream.next() != null && !stream.match(/^\[([a-zA-Z0-9_]+)\*?\s?/, false) && !stream.match(/data-([a-z0-9_]+)/,false) ) {}
-            return null;
-          }
-        };
-        return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), scOverlay);
-      });
-
-      if(cf7sgeditor.mode.length>0) cme.setOption('mode',cf7sgeditor.mode);
-      if(cf7sgeditor.theme.user.length>0) cme.setOption('theme',cf7sgeditor.theme.user);
-      /** @since 4.0.0 manage user theme pref */
-      let $themeRadio = $('.codemirror-theme', $codemirror);
-      if($(':input:checked', $themeRadio).length>0){
-        $themeRadio.on('change',':input',function(e){
-          cme.setOption("theme",cf7sgeditor.theme[e.target.value]);
-        });
-      }else $(':input',$themeRadio).prop('disabled',true);
       $codemirror.beautify();
 
       cme.on('changes', function(){

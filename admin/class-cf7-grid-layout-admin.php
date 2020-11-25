@@ -206,7 +206,7 @@ class Cf7_Grid_Layout_Admin {
         /** @since 3.1.2 initialise codemirror after library load and parse as attribute to anonymous functtion in cf7-grid-codemirror.js */
         wp_add_inline_script('cf7-codemirror-js',
         'const cmInitialSettings = {
-          value:"",matchTags: {bothTags: true},autoCloseTags:true,
+          value:"",autoCloseTags:true,
           extraKeys: {"Ctrl-Space": "autocomplete", "Ctrl-/": "toggleComment", "Ctrl-J": "toMatchingTag"},
           lineNumbers: true, styleActiveLine: true,
           matchBrackets: true, tabSize:2, lineWrapping: true, addModeClass: true,
@@ -217,10 +217,6 @@ class Cf7_Grid_Layout_Admin {
         const cssCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-css-codemirror"),cmInitialSettings);
         const jsCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-js-codemirror"),cmInitialSettings);');
         //matchtags.
-        wp_enqueue_script( 'codemirror-matchtag-js',
-          $plugin_dir . 'assets/codemirror/edit/matchtags.js',
-          array('cf7-codemirror-js'), $this->version, true
-        );
         wp_enqueue_script( 'codemirror-closetag-js',
           $plugin_dir . 'assets/codemirror/edit/closetag.js',
           array('cf7-codemirror-js'), $this->version, true
@@ -241,6 +237,10 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_script( 'codemirror-xml-fold-js',
           $plugin_dir . 'assets/codemirror/addon/fold/xml-fold.js',
           array('cf7-codemirror-js'), $this->version, true
+        );
+        wp_enqueue_script( 'codemirror-matchtag-js',
+          $plugin_dir . 'assets/codemirror/addon/edit/matchtags.js',
+          array('cf7-codemirror-js','codemirror-xml-fold-js'), $this->version, true
         );
         wp_enqueue_script( 'codemirror-brace-fold-js',
           $plugin_dir . 'assets/codemirror/addon/fold/brace-fold.js',
@@ -377,7 +377,8 @@ class Cf7_Grid_Layout_Admin {
                'dark'=>'material-ocean',
                'user'=>$user_css_theme
             ),
-            'jserror'=>__('There is a <strong>Javascript error on the page</strong>, likely due to a conflict, which prevents the editor from loading properly.', 'cf7-grid-layout')
+            'jserror'=>__('There is a <strong>Javascript error on the page</strong> which prevents the editor from loading properly.', 'cf7-grid-layout'),
+            'fixhtmlform'=>__('The editor failed to load.  You may recover your form by copying it into a new form editor, do you wish to continue?', 'cf7-grid-layout'),
           )
         );
         global $post;
