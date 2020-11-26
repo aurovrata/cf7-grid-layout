@@ -946,6 +946,20 @@
     else $('.row.cf7-sg-table:nth-last-child(2) .row-control', $table).removeClass('display-none');
     return $table;
   }
+  //count rows.
+  $.fn.cf7sgCountRows = function(){
+    var $table = $(this);
+    if(!$table.is('.container.cf7-sg-table')) return false;
+    return $table.children('.row').not('.cf7-sg-cloned-table-row').length;
+  }
+  //removeRow
+  $.fn.cf7sgRemoveRow = function(){
+    var $table = $(this);
+    if(!$table.is('.container.cf7-sg-table')) return false;
+    var rows =  $table.children('.row').not('.cf7-sg-cloned-table-row');
+    if(rows.length>1) rows.last().remove();
+    return $table;
+  }
   //clone table row
   $.fn.cf7sgCloneRow = function(initSelect){
     /*initSelect is false if called from cf7_2_post field loading script,
@@ -965,7 +979,7 @@
     var $cloneRow = $('.cf7-sg-cloned-table-row', $table);
     var $row = $cloneRow.clone();
     $row.removeClass('cf7-sg-cloned-table-row').attr('data-row',rowIdx);
-    if(cf7sg.table_labels) $('label',$row).remove();
+    if(cf7sg.table_labels) $('.field > label',$row).remove();
     //show row so select2 init properly
     if($footer.length>0){
       $footer.before($row.show());

@@ -43,21 +43,33 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgRowDeleted', '.container.cf7-
       </li>
       <li><?= __('Function: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="//call this function once the table is ready.
-//$table is the table sectoin jquery object.
+//$table is the table section jquery object.
 //adds an extra row, and fires a row added event.
 $table.cf7sgCloneRow(); /* function to programmatically add a row to a table if fields. */" href="javascript:void(0);"><?=__('add a row','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Function: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="//call this function once the table is ready.
-//$table is the table sectoin jquery object.
+//$table is the table section jquery object.
 //pass false to hide the button, true to enable the button.
 $table.toggleCF7sgTableRowAddition(false); /* hide/show row addition button. */" href="javascript:void(0);"><?=__('toggle add button','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Function: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="//call this function once the table is ready.
-//$table is the table sectoin jquery object.
+//$table is the table section jquery object.
 //pass false to hide the button, true to enable the button.
 $table.toggleCF7sgTableRowDeletion(false); /* hide/show row deletion button. */" href="javascript:void(0);"><?=__('toggle delete button','cf7-grid-layout')?></a>
+      </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper" data-cf72post="//call this function once the table is ready.
+//$table is the table section jquery object.
+//returns number of rows in table.
+$table.cf7sgCountRows(); /* count table rows. */" href="javascript:void(0);"><?=__('row count','cf7-grid-layout')?></a>
+      </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper" data-cf72post="//call this function once the table is ready.
+//$table is the table section jquery object.
+//returns number of rows in table.
+$table.cf7sgRemoveRow(); /* remove last row. */" href="javascript:void(0);"><?=__('remove last row','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>

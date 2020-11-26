@@ -741,7 +741,7 @@
       handle:'.row-controls > .dashicons-move',
       axis: 'y',
       //containment:'parent',
-      items: '> .container, > .cf7sg-external-form',
+      items: '> .container, > .cf7sg-external-form', //.columns.cf7-sg-tabs > .row',
       helper:'clone'
     });
     //grid is ready
