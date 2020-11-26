@@ -218,7 +218,7 @@ class Cf7_Grid_Layout_Admin {
         const jsCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-js-codemirror"),cmInitialSettings);');
         //matchtags.
         wp_enqueue_script( 'codemirror-closetag-js',
-          $plugin_dir . 'assets/codemirror/edit/closetag.js',
+          $plugin_dir . 'assets/codemirror/addon/edit/closetag.js',
           array('cf7-codemirror-js'), $this->version, true
         );
         //fold code

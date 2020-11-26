@@ -118,6 +118,12 @@ $tabs.toggleCF7sgTabAddition(false); /* disable/enable tab addition. */" href="j
 //to disable the tab deletion pass false, to enable it pass true.
 $tabs.toggleCF7sgTabDeletion(false); /* disable/enable tab deletion. */" href="javascript:void(0);"><?=__('toggle delete button','cf7-grid-layout')?></a>
       </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper" data-cf72post="
+//call this function once the tabs are ready.
+//returns the total count of current tabs.
+$tabs.cf7sgCountTabs(); /* tab count. */" href="javascript:void(0);"><?=__('tab count','cf7-grid-layout')?></a>
+      </li>
     </ul>
   </li>
   <li id="collapsible-events" class="display-none"><?=__('Collapsible rows','cf7-grid-layout')?><span>&gt;</span>

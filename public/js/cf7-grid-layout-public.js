@@ -107,13 +107,7 @@
           if($table.is('.cf7-sg-table-footer')) $table = $table.prev('.container');
           $table.cf7sgCloneRow();
         }else if($button.is('.cf7-sg-table .row-control .dashicons')){ //---------- delete the row, delete button only on last row
-          var $table = $button.closest('.container');
-          $button.closest('.row.cf7-sg-table').remove();
-          var rows = $table.children('.row.cf7-sg-table').not('.cf7-sg-cloned-table-row').length
-          $table.trigger('sgRowDeleted');
-          /** @since 2.4.2 track table fields */
-          var $tracker = $table.children('.cf7sg-tracker-field');
-          if($tracker.length) $tracker.val(rows);
+          $button.closest('.container').cf7sgRemoveRow();
         }
       });
     }//end table structure
@@ -399,24 +393,8 @@
         var $target = $(e.target);
         var $container = $target.closest('.cf7-sg-tabs');
         if($target.is('.cf7sg-close-tab')){ //---------------------- close/delete tab.
-          var panelId = $target.siblings('a').attr('href');
-          var activate = false;
-          $container.children('div'+panelId).remove(); //remove panel
-          if($target.closest('li').remove().is('.ui-state-active')){ //remove tab
-            activate = true;
-            $container.trigger('sgTabRemoved');
-          }
-          //show last close button
-          var $lastClose = $container.find('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab:not(.display-none)');
-          if($lastClose.length > 0) $lastClose.show();
-          if(activate){
-            $container.tabs({active:0}); //activate the last tab
-          }
-          /** @since 2.4.2 udpate the tracker field*/
-          var $tracker = $container.children('.cf7sg-tracker-field');
-          if($tracker) $tracker.val($container.children('.cf7-sg-tabs-panel').length);
+          $container.cf7sgRemoveTab();
         }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab.
-          //add a new tab
           $container.cf7sgCloneTab(true,true);
         }
       });
@@ -938,7 +916,7 @@
     // cf7-sg-table-footer
     return $table;
   }
-  // disable rown deletion
+  // disable row deletion
   $.fn.toggleCF7sgTableRowDeletion = function(active=false){
     var $table = $(this);
     if(!$table.is('.container.cf7-sg-table')) return false;
@@ -957,7 +935,13 @@
     var $table = $(this);
     if(!$table.is('.container.cf7-sg-table')) return false;
     var rows =  $table.children('.row').not('.cf7-sg-cloned-table-row');
-    if(rows.length>1) rows.last().remove();
+    if(rows.length>1){
+      rows.last().remove();
+      $table.trigger('sgRowDeleted');
+      /** @since 2.4.2 track table fields */
+      var $tracker = $table.children('.cf7sg-tracker-field');
+      if($tracker.length) $tracker.val(rows.length-1);
+    }
     return $table;
   }
   //clone table row
@@ -1037,6 +1021,7 @@
     if(!$tab.is('div.cf7-sg-tabs')) return false;
     if(!active) $('.cf7sg-add-tab', $tab).hide();
     else $('.cf7sg-add-tab', $tab).show();
+    return $tab;
   }
   //disable/enable tab deletion
   $.fn.toggleCF7sgTabDeletion = function(active=false){
@@ -1044,6 +1029,33 @@
     if(!$tab.is('div.cf7-sg-tabs')) return false;
     if(!active) $('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab', $tab).addClass('display-none').hide();
     else $('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab', $tab).removeClass('display-none').show();
+    return $tab;
+  }
+  //count tabs.
+  $.fn.cf7sgCountTabs = function(){
+    var $tab = $(this);
+    if(!$tab.is('div.cf7-sg-tabs')) return false;
+    return $tab.find('.cf7-sg-tabs-list').children('li').length;
+  }
+  //remove last tab.
+  $.fn.cf7sgRemoveTab = function(){
+    var $tab = $(this);
+    if(!$tab.is('div.cf7-sg-tabs')) return false;
+    var $tabList = $tab.find('.cf7-sg-tabs-list').children('li');
+    if($tabList.length>1){
+      var panelId = $tabList.last().find('a').attr('href');
+      $tab.find('div'+panelId).remove(); //remove panel
+      //if the last panel was active then activate.
+      if( $tabList.last().remove().is('.ui-state-active') ) $tab.tabs({active:$tabList.length-2}); //remove tab
+      $tab.trigger('sgTabRemoved');
+      //show last close button
+      var $lastClose = $tabList.eq($tabList.length-2).find('.cf7sg-close-tab:not(.display-none)');
+      if($lastClose.length > 0) $lastClose.show();
+      /** @since 2.4.2 udpate the tracker field*/
+      var $tracker = $tab.children('.cf7sg-tracker-field');
+      if($tracker) $tracker.val($tab.children('.cf7-sg-tabs-panel').length);
+    }
+    return $tab;
   }
   //clone tabs, called on a div.cf7-sg-tabs
   $.fn.cf7sgCloneTab = function(initSelect, human=false){
