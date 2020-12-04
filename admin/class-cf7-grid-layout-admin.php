@@ -88,6 +88,7 @@ class Cf7_Grid_Layout_Admin {
       return;
     }
     $plugin_dir = plugin_dir_url( __DIR__ );
+
     switch( $screen->base ){
       case 'post':
         $page_hook = '';
@@ -735,6 +736,7 @@ class Cf7_Grid_Layout_Admin {
     //need to unhook this function so as not to loop infinitely
     //debug_msg($args, 'saving cf7 posts');
     remove_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
+    // debug_msg($args['form'],'form ');
     $contact_form = wpcf7_save_contact_form( $args );
     add_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
     //flag as a grid form

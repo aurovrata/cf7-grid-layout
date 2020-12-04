@@ -339,6 +339,8 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * clean up tab removal in js script.
 * added new tutorial.
 * upgraded CodeMirror to v5.58.3.
+* improved handling of multi-form on page.
+* fix textarea tag default value bug.
 = 4.5.0 =
 * fix row cloning label removal bug.
 * added js fn cf7sgCountRows, cf7sgRemoveRow.

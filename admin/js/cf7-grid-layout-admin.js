@@ -144,9 +144,9 @@
         $('label input', $this).val(text);
         //setup checkbox
         let $ctrl = $this.parent().siblings('.cf7-sg-tabs-panel');
-        $ctrl = $ctrl.children('.row').find('.row-controls' ).first().find('.tabs-row-label');
+        $ctrl = $ctrl.children('.row').children('.row-controls' ).find('.tabs-row-label');
         $('input.tabs-row', $ctrl).prop('checked', true);
-        $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
+        $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v});
       });
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
@@ -959,7 +959,7 @@
           break;
         case 'textarea':
           if( match[0].search(/\s[0-9]{0,3}x[0-9]{1,3}\s?/ig) <0){
-            let cf7sc = match[0].replace(']',' x5]');
+            let cf7sc = match[0].replace(match[2],match[2]+' x5'); //textarea prefill.
             cf7sc = search.replace(match[0], cf7sc);
             $this.val(cf7sc);
           }

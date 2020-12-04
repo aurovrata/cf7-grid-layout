@@ -62,9 +62,9 @@
             $this.addClass('cf7sg-'+name+' cf7sgrow-field');
           }
           /** @since 4.4 prefill */
-          if( !isEmpty(cf7sg[fid][name]) ){
-            $this.prefillCF7Field(cf7sg[fid][name], fid);
-            delete cf7sg[fid][name];
+          if( !isEmpty(cf7sg[fid].prefill[name]) ){
+            $this.prefillCF7Field(cf7sg[fid].prefill[name], fid);
+            delete cf7sg[fid].prefill[name];
           }
         });
 
@@ -121,10 +121,10 @@
         var $this = $(this), name = $this.attr('name'),
           fid = $this.closest('div.cf7-smart-grid').attr('id'),
           val = $this.attr('value');
-        if( !isEmpty( cf7sg[fid][name] ) ){
-          $this.prefillCF7Field(cf7sg[fid][name], fid);
-          val = cf7sg[fid][name];
-          delete cf7sg[fid][name];
+        if( !isEmpty( cf7sg[fid].prefill[name] ) ){
+          $this.prefillCF7Field(cf7sg[fid].prefill[name], fid);
+          val = cf7sg[fid].prefill[name];
+          delete cf7sg[fid].prefill[name];
         }
         $this.data('current',val);
       });
@@ -285,11 +285,11 @@
 
           $(':input', $section.children('.row')).each(function(){
             var $field = $(this), name = $field.attr('name').replace('[]','');
-            if( !isEmpty( cf7sg[fid][name] ) && !isEmpty(cf7sg[fid]['_cf7sg_toggles'][cssId]) ){
-              $field.prefillCF7Field(cf7sg[fid][name], fid);
+            if( !isEmpty( cf7sg[fid].prefill[name] ) && !isEmpty(cf7sg[fid].prefill['_cf7sg_toggles'][cssId]) ){
+              $field.prefillCF7Field(cf7sg[fid].prefill[name], fid);
               state = 0;
               toggled = true;
-              delete cf7sg[fid][name];
+              delete cf7sg[fid].prefill[name];
             }
             if(disableFields) $field.prop('disabled', true);
           });
@@ -421,9 +421,9 @@
             if(name.length>0){
               $this.addClass('cf7sg-'+name+' cf7sgtab-field');
               /** @since 4.4 prefill fields */
-              if( !isEmpty( cf7sg[fid][name] ) ){
+              if( !isEmpty( cf7sg[fid].prefill[name] ) ){
                 $this.prefillCF7Field(cf7sg[fid][name],fid);
-                delete cf7sg[fid][name];
+                delete cf7sg[fid].prefill[name];
               }
             }
           });
@@ -441,9 +441,9 @@
     /** @since 4.4 prefill fields */
     $('div.cf7-smart-grid').each(function(){
       var $form= $(this), fid = $form.attr('id');
-      if( !isEmpty( cf7sg[fid] ) ){
-        Object.keys(cf7sg[fid]).forEach(function(f){
-          $('.'+f+' :input', $form).prefillCF7Field(cf7sg[fid][f], fid);
+      if( !isEmpty( cf7sg[fid].prefill ) ){
+        Object.keys(cf7sg[fid].prefill).forEach(function(f){
+          $('.'+f+' :input', $form).prefillCF7Field(cf7sg[fid].prefill[f], fid);
         })
       }
     });
@@ -662,14 +662,14 @@
     *@since 1.1.0
     */
     $('div.cf7_2_post div.cf7-smart-grid.has-toggles form.wpcf7-form').each(function(){
-      var $form = $(this);
+      var $form = $(this), fid = $form.closest('div.cf7-smart-grid').attr('id');
       var nonceID = $form.closest('div.cf7_2_post').attr('id');
       if(nonceID.length>0){
         $form.on(nonceID, function(event){
           $('.cf7sg-collapsible.with-toggle', $(this)).each(function(){
             var $this = $(this);
             var id = $this.attr('id');
-            if('undefined' == typeof cf7sg.toggles_status || 'undefined' == typeof cf7sg.toggles_status[id]){
+            if('undefined' == typeof cf7sg[fid].toggles_status || 'undefined' == typeof cf7sg[fid].toggles_status[id]){
               $('.row.ui-accordion-content :input', $this).prop('disabled', true);
             }else{
               $this.children('.cf7sg-collapsible-title').trigger('click');
@@ -723,17 +723,20 @@
     /** on hover popup message for disabled submit buttons
     * @since 2.6.0
     */
-    $('div.cf7-smart-grid.has-grid .wpcf7-submit').after('<span class="cf7sg-popup display-none">'+cf7sg.submit_disabled+'</span>').parent().addClass('cf7sg-popup');
+    $('div.cf7-smart-grid.has-grid .wpcf7-submit').each(function(){
+      var $submit = $(this), fid=$submit.closest('div.cf7-smart-grid').attr('id');
+      $submit.after('<span class="cf7sg-popup display-none">'+cf7sg[fid].submit_disabled+'</span>').parent().addClass('cf7sg-popup');
+    });
     /** enable max rows.
     * @since 2.8.0
     */
     $('div.cf7-smart-grid.has-table').on('sgRowAdded', '.container.cf7-sg-table',function(e){
-      var max, msg, $table = $(this);
+      var max, msg, $table = $(this), fid=$table.closest('div.cf7-smart-grid').attr('id');
       max = $table.data('max');
       if('undefined' == typeof max || max == false) return;
       max--;
       if(max==e['row']){
-        msg = '<span class="max-limit wpcf7-not-valid-tip">'+cf7sg.max_table_rows+'</span>';
+        msg = '<span class="max-limit wpcf7-not-valid-tip">'+cf7sg[fid].max_table_rows+'</span>';
         $table.next('.cf7-sg-table-button').addClass('disabled').prepend(msg);
       }
     });
@@ -959,11 +962,12 @@
     if(!$table.is('.container.cf7-sg-table')){
       return $table;
     }
-    var rowIdx = $table.children( '.row.cf7-sg-table').length - 1; //minus hidden row.
-    var $cloneRow = $('.cf7-sg-cloned-table-row', $table);
-    var $row = $cloneRow.clone();
+    var rowIdx = $table.children( '.row.cf7-sg-table').length - 1, //minus hidden row.
+     $cloneRow = $('.cf7-sg-cloned-table-row', $table),
+     $row = $cloneRow.clone(), fid = $table.closest('div.cf7-smart-grid').attr('id');
+
     $row.removeClass('cf7-sg-cloned-table-row').attr('data-row',rowIdx);
-    if(cf7sg.table_labels) $('.field > label',$row).remove();
+    if(cf7sg[fid].table_labels) $('.field > label',$row).remove();
     //show row so select2 init properly
     if($footer.length>0){
       $footer.before($row.show());

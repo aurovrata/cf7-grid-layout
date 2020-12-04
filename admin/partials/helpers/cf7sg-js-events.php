@@ -124,6 +124,12 @@ $tabs.toggleCF7sgTabDeletion(false); /* disable/enable tab deletion. */" href="j
 //returns the total count of current tabs.
 $tabs.cf7sgCountTabs(); /* tab count. */" href="javascript:void(0);"><?=__('tab count','cf7-grid-layout')?></a>
       </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper" data-cf72post="
+//call this function once the tabs are ready.
+//removes the last tab and its corresponding panel.
+$tabs.cf7sgRemoveTab(); /* remove tab and panel. */" href="javascript:void(0);"><?=__('remove tab','cf7-grid-layout')?></a>
+      </li>
     </ul>
   </li>
   <li id="collapsible-events" class="display-none"><?=__('Collapsible rows','cf7-grid-layout')?><span>&gt;</span>

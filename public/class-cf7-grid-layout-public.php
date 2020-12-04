@@ -303,6 +303,7 @@ class Cf7_Grid_Layout_Public {
     if('contact-form-7' !== $tag){
       return $output;
     }
+    // debug_msg($output, 'form ');
     //wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     $cf7_id = $attr['id'];
@@ -371,20 +372,22 @@ class Cf7_Grid_Layout_Public {
     if( !empty($form) ) $messages = $form->prop('messages');
     else debug_msg("CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id");
     //setup classes and id for wrapper.
-    $css_id = apply_filters('cf7_smart_grid_form_id', 'cf7sg-form-'.$cf7_key, $attr);
+    $css_id = apply_filters('cf7_smart_grid_form_id', $this->form_css_id($cf7_key), $attr);
 
     /** @since 4.4.0 enable prefilling of form fields*/
     $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
     if( !empty($prefill) and is_array($prefill) ) $use_grid_js = true;
     if($use_grid_js){
-      $this->localised_data = array(
+      $this->localise_script( array(
         'url' => admin_url( 'admin-ajax.php' ),
-        'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
-        'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
-        'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
         'debug'=>( defined('WP_DEBUG') && WP_DEBUG ),
-        $css_id => $prefill,
-      );
+        $css_id => array(
+          'prefill'=>$prefill,
+          'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
+          'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
+          'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
+        )
+      ));
       //cf7sg script & style.
       wp_enqueue_script($this->plugin_name);
       wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
@@ -481,7 +484,17 @@ class Cf7_Grid_Layout_Public {
     return $output;
   }
   /**
-  * Function hooked on 'cf7_2_post_form_values' to load toggle status for saed submissions
+  *
+  *
+  *@since 4.6.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function form_css_id($cf7_key){
+    return 'cf7sg-form-'.$cf7_key;
+  }
+  /**
+  * Function hooked on 'cf7_2_post_form_values' to load toggle status for saved submissions
   *
   *@since 1.1.0
   *@param string $post_id saved submission post ID
@@ -492,10 +505,11 @@ class Cf7_Grid_Layout_Public {
     }
     $post_id = $field_values['map_post_id'];
     $toggles = get_post_meta($post_id, 'cf7sg_toggles_status', true);
-    //debug_msg($toggles, $post_id.' status ');
     if(!empty($toggles)){
+      $cf7post = get_post($post_id);
+      $cf7_key = $cf7post->post_name;
       wp_enqueue_script($this->plugin_name);
-      wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script( array('toggles_status' => $toggles)) );
+      wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script( array('toggles_status' => $toggles)), $this->form_css_id($cf7_key));
     }
     return $field_values;
   }
@@ -506,8 +520,12 @@ class Cf7_Grid_Layout_Public {
   *@param array $params additional parameter to send.
   *@return array data array to localise
   */
-  private function localise_script($params=array()){
-    $this->localised_data += $params;
+  private function localise_script($params=array(), $css_id=null){
+    if( empty($css_id) ) $this->localised_data += $params;
+    else{
+      if( !isset($this->localised_data[$css_id]) ) $this->localised_data[$css_id] = array();
+      $this->localised_data[$css_id] += $params;
+    }
     return $this->localised_data;
   }
   /**
