@@ -559,7 +559,7 @@ class Cf7_Grid_Layout_Admin {
   * This adds the main editor, hooked on 'add_meta_boxes'
   * @since 1.0.0
   */
-  public function main_editor_meta_box() {
+  public function edit_page_metabox() {
     //add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args)
     if( post_type_exists( $this->cf7_post_type() ) ) {
       add_meta_box( 'meta-box-main-cf7-editor',
@@ -569,9 +569,30 @@ class Cf7_Grid_Layout_Admin {
         'normal',
         'high'
       );
+      add_meta_box( 'meta-box-cf7-info',
+        __cf7sg( 'Information' ),
+        array($this , 'info_metabox_display'),
+        $this->cf7_post_type(),
+        'side',
+        'high'
+      );
+      /** @since 1.1.0 add helper metabox */
+      add_meta_box( 'meta-box-cf7sg-helper',
+        __( 'Actions & Filters', 'cf7-grid-layout' ),
+        array($this , 'helper_metabox_display'),
+        $this->cf7_post_type(),
+        'side',
+        'low'
+      );
+      /** @since 4.6.0 enable page redirect */
+      add_meta_box(
+          'cf7sg-redirect',                 // Unique ID
+          'Redirect on Submission',      // Box title
+          array($this, 'display_rediect_metabox'),  // Content callback, must be of type callable
+          $this->cf7_post_type()                            // Post type
+      );
     }
   }
-
   /**
   * Callback function to disolay the main editor meta box
   * @since 1.0.0
@@ -586,33 +607,10 @@ class Cf7_Grid_Layout_Admin {
       $args = apply_filters('cf7sg_new_cf7_form_template_arguments', array());
   		$cf7_form = WPCF7_ContactForm::get_template($args);
   	}
-
-  	// if(empty($post)){
-    //   $post_id = -1;
-    // }else{
-    //   $post_id = $post->ID;
-    // }
   	require_once WPCF7_PLUGIN_DIR . '/admin/includes/editor.php';
   	require_once plugin_dir_path( __FILE__ )  . 'partials/cf7-admin-editor-display.php';
   }
 
-  /**
-  * Function to add the metabox to the cf7 post edit screen
-  * This adds the main editor, hooked on 'add_meta_boxes'
-  * @since 1.0.0
-  */
-  public function info_meta_box() {
-    //add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args)
-    if(post_type_exists( $this->cf7_post_type() ) ) {
-      add_meta_box( 'meta-box-cf7-info',
-        __cf7sg( 'Information' ),
-        array($this , 'info_metabox_display'),
-        $this->cf7_post_type(),
-        'side',
-        'high'
-      );
-    }
-  }
   /**
    * Re-introduces the wordpress 'wpcf7_admin_misc_pub_section' for plugins to add their fields for submission
    * Hooked to 'post_submitbox_misc_actions' which fires after post dat/time parameters are printed
@@ -632,23 +630,6 @@ class Cf7_Grid_Layout_Admin {
   	require_once plugin_dir_path( __FILE__ )  . 'partials/cf7-info-metabox-display.php';
   }
   /**
-  * Function to add the metabox to the cf7 post edit screen
-  * This adds the helper, hooked on 'add_meta_boxes'
-  * @since 1.1.0
-  */
-  public function helper_meta_box() {
-    //add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args).
-    if(post_type_exists( $this->cf7_post_type() ) ) {
-      add_meta_box( 'meta-box-cf7sg-helper',
-        __( 'Actions & Filters', 'cf7-grid-layout' ),
-        array($this , 'helper_metabox_display'),
-        $this->cf7_post_type(),
-        'side',
-        'low'
-      );
-    }
-  }
-  /**
   * Callback function to disolay the helper meta box
   * @since 1.0.0
   */
@@ -664,6 +645,16 @@ class Cf7_Grid_Layout_Admin {
   **/
   public function grid_editor_panel($form_post){
     require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-grid-layout-admin-display.php';
+  }
+  /**
+  *
+  *
+  *@since 4.6.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function display_rediect_metabox($post){
+    require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-redirect-metabox-display.php';
   }
   /**
   * Clean up post meta, delete sgcf7 corresponding view post.
@@ -1314,7 +1305,7 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-editor-rows-control.php';
     $content = ob_get_contents();
     if(!empty($content)){
-      $pointers['row_controls'] = array($content, 'right', 'center','#grid-form>.container>.row>.row-controls');
+      $pointers['row_controls'] = array($content, 'right', 'center','#grid-form > .container:first-child > .row > .row-controls');
       ob_clean();
     }
     /* preview form */
@@ -1328,7 +1319,7 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-editor-column-control.php';
     $content = ob_get_contents();
     if(!empty($content)){
-      $pointers['column_controls'] = array($content, 'left', 'center','#grid-form>.container>.row>.columns:first-child>.grid-column>span.icon-code');
+      $pointers['column_controls'] = array($content, 'left', 'center','#grid-form > .container:first-child > .row >.columns:first-child > .grid-column>span.icon-code');
       ob_clean();
     }
     include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php';

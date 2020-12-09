@@ -148,7 +148,12 @@
         beforeActivate: function (event, ui){
           enableBodyScroll();
           //update the codemirror panel
-          if('#cf7-codemirror' == ui.newPanel.selector){
+          let panel = '';
+          if(ui.newPanel instanceof jQuery) panel = '#'+ui.newPanel.attr('id');
+          else if('undefined' != typeof ui.newPanel.selector) panel = ui.newPanel.selector;
+          else console.log('CF7 GRID EDITOR: unknown tab ui panel object');
+
+          if('#cf7-codemirror' == panel){
 						//finalise any changes in the grid form editor
             $grid.on('cf7grid-form-ready', function(){
                 let code = $grid.CF7FormHTML();
@@ -179,7 +184,10 @@
           }
         },
         activate: function( event, ui ) {
-          gridTab = ui.newPanel.selector;
+          if(ui.newPanel instanceof jQuery) gridTab = '#'+ui.newPanel.attr('id');
+          else if('undefined' != typeof ui.newPanel.selector) gridTab = ui.newPanel.selector;
+          else console.log('CF7 GRID EDITOR: unknown tab ui panel object');
+
           $topTags.show();
           $bottomTags.show();
           $jsTags.hide();

@@ -1,3 +1,5 @@
+#cf7sg-cache-limit {display: inline-block;}
+#cf7sg-cached-time {max-width: 63px;}
 #editors, #contact-form-editor {position: relative;}
 #optional-editors {
 	display: inline-block;

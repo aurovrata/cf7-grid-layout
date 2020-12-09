@@ -192,9 +192,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action('init',  $plugin_admin, 'register_dynamic_dropdown_taxonomy' , 20, 2 );
     //$this->loader->add_action('init',  $plugin_admin, 'modify_cf7_post_type' , 20 );
     //add some metabox to the wpcf7_contact_form post type
-    $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'main_editor_meta_box' );
-    $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'info_meta_box' );
-    $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'helper_meta_box');
+    $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'edit_page_metabox' );
     //save the post
     $this->loader->add_action('save_post_wpcf7_contact_form', $plugin_admin, 'save_post', 10,3);
     /** delete post @since 4.3.0 */

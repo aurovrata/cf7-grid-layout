@@ -109,6 +109,12 @@ $tabs.cf7sgCloneTab(); /* function to programmatically add a tab. */" href="java
       <li><?= __('Function: ','cf7-grid-layout')?>
         <a class="helper" data-cf72post="
 //call this function once the tabs are ready.
+//removes the last tab and its corresponding panel.
+$tabs.cf7sgRemoveTab(); /* remove tab and panel. */" href="javascript:void(0);"><?=__('remove tab','cf7-grid-layout')?></a>
+      </li>
+      <li><?= __('Function: ','cf7-grid-layout')?>
+        <a class="helper" data-cf72post="
+//call this function once the tabs are ready.
 //to disable the tab addition pass false, to enable it pass true.
 $tabs.toggleCF7sgTabAddition(false); /* disable/enable tab addition. */" href="javascript:void(0);"><?=__('toggle add button','cf7-grid-layout')?></a>
       </li>
@@ -123,12 +129,6 @@ $tabs.toggleCF7sgTabDeletion(false); /* disable/enable tab deletion. */" href="j
 //call this function once the tabs are ready.
 //returns the total count of current tabs.
 $tabs.cf7sgCountTabs(); /* tab count. */" href="javascript:void(0);"><?=__('tab count','cf7-grid-layout')?></a>
-      </li>
-      <li><?= __('Function: ','cf7-grid-layout')?>
-        <a class="helper" data-cf72post="
-//call this function once the tabs are ready.
-//removes the last tab and its corresponding panel.
-$tabs.cf7sgRemoveTab(); /* remove tab and panel. */" href="javascript:void(0);"><?=__('remove tab','cf7-grid-layout')?></a>
       </li>
     </ul>
   </li>
