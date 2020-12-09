@@ -45,6 +45,16 @@ class Cf7_Grid_Layout_Admin {
   * @var      string    $plugin_name    The ID of this plugin.
   */
   private $plugin_name;
+
+  /**
+  * The ID of this plugin.
+  *
+  * @since    4.6.0
+  * @access   public
+  * @var    Constant    CF7SG_OPTION    Options key.
+  */
+  const CF7SG_OPTION = 'cf7sg-plugin-version';
+
   /**
   * The version of this plugin.
   *
@@ -553,7 +563,36 @@ class Cf7_Grid_Layout_Admin {
       }
     }
   }
+  /**
+  * Hide the cf7 form editor page author metabox by default.
+  * hooked to 'hidden_meta_boxes'.
+  *@since 4.6.0
+  *@param Array $hidden array of hidden metabox ids.
+  *@param WP_Screen  $screen current amdin page screen object.
+  *@param Boolean  $use_defaults wether default settings used.
+  *@return Array array of hidden metabox ids.
+  */
+  public function hide_author_metabox($hidden, $screen, $use_defaults){
+    if( 'wpcf7_contact_form' != $screen->id ) return $hidden;
 
+    if(in_array('authordiv', $hidden)) return $hidden;
+
+    if($use_defaults) $hidden[] = 'authordiv';
+    else {
+      $gs = get_option(self::CF7SG_OPTION, array());
+
+      if(!isset($gs['hide_author'])){
+        $gs['hide_author']=true; //flag it.
+        $uo = get_user_option('metaboxhidden_wpcf7_contact_form');
+        if(false === $uo) $uo = array();
+        $uo = array_unique( array_merge( $uo + array( 'authordiv' ) ) );
+        $hidden = array_unique( array_merge( $hidden + array( 'authordiv' ) ) );
+        update_option(self::CF7SG_OPTION,$gs);
+        update_user_option( get_current_user_id(), 'metaboxhidden_wpcf7_contact_form', $uo);
+      }
+    }
+    return $hidden;
+  }
   /**
   * Function to add the metabox to the cf7 post edit screen
   * This adds the main editor, hooked on 'add_meta_boxes'
@@ -871,6 +910,18 @@ class Cf7_Grid_Layout_Admin {
       'post_type'=>'cf7sg_page',
       // 'post_name' => sanitize_title( $title ),
     );
+    /** @since 4.6.0 redirect on submit */
+    if(isset($_POST['cf7sg_page_redirect'])){
+      $redirect_to = absint($_POST['cf7sg_page_redirect']);
+      update_post_meta($post->ID, '_cf7sg_page_redirect',$redirect_to);
+      if(isset($_POST['cache_cf7sg_submit']) and isset($_POST['cf7sg_cached_time']) and isset($_POST['cf7sg_cached_unit'])){
+        $cache = floatval( $_POST['cf7sg_cached_time']);
+        if($cache>0){
+          $cache=array($cache, absint($_POST['cf7sg_cached_unit']));
+          update_post_meta($post->ID, '_cf7sg_cache_redirect_data',$cache);
+        }
+      }else delete_post_meta($post->ID, '_cf7sg_cache_redirect_data');
+    }
     if(empty($cf7_key)) $prev_page['post_content'] = '[contact-form-7 id="'.$post->ID.'"]';
     if( !empty($preview_id) ){
       $prev_page['ID'] = $preview_id;
@@ -1305,7 +1356,7 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-editor-rows-control.php';
     $content = ob_get_contents();
     if(!empty($content)){
-      $pointers['row_controls'] = array($content, 'right', 'center','#grid-form > .container:first-child > .row > .row-controls');
+      $pointers['row_controls'] = array($content, 'right', 'center','#grid-form>.container>.row>.row-controls');
       ob_clean();
     }
     /* preview form */
@@ -1319,7 +1370,7 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-editor-column-control.php';
     $content = ob_get_contents();
     if(!empty($content)){
-      $pointers['column_controls'] = array($content, 'left', 'center','#grid-form > .container:first-child > .row >.columns:first-child > .grid-column>span.icon-code');
+      $pointers['column_controls'] = array($content, 'left', 'center','#grid-form>.container>.row>.columns:first-child>.grid-column>span.icon-code');
       ob_clean();
     }
     include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php';
@@ -1456,7 +1507,7 @@ class Cf7_Grid_Layout_Admin {
   *@since 4.1.0
   */
   public function init_notices(){
-    $grid_settings = get_option( 'cf7sg-plugin-version', array());
+    $grid_settings = get_option( self::CF7SG_OPTION, array());
     //if plugin settings exists and this is not an update, then no need to run.
     if( !empty($grid_settings) and !isset($grid_settings['update']) ) return;
 
@@ -1508,7 +1559,7 @@ class Cf7_Grid_Layout_Admin {
     }
     if(!empty($notices)) update_option('cf7sg-admin-notices', $notices);
 
-    update_option('cf7sg-plugin-version', array(
+    update_option(self::CF7SG_OPTION, array(
       'gv'=>CF7_GRID_VERSION,
       'fv'=>CF7SG_VERSION_FORM_UPDATE
     ));
@@ -1567,7 +1618,7 @@ class Cf7_Grid_Layout_Admin {
       echo 'error, nonce failed, try to reload the page.';
       wp_die();
     }
-    $grid_settings = get_option('cf7sg-plugin-version', array());
+    $grid_settings = get_option(self::CF7SG_OPTION, array());
     $warning = false;
     if(isset($grid_settings['fv']) ) {
       if(version_compare($grid_settings['fv'], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
@@ -1575,7 +1626,7 @@ class Cf7_Grid_Layout_Admin {
     $grid_settings['fv'] = CF7SG_VERSION_FORM_UPDATE;
     $grid_settings['gv'] = CF7_GRID_VERSION;
     $grid_settings['update'] = true;
-    update_option('cf7sg-plugin-version', $grid_settings);
+    update_option(self::CF7SG_OPTION, $grid_settings);
     $update_msg = __('Version validated, thank you!','cf7-grid-layout');
     if($warning){
       $link = admin_url('edit.php?post_type=wpcf7_contact_form');
@@ -1598,9 +1649,9 @@ class Cf7_Grid_Layout_Admin {
   public function post_plugin_upgrade($response, $extras, $result){
     if( ( isset($response['destination_name']) and 'cf7-grid-layout' == $response['destination_name'] )
     or ( isset($extras['plugin']) and 'cf7-grid-layout/cf7-grid-layout.php' == $extras['plugin'] ) ){
-      $grid_settings = get_option('cf7sg-plugin-version', array());
+      $grid_settings = get_option(self::CF7SG_OPTION, array());
       $grid_settings['update'] = true;
-      update_option('cf7sg-plugin-version', $grid_settings);
+      update_option(self::CF7SG_OPTION, $grid_settings);
     }
     return $response;
   }

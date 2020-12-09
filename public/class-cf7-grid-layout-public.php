@@ -373,7 +373,15 @@ class Cf7_Grid_Layout_Public {
     else debug_msg("CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id");
     //setup classes and id for wrapper.
     $css_id = apply_filters('cf7_smart_grid_form_id', $this->form_css_id($cf7_key), $attr);
-
+    /** @since 4.6.0 allow redirect on submit */
+    $redirect = get_post_meta($cf7_id, '_cf7sg_page_redirect',true);
+    if(!empty($redirect)){
+      $cache = get_post_meta($cf7_id, '_cf7sg_cache_redirect_data',true);
+      if(!empty($cache)){
+        $cache = wp_create_nonce($this->form_css_id($cf7_key));
+      }
+      $redirect = get_permalink($redirect).( empty($cache) ? '':"?cf7sg=$cache");
+    }
     /** @since 4.4.0 enable prefilling of form fields*/
     $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
     if( !empty($prefill) and is_array($prefill) ) $use_grid_js = true;
@@ -386,6 +394,7 @@ class Cf7_Grid_Layout_Public {
           'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
           'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
           'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
+          'redirect'=>$redirect
         )
       ));
       //cf7sg script & style.
@@ -1834,11 +1843,27 @@ class Cf7_Grid_Layout_Public {
   * Track form field value submissions for preview forms.
   * Hooked to action 'wpcf7_before_send_mail'
   *@since 4.4.0
-  *@param string $param text_description
-  *@return string text_description
+  *@param WPCF7_Contact_Form $form cf7 form object.
   */
-  public function prefill_preview_forms($form){
+  public function on_submit_success($form){
     if(empty($form)) return;
+    /** @since 4.6.0 check if the form is being redirected and data cached */
+    $redirect = get_post_meta($form->id(), '_cf7sg_page_redirect',true);
+    if(!empty($redirect)){
+      $cache = get_post_meta($form->id(), '_cf7sg_cache_redirect_data',true);
+      if(is_array($cache)){
+        $submission = WPCF7_Submission::get_instance();
+        $data = array();
+        if(!empty($submission)){
+          $data['fields'] = $submission->get_posted_data();
+          $data['files'] = $submission->uploaded_files();
+        }
+        $data = apply_filters('cf7sg_form_redirect_cached_data',$data, $_POST['_wpcf7_key'], $form->id());
+        $transient = '_cf7sg_'+wp_create_nonce( $this->form_css_id($_POST['_wpcf7_key']) );
+        set_transient( $transient, $data,  $cache[0]*$cache[1]);
+      }
+    }
+    //for preview forms...
     if( !isset($_POST['_cf7sg_preview']) ) return;
     $prefill = array();
     foreach( $form->scan_form_tags() as $tag){
@@ -1848,7 +1873,7 @@ class Cf7_Grid_Layout_Public {
       $prefill['_cf7sg_toggles'] = self::$array_toggled_panels[$form->id()];
     }
 
-    if(!empty($prefill)) setcookie('_cf7sg_'.$_POST['_wpcf7_key'], json_encode($prefill),0,'/');
+    if(!empty($prefill)) setcookie('_cf7sg_'. sanitize_text_field( $_POST['_wpcf7_key'] ), json_encode($prefill),0,'/');
   }
 
 }

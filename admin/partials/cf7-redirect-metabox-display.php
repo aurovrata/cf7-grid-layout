@@ -10,9 +10,10 @@ $time = 5;
 $disabled = ' disabled';
 $checked ='';
 if(!empty($cache) && is_array($cache)){
-  $checked = "checked";
+  $checked = 'checked';
   $time = $cache[0];
   $unit = $cache[1];
+  $disabled = '';
 }
  ?>
 <div>
@@ -26,7 +27,7 @@ if(!empty($cache) && is_array($cache)){
   </label>
   <div>
     <label for="is-cf7sg-cached">
-      <input type="checkbox" id="is-cf7sg-cached" value="cache_cf7sg_submit" <?=$checked?>/>
+      <input type="checkbox" id="is-cf7sg-cached" name="cache_cf7sg_submit" <?=$checked?>/>
       <?= __('Cache the submitted form data for','cf7-grid-layout')?>
     </label>
     <fieldset id="cf7sg-cache-limit" <?=$disabled?>>

@@ -701,24 +701,38 @@
     * listen for cf7 submit invalid field event, and open parent sections and tabs.
     *@since 1.1.0
     */
-    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid', '.wpcf7', function(e){
-      var $target = $(e.target), invalids = e.detail;
-      /** @since cf7 5.2 */
-      if('undefined' != typeof invalids.apiResponse){
-        invalids = invalids.apiResponse.invalid_fields;
-        for(var idx in invalids){
-          var $input = $(invalids[idx].into),
-            $section = $input.closest('.cf7sg-collapsible:not(.glider-slide)');
-          if($section.length>0){
-            $section.accordion("option","active",0); //activate.
+    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid wpcf7mailsent', '.wpcf7', function(e){
+      var $target = $(e.target), invalids;
+      switch(e.type){
+        case 'wpcf7mailsent': /** @since 4.6.0 success, redirect? */
+          if(! isEmpty(cf7sg[e.delegateTarget.id]) && cf7sg[e.delegateTarget.id].redirect.length>0){
+            var $draft = $('.cf7_2_post_draft', $target);
+            if(0==$draft.length || 'false' === $draft.val()){
+              window.location.replace(cf7sg[e.delegateTarget.id].redirect);
+            }
           }
-          $section = $input.closest('.cf7sg-slider-section');
-          if($section.length>0){
-            // $input.closest('.glider-slide').data('gslide');
-            Glider($('.glider', $section)[0]).scrollItem($input.closest('.glider-slide').data('gslide'))
+          break;
+        case 'wpcf7invalid':
+        case 'wpcf7:invalid':
+          invalids = e.detail;
+          /** @since cf7 5.2 */
+          if('undefined' != typeof invalids.apiResponse){
+            invalids = invalids.apiResponse.invalid_fields;
+            for(var idx in invalids){
+              var $input = $(invalids[idx].into),
+                $section = $input.closest('.cf7sg-collapsible:not(.glider-slide)');
+              if($section.length>0){
+                $section.accordion("option","active",0); //activate.
+              }
+              $section = $input.closest('.cf7sg-slider-section');
+              if($section.length>0){
+                // $input.closest('.glider-slide').data('gslide');
+                Glider($('.glider', $section)[0]).scrollItem($input.closest('.glider-slide').data('gslide'))
+              }
+            }
           }
+          break;
         }
-      }
     });
     /** on hover popup message for disabled submit buttons
     * @since 2.6.0

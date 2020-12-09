@@ -193,6 +193,8 @@ class Cf7_Grid_Layout {
     //$this->loader->add_action('init',  $plugin_admin, 'modify_cf7_post_type' , 20 );
     //add some metabox to the wpcf7_contact_form post type
     $this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'edit_page_metabox' );
+    /** @since 4.6.0 hide author metabox by default */
+    $this->loader->add_filter('hidden_meta_boxes', $plugin_admin, 'hide_author_metabox',10,3);
     //save the post
     $this->loader->add_action('save_post_wpcf7_contact_form', $plugin_admin, 'save_post', 10,3);
     /** delete post @since 4.3.0 */
@@ -303,7 +305,7 @@ class Cf7_Grid_Layout {
     /** @since 4.0.0 enable/disable autop with filter */
     $this->loader->add_filter( 'wpcf7_autop_or_not', $plugin_public, 'disable_autop_for_grid' ,5,1);
     /** @since 4.4 prefill preview forms */
-    $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'prefill_preview_forms');
+    $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'on_submit_success');
 
 	}
 
