@@ -382,7 +382,7 @@ class Cf7_Grid_Layout_Public {
         $cache = wp_create_nonce($css_id);
       }
       $redirect = get_permalink($redirect).( empty($cache) ? '':"?cf7sg=$cache");
-    }
+    }else $redirect='';
     /** @since 4.4.0 enable prefilling of form fields*/
     $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
     if( !empty($prefill) and is_array($prefill) ) $use_grid_js = true;
