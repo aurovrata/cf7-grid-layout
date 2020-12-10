@@ -372,13 +372,14 @@ class Cf7_Grid_Layout_Public {
     if( !empty($form) ) $messages = $form->prop('messages');
     else debug_msg("CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id");
     //setup classes and id for wrapper.
-    $css_id = apply_filters('cf7_smart_grid_form_id', $this->form_css_id($cf7_key), $attr);
+    $css_id = $this->form_css_id($cf7_key);
+    apply_filters_deprecated('cf7_smart_grid_form_id', array($css_id, $attr), '4.6.0','', __('this filter is no longer available', 'cf7-grid-layout'));
     /** @since 4.6.0 allow redirect on submit */
     $redirect = get_post_meta($cf7_id, '_cf7sg_page_redirect',true);
     if(!empty($redirect)){
       $cache = get_post_meta($cf7_id, '_cf7sg_cache_redirect_data',true);
       if(!empty($cache)){
-        $cache = wp_create_nonce($this->form_css_id($cf7_key));
+        $cache = wp_create_nonce($css_id);
       }
       $redirect = get_permalink($redirect).( empty($cache) ? '':"?cf7sg=$cache");
     }
@@ -413,7 +414,8 @@ class Cf7_Grid_Layout_Public {
       $dep = array();
       if($use_grid_js) $dep =array($this->plugin_name);
       wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', $dep , null, true);
-      do_action('smart_grid_register_custom_script', $cf7_key);
+      do_action_deprecated('smart_grid_register_custom_script', array($cf7_key), '4.6.0', 'cf7sg_enqueue_custom_script-$form_key', __('deprecated action hook','cf7-grid-layout'));
+      do_action("cf7sg_enqueue_custom_script-{$cf7_key}",$cf7_key.'-js');
     }
 
     if(empty($is_form) or !$is_form){
@@ -1856,11 +1858,13 @@ class Cf7_Grid_Layout_Public {
         $data = array();
         if(!empty($submission)){
           $data['fields'] = $submission->get_posted_data();
-          $data['files'] = $submission->uploaded_files();
+          $files = $submission->uploaded_files();
+          if(!empty($files)) $data['files'] = $files;
         }
         $data = apply_filters('cf7sg_form_redirect_cached_data',$data, $_POST['_wpcf7_key'], $form->id());
-        $transient = '_cf7sg_'+wp_create_nonce( $this->form_css_id($_POST['_wpcf7_key']) );
+        $transient = '_cf7sg_'.wp_create_nonce( $this->form_css_id($_POST['_wpcf7_key']) );
         set_transient( $transient, $data,  $cache[0]*$cache[1]);
+        // debug_msg($data, "setting transient $transient, expiring in ".$cache[0]*$cache[1]);
       }
     }
     //for preview forms...

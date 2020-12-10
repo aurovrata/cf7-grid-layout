@@ -81,3 +81,11 @@ function prefill_cf7sg_{$form_key_slug}($values, $cf7_key){
   return array_merge($values, $custom_values);
 }" href="javascript:void(0);"><?=__('Prefill','cf7-grid-layout')?></a> <?=__('form fields.','cf7-grid-layout')?>
 </li>
+<li>
+  <a class="helper" data-cf72post="add_action('cf7sg_enqueue_custom_script-{{$form_key}', 'localize_{$form_key_slug}',10,2);
+function localize_{$form_key_slug}($script_id){
+  //when you use a custom JavaScript file for your form, this action if fired when the plugin loads it.
+  //this allows you to localize your script should you need to.
+  wp_localize_script($script_id, 'customVar', array('data'=>array(1,2,3,4)));
+}" href="javascript:void(0);"><?=__('Localize','cf7-grid-layout')?></a> <?=__('custom js script.','cf7-grid-layout')?>
+</li>

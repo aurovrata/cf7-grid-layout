@@ -342,6 +342,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * improved handling of multi-form on page.
 * fix textarea tag default value bug.
 * added page redirect option.
+* deprecated hooks cf7_smart_grid_form_id / smart_grid_register_custom_script.
+* added action hook cf7sg_enqueue_custom_script-$form_key.
+
 = 4.5.0 =
 * fix row cloning label removal bug.
 * added js fn cf7sgCountRows, cf7sgRemoveRow.

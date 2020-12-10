@@ -48,6 +48,9 @@ if(!empty($cache) && is_array($cache)){
         </select>
       </label>
     </fieldset>
+    <p>
+      <?= __('If you need access to the submitted data on the redirected page, then check this option.  It will cache the submitted form fields and files as a <a href="https://developer.wordpress.org/apis/handbook/transients/">transient</a>, allowing you to retrieve it on the redirected page with the following id:', 'cf7-grid-layout');?><code>'_cf7sg_'.$_GET['cf7sg']</code>
+    </p>
     <script type="text/javascript">
     (function($){
       'use strict';
