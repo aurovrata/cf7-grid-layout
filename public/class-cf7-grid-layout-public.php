@@ -1693,7 +1693,8 @@ class Cf7_Grid_Layout_Public {
       case 'tab':
       case 'table':
         if($html){
-          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, $cf7form_key, false);
+          $filtered = apply_filters_deprecated('cf7sg_mailtag_grid_fields', array('', $mail_tag->field_name(), $submitted, $cf7form_key, false), '4.6.2','cf7sg_mailtag_{$field_name}', __('this filter is no longer available', 'cf7-grid-layout'));
+          $filtered = apply_filters('cf7sg_mailtag_'.$mail_tag->field_name(), $filtered, $submitted_data, $cf7form_key);
           if(!empty($filtered)){
             $replaced = $filtered;
             break;
@@ -1712,7 +1713,8 @@ class Cf7_Grid_Layout_Public {
         break;
       case 'both':
         if($html){
-          $filtered = apply_filters('cf7sg_mailtag_grid_fields', '', $mail_tag->field_name(), $submitted, $cf7form_key, true);
+          $filtered = apply_filters_deprecated('cf7sg_mailtag_grid_fields', array('', $mail_tag->field_name(), $submitted, $cf7form_key, false), '4.6.2','cf7sg_mailtag_{$field_name}', __('this filter is no longer available', 'cf7-grid-layout'));
+          $filtered = apply_filters('cf7sg_mailtag_'.$mail_tag->field_name(), $filtered, $submitted_data, $cf7form_key);
           if(!empty($filtered)){
             $replaced = $filtered;
             break;
