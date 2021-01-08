@@ -703,7 +703,7 @@
     * listen for cf7 submit invalid field event, and open parent sections and tabs.
     *@since 1.1.0
     */
-    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid wpcf7mailsent', '.wpcf7', function(e){
+    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid wpcf7mailsent wpcf7submit', '.wpcf7', function(e){
       var $target = $(e.target), invalids;
       switch(e.type){
         case 'wpcf7mailsent': /** @since 4.6.0 success, redirect? */
@@ -723,8 +723,23 @@
             for(var idx in invalids){
               var $input = $(invalids[idx].into),
                 $section = $input.closest('.cf7sg-collapsible:not(.glider-slide)');
+                /** @since 4.7.0 add class to flag as error */
               if($section.length>0){
                 $section.accordion("option","active",0); //activate.
+              }
+              //tabs.
+              $section=$input.closest('.cf7-sg-tabs-panel');
+              if($section.length>0){ //activate the tab and flag it.
+                var tabid = $section.attr('id');
+                $section = $section.closest('.cf7-sg-tabs');
+                var t = $('.cf7-sg-tabs-list', $section).children();
+                for(var tdx=0;tdx<t.length;tdx++){
+                  if(tabid == $(t[tdx]).attr('aria-controls')){
+                    $(t[tdx]).attr('data-cf7sg','error');
+                    $section.tabs( "option", "active", tdx );
+                    break;
+                  }
+                }
               }
               $section = $input.closest('.cf7sg-slider-section');
               if($section.length>0){
@@ -734,7 +749,11 @@
             }
           }
           break;
-        }
+        case 'wpcf7submit': /** @since 4.7.0 on submit clear any error flags */
+          $('.cf7-sg-tabs-list li', $target).attr('data-cf7sg','');
+          $('.cf7sg-collapsible', $target).attr('data-cf7sg','');
+          break;
+      }
     });
     /** on hover popup message for disabled submit buttons
     * @since 2.6.0

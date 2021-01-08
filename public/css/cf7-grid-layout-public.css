@@ -54,6 +54,7 @@ ul.cf7-sg-tabs-list li .dashicons.dashicons-no-alt {
     border-top-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+ul.cf7-sg-tabs-list li[data-cf7sg="error"] {border: #d90000 solid 2px;}
 .row.cf7-sg-table .row-control {
     border: solid 1px #b9b9b9;
     border-left: none;
