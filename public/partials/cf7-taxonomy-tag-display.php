@@ -19,9 +19,12 @@
 $class = $tag->get_class_option( $class );
 
 $id = $tag->get_id_option();
+$default = $tag->get_default_option();
 $has_permalinks = false;
 /** @since 3.3.0 allow multiple */
 $select_attributes = '';
+$option_attributes = array();
+$option_attributes[$default] = ' selected="selected"';
 $name_suffix='';
 foreach($tag->options as $tag_option){
   switch($tag_option){
@@ -53,7 +56,6 @@ if(!empty($tag->values)){
      debug_msg($terms, 'Unable to retrieve taxonomy <em>'.$source['taxonomy'].'</em> terms');
      $terms = array();
     }else{
-      $option_attributes = array();
       foreach($terms as $term){
         /**
         * Filter dropdown options labels.
@@ -78,13 +80,13 @@ if(!empty($tag->values)){
        */
        $attributes = apply_filters('cf7sg_dynamic_dropdown_option_attributes', array(), $term, $tag->name, $cf7_key);
        if(!empty($attributes)){
-         foreach($attributes as $attribute => $avalue){
-           if(is_array($avalue)){
-             $separator = ' ';
-             if('style' === $attribute ) $separator = ';';
-             $avalue = implode( $separator, $avalue);
-           }
-           $option_attributes[$term->slug] = ' '.$attribute.'="'.$avalue.'"';
+        foreach($attributes as $attribute => $avalue){
+          if(is_array($avalue)){
+            $separator = ' ';
+            if('style' === $attribute ) $separator = ';';
+            $avalue = implode( $separator, $avalue);
+          }
+          $option_attributes[$term->slug] = ' '.$attribute.'="'.$avalue.'"';
          }
        }
      }
@@ -120,7 +122,6 @@ if(!empty($tag->values)){
     $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name, $cf7_key);
     $posts = get_posts($args);
     if(!empty($posts)){
-      $option_attributes = array();
       foreach($posts as $post){
         /**
         * Filter dropdown options labels.
