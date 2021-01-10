@@ -1,5 +1,5 @@
 === Smart Grid-Layout Design for Contact Form 7 ===
-Contributors: aurovrata
+Contributors: aurovrata, StrangeTech, altworks, Birmania, netzgestaltung
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EDV4MEJLPT4VY
 Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitie fields, form custom javascript
 Requires at least: 4.7
@@ -336,6 +336,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * enable tab select for panels with invalid inputs.
 * flag tabs with invalid fields.
 * flag slides with invalid fields.
+* flag collapsible sections with invalid fields.
+* fix default dropdown cf7 tag value.
+* upgrade glider.js to fix slider submit button bug.
 = 4.6.2 =
 * fix prefill for hidden fields.
 * deprecated cf7sg_mailtag_grid_fields hook, replaced with existing cf7sg_mailtag_{$field_name} for tabbed/tabled fields.

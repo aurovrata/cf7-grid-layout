@@ -703,7 +703,7 @@
     * listen for cf7 submit invalid field event, and open parent sections and tabs.
     *@since 1.1.0
     */
-    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid wpcf7mailsent wpcf7submit', '.wpcf7', function(e){
+    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid wpcf7mailsent', '.wpcf7', function(e){
       var $target = $(e.target), invalids;
       switch(e.type){
         case 'wpcf7mailsent': /** @since 4.6.0 success, redirect? */
@@ -725,6 +725,7 @@
                 $section = $input.closest('.cf7sg-collapsible:not(.glider-slide)');
                 /** @since 4.7.0 add class to flag as error */
               if($section.length>0){
+                $section.attr('data-cf7sg','error');
                 $section.accordion("option","active",0); //activate.
               }
               //tabs.
@@ -743,17 +744,18 @@
               }
               $section = $input.closest('.cf7sg-slider-section');
               if($section.length>0){
-                // $input.closest('.glider-slide').data('gslide');
-                Glider($('.glider', $section)[0]).scrollItem($input.closest('.glider-slide').data('gslide'))
+                var $slide = $input.closest('.glider-slide');
+                $slide.attr('data-cf7sg','error');
+                Glider($('.glider', $section)[0]).scrollItem($slide.data('gslide'))
               }
             }
           }
           break;
-        case 'wpcf7submit': /** @since 4.7.0 on submit clear any error flags */
-          $('.cf7-sg-tabs-list li', $target).attr('data-cf7sg','');
-          $('.cf7sg-collapsible', $target).attr('data-cf7sg','');
-          break;
       }
+    }).submit(function(e) {
+      var $target = $(e.target);
+      $('.cf7-sg-tabs-list li', $target).attr('data-cf7sg','');
+      $('.cf7sg-collapsible', $target).attr('data-cf7sg','');
     });
     /** on hover popup message for disabled submit buttons
     * @since 2.6.0

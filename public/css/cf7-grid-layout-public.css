@@ -59,6 +59,7 @@ ul.cf7-sg-tabs-list li[data-cf7sg="error"] {border: #d90000 solid 2px;}
     border: solid 1px #b9b9b9;
     border-left: none;
 }
+.cf7sg-collapsible[data-cf7sg="error"] {border-right: double 4px red;}
 .container.cf7sg-collapsible + .container > .row:first-child > .columns.full > .container.cf7-sg-table {
     margin-top: 10px;
 }
