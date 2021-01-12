@@ -326,7 +326,6 @@
         toggled_accordion.on('sgContentIncrease', function(){
           $(this).accordion("refresh");
         });
-
       }); //end collapsible rows with toggle buttons
 
       //now enable the other collapsible rows
@@ -364,7 +363,9 @@
           };
           /** @since 3.4.0 handle accordion rows for stepped flow */
           if($row.is('.cf7sg-accordion-rows')){
-            Object.assign(options,{header: 'div.cf7sg-collapsible-title',animate:false });
+            /** @since 4.7.1 ensure unique headers for toggle sections within accordions */
+            $row.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title').addClass('accordion');
+            Object.assign(options,{header: 'div.cf7sg-collapsible-title.accordion',animate:false})
           }else{
             Object.assign(options,{
               collapsible:true,
@@ -583,7 +584,12 @@
           $glider = $('.glider',$slider),
           $prev = $('<span class="slider-control slider-prev"></span>'),
           $next = $('<span class="slider-control slider-next"></span>'),
-          isSubmit=false, $submit=null;
+          isSubmit=false, $submit=null,
+          sOptions = {
+            arrows: {
+              prev: '.slider-prev',
+              next: '.slider-next'
+          }};
         if($slider.data("prev").length>0){
           $prev.text($slider.data("prev")).addClass('ui-button');
         }else $prev.addClass("dashicons dashicons-arrow-left-alt");
@@ -600,6 +606,11 @@
           $next.after($submit);
           let m = ( $submit.outerHeight() - 16 )/2;
           $submit.hide().after('<span style="margin:'+m+'px 5px;" class="ajax-loader"></span>');
+        }
+        /** @since 4.7.2 enable dots */
+        if($slider.data('dots')){
+          $prev.after('<span class="slider-dots"></span>');
+          sOptions['dots']= '.slider-dots';
         }
         //bind events.
         $glider.on('glider-loaded',function(e){
@@ -627,12 +638,7 @@
           })
         });
         //init slider.
-        glider = new Glider($glider[0],{
-          arrows: {
-            prev: '.slider-prev',
-            next: '.slider-next'
-          }
-        });
+        glider = new Glider($glider[0],sOptions);
 
         $slider.on('sgRowAdded sgRowDeleted',function(e){
           glider.refresh(true);
@@ -722,11 +728,15 @@
             invalids = invalids.apiResponse.invalid_fields;
             for(var idx in invalids){
               var $input = $(invalids[idx].into),
-                $section = $input.closest('.cf7sg-collapsible:not(.glider-slide)');
+                $section = $input.parents('.cf7sg-collapsible:not(.glider-slide)');
                 /** @since 4.7.0 add class to flag as error */
-              if($section.length>0){
-                $section.attr('data-cf7sg','error');
-                $section.accordion("option","active",0); //activate.
+              for(var s of $section){
+                $(s).attr('data-cf7sg','error');
+                if($(s).is('.cf7sg-accordion-rows .cf7sg-collapsible')){
+                  $(s).closest('.cf7sg-accordion-rows').accordion("option","active",$(s).index());
+                }else{
+                  $section.accordion("option","active",tidx); //activate.
+                }
               }
               //tabs.
               $section=$input.closest('.cf7-sg-tabs-panel');

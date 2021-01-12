@@ -1573,6 +1573,7 @@ class Cf7_Grid_Layout_Admin {
 		//check if we have any notices.
 		global $pagenow;
 		$notices = get_option('cf7sg-admin-notices', array());
+
 		if(empty($notices)) return;
 
 		if(!isset(self::$admin_notice_pages[$pagenow])) return;
@@ -1606,6 +1607,9 @@ class Cf7_Grid_Layout_Admin {
       <style>.notice .inline-top{display: inline-block;vertical-align: top;margin-right: 10px;max-width: 300px;}</style>
 			<div data-dismissible="<?=$dismiss?>" class="notice <?=$notice['type']?> is-dismissible"><p><?=$notice['msg']?></p><?=$notice['html']?></div>
 			<?php
+      /** @since 4.7.1 dismiss notices once displayed */
+      unset($notices[$id]);
+      update_option('cf7sg-admin-notices', $notices);
 		}
 	}
   /**

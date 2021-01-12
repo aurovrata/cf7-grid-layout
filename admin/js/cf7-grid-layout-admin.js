@@ -626,7 +626,7 @@
         $parentColumn.after($newColumn);
       }else if( $target.is('.accordion-rows.column-control') ){ /** @since 3.4.0 enable accordion */
         if($target.is(':checked')){
-          $parentColumn.addClass('cf7sg-accordion-rows').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit");
+          $parentColumn.addClass('cf7sg-accordion-rows').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit data-dots");
           $target.parent('label').siblings('.grouping-option').children(':input').prop('checked', false);
           $target.fireGridUpdate('add','accordion-rows');
           //hide toggle checkbox.
@@ -639,7 +639,8 @@
         }
       }else if( $target.is('.slider-rows.column-control') ) { /** @since 3.4.0 enable slider */
         if($target.is(':checked')){
-          let attrs = { "data-next":"", "data-prev":"", "data-submit":""};
+          /** @since 4.7.2 enable dots on sliders */ 
+          let attrs = { "data-next":"", "data-prev":"", "data-submit":"", "data-dots":"false"};
           $target.closest('.columns').addClass('cf7sg-slider-section').attr(attrs).removeClass('cf7sg-accordion-rows');
           $target.parent('label').siblings('.grouping-option').children(':input').prop('checked', false);
           $target.fireGridUpdate('add','slider-section');
