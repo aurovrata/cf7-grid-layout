@@ -36,7 +36,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', end
  .cf7sg-container .cf7-smart-grid.has-grid .columns .container.glider-slide{padding:0 25px 0 10px}
  .cf7sg-container .slider-control {margin-top: 10px}
  .cf7-smart-grid.has-grid .cf7sg-slider-section > input.wpcf7-submit {float: right;width: auto}
-
+ .glider-dot[data-cf7sg="error"] {background-color: #df8b8b}
+ .glider-dot[data-cf7sg="error"]:focus {background-color: #ffb3b3}
+ .glider-dot[data-cf7sg="error"].active {background-color: red}
  .cf7-smart-grid.has-grid .ui-button {
     border-radius: 3px;
     border: 1px solid #aaa;

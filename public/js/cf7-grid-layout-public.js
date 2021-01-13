@@ -609,7 +609,7 @@
         }
         /** @since 4.7.2 enable dots */
         if($slider.data('dots')){
-          $prev.after('<span class="slider-dots"></span>');
+          $prev.before('<span class="slider-dots"></span>');
           sOptions['dots']= '.slider-dots';
         }
         //bind events.
@@ -735,7 +735,7 @@
                 if($(s).is('.cf7sg-accordion-rows .cf7sg-collapsible')){
                   $(s).closest('.cf7sg-accordion-rows').accordion("option","active",$(s).index());
                 }else{
-                  $section.accordion("option","active",tidx); //activate.
+                  $section.accordion("option","active",0); //activate.
                 }
               }
               //tabs.
@@ -756,7 +756,10 @@
               if($section.length>0){
                 var $slide = $input.closest('.glider-slide');
                 $slide.attr('data-cf7sg','error');
-                Glider($('.glider', $section)[0]).scrollItem($slide.data('gslide'))
+                Glider($('.glider', $section)[0]).scrollItem($slide.data('gslide'));
+                if($section.data('dots')){
+                  $('.slider-dots button[data-index="'+$slide.data('gslide')+'"]', $section).attr('data-cf7sg','error');
+                }
               }
             }
           }
@@ -764,8 +767,9 @@
       }
     }).submit(function(e) {
       var $target = $(e.target);
-      $('.cf7-sg-tabs-list li', $target).attr('data-cf7sg','');
-      $('.cf7sg-collapsible', $target).attr('data-cf7sg','');
+      $('.cf7-sg-tabs-list li[data-cf7sg="error"]', $target).attr('data-cf7sg','');
+      $('.cf7sg-collapsible[data-cf7sg="error"]', $target).attr('data-cf7sg','');
+      $('.slider-dots button[data-cf7sg="error"]', $target).attr('data-cf7sg','');
     });
     /** on hover popup message for disabled submit buttons
     * @since 2.6.0

@@ -335,6 +335,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 = 4.7.1 =
 * fix bug preventing toggled sections within accordions.
 * fix accordion activation/flagging when contains invalid fields.
+* added dots button to slides.
 = 4.7.0 =
 * enable tab select for panels with invalid inputs.
 * flag tabs with invalid fields.
