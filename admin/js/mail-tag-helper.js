@@ -31,7 +31,7 @@
               text += "    $style = 'style=[qtm]padding:0 3px;border-collapse:collapse;border-bottom:1px solid black[qtm]';\n";
               text += "    $tag_replace ='\n";
               text += "    <table>\n";
-              text += "      <thead><tr><th '.$style.'>Guest Name</th><th <th '.$style.'>Senior</th></tr></thead>\n";
+              text += "      <thead><tr><th '.$style.'>Guest Name</th><th '.$style.'>Senior</th></tr></thead>\n";
               text += "      <tbody>';\n";
               text += "    if(!empty($submitted['guest-name'])){\n";
               text += "      $style = 'style=[qtm]background-color:#e3e3e3[qtm]';\n";
