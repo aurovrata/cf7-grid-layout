@@ -95,7 +95,7 @@ $cf7_key = $post->post_name;
     </div>
   </div>
 </div>
-<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden large-text code" data-config-field="form.body"><?= esc_textarea( $form_post->prop( 'form' ) );?></textarea>
+<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?= esc_textarea( $form_post->prop( 'form' ) );?></textarea>
 <!-- cf7sg - track embeded sub-forms -->
 <input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms" />
 <input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />
