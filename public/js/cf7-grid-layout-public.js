@@ -709,7 +709,7 @@
     * listen for cf7 submit invalid field event, and open parent sections and tabs.
     *@since 1.1.0
     */
-    $('div.cf7-smart-grid.has-grid').on('wpcf7:invalid wpcf7invalid wpcf7mailsent', '.wpcf7', function(e){
+    $('div.cf7-smart-grid').on('wpcf7:invalid wpcf7invalid wpcf7mailsent', '.wpcf7', function(e){
       var $target = $(e.target), invalids;
       switch(e.type){
         case 'wpcf7mailsent': /** @since 4.6.0 success, redirect? */

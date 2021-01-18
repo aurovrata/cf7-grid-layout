@@ -385,7 +385,7 @@ class Cf7_Grid_Layout_Public {
     }else $redirect='';
     /** @since 4.4.0 enable prefilling of form fields*/
     $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
-    if( !empty($prefill) and is_array($prefill) ) $use_grid_js = true;
+    if( !empty($redirect) or !empty($prefill) ) $use_grid_js = true;
     if($use_grid_js){
       $this->localise_script( array(
         'url' => admin_url( 'admin-ajax.php' ),
