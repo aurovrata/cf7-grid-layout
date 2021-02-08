@@ -10,7 +10,7 @@ wp_enqueue_style('grid-css', plugin_dir_url( __DIR__ ).'../../css.gs/smart-grid.
 
 ?>
 <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-<div id="smart-grid-tutorial">
+<div id="grid-form">
   <div id="topics-tabs" class="jqueryui-tabs">
     <?php
     $others = apply_filters('cf7sg_tutorial_panels', array());

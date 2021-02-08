@@ -1370,7 +1370,7 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/pointers/cf7sg-pointer-editor-column-control.php';
     $content = ob_get_contents();
     if(!empty($content)){
-      $pointers['column_controls'] = array($content, 'left', 'center','#grid-form>.container>.row>.columns:first-child>.grid-column>span.icon-code');
+      $pointers['column_controls'] = array($content, 'left', 'center','#grid-form > .container:first-child > .row > .columns:first-child > .grid-column > span.icon-code');
       ob_clean();
     }
     include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php';

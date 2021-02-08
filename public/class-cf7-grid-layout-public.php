@@ -1668,6 +1668,10 @@ class Cf7_Grid_Layout_Public {
   */
   public function filter_table_tab_mail_tag($replaced, $submitted, $html=false, $mail_tag=null ){
     $cf7form = WPCF7_ContactForm::get_current();
+    if(empty($cf7form)){
+      debug_msg(mail_tag, 'SMART GRID (ERR): unable to retrieve current form while filtering mail tag: ');
+      return $replaced; //no form object.
+    }
     $cf7form_key = get_cf7form_key($cf7form->id());
     $submitted_cf7 = WPCF7_Submission::get_instance();
     $submitted_data = array();
