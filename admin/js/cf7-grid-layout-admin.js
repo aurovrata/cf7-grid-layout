@@ -95,13 +95,14 @@
         if($toggle.length>0){
           $toggle = $toggle.clone();
         }
-
-        $this.children('.cf7sg-collapsible-title').remove();
-        $this.prepend( $('#grid-collapsible').html());
-        $('input', $this.children('.cf7sg-collapsible-title')).not('[type="checkbox"]').val(text);
+        //swap out HTML title element for UI title elemen with input fields.
+        let $title = $this.children('.cf7sg-collapsible-title');
+        $title.children().remove();
+        $title.prepend( $('.cf7sg-collapsible-title',$('#grid-collapsible')).html());
+        $('input', $title).not('[type="checkbox"]').val(text);
         if($toggle.length>0){
-          $this.children('.cf7sg-collapsible-title').append($toggle);
-          $('input[type="checkbox"]', $this.children('.cf7sg-collapsible-title') ).prop('checked', true);
+          $title.append($toggle);
+          $('input[type="checkbox"]', $title ).prop('checked', true);
         }
         const $ctrl = $this.children('.row').children('.row-controls').find('.collapsible-row-label');
         $('input', $ctrl).prop('checked', true);
@@ -639,7 +640,7 @@
         }
       }else if( $target.is('.slider-rows.column-control') ) { /** @since 3.4.0 enable slider */
         if($target.is(':checked')){
-          /** @since 4.7.2 enable dots on sliders */ 
+          /** @since 4.7.2 enable dots on sliders */
           let attrs = { "data-next":"", "data-prev":"", "data-submit":"", "data-dots":"false"};
           $target.closest('.columns').addClass('cf7sg-slider-section').attr(attrs).removeClass('cf7sg-accordion-rows');
           $target.parent('label').siblings('.grouping-option').children(':input').prop('checked', false);
