@@ -372,8 +372,9 @@ class Cf7_Grid_Layout_Public {
     if( !empty($form) ) $messages = $form->prop('messages');
     else debug_msg("CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id");
     //setup classes and id for wrapper.
-    $css_id = $this->form_css_id($cf7_key);
+    $css_id ='';
     apply_filters_deprecated('cf7_smart_grid_form_id', array($css_id, $attr), '4.6.0','', __('this filter is no longer available', 'cf7-grid-layout'));
+    $css_id = $this->form_css_id($cf7_key);
     /** @since 4.6.0 allow redirect on submit */
     $redirect = get_post_meta($cf7_id, '_cf7sg_page_redirect',true);
     if(!empty($redirect)){
@@ -421,7 +422,7 @@ class Cf7_Grid_Layout_Public {
     if(empty($is_form) or !$is_form){
       do_action('smart_grid_enqueue_scripts', $cf7_key, $attr);
       $classes = implode(' ', $class) .' key_'.$cf7_key;
-      $output = '<div class="cf7sg-container cf7sg-not-grid"><div id="' . $css_id . '" class="cf7-smart-grid ' . $classes . '">' . $output . '</div></div>';
+      $output = '<div class="cf7sg-container cf7sg-not-grid"><div id="' . $css_id . '" class="'.($use_grid_js?'cf7-smart-grid ':''). $classes . '">' . $output . '</div></div>';
       return $output;
     }
     //grid styling.
@@ -1605,6 +1606,7 @@ class Cf7_Grid_Layout_Public {
 			return false;
 		}
 		$source = array();
+    if(empty($tag->values)) debug_msg($tag, "CF7SG ERROR: malformed dynamic dropdown tag, unable to retrieve values");
     foreach($tag->values as $values){
       if(0 === strpos($values, 'slug:') ){
         $source['source'] = "taxonomy";

@@ -62,7 +62,7 @@
             $this.addClass('cf7sg-'+name+' cf7sgrow-field');
           }
           /** @since 4.4 prefill */
-          if( !isEmpty(cf7sg[fid].prefill[name]) ){
+          if( !objEmpty(cf7sg[fid],['prefill',name]) ){
             $this.prefillCF7Field(cf7sg[fid].prefill[name], fid);
             delete cf7sg[fid].prefill[name];
           }
@@ -121,7 +121,7 @@
         var $this = $(this), name = $this.attr('name'),
           fid = $this.closest('div.cf7-smart-grid').attr('id'),
           val = $this.attr('value');
-        if( !isEmpty( cf7sg[fid].prefill[name] ) ){
+        if(!objEmpty( cf7sg[fid],['prefill',name]) ){
           $this.prefillCF7Field(cf7sg[fid].prefill[name], fid);
           val = cf7sg[fid].prefill[name];
           delete cf7sg[fid].prefill[name];
@@ -285,7 +285,7 @@
 
           $(':input', $section.children('.row')).each(function(){
             var $field = $(this), name = $field.attr('name').replace('[]','');
-            if( !isEmpty( cf7sg[fid].prefill[name] ) && !isEmpty(cf7sg[fid].prefill['_cf7sg_toggles'][cssId]) ){
+            if( !objEmpty(cf7sg[fid], ['prefill','_cf7sg_toggles',cssId]) ){
               $field.prefillCF7Field(cf7sg[fid].prefill[name], fid);
               state = 0;
               toggled = true;
@@ -422,7 +422,7 @@
             if(name.length>0){
               $this.addClass('cf7sg-'+name+' cf7sgtab-field');
               /** @since 4.4 prefill fields */
-              if( !isEmpty( cf7sg[fid].prefill[name] ) ){
+              if( !objEmpty( cf7sg[fid],['prefill',name] ) ){
                 $this.prefillCF7Field(cf7sg[fid][name],fid);
                 delete cf7sg[fid].prefill[name];
               }
@@ -442,7 +442,7 @@
     /** @since 4.4 prefill fields */
     $('div.cf7-smart-grid').each(function(){
       var $form= $(this), fid = $form.attr('id');
-      if( !isEmpty( cf7sg[fid].prefill ) ){
+      if( !objEmpty( cf7sg[fid],['prefill'] ) ){
         Object.keys(cf7sg[fid].prefill).forEach(function(f){
           var $f = $('.'+f+' :input', $form);
           if(0==$f.length) $f = $(':input[name="'+f+'"]', $form); /* hidden field fix */
@@ -677,7 +677,7 @@
           $('.cf7sg-collapsible.with-toggle', $(this)).each(function(){
             var $this = $(this);
             var id = $this.attr('id');
-            if('undefined' == typeof cf7sg[fid].toggles_status || 'undefined' == typeof cf7sg[fid].toggles_status[id]){
+            if( objEmpty(cf7sg[fid],['toggles_status',id]) ){
               $('.row.ui-accordion-content :input', $this).prop('disabled', true);
             }else{
               $this.children('.cf7sg-collapsible-title').trigger('click');
@@ -1296,6 +1296,19 @@
       console.log('CF7 Smart Grid ERROR sending grid fields to server: '+textStatus);
     })
   })
+  //check object branch is empty.
+  function objEmpty(p,c=[]){
+    if(isEmpty(p)) return true;
+    let parent = p;
+    for(let child of c){
+      if(isEmpty(parent[child])) return true;
+      parent = child;
+    }
+    return false;
+  }
   //empty checks for undefined, null, false, NaN, ''
-  function isEmpty(v){ return typeof v === 'number' ? isNaN(v) : !Boolean(v);}
+  function isEmpty(v){
+    if('undefined' === typeof v || null===v) return true;
+    return typeof v === 'number' ? isNaN(v) : !Boolean(v);
+  }
 })( jQuery )
