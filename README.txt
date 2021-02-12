@@ -334,6 +334,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 == Changelog ==
 = 4.7.7 =
 * enable custom classes on collapsible title element.
+* remove for..of loops for ie11
 = 4.7.6 =
 * improve cf7sg js object validation.
 = 4.7.5 =

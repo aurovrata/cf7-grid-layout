@@ -730,10 +730,10 @@
               var $input = $(invalids[idx].into),
                 $section = $input.parents('.cf7sg-collapsible:not(.glider-slide)');
                 /** @since 4.7.0 add class to flag as error */
-              for(var s of $section){
-                $(s).attr('data-cf7sg','error');
-                if($(s).is('.cf7sg-accordion-rows .cf7sg-collapsible')){
-                  $(s).closest('.cf7sg-accordion-rows').accordion("option","active",$(s).index());
+              for(var sdx = 0; sdx< $section.length;sdx++){
+                $($section[sdx]).attr('data-cf7sg','error');
+                if($($section[sdx]).is('.cf7sg-accordion-rows .cf7sg-collapsible')){
+                  $($section[sdx]).closest('.cf7sg-accordion-rows').accordion("option","active",sdx);
                 }else{
                   $section.accordion("option","active",0); //activate.
                 }
@@ -1299,10 +1299,10 @@
   //check object branch is empty.
   function objEmpty(p,c=[]){
     if(isEmpty(p)) return true;
-    let parent = p;
-    for(let child of c){
-      if(isEmpty(parent[child])) return true;
-      parent = child;
+    var parent = p;
+    for(var idx=0; idx<c.length;idx++){
+      if(isEmpty(parent[c[idx]])) return true;
+      parent = c[idx];
     }
     return false;
   }
