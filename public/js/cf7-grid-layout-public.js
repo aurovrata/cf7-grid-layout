@@ -879,7 +879,8 @@
     return $section;
   }
   //getCF7field function.
-  $.fn.getCF7field = function(name, obj={}){
+  $.fn.getCF7field = function(name, obj){
+    if(null===obj) obj={};
     var $form = $(this);
     if('undefined' == typeof name || 0==name.length){
       if(cf7sg.debug) console.log('CF7 Smart-grid ERROR: getCF7field() requires valid field name.');
@@ -962,7 +963,8 @@
 		return $date;
 	}
   //disable add row button.
-  $.fn.toggleCF7sgTableRowAddition = function(active=false){
+  $.fn.toggleCF7sgTableRowAddition = function(active){
+    if(null===active) active = false;
     var $table = $(this);
     if(!$table.is('.container.cf7-sg-table')) return false;
     if(!active) $table.next('.cf7-sg-table-button').hide();
@@ -971,7 +973,8 @@
     return $table;
   }
   // disable row deletion
-  $.fn.toggleCF7sgTableRowDeletion = function(active=false){
+  $.fn.toggleCF7sgTableRowDeletion = function(active){
+    if(null===active) active = false;
     var $table = $(this);
     if(!$table.is('.container.cf7-sg-table')) return false;
     if(!active) $('.row.cf7-sg-table:nth-last-child(2) .row-control', $table).addClass('display-none');
@@ -1071,7 +1074,8 @@
     return $table;
   }
   //disable/enable tab addtion
-  $.fn.toggleCF7sgTabAddition = function(active=false){
+  $.fn.toggleCF7sgTabAddition = function(active){
+    if(null===active) active = false;
     var $tab = $(this);
     if(!$tab.is('div.cf7-sg-tabs')) return false;
     if(!active) $('.cf7sg-add-tab', $tab).hide();
@@ -1079,7 +1083,8 @@
     return $tab;
   }
   //disable/enable tab deletion
-  $.fn.toggleCF7sgTabDeletion = function(active=false){
+  $.fn.toggleCF7sgTabDeletion = function(active){
+    if(null===active) active = false;
     var $tab = $(this);
     if(!$tab.is('div.cf7-sg-tabs')) return false;
     if(!active) $('.cf7-sg-tabs-list li:last-child .cf7sg-close-tab', $tab).addClass('display-none').hide();
@@ -1113,7 +1118,8 @@
     return $tab;
   }
   //clone tabs, called on a div.cf7-sg-tabs
-  $.fn.cf7sgCloneTab = function(initSelect, human=false){
+  $.fn.cf7sgCloneTab = function(initSelect, human){
+    if(null===human) human = false;
     var $tab = $(this);
     if(typeof initSelect === 'undefined') initSelect =true;
     /*initSelect is false if called from cf7_2_post field loading script,
