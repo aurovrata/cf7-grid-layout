@@ -1297,7 +1297,8 @@
     })
   })
   //check object branch is empty.
-  function objEmpty(p,c=[]){
+  function objEmpty(p,c){
+    if(isEmpty(c)) c = []; //ie11
     if(isEmpty(p)) return true;
     var parent = p;
     for(var idx=0; idx<c.length;idx++){
