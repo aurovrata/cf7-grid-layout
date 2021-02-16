@@ -196,13 +196,13 @@ if($has_permalinks) $class.=' cf7sg-permalinks';
 */
 if(is_array( $options )){
   /**
-  * Filter dynamic dropdown default empty label.
+  * Filter dynamic dropdown default empty value label.
   * @param string $label the label for the default value, this is null by default and not shown.
   * @param string $name the field name being populated.
   * @param string $cf7_key  the form unique key.
   * @return string the label for the default value, returning a non-null value with display this as the first option.
   */
-  $default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $source, $tag->name, $cf7_key);
+  $default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $tag->name, $cf7_key);
   if(!is_null($default_value)):
   ?>
     <option value=""><?= $default_value ?></option>

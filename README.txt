@@ -335,6 +335,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 = 4.7.7 =
 * enable custom classes on collapsible title element.
 * remove for..of loops for ie11
+* fixed 'cf7sg_dynamic_dropdown_default_value' filter for default value label in dynamic seelect fields.
 = 4.7.6 =
 * improve cf7sg js object validation.
 = 4.7.5 =
