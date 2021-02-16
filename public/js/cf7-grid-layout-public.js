@@ -866,7 +866,8 @@
     return s2options;
   }
   //toggle a collapsible section.
-  $.fn.activateCF7sgCollapsibleSection = function(activate=true){
+  $.fn.activateCF7sgCollapsibleSection = function(activate){
+    if(null===activate) activate = true;
     var $section = $(this), $header;
     if( !$section.is('.cf7sg-collapsible') ) return false;
     $header = $section.children('.cf7sg-collapsible-title');
