@@ -787,15 +787,17 @@
       if('undefined' == typeof max || max == false) return;
       max--;
       if(max==e['row']){
-        msg = '<span class="max-limit wpcf7-not-valid-tip">'+cf7sg[fid].max_table_rows+'</span>';
-        $table.next('.cf7-sg-table-button').addClass('disabled').prepend(msg);
+        var msg = $table.data('max-row-msg');
+        msg = isEmpty(msg) ? cf7sg[fid].max_table_rows:msg;
+        msg = '<span class="max-limit wpcf7-not-valid-tip">'+msg+'</span>';
+        $table.siblings('.cf7-sg-table-button').addClass('disabled').prepend(msg);
       }
     });
     $('div.cf7-smart-grid.has-table').on('sgRowDeleted', '.container.cf7-sg-table',function(event){
       var max, row, $table = $(this);
       max = $table.data('max');
       if('undefined' == typeof max || max == false) return;
-      $table.next('.cf7-sg-table-button').removeClass('disabled').children('.max-limit').remove();
+      $table.siblings('.cf7-sg-table-button').removeClass('disabled').children('.max-limit').remove();
     });
   }); //end on document ready().
   /*

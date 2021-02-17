@@ -265,7 +265,9 @@ copy the filter helper code (see [screenshot](https://wordpress.org/plugins/cf7-
 
 = 15. How can I set a maximum number of rows to a table ? =
 
-As of v2.8, this functionality has now been included.  You will need to add the `data-max` attribute to your table in the text editor and set it to the row limit you want (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #22).  NOTE: in a lengthy form it is easy to navigate directly to the table or field's text code line using the shortcode navigation buttons provided in the Grid editor, (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #19)
+As of v2.8, this functionality has now been included.  You will need to add the `data-max` attribute to your table (div.container.cf7-sg-table) in the text editor and set it to the row limit you want (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #22).  NOTE: in a lengthy form it is easy to navigate directly to the table or field's text code line using the shortcode navigation buttons provided in the Grid editor, (see [screenshot](https://wordpress.org/plugins/cf7-grid-layout/#screenshots) #19)
+
+When the limit of rows is reached, the add button is disabled and a message being displayed besides it.  This message can be customised using the CF7 messages for the form (see the message tab in the form form editor), the message is labelled 'Message displayed when max tables rows reached.'.  This message applies to all tables in a given form.  Should you need to customise the messages for multiple tables, you can use the `data-max-row-msg` attribute on the table element (div.container.cf7-sg-table), with a custom message.
 
 = 16. Can I add custom input or other html elements in the form ? =
 
@@ -332,6 +334,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
+= 4.8.0 =
+* fix missing search.png image for minified css.
+* added custom attribute data-max-row-msg on tables.
 = 4.7.8 =
 * fix ie11 js fn.
 = 4.7.7 =
