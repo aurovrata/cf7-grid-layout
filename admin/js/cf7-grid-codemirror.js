@@ -487,6 +487,22 @@
           $textarea.val(''); //clear.
         }
       });
+      /** @since 4.8.1 ensure latest HTML form is available to other tabs */
+      var formTabFocus = true;
+      $('#contact-form-editor-tabs > li').on('click', function(e){
+        var $tab = $(e.target);
+        $tab = $tab.is('a') ? $tab.parent():$tab;
+        switch($tab.attr('id')){
+          case 'form-panel-tab':
+            formTabFocus = true;
+            break;
+          default:
+            formTabFocus = false;
+            break;
+        }
+        //update HTML code to ensure latest UI form changes available to other tabs.
+        if(!formTabFocus) $wpcf7Editor.html($grid.CF7FormHTML());
+      })
     }); //-----------end codemirror editor setup
     $('form#post').submit(function(event) {
       const $this = $(this);
