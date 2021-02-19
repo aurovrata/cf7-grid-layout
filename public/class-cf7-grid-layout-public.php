@@ -732,6 +732,7 @@ class Cf7_Grid_Layout_Public {
    * @return  Array    filtered submitted data.
   **/
   public function setup_grid_values($data){
+    debug_msg($data, 'cfy data ');
     $cf7form = WPCF7_ContactForm::get_current();
     // debug_msg($_POST);
     if(empty($cf7form) ){
@@ -766,10 +767,15 @@ class Cf7_Grid_Layout_Public {
           break;
         default:
           $toggle = $this->get_toggle($field_name);
-          if(!empty($toggle)){
-            $data[$field_name] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type, $tag) : null;
-          }else $data[$field_name]= $this->get_field_value($field_name, $tag['basetype'], $tag);
-
+          /** @since 4.8.1 preserve cf7 data schema for some plugins */
+          if( apply_filters('cf7sg_preserve_cf7_data_schema', false) ){
+            debug_msg($data[$field_name],"preserving data $field_name ");
+            if(!empty($toggle) && !$this->is_submitted($toggle)) $data[$field_name] = null;
+          }else{
+            if(!empty($toggle)){
+              $data[$field_name] = $this->is_submitted($toggle) ? $this->get_field_value($field_name,$field_type, $tag) : null;
+            }else $data[$field_name]= $this->get_field_value($field_name, $tag['basetype'], $tag);
+          }
           break;
       }
     }
@@ -787,6 +793,8 @@ class Cf7_Grid_Layout_Public {
     $data += self::$array_toggled_panels[$this->form_id];
     // debug_msg($data, 'consolidated + submitted: ');
     // $this->submitted_data[$this->form_id] = $data;
+    // debug_msg($_POST);
+    debug_msg($data);
     return $data;
   }
   /**
@@ -901,6 +909,7 @@ class Cf7_Grid_Layout_Public {
       $value = isset($_FILES[$field_name]) ? $_FILES[$field_name]['name']:'';
     }else{
       $pipes = $field_tag->pipes;
+
       $value = isset($_POST[$field_name]) ? $_POST[$field_name]:'';
 
       if ( WPCF7_USE_PIPE and $pipes instanceof WPCF7_Pipes and ! $pipes->zero() and !in_array( $field_type, array('map','dynamic_select')) ){
