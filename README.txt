@@ -334,6 +334,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
+= 4.8.1 =
+* fix HTML/UI form sync.
+* add 'cf7sg_preserve_cf7_data_schema' filter for plugin owners to preserve CF7 data schema.
 = 4.8.0 =
 * fix missing search.png image for minified css.
 * added custom attribute data-max-row-msg on tables.
@@ -382,7 +385,6 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * added page redirect option.
 * deprecated hooks cf7_smart_grid_form_id / smart_grid_register_custom_script.
 * added action hook cf7sg_enqueue_custom_script-$form_key.
-
 = 4.5.0 =
 * fix row cloning label removal bug.
 * added js fn cf7sgCountRows, cf7sgRemoveRow.
