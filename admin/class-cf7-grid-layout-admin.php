@@ -741,12 +741,12 @@ class Cf7_Grid_Layout_Admin {
   	$args['locale'] = isset( $_POST['wpcf7-locale'] ) ? sanitize_text_field($_POST['wpcf7-locale']) : null;
   	$args['form'] = '';
     $allowed_tags = wp_kses_allowed_html( 'post' ); //filtered in function below.
-    /** @since 2.10.0 alllow custom input html*/
+    /** @since 4.8.1 alllow custom input html*/
     $allowed_tags['input']=array( //add additional input html elements
-      'type'=>1,
+      'type'=>1,'name'=>1,'placeholder'=>1,'value'=>1,'maxlength'=>1,'minlength'=>1, //input fields.
+      'spellcheck'=>1,'size'=>1,'readonly'=>1,'pattern'=>1,'list'=>1, //input fields.
       'class'=>1,
       'id'=>1,
-      'value'=>1,
       'data-*'=>1,
     );
     $allowed_tags['script']=array('type'=>1);

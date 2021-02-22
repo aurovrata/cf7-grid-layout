@@ -335,6 +335,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
 = 4.8.1 =
+* enabled other attributes for input elements in html text.
 * fix HTML/UI form sync.
 * add 'cf7sg_preserve_cf7_data_schema' filter for plugin owners to preserve CF7 data schema.
 = 4.8.0 =
