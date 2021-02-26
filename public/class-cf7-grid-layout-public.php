@@ -732,7 +732,7 @@ class Cf7_Grid_Layout_Public {
    * @return  Array    filtered submitted data.
   **/
   public function setup_grid_values($data){
-    debug_msg($data, 'cfy data ');
+    // debug_msg($data, 'CF7 processed data ');
     $cf7form = WPCF7_ContactForm::get_current();
     // debug_msg($_POST);
     if(empty($cf7form) ){
@@ -1274,7 +1274,8 @@ class Cf7_Grid_Layout_Public {
                 elseif(!isset($row_value)) continue;
                 $sg_field_tag = clone $tag;
                 $sg_field_tag['name'] = $tag['name'].$index.$row;
-                $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag);
+                if($tag['basetype'] === 'file' )$this->validate_files($sg_field_tag, $result);
+                else $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag);
                 /** @since 3.1.3 */
                 $validation[$tag['name']][$idx][$rdx] = $this->strip_cf7_validation($result, $sg_field_tag->name);
                 $validated[$tag['name']][$idx][$rdx] = $sg_field_tag;
@@ -1286,7 +1287,8 @@ class Cf7_Grid_Layout_Public {
               elseif(!isset($value)) continue;
               $sg_field_tag = clone $tag;
               $sg_field_tag['name'] = $tag['name'].$index;
-              $result= apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag);
+              if($tag['basetype'] === 'file' )$this->validate_files($sg_field_tag, $result);
+              else $result= apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag);
               /** @since 3.1.3 */
               $validation[$tag['name']][$idx] = $this->strip_cf7_validation($result, $sg_field_tag->name);
               $validated[$tag['name']][$idx] = $sg_field_tag;
@@ -1314,7 +1316,8 @@ class Cf7_Grid_Layout_Public {
                 // For each tabbed file, call the filter validate to add uploaded_files
                 $sg_field_tag = clone $tag;
                 $sg_field_tag['name'] = $field;
-                $result = apply_filters("wpcf7_validate_{$sg_field_tag['type']}", $result, $sg_field_tag);
+                if($tag['basetype'] === 'file' )$this->validate_files($sg_field_tag, $result);
+                else $result = apply_filters("wpcf7_validate_{$sg_field_tag['type']}", $result, $sg_field_tag);
               }
             }
           }
@@ -1330,8 +1333,8 @@ class Cf7_Grid_Layout_Public {
               }
               break;
             default:
-              //if(!isset($data[$tag['name']])) continue 2; /*likely toggled and unused*/
-              $result= apply_filters( "wpcf7_validate_{$type}", $result, $tag );
+              if($tag['basetype'] === 'file' ) $this->validate_files($tag, $result);
+              else $result= apply_filters( "wpcf7_validate_{$type}", $result, $tag );
               /** @since 3.1.3 */
               $validation[$tag['name']] = $this->strip_cf7_validation($result, $tag['name']);
               $validated[$tag['name']] = $tag;
@@ -1398,6 +1401,34 @@ class Cf7_Grid_Layout_Public {
       }
     }
     return $result;
+  }
+  /**
+  * Custom validation for file uploads due to change in v5.4 of CF7 plugin.
+  * function logic taken from method WPCF7_Submission::unship_uploaded_files()
+  * in file cf7/includes/submission.php.
+  * @since 4.8.2
+  * @param WPCF7_FormTag field tag object.
+  * @param WPCF7_Validation array of validation errors.
+  */
+  protected function validate_files($tag, &$result){
+    if(empty($_FILES[$tag->name])) return;
+    $file = $_FILES[$tag->name];
+
+    $args = array(
+      'tag' => $tag,
+      'name' => $tag->name,
+      'required' => $tag->is_required(),
+      'filetypes' => $tag->get_option( 'filetypes' ),
+      'limit' => $tag->get_limit_option(),
+    );
+
+    $new_files = wpcf7_unship_uploaded_file( $file, $args );
+
+    $result = apply_filters("wpcf7_validate_{$tag->type}", $result, $tag,
+      array(
+        'uploaded_files' => $new_files,
+      )
+    );
   }
   /**
   * Function to strip the submitted data for a given field.

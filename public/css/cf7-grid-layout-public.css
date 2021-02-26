@@ -3,13 +3,10 @@
  * included in this file.
  */
  /*------ style rules -----*/
-/* .cf7sg-container .ui-widget-content .ui-state-default{
- background: rgb(252,252,252);
-background: -moz-linear-gradient(top,  rgba(252, 252, 252, 0.33) 0%,rgba(219, 219, 219, 0.61) 50%,rgba(209, 209, 209, 0.61) 51%,rgba(254, 254, 254, 0.33) 100%);
-background: -webkit-linear-gradient(top,  rgba(252, 252, 252, 0.33) 0%,rgba(219, 219, 219, 0.61) 50%,rgba(209, 209, 209, 0.61) 51%,rgba(254, 254, 254, 0.33) 100%);
-background: linear-gradient(to bottom, rgba(252, 252, 252, 0.33) 0%,rgba(219, 219, 219, 0.61) 50%,rgba(209, 209, 209, 0.61) 51%,rgba(254, 254, 254, 0.33) 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#fefefe',GradientType=0 );
- }*/
+ .cf7-smart-grid.has-grid .wpcf7 .ajax-loader {
+ 	display: block;
+ 	margin: 0 auto;
+ }
  .cf7sg-container .ui-widget-content,
  .cf7sg-container .ui-widget-content .ui-state-active,
  .cf7sg-container .toggle-light .toggle-off,
