@@ -346,7 +346,7 @@
       jscme.on('changes', function(e, changes){
         jsInsertAtLine = false;
         let last = jscme.getLine(changes[changes.length-1].to.line);
-        if('undefined'!= typeof last && ""==last.trim()) jsInsertAtLine = true;
+        if(isEmpty(last) || ""==last.trim()) jsInsertAtLine = true;
 
         jscmUpdated = false;
         if(jscme.getValue().length>0){
@@ -357,7 +357,7 @@
       csscme.on('changes', function(e, changes){
         cssInsertAtLine = false;
         let last = csscme.getLine(changes[changes.length-1].to.line);
-        if(""==last.trim()) cssInsertAtLine = true;
+        if(isEmpty(last) || ""==last.trim()) cssInsertAtLine = true;
 
         csscmUpdated = false;
         if(csscme.getValue().length>0){
@@ -753,4 +753,9 @@
       return text;
     }
   });//document ready end
+  //empty checks for undefined, null, false, NaN, ''
+  function isEmpty(v){
+    if('undefined' === typeof v || null===v) return true;
+    return typeof v === 'number' ? isNaN(v) : !Boolean(v);
+  }
 })( jQuery, codeMirror_5_32, jsCodeMirror_5_32, cssCodeMirror_5_32);
