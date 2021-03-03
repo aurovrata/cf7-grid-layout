@@ -67,7 +67,7 @@ function {$field_name_slug}_taxonomy_query($args, $name, $cf7_key){
     return $args;
   }
   //use only the child terms of a parent.
-  $args['parent']=0
+  $args['parent']=0;
   return $args;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the taxonomy query.','cf7-grid-layout')?>
 </li>

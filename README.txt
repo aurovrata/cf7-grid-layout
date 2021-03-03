@@ -180,6 +180,8 @@ function localise_custom_scritp($cf7_key){
 
 The `$cf7key` is the unique key associated with your form which you can find in the Information metabox of your form edit page.
 
+**Alternatively you can now use the custom JS editor** built into the form editor,  See this [video tutorial](https://www.youtube.com/watch?v=wTdLVtU_mlU&list=PLblJwjs_dFBslCf0mDCrDYGpm5hBY3sWv&index=4&t=205s) for more details.
+
 If you wish to [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/) a general JavaScript file for all your forms, you can use the hook `smart_grid_register_scripts`,
 `add_action('smart_grid_register_scripts', 'add_js_to_forms');
 function add_js_to_forms(){
@@ -193,6 +195,8 @@ If you wish to [wp_enqueue_styles](https://developer.wordpress.org/reference/fun
 function add_css_to_forms(){
    wp_enqueue_style('my-custom-style', '<path to your custom sheet>', array(), null, 'all');
 }`
+
+**Alternatively you can now use the custom CSS editor** built into the form editor,  See this [video tutorial](https://www.youtube.com/watch?v=0DYxRpWc_F0&list=PLblJwjs_dFBsynXEstrV3fCIC7GBmK9HW&index=3&t=1080s) for more details.
 
 = 9.Can I have required fields in toggled sections? =
 Yes, as of v1.1 of this plugin, toggled sections input fields are disabled when collapsed/unused, and therefore any fields within these sections are not submitted.  So you can design fields to be required when toggled sections are used, and the fields will be validated accordingly too.
@@ -334,8 +338,11 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
-= 4.8.3 =
+= 4.9.0 =
 * fix css/js codemirror empty line.
+* change in file schema, CF7 5.4 file validation handling not longer exposes additional file validation/transport.
+* files now stored in submission data array.
+* added actino 'cf7sg_valid_form_submission' fired once submission is validated.
 = 4.8.2 =
 * fix for new file validation in CF7 5.4.
 * ajax submission spinner styling update.

@@ -15,7 +15,7 @@ $path = plugin_dir_url(__FILE__).'/images/';
         <li>Astronomy data analysis and processing.<br />
           <img src="<?=$path?>/esa.png" />
         </li>
-        <li>Planteray Science data processing tool.<br />
+        <li>Planetary Science data processing tool.<br />
           <img src="<?=$path?>/esa.png" />
           <img src="<?=$path?>/nasa.png" />
           <img src="<?=$path?>/isro.png" />
