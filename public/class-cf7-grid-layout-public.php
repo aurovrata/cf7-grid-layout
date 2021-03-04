@@ -775,7 +775,7 @@ class Cf7_Grid_Layout_Public {
         case 'both':
           // the $data array is passed by reference and will be consolidated.
           /** @since 2.5.0 */
-          $this->consolidate_grid_submissions_v2($tag, $field_type, $data);
+          $this->consolidate_grid_submissions($tag, $field_type, $data);
           break;
         default:
           $toggle = $this->get_toggle($field_name);
@@ -818,11 +818,11 @@ class Cf7_Grid_Layout_Public {
   *@param array $data cf7 form submissed data passed by reference as consolidated grid values will be removed and the original field value replaced with an array.
   *@return array  a filtered array of $index_suffix=>$value pairs for tabs or rows fields, The index suffix is '.row-<index>' for tables and '.tab-<index>' for tabs. This method returns a 2 dimensional array for fields which are both within rowns and tabs.  The 2 dimensional array will list [<tab_suffix>][<row_suffix>]=>$value.  The original field name that was submitted can be reconstructed as $field_name.$index_suffix.  The first field will have an empty string as its $index_suffix.
   */
-  private function consolidate_grid_submissions_v2($field_tag, $type, &$data){
+  private function consolidate_grid_submissions($field_tag, $type, &$data){
     //get_post_meta($post_id, '_cf7sg_has_tables', true);
     if(isset($_POST['_wpcf7']) ) $cf7_id = $_POST['_wpcf7'];
     else{
-      debug_msg("CF7SG ERROR: fn consolidate_grid_submissions_v2() is unable to load submitted form");
+      debug_msg("CF7SG ERROR: fn consolidate_grid_submissions() is unable to load submitted form");
     }
     $is_used = false;
     $field_name = $field_tag['name'];
@@ -1010,144 +1010,7 @@ class Cf7_Grid_Layout_Public {
     self::$array_tabbed_toggles[$form_id]=$tabtgls;
 		return $grid_fields;
 	}
-  /**
-  * Consolidates submitted data from table and tab fields into arrays.
-  *
-  *@since 1.0.0
-  *@param string $field_name a cf7 form field name which is part of tabs or table grid section.
-  *@param array $type field type, should be 'tab'/'table'/'both'.
-  *@param array $data cf7 form submissed data passed by reference as consolidated grid values will be removed and the original field value replaced with an array.
-  *@return array  a filtered array of $index_suffix=>$value pairs for tabs or rows fields, The index suffix is '.row-<index>' for tables and '.tab-<index>' for tabs. This method returns a 2 dimensional array for fields which are both within rowns and tabs.  The 2 dimensional array will list [<tab_suffix>][<row_suffix>]=>$value.  The original field name that was submitted can be reconstructed as $field_name.$index_suffix.  The first field will have an empty string as its $index_suffix.
-  */
-  private function consolidate_grid_submissions($field_name, $type, &$data){
-    $cf7_key = '';
-    if(isset($_POST['_wpcf7_key'])) $cf7_key = $_POST['_wpcf7_key'];
-    $cf7_id = 0;
-    if(isset($_POST['_wpcf7'])) $cf7_id = $_POST['_wpcf7'];
 
-    $values = array();
-    $regex = '';
-    $submitted_fields=array();
-    $max_fields =0;
-    $purge_fields=array();
-    switch($type){
-      case 'table':
-        $index_suffix = '_row-';
-        $regex = '/^'.preg_quote($field_name).'_row-[0-9]+$/';
-        $values['']=$data[$field_name];
-        //extract all relevant fields
-        $submitted_fields = preg_grep($regex, array_keys($data));
-        $max_fields = sizeof($submitted_fields);
-        break;
-      case 'tab':
-        $index_suffix = '_tab-';
-        $regex = '/^'.preg_quote($field_name).'_tab-[0-9]+$/';
-        $values['']=$data[$field_name];
-        //extract all relevant fields
-        $submitted_fields = preg_grep($regex, array_keys($data));
-        foreach($submitted_fields as $field){
-          $idx = 1.0 * str_replace($field_name.'_tab-', '', $field);
-          if($max_fields < $idx)  $max_fields = $idx;
-        }
-        break;
-      case 'both':
-        $regex = '/^'.preg_quote($field_name);
-        $values[''] = array(); //init multi-dimensional array
-        if(isset($data[$field_name])){
-          $values[''][''] = $data[$field_name];
-        }else{
-          $values[''][''] = null;
-        }
-        //extract all relevant fields
-        $submitted_fields = preg_grep($regex.'_tab-[0-9]+_row-[0-9]+$/', array_keys($data));
-        //we also need the rows with tab index=0
-        $submitted_fields += preg_grep($regex.'_row-[0-9]+$/', array_keys($data));
-        //.. and tabs with row index=0
-        $submitted_fields += preg_grep($regex.'_tab-[0-9]+$/', array_keys($data));
-        //if('other-rm-qty'==$field_name){
-          // debug_msg($submitted_fields, 'Found fields '.$field_name);
-        //}
-        $max_fields = sizeof($submitted_fields);
-        break;
-    }
-
-    $row_idx=1; //[0][0] already set above is this is tab table field
-    $tab_idx=0;
-    $error_loop=false;
-    $loop_counter_limit = apply_filters('cf7sg_set_max_tabs_limit', 10, $cf7_key, $cf7_id);
-    for($idx=1; ($idx <= $max_fields && !$error_loop); $idx++){
-      switch($type){
-        case 'table':
-        case 'tab':
-          if(!isset($data[$field_name.$index_suffix.$idx])){
-            /**
-            *assuming this field was not submitted as it was disabled, hence set to null.
-            * @since 1.0.0
-            */
-            $values[$index_suffix.$idx] = null;
-          }else{
-            $values[$index_suffix.$idx] = $data[$field_name.$index_suffix.$idx];
-            $purge_fields[$field_name.$index_suffix.$idx] = true;
-          }
-          break;
-        case 'both':
-          //first attempt to look for the frist tab rows
-          $row_suffix = ($row_idx>0)?'_row-'.$row_idx:'';
-          $tab_suffix = ($tab_idx>0)?'_tab-'.$tab_idx:'';
-          //if('other-rm-qty'==$field_name){
-            // debug_msg($idx.'Looking for: '.$field_name.$tab_suffix.$row_suffix);
-          //}
-          if(isset($data[$field_name.$tab_suffix.$row_suffix])){
-            $values[$tab_suffix][$row_suffix] = $data[$field_name.$tab_suffix.$row_suffix];
-            $purge_fields[$field_name.$tab_suffix.$row_suffix] = true;
-            //next loop, look for the next row within the same tab,
-            $row_idx +=1;
-          }else{
-
-            $loop_counter=$tab_idx;
-						$loop = true;
-            do{//move to next tab, and reset the row counter
-              // debug_msg('loop:'.$loop_counter.', max: '.$loop_counter_limit);
-              $loop_counter +=1;
-              if($loop_counter > $loop_counter_limit) $error_loop=true;
-              $tab_idx +=1;
-              $row_idx = 0;
-              $row_suffix = '';
-              $tab_suffix = '_tab-'.$tab_idx;
-              //init new tab row values array
-              $values[$tab_suffix] = array();
-              //keep looking for next tab if we don't find a value;
-              /**
-              *if the frist row is not submitted then this may be in a toggled section which has been disabled.
-              * but we still need to keep looking for values in other tabs.
-              *@since 1.1.0
-              */
-              $values[$tab_suffix][$row_suffix] = null;
-							$loop = !isset($data[$field_name.$tab_suffix.$row_suffix]) && !$error_loop;
-            }while($loop);
-            if(!$error_loop) {
-              $values[$tab_suffix][$row_suffix] = $data[$field_name.$tab_suffix.$row_suffix];
-              $purge_fields[$field_name.$tab_suffix.$row_suffix] = true;
-              $row_idx +=1; //next loop, keep searching in thsi tab.
-            }else{
-              debug_msg($submitted_fields, 'CF7SG ERROR: Reached max tabs search loop for table field '.$field_name.' (cannot find any new rows above tab '.$tab_idx.' therefor abandoning search for remaining '.(sizeof($submitted_fields)-$idx).' regex match in preg_grep result array listed below)');
-              //for loop will end here
-            }
-          }
-          break;
-      }//end switch.
-    }//end for loop preg_grep array.
-    if(!$error_loop){
-      //debug_msg($purge_fields, 'purging ');
-      //debug_msg($data);
-      $data = array_udiff_uassoc($data, $purge_fields, function($a, $b){return 0;}, function($a, $b){
-        if ($a === $b) return 0;
-        return ($a > $b)? 1:-1;
-      }); //this will remove all the surplus fields
-      $data[$field_name] = $values;
-    }
-    return $values;
-  }
   /**
    * Validates required benchmark and dynamic_select tags
    *
