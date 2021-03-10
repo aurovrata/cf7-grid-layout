@@ -889,8 +889,6 @@ class Cf7_Grid_Layout_Public {
       return ($a > $b)? 1:-1;
     }); //this will remove all the surplus fields
     if( $is_used ) $data[$field_name] = $values;
-    else
-    return;
   }
   /**
   * Extract either a file name or a field value

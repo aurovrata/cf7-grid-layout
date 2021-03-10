@@ -105,7 +105,7 @@
 
           var $table = $button.prev('.container');
           if($table.is('.cf7-sg-table-footer')) $table = $table.prev('.container');
-          $table.cf7sgCloneRow();
+          $table.cf7sgCloneRow(true, e.target);
         }else if($button.is('.cf7-sg-table .row-control .dashicons')){ //---------- delete the row, delete button only on last row
           $button.closest('.container').cf7sgRemoveRow();
         }
@@ -1005,9 +1005,10 @@
     return $table;
   }
   //clone table row
-  $.fn.cf7sgCloneRow = function(initSelect){
+  $.fn.cf7sgCloneRow = function(initSelect, el){
     /*initSelect is false if called from cf7_2_post field loading script,
     else if true whehn triggered from the front-end user event.*/
+    /** @since 4.9.1 el is the element target that triggered the add row */
     if(typeof initSelect === 'undefined') initSelect =true;
     var $table = $(this);
     var $footer='';
@@ -1070,7 +1071,7 @@
     });
     //when the button is clicked, trigger a content increase for accordions to refresh
     $table.trigger('sgContentIncrease');
-    $table.trigger({type:'sgRowAdded',row:rowIdx});
+    $table.trigger({type:'sgRowAdded',row:rowIdx, button:el});
     /** @since 2.4.2 track table fields */
     var $tracker = $table.children('.cf7sg-tracker-field');
     if($tracker.length) $tracker.val(rowIdx+1); //rowIdx is zero based.

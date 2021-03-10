@@ -17,6 +17,11 @@
 	z-index: 10;
 	position: relative;
 }
+.codemirror-theme input {
+	display: inline-block;
+	margin: 0 2px;
+	border-radius: 30%;
+}
 #contact-form-editor .loading-screen{position:absolute;z-index: 100; padding: 100px 5px 850px 5px; width: calc(100% - 10px); background-color: white; text-align: center}
 #contact-form-editor .loading-screen h2{font-size: 20px}
 #contact-form-editor .loading-screen .spinner{visibility: visible; float:none}
