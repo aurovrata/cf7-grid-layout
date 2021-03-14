@@ -310,6 +310,7 @@
       if(cf7grid.ui){
         if($target.is('.cf7-field-inner textarea')){
           let label = $target.scanCF7Tag();
+          $grid.trigger('cf7sg-cf7tag-update');
           $target.siblings('p.content').html(label);//.show();
           $target.parent().siblings('textarea.grid-input').updateGridForm();
         }else if($target.is('.cf7-field-inner input')){
