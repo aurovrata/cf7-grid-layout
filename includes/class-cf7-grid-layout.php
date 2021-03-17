@@ -231,7 +231,7 @@ class Cf7_Grid_Layout {
     /** @since 3.0.0 */
     $this->loader->add_filter( 'wpcf7_map_meta_cap', $plugin_admin, 'reset_meta_cap' , 5,1);
     //make sure users that cannot publish forms are set to pending.
-    $this->loader->add_filter( 'wp_insert_post_data', $plugin_admin, 'pending_for_review');
+    $this->loader->add_filter( 'wp_insert_post_data', $plugin_admin, 'pending_for_review',10,2);
     //add all form capabilities to editor role.
     $this->loader->add_action( 'admin_init', $plugin_admin, 'enable_cf7_editor_role', 5,0 );
     /** @since 3.3.0 helper hooks added via action hook */

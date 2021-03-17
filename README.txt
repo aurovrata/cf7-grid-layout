@@ -340,6 +340,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 == Changelog ==
 = 4.9.2 =
 * fix admin js to ensure form field udpates reflect.
+* added 'cf7sg_save_post' action for plugins to save form attributes.
 = 4.9.1 =
 * admin css style fix.
 * pass button element in sgAddRow event.

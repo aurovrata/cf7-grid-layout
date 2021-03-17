@@ -621,7 +621,7 @@ class Cf7_Grid_Layout_Admin {
         array($this , 'helper_metabox_display'),
         $this->cf7_post_type(),
         'side',
-        'low'
+        'default'
       );
       /** @since 4.6.0 enable page redirect */
       add_meta_box(
@@ -930,6 +930,8 @@ class Cf7_Grid_Layout_Admin {
     if(!is_wp_error($preview_id)){
       update_post_meta($post->ID, '_cf7sg_form_page',$preview_id);
     }
+    /** @since 4.9.2 fire form saving action so as to prevent double save_post hook calls on other plugins */
+    do_action('cf7sg_save_post',$post_id, $post, $update);
   }
   /**
   * Print default js template,
@@ -1417,12 +1419,12 @@ class Cf7_Grid_Layout_Admin {
   *@param array $data sanitised post data.
   *@return array post data.
   */
-  public function pending_for_review($data){
+  public function pending_for_review($data, $post){
     if($this->cf7_post_type() != $data['post_type']) return $data;
 
     $post_type_object = get_post_type_object( $this->cf7_post_type() );
     //check if user can publish.
-    if(!current_user_can($post_type_object->cap->publish_posts) && $data['post_status']=='publish'){
+    if(isset($post['ID']) && !current_user_can($post_type_object->cap->publish_posts, $post['ID']) && $data['post_status']=='publish'){
       $data['post_status']='pending';
     }
     // debug_msg('post status '.$data['post_status']);
