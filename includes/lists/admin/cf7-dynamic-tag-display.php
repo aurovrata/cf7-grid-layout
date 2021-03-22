@@ -12,13 +12,14 @@
  * @subpackage Cf7_2_Post/admin/partials
  */
  //TODO: add a check box to include or not address fields
+ $class = str_replace('_','-' ,$this->tag_id);
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
-<div id="dynamic-select-tag-generator" class="control-box cf7-dynamic-select">
+<div id="<?=$class?>-tag-generator" class="control-box cf7-<?=$class?> cf7sg-dynamic-list-tag-manager">
   <fieldset>
-    <legend><?= __('Dynamic Select Dropdown field','cf7-grid-layout')?></legend>
+    <legend><?= sprintf(__('%s field','cf7-grid-layout'), $this->label)?></legend>
     <table  class="form-table">
       <tbody>
         <tr>
@@ -44,43 +45,37 @@
         <tr>
           <th scope="row"><?=__('Dropdown style','cf7-grid-layout')?></th>
           <td>
+          <?php
+            $styles = $this->admin_generator_tag_styles();
+            $checked = 'checked="checked"';
+            foreach($styles as $s=>$label):
+              $id = $this->tag_id.'-'.$s;
+            ?>
             <div>
-              <label for="html-select">
-                <input name="select-style[]" id="html-select" class=" select-type "  type="radio" value="select" checked="checked"/>
-                <?=__('HTML Select field','cf7-grid-layout')?>
+              <label for="<?=$id?>">
+                <input class="list-style <?=$this->tag_id?>" name="<?=$this->tag_id?>-style[]" id="<?=$id?>"  type="radio" value="<?=$s?>" <?=$checked?>/>
+                <?=$label?>
+                <?php do_action('cf7sg_'.$this->tag_id.'_admin_tag_style-'.$s) ?>
               </label>
             </div>
-            <div>
-              <label for="nice-select">
-                <input id="nice-select" name="select-style[]" class=" select-type "  type="radio" value="nice" />
-                <a target="_blank" href="http://hernansartorio.com/jquery-nice-select/"><?=__('jQuery Nice Select','cf7-grid-layout')?></a>
-              </label>
-            </div>
-            <div>
-              <label for="select2-select">
-                <input id="select2-select" name="select-style[]" class=" select-type "  type="radio" value="select2" />
-                <a target="_blank" href="https://select2.org/getting-started/basic-usage"><?=__('jQuery Select2','cf7-grid-layout')?></a>
-              </label>
-              <label for="select2-tags" class="display-none">
-                <input name="select2-tags" id="select2-tags" type="checkbox" disabled value="select2tags"/>
-                <a target="_blank" href="https://select2.org/tagging"><?=__('Enable user options','cf7-grid-layout')?></a>
-              </label>
-            </div>
+          <?php
+              $checked = '';
+            endforeach;?>
           </td>
         </tr>
         <tr>
           <th scope="row"><?=__('Mutliple attribute','cf7-grid-layout')?></th>
           <td>
-            <input name="select-multiple" id="select-multiple" type="checkbox" value="multiple"/>
+            <input class="select-multiple" id="<?=$this->tag_id?>-multiple" type="checkbox" value="multiple"/>
             <a target="_blank" href="https://www.w3schools.com/tags/att_select_multiple.asp"><?=__('Enable multiple selection','cf7-grid-layout')?></a>
           </td>
         </tr>
       </tbody>
     </table>
-    <div id="dynamic-dropdown-sources" class="tabordion">
-      <section id="taxonomy-source">
-        <input type="radio" name="sections" id="taxonomy-tab" checked>
-        <label for="taxonomy-tab"><?=__('Taxonomy','cf7-grid-layout')?></label>
+    <div class="tabordion cf7sg-dynamic-list-sources">
+      <section class="taxonomy-source">
+        <input type="radio" id="<?=$class?>-taxonomy-tab" name="sections" class="taxonomy-tab" checked>
+        <label for="<?=$class?>-taxonomy-tab"><?=__('Taxonomy','cf7-grid-layout')?></label>
         <article>
           <h4><?=__('Taxonomy source','cf7-grid-layout')?></h4>
           <select class="taxonomy-list">
@@ -125,9 +120,9 @@
           </div>
         </article>
       </section>
-      <section id="post-source">
-        <input type="radio" name="sections" id="post-tab">
-        <label for="post-tab"><?=__('Post','cf7-grid-layout')?></label>
+      <section class="post-source">
+        <input type="radio" id="<?=$class?>-post-tab" name="sections" class="post-tab">
+        <label for="<?=$class?>-post-tab"><?=__('Post','cf7-grid-layout')?></label>
         <article class="">
           <h4><?=__('Post source','cf7-grid-layout')?></h4>
           <select class="post-list">
@@ -172,22 +167,22 @@
             <option value="post"><?=__('Posts','cf7-grid-layout')?></option>
             <option value="page"><?=__('Pages','cf7-grid-layout')?></option>
           </select>
-          <label><input type="checkbox" id="include-post-links"/><?= __('Include post links','cf7-grid-layout')?></label>
+          <label><input type="checkbox" class="include-post-links"/><?= __('Include post links','cf7-grid-layout')?></label>
 
   <?php foreach($taxonomy_lists as $type=>$list ):
           if(empty($list)) continue;
     ?>
-          <div id="<?php echo $type ?>" class="post-taxonomies hidden">
+          <div id="" class="post-taxonomies cf7sg-dynamic-tag hidden <?= $type ?>">
             <select multiple class="select2">
-              <?php echo $list?>
+              <?= $list?>
             </select>
           </div>
   <?php endforeach;  ?>
         </article>
       </section>
-      <section id="custom-source">
-        <input type="radio" name="sections" id="custom-tab">
-        <label for="custom-tab"><?=__('Custom','cf7-grid-layout')?></label>
+      <section class="custom-source">
+        <input type="radio" id="<?=$class?>-custom-tab" name="sections" class="custom-tab">
+        <label for="<?=$class?>-custom-tab"><?=__('Custom','cf7-grid-layout')?></label>
         <article>
           <h4><?=__('Custom source','cf7-grid-layout')?></h4>
           <p class="position-relative">
@@ -199,12 +194,12 @@
 
   </fieldset>
 </div>
-<div class="insert-box">
+<div class="insert-box cf7sg-dynamic-tag-submit">
   <input type="hidden" name="values" value="" />
-  <input type="text" name="dynamic-select" class="tag code" readonly="readonly" onfocus="this.select()" />
+  <input type="text" name="<?=$class?>" class="tag code" readonly="readonly" onfocus="this.select()" />
 
-  <div class="submitbox">
-      <input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr( __cf7sg( 'Insert Tag' ) ); ?>" />
+  <div class="submitbox ">
+      <input type="button" class="button button-primary insert-tag" value="<?= esc_attr( __cf7sg( 'Insert Tag' ) ); ?>" />
   </div>
 
   <br class="clear" />

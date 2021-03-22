@@ -105,13 +105,13 @@
 .tabordion input[name="sections"]:checked ~ article {
   display: block;
 }
-#dynamic-dropdown-sources .select2.select2-container {
+.cf7sg-dynamic-list-sources .select2.select2-container {
     min-width: 100%;
 }
 .select2-container{
   z-index:100051;
 }
-#dynamic-dropdown-sources article h4 {
+.cf7sg-dynamic-list-sources article h4 {
     margin: 0 0 2px 0;
 }
 input#select2-tags:disabled + label a {

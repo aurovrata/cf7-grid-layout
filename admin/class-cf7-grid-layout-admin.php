@@ -562,6 +562,8 @@ class Cf7_Grid_Layout_Admin {
         }
       }
     }
+    /** @since 5.0 register dynamic_select list */
+    cf7sg_create_dynamic_select_tag();
   }
   /**
   * Hide the cf7 form editor page author metabox by default.
@@ -1054,32 +1056,18 @@ class Cf7_Grid_Layout_Admin {
   **/
   public function cf7_shortcode_tags(){
     if ( class_exists( 'WPCF7_TagGenerator' ) ) {
+      /** @since 4.10.0 enable extension of dynamic lists */
       $tag_generator = WPCF7_TagGenerator::get_instance();
-      $tag_generator->add(
-        'dynamic_select', //tag id
-        __( 'dynamic-dropdown', 'cf7_2_post' ), //tag button label
-        array($this,'dynamic_tag_generator') //callback
-      );
       $tag_generator->add(
         'benchmark', //tag id
         __( 'benchmark', 'cf7_2_post' ), //tag button label
         array($this,'benchmark_tag_generator') //callback
       );
     }
+    $lists = cf7sg_get_dynamic_lists();
+    foreach($lists as $l) $l->register_cf7_tag();
   }
-  /**
-	 * Dynamic select screen displayt.
-	 *
-	 * This function is called by cf7 plugin, and is registered with a hooked function above
-	 *
-	 * @since 1.0.0
-	 * @param WPCF7_ContactForm $contact_form the cf7 form object
-	 * @param array $args arguments for this form.
-	 */
-	function dynamic_tag_generator( $contact_form, $args = '' ) {
-    $args = wp_parse_args( $args, array() );
-		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-dynamic-tag-display.php');
-	}
+
   /**
 	 * Benchmark input screen displayt.
 	 *

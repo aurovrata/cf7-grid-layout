@@ -122,6 +122,8 @@ class Cf7_Grid_Layout {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cf7-grid-layout-loader.php';
     require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wordpress-gurus-debug-api.php';
+    /** @since 5.0 dynamic tags interface */
+    require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/lists/class-cf7sg-dynamic-select.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
@@ -250,6 +252,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'init',  $plugin_admin, 'register_form_preview_posttype', 0 );
     /** @since 4.4 load translation files */
     $this->loader->add_action( 'cf7pll_load_plugin_translation_resource', $plugin_admin, 'load_translation_files');
+
 	}
 
 	/**
