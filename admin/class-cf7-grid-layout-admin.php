@@ -563,8 +563,157 @@ class Cf7_Grid_Layout_Admin {
       }
     }
     /** @since 5.0 register dynamic_select list */
-    cf7sg_create_dynamic_select_tag();
+    do_action('cf7sg_register_dynamic_lists');
+    // debug_msg('created dynamic select ');
   }
+  /**
+   * function to regsiter dyanmic dropdown taxonomies
+   *
+   * @since 1.0.0
+   * @param      Object    $taxonomy_object     std object with parameters $taxonomy_object->slug, $taxonomy_object->singular, $taxonomy_object->plural, $taxonomy_object->hierarchical .
+  **/
+  protected function register_dynamic_dropdown($taxonomy_array){
+    $slug = $taxonomy_array['slug'];
+    $name = $taxonomy_array['singular'];
+    $plural = $taxonomy_array['plural'];
+    $is_hierarchical = $taxonomy_array['hierarchical'];
+
+    $labels = array(
+  		'name'                       =>  $plural,
+  		'singular_name'              =>  $name,
+  		'menu_name'                  =>  $plural,
+  		'all_items'                  =>  'All '.$plural,
+  		'parent_item'                =>  'Parent '.$name,
+  		'parent_item_colon'          =>  'Parent '.$name.':',
+  		'new_item_name'              =>  'New '.$name.' Name',
+  		'add_new_item'               =>  'Add New '.$name,
+  		'edit_item'                  =>  'Edit '.$name,
+  		'update_item'                =>  'Update '.$name,
+  		'view_item'                  =>  'View '.$name,
+  		'separate_items_with_commas' =>  'Separate '.$plural.' with commas',
+  		'add_or_remove_items'        =>  'Add or remove '.$plural,
+  		'choose_from_most_used'      =>  'Choose from the most used',
+  		'popular_items'              =>  'Popular '.$plural,
+  		'search_items'               =>  'Search '.$plural,
+  		'not_found'                  =>  'Not Found',
+  		'no_terms'                   =>  'No '.$plural,
+  		'items_list'                 =>  $plural.' list',
+  		'items_list_navigation'      =>  $plural.' list navigation',
+  	);
+    //labels can be modified post registration
+  	$args = array(
+  		'labels'                     => $labels,
+  		'hierarchical'               => $is_hierarchical,
+  		'public'                     => false,
+  		'show_ui'                    => true,
+  		'show_admin_column'          => false,
+  		'show_in_nav_menus'          => false,
+  		'show_tagcloud'              => false,
+      'show_in_quick_edit'         => false,
+      'description'                => 'Contact Form 7 dynamic dropdown taxonomy list',
+  	);
+
+    register_taxonomy( $slug, $this->cf7_post_type(), $args );
+  }
+  /**
+   * CF7 Form saved from backend, check if dynamic-select are used
+   * Hooked on 'wpcf7_save_contact_form'
+   * @since 1.0.0
+   * @param  WPCF7_Contact_Form $cf7_form  cf7 form object
+  */
+  public function save_factory_metas($cf7_form){
+    $cf7_post_id = $cf7_form->id();
+    //get the tags used in this form
+    $tags = $cf7_form->scan_form_tags(); //get your form tags
+    $dynamic_lists = cf7sg_get_dynamic_lists();
+    $dynamic_tags = array_keys($dynamic_lists);
+    $dynamic_fields = array();
+    $form_classes = array();
+    foreach($tags as $tag){
+      if(in_array($tag['basetype'],$dynamic_tags)){
+        $dynamic_fields[$tag['basetype']]=$tag;
+        $form_classes = array_merge($form_classes, $dynamic_lists[$tag['basetype']]->get_form_classes($tag, $cf7_post_id));
+      }
+    }
+    if(!empty($form_classes)){
+      $classes = get_post_meta($cf7_post_id, '_cf7sg_script_classes', true);
+      if(empty($classes)){
+        $classes = array();
+      }
+      $form_classes = array_diff(array_unique($form_classes), $classes); //any new classes?
+      if(!empty($form_classes)) {
+        update_post_meta($cf7_post_id, '_cf7sg_script_classes', array_merge( $form_classes, $classes));
+      }
+    }
+    //check for newly created taxonomy lists.
+    if( isset($_POST['cf72post_dynamic_select_taxonomies']) ){
+      $created_taxonomies = array();
+      $taxonomies = json_decode(str_replace('\"','"',$_POST['cf72post_dynamic_select_taxonomies']), true);
+      if(empty($taxonomies)){
+        $taxonomies = array();
+      }
+      foreach($taxonomies as $taxonomy){
+        //sanitize fields before saving into the DB.
+        foreach($taxonomy as $key=>$value){
+          $key = sanitize_key($key);
+          $taxonomy[$key] =  sanitize_text_field($value);
+        }
+        $created_taxonomies[$taxonomy['slug']] = $taxonomy;
+      }
+      //debug_msg($created_taxonomies);
+      $post_lists = $saved_lists = $system_list = array();
+
+      $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
+      foreach($dropdowns as $id => $lists){
+        $saved_lists = array_merge($saved_lists, $lists);
+      }
+      foreach($dynamic_fields as $tag){
+        if(isset($tag['values'])){
+          $slug='';
+          foreach($tag['values'] as $values){
+            if(0 == strpos($values, 'slug:') ){
+              $slug = str_replace('slug:', '', $values);
+              break;
+            }
+          }
+          if(empty($slug)) continue; //not a taxonomy list.
+          //is slug newly created?
+          if(isset($created_taxonomies[$slug])){
+            //store this taxonomy.
+            $post_lists[$slug] = $created_taxonomies[$slug];
+          }else if(isset($saved_lists[$slug])){
+            //retain previously saved list if we are stil using it.
+            $post_lists[$slug] = $saved_lists[$slug];
+          }else{ //system taxonomy.
+            $system_list[] = $slug;
+          }
+          //store the taxonomy slug in the cf7 metas.
+          //$post_lists[$slug] = null;
+        }
+      }
+      //list of taxonomy to register.
+      //unset the old value.
+      unset($dropdowns[$cf7_post_id]);
+      //unshift new value to top of array.
+      $dropdowns = array($cf7_post_id => $post_lists) + $dropdowns ;
+
+      update_option('_cf7sg_dynamic_dropdown_taxonomy', $dropdowns);
+      //list of system taxonomy to register
+      $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
+      $system_dropdowns[$cf7_post_id] = $system_list;
+      update_option('_cf7sg_dynamic_dropdown_system_taxonomy', $system_dropdowns);
+    }
+  }
+  /**
+   * Print hiddend field on cf7 post submit box
+   * Hooked on 'wpcf7_admin_misc_pub_section'
+   * @since 1.0.0
+   * @param      string    $post_id    cf7 form post id .
+  **/
+  public function dynamic_select_choices($post_id){
+    echo '<input id="cf72post-dynamic-select" type="hidden" name="cf72post_dynamic_select_taxonomies" />';
+  }
+
   /**
   * Hide the cf7 form editor page author metabox by default.
   * hooked to 'hidden_meta_boxes'.
@@ -1064,6 +1213,7 @@ class Cf7_Grid_Layout_Admin {
         array($this,'benchmark_tag_generator') //callback
       );
     }
+    /** @since 4.10.0 abstract out dynamic lists */
     $lists = cf7sg_get_dynamic_lists();
     foreach($lists as $l) $l->register_cf7_tag();
   }
@@ -1081,136 +1231,7 @@ class Cf7_Grid_Layout_Admin {
     $args = wp_parse_args( $args, array() );
 		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-benchmark-tag.php');
 	}
-  /**
-   * Print hiddend field on cf7 post submit box
-   * Hooked on 'wpcf7_admin_misc_pub_section'
-   * @since 1.0.0
-   * @param      string    $post_id    cf7 form post id .
-  **/
-  public function dynamic_select_choices($post_id){
-    echo '<input id="cf72post-dynamic-select" type="hidden" name="cf72post_dynamic_select_taxonomies" />';
-  }
-  /**
-   * CF7 Form saved from backend, check if dynamic-select are used
-   * Hooked on 'wpcf7_save_contact_form'
-   * @since 1.0.0
-   * @param  WPCF7_Contact_Form $cf7_form  cf7 form object
-  */
-  public function save_factory_metas($cf7_form){
-    $cf7_post_id = $cf7_form->id();
-    //get the tags used in this form
-    if( isset($_POST['cf72post_dynamic_select_taxonomies']) ){
-      $created_taxonomies = array();
-      $taxonomies = json_decode(str_replace('\"','"',$_POST['cf72post_dynamic_select_taxonomies']), true);
-      if(empty($taxonomies)){
-        $taxonomies = array();
-      }
-      foreach($taxonomies as $taxonomy){
-        //sanitize fields before saving into the DB.
-        foreach($taxonomy as $key=>$value){
-          $key = sanitize_key($key);
-          $taxonomy[$key] =  sanitize_text_field($value);
-        }
-        $created_taxonomies[$taxonomy['slug']] = $taxonomy;
-      }
-      //debug_msg($created_taxonomies);
-      $tags = $cf7_form->scan_form_tags(); //get your form tags
-      $post_lists = $saved_lists = $system_list = array();
 
-      $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-      foreach($dropdowns as $id => $lists){
-        $saved_lists = array_merge($saved_lists, $lists);
-      }
-      foreach($tags as $tag){
-        if('dynamic_select' == $tag['basetype']){
-          if(isset($tag['values'])){
-            $slug='';
-            foreach($tag['values'] as $values){
-              if(0 == strpos($values, 'slug:') ){
-                $slug = str_replace('slug:', '', $values);
-                break;
-              }
-            }
-            if(empty($slug)) continue; //not a taxonomy list.
-            //is slug newly created?
-            if(isset($created_taxonomies[$slug])){
-              //store this taxonomy.
-              $post_lists[$slug] = $created_taxonomies[$slug];
-            }else if(isset($saved_lists[$slug])){
-              //retain previously saved list if we are stil using it.
-              $post_lists[$slug] = $saved_lists[$slug];
-            }else{ //system taxonomy.
-              $system_list[] = $slug;
-            }
-            //store the taxonomy slug in the cf7 metas.
-            //$post_lists[$slug] = null;
-          }
-        }
-      }
-      //list of taxonomy to register.
-      //unset the old value.
-      unset($dropdowns[$cf7_post_id]);
-      //unshift new value to top of array.
-      $dropdowns = array($cf7_post_id => $post_lists) + $dropdowns ;
-
-      update_option('_cf7sg_dynamic_dropdown_taxonomy', $dropdowns);
-      //list of system taxonomy to register
-      $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
-      $system_dropdowns[$cf7_post_id] = $system_list;
-      update_option('_cf7sg_dynamic_dropdown_system_taxonomy', $system_dropdowns);
-
-    }
-  }
-
-  /**
-   * function to regsiter dyanmic dropdown taxonomies
-   *
-   * @since 1.0.0
-   * @param      Object    $taxonomy_object     std object with parameters $taxonomy_object->slug, $taxonomy_object->singular, $taxonomy_object->plural, $taxonomy_object->hierarchical .
-  **/
-  protected function register_dynamic_dropdown($taxonomy_array){
-    $slug = $taxonomy_array['slug'];
-    $name = $taxonomy_array['singular'];
-    $plural = $taxonomy_array['plural'];
-    $is_hierarchical = $taxonomy_array['hierarchical'];
-
-    $labels = array(
-  		'name'                       =>  $plural,
-  		'singular_name'              =>  $name,
-  		'menu_name'                  =>  $plural,
-  		'all_items'                  =>  'All '.$plural,
-  		'parent_item'                =>  'Parent '.$name,
-  		'parent_item_colon'          =>  'Parent '.$name.':',
-  		'new_item_name'              =>  'New '.$name.' Name',
-  		'add_new_item'               =>  'Add New '.$name,
-  		'edit_item'                  =>  'Edit '.$name,
-  		'update_item'                =>  'Update '.$name,
-  		'view_item'                  =>  'View '.$name,
-  		'separate_items_with_commas' =>  'Separate '.$plural.' with commas',
-  		'add_or_remove_items'        =>  'Add or remove '.$plural,
-  		'choose_from_most_used'      =>  'Choose from the most used',
-  		'popular_items'              =>  'Popular '.$plural,
-  		'search_items'               =>  'Search '.$plural,
-  		'not_found'                  =>  'Not Found',
-  		'no_terms'                   =>  'No '.$plural,
-  		'items_list'                 =>  $plural.' list',
-  		'items_list_navigation'      =>  $plural.' list navigation',
-  	);
-    //labels can be modified post registration
-  	$args = array(
-  		'labels'                     => $labels,
-  		'hierarchical'               => $is_hierarchical,
-  		'public'                     => false,
-  		'show_ui'                    => true,
-  		'show_admin_column'          => false,
-  		'show_in_nav_menus'          => false,
-  		'show_tagcloud'              => false,
-      'show_in_quick_edit'         => false,
-      'description'                => 'Contact Form 7 dynamic dropdown taxonomy list',
-  	);
-
-    register_taxonomy( $slug, $this->cf7_post_type(), $args );
-  }
   /**
   * Deactivate this plugin if CF7 plugin is deactivated.
   * Hooks on action 'admin_init'
