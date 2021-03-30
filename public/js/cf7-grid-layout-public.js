@@ -703,7 +703,7 @@
     * Smart Grid is now ready
     * @since 4.4.0 enable form pre-load.
     */
-    $('div.cf7-smart-grid form.wpcf7-form').trigger("cf7SmartGridReady");
+    $('div.cf7-smart-grid form.wpcf7-form').addClass('cf7sg-ready').trigger('cf7SmartGridReady');
 
     /**
     * listen for cf7 submit invalid field event, and open parent sections and tabs.
