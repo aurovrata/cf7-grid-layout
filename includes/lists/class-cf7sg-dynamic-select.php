@@ -10,7 +10,7 @@ require_once plugin_dir_path( __DIR__ ) . 'lists/class-cf7sg-dynamic-list.php';
 class CF7SG_Dynamic_Select extends CF7SG_Dynamic_list{
 
   public function __construct(){
-    parent::__construct('dynamic_select',__( 'dynamic-dropdown', 'cf7_2_post' ));
+    parent::__construct('dynamic_select',__( 'dynamic-dropdown', 'cf7-grid-layout' ));
   }
   /**
   * define the style optoins for the dynamic list construct.
@@ -18,6 +18,7 @@ class CF7SG_Dynamic_Select extends CF7SG_Dynamic_list{
   * @return Array an array of style-slug => style label.
   */
   public function admin_generator_tag_styles(){
+    //hook action fired from tag template to echo extra options/html.
     add_action('cf7sg_'.$this->tag_id.'_admin_tag_style-select2', array($this,'custom_select2'));
     return array(
       'select' => __('HTML Select field','cf7-grid-layout'),
@@ -26,6 +27,15 @@ class CF7SG_Dynamic_Select extends CF7SG_Dynamic_list{
   }
   /**
   * custom html + js script for select2 option.
+  * There 3 ways to customise the tag field:
+  * 1 - hook the action 'cf7sg_{$this->tag_id}_admin_tag_style-{$style_id} as above and echo custom HTML fields for each style.  The plugin template creates a radio input field for each style and then fires the action, so your echoed HTML fields follow immediately after.  Add a script to update the style radio field value with any user selected fields you have added.
+  * In the above exmaple, the stule 'select2' will create a radio field with value="select2".
+  * IN addition the function below add a checkbox with value='tags'.  When a user select tags checkbox, A custom script captures this change and updates the select2 radio field value and appends the 'tags' value such that the radi ofield value becomes 'select2 tags'.
+  * When the tag field is updated the vaue 'select2 tags' will be split into class:select2 calss:tags.
+  *
+  * 2- the other option is to add custom fields to the "Other attributes" section (currently it has the 'multiple' field.), by hooking the action 'cf7sg_dynamic_list_tag_manager_options'.  Additional fields here, selected by a user, will have their fields appended to the tag field as options.
+  *
+  * 3- the final way to customise a tag field is to add a hidden field with the 'data-attribute' class, and udpate its value with a "name:value" formatted string. The plugin will captture this value and add it to the tag field as a data-name="value" attribute on the wrapper element of the dynamic input field.
   */
   public function custom_select2(){
     /*

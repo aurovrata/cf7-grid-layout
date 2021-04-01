@@ -123,8 +123,40 @@ abstract class CF7SG_Dynamic_list{
    */
   public function admin_tag_generator( $contact_form, $args = ''){
     $args = wp_parse_args( $args, array() );
-    add_action('cf7sg_', array($this, 'admin_generator_tag_styles'));
-		include_once plugin_dir_path( __FILE__ ) . '/admin/cf7-dynamic-tag-display.php';
+    // add_action('cf7sg_', array($this, 'admin_generator_tag_styles'));
+		include plugin_dir_path( __FILE__ ) . '/admin/cf7-dynamic-tag-display.php';
+  }
+  /**
+  * function to display taxonomy dropdown list for posts in tag generator */
+  protected function cf7sg_terms_to_options($taxonomy, $is_hierarchical, $parent=0, $level=1){
+    $args = array('hide_empty' => 0);
+    if($is_hierarchical){
+      $args['parent'] = $parent;
+    }
+    //check the WP version
+    global $wp_version;
+    if ( $wp_version >= 4.5 ) {
+      $args['taxonomy'] = $taxonomy;
+      $terms = get_terms($args); //WP>= 4.5 the get_terms does not take a taxonomy slug field
+    }else{
+      $terms = get_terms($taxonomy, $args);
+    }
+    if( is_wp_error( $terms ) ){
+      debug_msg('Taxonomy '.$taxonomy.' does not exist');
+      return '';
+    }else if( empty($terms) ){
+      return'';
+    }
+    if(0==$parent) $class = 'parent';
+    else $class = 'child';
+    $script = '';
+    foreach($terms as $term){
+      $script .='<option class="level-'.$level.'" value="taxonomy:' . $taxonomy . ':' . $term->slug . '" >' . $term->name . '</option>' . PHP_EOL;
+      if($is_hierarchical){
+        $script .= $this->cf7sg_terms_to_options($taxonomy, $is_hierarchical, $term->term_id, $level+1);
+      }
+    }
+    return $script;
   }
 
   /**

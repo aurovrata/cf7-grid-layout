@@ -1214,6 +1214,7 @@ class Cf7_Grid_Layout_Admin {
       );
     }
     /** @since 4.10.0 abstract out dynamic lists */
+    do_action('cf7sg_register_dynamic_lists');
     $lists = cf7sg_get_dynamic_lists();
     foreach($lists as $l) $l->register_cf7_tag();
   }

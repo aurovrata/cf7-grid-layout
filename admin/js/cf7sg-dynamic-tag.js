@@ -19,7 +19,21 @@
         $('div.post-taxonomies.cf7sg-dynamic-tag',$form).hide();
         let $tax = $('.post-taxonomies.cf7sg-dynamic-tag.'+e.target.value, $form).show();
         //enable select2 if not yet initialised.
-        $('select.select2', $tax).not('.select2-hidden-accessible').select2();
+        $('select.select2', $tax).not('.select2-hidden-accessible').select2({
+          placeholder: "Filter by term",
+          multiple:true,
+          dropdownParent:$tax,
+          allowClear:true,
+          templateSelection: function (state) {
+            if (!state.id) {
+              return state.text;
+            }
+            let label = state.element.closest('optgroup');
+            if(label) label = label.getAttribute('label');
+            else label='';
+            return $('<span>'+label+':'+state.text+'</span>');
+          }
+        });
         break;
       case $target.is('select.taxonomy-list'):
         let $option = $target.find('option:selected');
@@ -42,6 +56,8 @@
         }
         break;
       case $target.is('.list-style'): //---------list-type
+        break;
+      case $target.is('.source-tab'): //source selection.
         break;
     }
     /* which source ? */
@@ -72,16 +88,18 @@
     }
     //update tag field.
     let $req = $('input[name="required"]', $form),
-      $multiple = $('.select-multiple', $form),
-      multiple= $multiple.is(':checked')? ' multiple':'',
-      tagname = $multiple.attr('id').replace('-multiple',''),
+      tagname = $('.select-multiple', $form).attr('id').replace('-multiple',''),
       id = $('input[name="id"]', $form).val(),
       classes = $('input[name="class"]', $form).val(),
-      postlinks='',
-      values='',
+      postlinks='',postimgs='',
+      values='', dataAttr = '',multiple = '',
       $post = $('select.post-list', $form),
       $tag = $form.siblings('.cf7sg-dynamic-tag-submit').find('input.tag.code');
 
+      //other attributes.
+      $('tr.others :input:visible:checked', $form).each(function(){
+        multiple += ' '+this.value;
+      })
     if(id.length > 0) id =' id:'+id;
 
     if(classes.length > 0){
@@ -99,7 +117,8 @@
         if($post.val().length > 0){
           let $tax = $('.post-taxonomies.cf7sg-dynamic-tag.'+$post.val()+' > select.select2');
           /** @since 4.0 */
-          if($('.include-post-links',$form).is(':checked')) postlinks = ' permalinks';
+          if($('.include-links',$form).is(':checked')) postlinks = ' permalinks';
+          if($('.include-images',$form).is(':checked')) postimgs = ' thumbnails';
           values = ' "source:post:'+$post.val()+'"';
           if(null != $tax.val()){
             let term='';
@@ -113,13 +132,16 @@
         values = '"source:filter"';
         break;
     }
-
+    //get any data-attribute hidden fields.
+    $('input.data-attribute', $form).each(function(){
+      dataAttr += ' "data-'+this.value+'"';
+    });
 
     //update tag.
 
 
     if($req.is(':checked')) tagname = tagname+'*';
-    $tag.val('[' + tagname +' '+ $name.val() + multiple + postlinks + id +' '+ classes + values +']');
+    $tag.val('[' + tagname +' '+ $name.val() + multiple + postimgs + postlinks + id +' '+ classes + values + dataAttr +']');
   });
 
   //udpate the new category if created

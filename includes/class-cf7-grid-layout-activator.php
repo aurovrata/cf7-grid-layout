@@ -29,7 +29,7 @@ class Cf7_Grid_Layout_Activator {
   * @since    1.0.0
   */
   public static function activate() {
-	if(!is_plugin_active( 'contact-form-7/wp-contact-form-7.php' )){
+	  if(!is_plugin_active( 'contact-form-7/wp-contact-form-7.php' )){
       if(is_multisite()){
         exit(__('Contact Form 7 plugin needs to be activated first. If you have activated it on select sites,
         you will need to activate the Smart Grid-layout plugin on those sites only','cf7-grid-alyout'));

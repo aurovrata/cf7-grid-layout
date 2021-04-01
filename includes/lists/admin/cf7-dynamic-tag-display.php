@@ -63,23 +63,28 @@
             endforeach;?>
           </td>
         </tr>
-        <tr>
-          <th scope="row"><?=__('Mutliple attribute','cf7-grid-layout')?></th>
+        <tr class="others">
+          <th scope="row"><?=__('Other attributes','cf7-grid-layout')?></th>
           <td>
-            <input class="select-multiple" id="<?=$this->tag_id?>-multiple" type="checkbox" value="multiple"/>
-            <a target="_blank" href="https://www.w3schools.com/tags/att_select_multiple.asp"><?=__('Enable multiple selection','cf7-grid-layout')?></a>
+            <span class="multiple">
+              <label for="<?=$this->tag_id?>-multiple">
+                <input class="select-multiple" id="<?=$this->tag_id?>-multiple" type="checkbox" value="multiple"/>
+                <a target="_blank" href="https://www.w3schools.com/tags/att_select_multiple.asp"><?=__('Enable multiple selection','cf7-grid-layout')?></a>
+              </label>
+            </span>
+            <?php do_action('cf7sg_dynamic_list_tag_manager_options', $this->tag_id);?>
           </td>
         </tr>
       </tbody>
     </table>
     <div class="tabordion cf7sg-dynamic-list-sources">
       <section class="taxonomy-source">
-        <input type="radio" id="<?=$class?>-taxonomy-tab" name="sections" class="taxonomy-tab" checked>
+        <input type="radio" id="<?=$class?>-taxonomy-tab" name="sections" class="taxonomy-tab source-tab" checked>
         <label for="<?=$class?>-taxonomy-tab"><?=__('Taxonomy','cf7-grid-layout')?></label>
         <article>
           <h4><?=__('Taxonomy source','cf7-grid-layout')?></h4>
           <select class="taxonomy-list">
-            <option value="" data-name="" ><?=__('Choose a Taxonomy','cf7-grid-layout')?></option>
+            <option value="" data-name="" selected="true" ><?=__('Choose a Taxonomy','cf7-grid-layout')?></option>
             <option class="cf7sg-new-taxonomy" value="new_taxonomy" data-name="New Category"><?=__('New Categories','cf7-grid-layout')?></option>
           <?php
           //get options.
@@ -93,7 +98,7 @@
               }else{
                 $slugs[$slug] = $slug;
               }
-              echo '<option selected data-name="' . $taxonomy['singular'] . '" value="'. $taxonomy['slug'] . '" class="cf7sg-taxonomy">' . $taxonomy['plural'] . '</option>';
+              echo '<option data-name="' . $taxonomy['singular'] . '" value="'. $taxonomy['slug'] . '" class="cf7sg-taxonomy">' . $taxonomy['plural'] . '</option>';
             }
           }
           //inset the default post tags and category
@@ -121,12 +126,12 @@
         </article>
       </section>
       <section class="post-source">
-        <input type="radio" id="<?=$class?>-post-tab" name="sections" class="post-tab">
+        <input type="radio" id="<?=$class?>-post-tab" name="sections" class="post-tab source-tab">
         <label for="<?=$class?>-post-tab"><?=__('Post','cf7-grid-layout')?></label>
         <article class="">
           <h4><?=__('Post source','cf7-grid-layout')?></h4>
-          <select class="post-list">
-            <option value=""><?=__('Select a post','cf7-grid-layout')?></option>
+          <select id="<?=$class?>-post-list" class="post-list" name="<?=$this->tag_id?>_post_list">
+            <option value="" selected><?=__('Select a post','cf7-grid-layout')?></option>
             <?php
             $args = array(
                'show_ui'   => true,
@@ -144,36 +149,49 @@
               foreach($taxonomies as $taxonomy){
                 //skup cf7 dynamic list taxonomies.
                 if(WPCF7_ContactForm::post_type == $type && 'wpcf7_type' != $taxonomy->name) continue;
+                if(empty($taxonomy->label)) continue;
                 $taxonomy_lists[$type] .= '<optgroup label="'.$taxonomy->label.'">'.PHP_EOL;
-                $taxonomy_lists[$type] .= cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical,0);
+                $taxonomy_lists[$type] .= $this->cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical);
                 $taxonomy_lists[$type] .= '</optgroup>'.PHP_EOL;
               }
             }
             $taxonomies = get_object_taxonomies( 'post', 'objects' );
             $taxonomy_lists['post'] = '';
             foreach($taxonomies as $taxonomy){
+              if(empty($taxonomy->label)) continue;
               $taxonomy_lists['post'] .= '<optgroup label="'.$taxonomy->label.'">'.PHP_EOL;
-              $taxonomy_lists['post'] .= cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical,0);
+              $taxonomy_lists['post'] .= $this->cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical);
               $taxonomy_lists['post'] .= '</optgroup>'.PHP_EOL;
             }
             $taxonomies = get_object_taxonomies( 'page', 'objects' );
             $taxonomy_lists['page'] = '';
             foreach($taxonomies as $taxonomy){
+              if(empty($taxonomy->label)) continue;
               $taxonomy_lists['page'] .= '<optgroup label="'.$taxonomy->label.'">'.PHP_EOL;
-              $taxonomy_lists['page'] .= cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical,0);
+              $taxonomy_lists['page'] .= $this->cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical);
               $taxonomy_lists['page'] .= '</optgroup>'.PHP_EOL;
             }
             ?>
             <option value="post"><?=__('Posts','cf7-grid-layout')?></option>
             <option value="page"><?=__('Pages','cf7-grid-layout')?></option>
           </select>
-          <label><input type="checkbox" class="include-post-links"/><?= __('Include post links','cf7-grid-layout')?></label>
+          <div class="<?=$class?>-post-options">
+            <label for="<?=$class?>-post-links" class="<?=$class?> include-links">
+              <input id="<?=$class?>-post-links" value="include_links" name="<?=$this->tag_id?>_post_links" type="checkbox" class="include-post-links"/><?= __('Include post links','cf7-grid-layout')?>
+            </label>
+            <label for="<?=$class?>-post-images" class="<?=$class?> include-images">
+              <input id="<?=$class?>-post-images" value="include_imgs" name="<?=$this->tag_id?>_post_imgs" type="checkbox" class="include-post-images"/><?= __('Include post thumbnails','cf7-grid-layout')?>
+            </label>
+          </div>
+
+
 
   <?php foreach($taxonomy_lists as $type=>$list ):
           if(empty($list)) continue;
     ?>
           <div id="" class="post-taxonomies cf7sg-dynamic-tag hidden <?= $type ?>">
-            <select multiple class="select2">
+            <select id="<?=$class?>-<?=$type?>" multiple class="select2" name="<?=$this->tag_id?>_<?=$type?>">
+              <option value=""><?=__('Filter by terms', 'cf7-grid-layout')?></option>
               <?= $list?>
             </select>
           </div>
@@ -181,7 +199,7 @@
         </article>
       </section>
       <section class="custom-source">
-        <input type="radio" id="<?=$class?>-custom-tab" name="sections" class="custom-tab">
+        <input type="radio" id="<?=$class?>-custom-tab" name="sections" class="custom-tab source-tab">
         <label for="<?=$class?>-custom-tab"><?=__('Custom','cf7-grid-layout')?></label>
         <article>
           <h4><?=__('Custom source','cf7-grid-layout')?></h4>
@@ -204,39 +222,3 @@
 
   <br class="clear" />
 </div>
-<?php
-/*
-Added functionality
-*/
-function cf7sg_terms_to_options($taxonomy, $is_hierarchical, $parent=0){
-  $args = array('hide_empty' => 0);
-  if($is_hierarchical){
-    $args['parent'] = $parent;
-  }
-  //check the WP version
-  global $wp_version;
-  if ( $wp_version >= 4.5 ) {
-    $args['taxonomy'] = $taxonomy;
-    $terms = get_terms($args); //WP>= 4.5 the get_terms does not take a taxonomy slug field
-  }else{
-    $terms = get_terms($taxonomy, $args);
-  }
-  if( is_wp_error( $terms ) ){
-    debug_msg('Taxonomy '.$taxonomy.' does not exist');
-    return '';
-  }else if( empty($terms) ){
-    return'';
-  }
-  if(0==$parent) $class = 'parent';
-  else $class = 'child';
-  $script = '';
-  foreach($terms as $term){
-    $script .='<option value="taxonomy:' . $taxonomy . ':' . $term->slug . '" >' . $term->name . '</option>' . PHP_EOL;
-    if($is_hierarchical){
-      $script .= cf7sg_terms_to_options($taxonomy, $is_hierarchical, $term->term_id);
-    }
-  }
-  return $script;
-}
-
-?>
