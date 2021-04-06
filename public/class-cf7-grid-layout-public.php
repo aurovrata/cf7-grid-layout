@@ -211,11 +211,7 @@ class Cf7_Grid_Layout_Public {
     wp_register_style('glider-style', $plugin_dir . 'assets/glider-js/glider.min.css', array(), '1.7.4','all');
 
     //allow custom script registration
-    do_action('smart_grid_register_styles');
-    /** @since 4.10.0 abstract out dynamic lists */
-    do_action('cf7sg_register_dynamic_lists');
-    $lists = cf7sg_get_dynamic_lists();
-    foreach($lists as $l) $l->register_scripts($airplane);
+    do_action('smart_grid_register_styles',$airplane);
 	}
 
 	/**
@@ -1259,10 +1255,137 @@ class Cf7_Grid_Layout_Public {
   **/
   public function save_select2_custom_options($post_id, $cf7_key, $post_fields, $post_meta_fields, $submitted_data){
     $form_id = get_cf7form_id($cf7_key);
-    /** @since 4.10.0 abstract out dynamic lists */
-    $lists = cf7sg_get_dynamic_lists();
-    foreach($lists as $l){
-      $l->save_form_2_post($post_id, $form_id, $cf7_key, $post_fields, $post_meta_fields, $submitted_data);
+    $tagged_fields = get_post_meta($form_id, '_cf7sg_select2_tagged_fields', true);
+    if(empty($tagged_fields)){
+      return;
+    }
+
+    foreach($tagged_fields as $field_name=>$source){
+      $value = $submitted_data[$field_name];
+      $is_array = true;
+      if(!is_array($value)){
+        $value = array($value);
+        $is_array = false;
+      }
+      switch($source['source']){
+        case 'taxonomy':
+          $taxonomy = $source['taxonomy'];
+          $idx=0;
+          foreach($value as $term){
+            if(!term_exists($term, $taxonomy)){
+              /**
+              * Filter custom options from tag enabled select2 dynamic-dropdown fields
+              * where the source of options come from taxonomy terms.  Filter is fired when a new value is submitted. The pluign inserts a new term by default as per submitted value.
+              * @param  string  $term the new term submitted by the user.
+              * @param  string  $field_name the name of the form field.
+              * @param  string $taxonomy  the taxonomy to which this is added.
+              * @param  array  $submitted_data  array of other submitted $field=>$value pairs.
+              * @param string $cf7_key  the form unique key.
+              * @return string the new term name to insert.
+              * @since 2.0.0
+              */
+              $term = apply_filters('cf7sg_dynamic_dropdown_new_term', $term, $field_name, $taxonomy, $submitted_data, $cf7_key);
+              $new_term = wp_insert_term($term, $taxonomy);
+              if(!is_wp_error($new_term)){
+                $new_term = get_term($new_term['term_id'], $taxonomy);
+                $value[$idx] = $new_term->slug;
+              }
+            }
+            $idx++;
+          }
+          break;
+        case 'post':
+          $args = array(
+           'post_type' => $source['post'],
+           'post_status' => 'publish',
+           'posts_per_page'   => -1
+          );
+          if(!empty($source['taxonomy'])){
+            $tax = array();
+            if(sizeof($source['taxonomy']) > 1){
+              $tax['relation'] = 'AND';
+            }
+            foreach($source['taxonomy'] as $term => $taxonomy){
+              $tax[]=array(
+                'taxonomy' => $taxonomy,
+                'field'    => 'slug',
+                'terms'    => $term
+              );
+            }
+            $args['tax_query'] = $tax;
+         }
+         $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name, $cf7_key);
+         $posts = get_posts($args);
+         $options = array();
+         if(!empty($posts)){
+           foreach($posts as $post){
+             $options[$post->post_name] = $post->post_title;
+           }
+         }
+         $idx=0;
+         foreach($value as $slug){
+           if(!isset($options[$slug])){
+             $args = $source;
+             $post_type = $source['post'];
+             $title = $slug;
+             $post_name = '';
+             /**
+             * Filter custom options from tag enabled select2 dynamic-dropdown fields
+             * where the source of options come from post titles.  Filter is fired when a new value is submitted.
+             * This plugin does not take any further action, ie no post of $post_type will be created. It is upto you to do so and return the slug of the newly created post.
+             * @param  string  $post_name the new post slug.
+             * @param  string  $field_name the name of the form field.
+             * @param  string  $title  new value being submitted for a new post title.
+             * @param  string $post_type  the post type from which this dropdown was built
+             * @param  array  $args  an array of additional parameters that was set in the tag, for example the taxonomy and terms from which to filter the posts for the dynamic list.
+             * @param  array  $submitted_data  array of other submitted $field=>$value pairs.
+             * @param string $cf7_key  the form unique key.
+             */
+             $value[$idx] = apply_filters('cf7sg_dynamic_dropdown_new_post', $post_name, $field_name, $title, $post_type, $args, $submitted_data, $cf7_key);
+           }
+           $idx++;
+         }
+         break;
+        case 'filter':
+          $values = $value;
+          /**
+          * Filter custom otions from tag enabled select2 dynamic-dropdown fields
+          * where the source of options come from a filter.  Filter is fired when values are submitted.
+          * Return updated values if any are custom values so that saved/draft submissions will reflect the correct value saved in the DB,
+          * @param  array  $values  an array submitted values (several values can be submitted in the case of a tabbed/table input field).
+          * @param  string  $field_name the name of the form field.
+          * @param  array  $submitted_data  array of other submitted $field=>$value pairs.
+          * @param string $cf7_key  the form unique key.
+          */
+          $value = apply_filters('cf7sg_dynamic_dropdown_filter_select2_submission', $values, $field_name, $submitted_data, $cf7_key);
+          break;
+      }
+      //Save the modified value, find which post field the field is mapped to
+      if(!$is_array){
+        $value = $value[0];
+      }
+      if( isset($post_fields[$field_name]) ){
+        $post_key = $post_fields[$field_name];
+        switch($post_key){
+          case 'title':
+          case 'author':
+          case 'excerpt':
+            $post_key = 'post_'.$post_key;
+            break;
+          case 'editor':
+            $post_key ='post_content';
+            break;
+          case 'slug':
+            $post_key ='post_name';
+            break;
+        }
+        wp_update_post(array(
+          'ID' => $post_id,
+          $post_key => $value
+        ));
+      }else if( isset($post_meta_fields[$field_name]) ){
+        update_post_meta($post_id, $post_meta_fields[$field_name], $value);
+      }
     }
   }
 
@@ -1530,7 +1653,118 @@ class Cf7_Grid_Layout_Public {
 
     if(!empty($prefill)) setcookie('_cf7sg_'. sanitize_text_field( $_POST['_wpcf7_key'] ), json_encode($prefill),0,'/');
   }
+  /**
+	 * Register a [dynamic_display] shortcode with CF7.
+	 * hooked on 'cf7sg_dynamic_list_html_field'
+	 * This function registers a callback function to expand the shortcode for the googleMap form fields.
+	 * @since 4.11.0
+   * @param Array $attrs array of attribute key=>value pairs to be included in the html element tag.
+   * @param Array $options array of value=>label pairs  of options.
+   * @param Array $option_attrs array of value=>attribute pairs  for each options, such as permalinks for post sources..
+   * @param Array $other_attrs array of other attributes selected in tag field as $attr=>true.
+   * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
+   */
+  public function build_dynamic_list_field( $html, $tag_id, $attrs, $options, $option_attrs, $other_attrs, $selected){
+    switch($tag_id){
+      case 'dynamic_select': //---------- Dynmaic dropdown.
+        $attributes ='';
+        foreach($attrs as $key=>$value){
+          if('name'==$key && isset($other_attrs['multiple'])) $value.='[]';
+          $attributes .= ' '.$key.'="'.$value.'"';
+        }
+        $html = '<select value="'.$selected.'"'.$attributes.'>'.PHP_EOL;
+        foreach($options as $value=>$label){
+          $attributes ='';
+          if(isset($option_attrs[$value])){
+            foreach($option_attrs[$value] as $name=>$value){
+              $attributes .= ' '.$this->format_attribute($name,$value);
+            }
+          }
+          if($value==$selected) $attributes .=' selected="selected"';
+          $html .= '<option value="'.$value.'"'.$attributes.'>'.$label.'</option>'.PHP_EOL;
+        }
+        $html .='</select>'.PHP_EOL;
+        break;
+      case 'dynamic_checkbox': //-------- Dunamic checkbox ------.
+        $classes = array();
+        if( isset($attrs['class']) ) $classes = explode(' ',$attrs['class']);
+        $type = 'radio';
+        $name_attr='';
+        if( isset($attrs['name'])){
+          $name_attr = 'name="'.$attrs['name'];
+          if(in_array('checkbox',$classes)){
+            $name_attr.='[]';
+            $type = 'checkbox';
+          }
+          $name_attr.='"';
+        }
+        $attributes = '';
+        foreach($attrs as $key=>$value){
+          if('name'==$key) continue;
+          $attributes .= ' '.$key.'="'.$value.'"';
+        }
+        $html = '<span '.$attributes.'>'.PHP_EOL;
+        foreach($options as $value=>$label){
+          $attributes ='';
 
+          // if($value==$selected) $attributes .=' checked="true"';
+          $html .= '<label class="cf7sg-dc">'.PHP_EOL;
+          $img_el = '';
+          if(isset($option_attrs[$value])){
+            foreach($option_attrs[$value] as $name=>$value){
+              if('data-thumbnail'==$name && isset($other_attrs['imagegrid'])){
+                $img_el = '  <span class="cf7sg-dc-img"><img src="'.$value.'"/></span>'.PHP_EOL;
+              }else $attributes .= ' '.$this->format_attribute($name,$value);
+            }
+          }
+          $html .= '  <input type="'.$type.'" value="'.$value.'" '.$attributes.' '.$name_attr.'/>'.PHP_EOL;
+          $html .= $img_el;
+          $html .= '  <span class="cf7sg-dc-text">'.$label.'</span>'.PHP_EOL;
+          $html .= '</label>'.PHP_EOL;
+        }
+        $html .='</span>'.PHP_EOL;
+    }
+    return $html;
+  }
+
+  public function register_dynamic_select_styles($airplane){
+    $ff = '';
+    if(!defined('WP_DEBUG') || !WP_DEBUG){
+      $ff = '.min';
+    }
+    $plugin_dir = plugin_dir_url( __DIR__ );
+    wp_register_style('jquery-nice-select-css',  "$plugin_dir../assets/jquery-nice-select/css/nice-select{$ff}.css", array(), '1.1.0', 'all' );
+    /** @since 3.2.1 use cloudflare for live sites */
+    if( $airplane || (defined('WP_DEBUG') && WP_DEBUG || apply_filters('cf7sg_use_local_select2', false) ) ){
+      wp_register_style('select2-style', "$plugin_dir../assets/select2/css/select2.min.css", array(), '4.0.13', 'all' );
+      debug_msg($plugin_dir);
+    }else{
+      wp_register_style('select2-style', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', array(), '4.0.13','all');
+    }
+  }
+  public function register_dynamic_select_scripts($airplane){
+    /** @since 3.2.1 use cloudflare for live sites */
+    $plugin_dir = plugin_dir_url( __DIR__ );
+    if( $airplane || (defined('WP_DEBUG') && WP_DEBUG) || apply_filters('cf7sg_use_local_select2', false) ){
+      wp_register_script('jquery-select2',  "$plugin_dir../assets/select2/js/select2.min.js", array( 'jquery' ), '4.0.13', true );
+    }else{
+      wp_register_script('jquery-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array( 'jquery' ), '4.0.13', true );
+    }
+    wp_register_script('jquery-nice-select', "$plugin_dir../assets/jquery-nice-select/js/jquery.nice-select.min.js", array( 'jquery' ), '1.1.0', true );
+
+    //listen for script enqueue action.
+    add_action('smart_grid_enqueue_scripts', function($cf7_key, $atts, $classes){
+      //check for classes set in get_form_classes()method above.
+      if(in_array('has-select2', $classes)){
+        wp_enqueue_style('select2-style');
+        wp_enqueue_script('jquery-select2');
+      }
+      if(in_array('has-nice-select', $classes)){
+        wp_enqueue_style('jquery-nice-select-css');
+        wp_enqueue_script('jquery-nice-select');
+      }
+    },10,3);
+  }
 }
 
 if(!function_exists('cf7sg_extract_submitted_files')){

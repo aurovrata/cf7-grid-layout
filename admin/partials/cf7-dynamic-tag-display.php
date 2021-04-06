@@ -12,14 +12,14 @@
  * @subpackage Cf7_2_Post/admin/partials
  */
  //TODO: add a check box to include or not address fields
- $class = str_replace('_','-' ,$this->tag_id);
+ $class = str_replace('_','-' ,$tag_id);
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
-<div id="<?=$class?>-tag-generator" class="control-box cf7-<?=$class?> cf7sg-dynamic-list-tag-manager">
+<div id="<?=$class?>-tag-generator" data-tag="<?=$tag_id?>" class="control-box cf7-<?=$class?> cf7sg-dynamic-list-tag-manager">
   <fieldset>
-    <legend><?= sprintf(__('%s field','cf7-grid-layout'), $this->label)?></legend>
+    <legend><?= sprintf(__('%s field','cf7-grid-layout'), $dlo->label)?></legend>
     <table  class="form-table">
       <tbody>
         <tr>
@@ -44,35 +44,92 @@
         </tr>
         <tr>
           <th scope="row"><?=__('Dropdown style','cf7-grid-layout')?></th>
-          <td>
+          <td class="cf7sg-dl-styles">
           <?php
-            $styles = $this->admin_generator_tag_styles();
+            $styles = $dlo->get_tag_generator_styles();
             $checked = 'checked="checked"';
+            $display_none = '';
             foreach($styles as $s=>$label):
-              $id = $this->tag_id.'-'.$s;
+              $id = $tag_id.'-'.$s;
             ?>
             <div>
               <label for="<?=$id?>">
-                <input class="list-style <?=$this->tag_id?>" name="<?=$this->tag_id?>-style[]" id="<?=$id?>"  type="radio" value="<?=$s?>" <?=$checked?>/>
+                <input class="list-style <?=$tag_id?>" name="<?=$tag_id?>-style[]" id="<?=$id?>"  type="radio" value="<?=$s?>" <?=$checked?>/>
                 <?=$label?>
-                <?php do_action('cf7sg_'.$this->tag_id.'_admin_tag_style-'.$s) ?>
+                <?php
+                $extras = $dlo->get_style_extras($s);
+                foreach($extras as $val => $field):
+                  $type = 'checkbox';
+                  $label = '<em>unknown field</em>';
+                  $attributes = 'disabled';
+                  $html='';
+                  if(is_array($field)){
+                    if(isset($field['label'])) $label = $field['label'];
+                    if(isset($field['type'])) $type = $field['type'];
+                    if(isset($field['attrs'])) $attributes = $field['attrs'];
+                    if(isset($field['html'])) $html = $field['html'];
+                  }else $label = $field;
+                  $pre='';
+                  $pst='';
+                  switch($type){
+                    case 'checkbox':
+                      $pst=$label;
+                      break;
+                    case 'number':
+                    case 'text':
+                      $pre=$label;
+                      break;
+                    }
+                 ?>
+                 <span class="cf7sg-se-option cf7sg-se-<?=$val?><?=$display_none?>">
+                   <label for="<?=$s?>-<?=$val?>">
+                     <?=$pre?><input id="<?=$s?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>" <?=attrs?>/><?=$pst?><?=$html?>
+                   </label>
+                 </span>
+               <?php endforeach;?>
               </label>
             </div>
           <?php
               $checked = '';
+              $display_none=' display-none';
             endforeach;?>
           </td>
         </tr>
         <tr class="others">
           <th scope="row"><?=__('Other attributes','cf7-grid-layout')?></th>
           <td>
-            <span class="multiple">
-              <label for="<?=$this->tag_id?>-multiple">
-                <input class="select-multiple" id="<?=$this->tag_id?>-multiple" type="checkbox" value="multiple"/>
-                <a target="_blank" href="https://www.w3schools.com/tags/att_select_multiple.asp"><?=__('Enable multiple selection','cf7-grid-layout')?></a>
-              </label>
-            </span>
-            <?php do_action('cf7sg_dynamic_list_tag_manager_options', $this->tag_id);?>
+            <?php
+              $others = $dlo->get_other_extras();
+              foreach($others as $val=>$field):
+                $type = 'checkbox';
+                $label = '<em>unknown field</em>';
+                $attributes = '';
+                if(is_array($field)){
+                  if(isset($field['label'])) $label = $field['label'];
+                  if(isset($field['type'])) $type = $field['type'];
+                  if(isset($field['attrs'])) $attributes = $field['attrs'];
+                }else $label = $field;
+                $pre='';
+                $pst='';
+                switch($type){
+                  case 'checkbox':
+                    $pst=$label;
+                    break;
+                  case 'number':
+                  case 'text':
+                    $pre=$label;
+                    break;
+                  }
+                ?>
+                <span class="<?=$val?>">
+                  <label for="<?=$tag_id?>-<?=$val?>">
+                    <input class="select-<?=$val?>" id="<?=$tag_id?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>"/>
+                    <?=$label?>
+                  </label>
+                </span>
+                <?php
+              endforeach;
+            ?>
           </td>
         </tr>
       </tbody>
@@ -130,7 +187,7 @@
         <label for="<?=$class?>-post-tab"><?=__('Post','cf7-grid-layout')?></label>
         <article class="">
           <h4><?=__('Post source','cf7-grid-layout')?></h4>
-          <select id="<?=$class?>-post-list" class="post-list" name="<?=$this->tag_id?>_post_list">
+          <select id="<?=$class?>-post-list" class="post-list" name="<?=$tag_id?>_post_list">
             <option value="" selected><?=__('Select a post','cf7-grid-layout')?></option>
             <?php
             $args = array(
@@ -151,7 +208,7 @@
                 if(WPCF7_ContactForm::post_type == $type && 'wpcf7_type' != $taxonomy->name) continue;
                 if(empty($taxonomy->label)) continue;
                 $taxonomy_lists[$type] .= '<optgroup label="'.$taxonomy->label.'">'.PHP_EOL;
-                $taxonomy_lists[$type] .= $this->cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical);
+                $taxonomy_lists[$type] .= $dlo->cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical);
                 $taxonomy_lists[$type] .= '</optgroup>'.PHP_EOL;
               }
             }
@@ -160,7 +217,7 @@
             foreach($taxonomies as $taxonomy){
               if(empty($taxonomy->label)) continue;
               $taxonomy_lists['post'] .= '<optgroup label="'.$taxonomy->label.'">'.PHP_EOL;
-              $taxonomy_lists['post'] .= $this->cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical);
+              $taxonomy_lists['post'] .= $dlo->cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical);
               $taxonomy_lists['post'] .= '</optgroup>'.PHP_EOL;
             }
             $taxonomies = get_object_taxonomies( 'page', 'objects' );
@@ -168,7 +225,7 @@
             foreach($taxonomies as $taxonomy){
               if(empty($taxonomy->label)) continue;
               $taxonomy_lists['page'] .= '<optgroup label="'.$taxonomy->label.'">'.PHP_EOL;
-              $taxonomy_lists['page'] .= $this->cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical);
+              $taxonomy_lists['page'] .= $dlo->cf7sg_terms_to_options($taxonomy->name, $taxonomy->hierarchical);
               $taxonomy_lists['page'] .= '</optgroup>'.PHP_EOL;
             }
             ?>
@@ -177,20 +234,18 @@
           </select>
           <div class="<?=$class?>-post-options">
             <label for="<?=$class?>-post-links" class="<?=$class?> include-links">
-              <input id="<?=$class?>-post-links" value="include_links" name="<?=$this->tag_id?>_post_links" type="checkbox" class="include-post-links"/><?= __('Include post links','cf7-grid-layout')?>
+              <input id="<?=$class?>-post-links" value="include_links" name="<?=$tag_id?>_post_links" type="checkbox" class="include-post-links"/><?= __('Include post links','cf7-grid-layout')?>
             </label>
             <label for="<?=$class?>-post-images" class="<?=$class?> include-images">
-              <input id="<?=$class?>-post-images" value="include_imgs" name="<?=$this->tag_id?>_post_imgs" type="checkbox" class="include-post-images"/><?= __('Include post thumbnails','cf7-grid-layout')?>
+              <input id="<?=$class?>-post-images" value="include_imgs" name="<?=$tag_id?>_post_imgs" type="checkbox" class="include-post-images"/><?= __('Include post thumbnails','cf7-grid-layout')?>
             </label>
           </div>
-
-
 
   <?php foreach($taxonomy_lists as $type=>$list ):
           if(empty($list)) continue;
     ?>
           <div id="" class="post-taxonomies cf7sg-dynamic-tag hidden <?= $type ?>">
-            <select id="<?=$class?>-<?=$type?>" multiple class="select2" name="<?=$this->tag_id?>_<?=$type?>">
+            <select id="<?=$class?>-<?=$type?>" multiple class="select2" name="<?=$tag_id?>_<?=$type?>">
               <option value=""><?=__('Filter by terms', 'cf7-grid-layout')?></option>
               <?= $list?>
             </select>

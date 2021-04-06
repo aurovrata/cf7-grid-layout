@@ -123,7 +123,7 @@ class Cf7_Grid_Layout {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cf7-grid-layout-loader.php';
     require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wordpress-gurus-debug-api.php';
     /** @since 5.0 dynamic tags interface */
-    require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/lists/class-cf7sg-dynamic-select.php';
+    require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cf7sg-dynamic-list.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
@@ -252,6 +252,9 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'init',  $plugin_admin, 'register_form_preview_posttype', 0 );
     /** @since 4.4 load translation files */
     $this->loader->add_action( 'cf7pll_load_plugin_translation_resource', $plugin_admin, 'load_translation_files');
+    /** @since 4.11.0 build dynamic list tag generator */
+    $this->loader->add_action( 'cf7sg_display_dynamic_list_tag_manager', $plugin_admin, 'print_dynamic_list_generator', 5, 4);
+    $this->loader->add_action( 'cf7sg_save_dynamic_list_form_classes', $plugin_admin, 'save_dynamic_list_form_classes', 5, 3);
 
 	}
 
@@ -309,7 +312,10 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter( 'wpcf7_autop_or_not', $plugin_public, 'disable_autop_for_grid' ,5,1);
     /** @since 4.4 prefill preview forms */
     $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'on_submit_success');
-
+    /** @since 4.11.0 abstract out dynamic lsits*/
+    $this->loader->add_action( 'cf7sg_dynamic_list_html_field', $plugin_public, 'build_dynamic_list_field',5,7);
+    $this->loader->add_action( 'smart_grid_register_styles', $plugin_public,'register_dynamic_select_styles');
+    $this->loader->add_action( 'smart_grid_register_scripts', $plugin_public,'register_dynamic_select_scripts');
 	}
 
 	/**

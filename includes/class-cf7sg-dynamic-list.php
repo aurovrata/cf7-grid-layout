@@ -6,9 +6,54 @@
 * @since 4.10.0
 */
 
-abstract class CF7SG_Dynamic_list{
-  protected $tag_id;
-  protected $label;
+class CF7SG_Dynamic_list{
+  /**
+  * @since    4.10.0
+  * @access   protected
+  * @var String $tag_id tag field unique id.
+  */
+  public $tag_id;
+  /**
+  * @since    4.10.0
+  * @access   protected
+  * @var String $label tag button label.
+  */
+  public $label;
+  /**
+  * @since    4.11.0
+  * @access   protected
+  * @var Array $styles array of style fields available in the tag manager form.
+  */
+  protected $styles = array();
+  /**
+  * @since    4.11.0
+  * @access   protected
+  * @var Array $style_extras array of extra fields appended to each style field for further customisation, can either be style_id => array( $field_value => $field_label) (defaults to a checkbox) or,
+  * style_id => array( $field_value => array(
+  *   'type'=>'text|number|checkbox' default is checkbox.
+  *   'label'=> label text or html string.
+  *   'attrs'=> string og attributes to be added to the field.
+  * ))
+  * for other fields.
+  */
+  protected $style_extras = array();
+  /**
+  * @since    4.11.0
+  * @access   protected
+  * @var Array $other_extras array of extra fields added to the 'Other attributes' fieldset, can either be array( $field_value => $field_label) (defaults to a checkbox) or,
+  * array( $field_value => array(
+  *   'type'=>'text|number|checkbox' default is checkbox.
+  *   'label'=> label text or html string.
+  *   'attrs'=> string og attributes to be added to the field.
+  * ))
+  * for other fields.
+  */
+  protected $other_extras = array();
+  /**
+  * @since    4.10.0
+  * @access   protected
+  * @var Array $instances array of tag_id=>CF7SG_Dynamic_list objects to keep track of instances.
+  */
   protected static $instances;
 
   public function __construct($tag_id, $label){
@@ -17,13 +62,63 @@ abstract class CF7SG_Dynamic_list{
     $this->register();
   }
   /**
+  * set the stles for the tag manager.
+  * @since 4.11.0
+  * @param Array $styles array of style fields available in the tag manager form.
+  * @param Array $style_extras array of extra fields appended to each style field for further customisation, can either be style_id => array( $field_value => $field_label) (defaults to a checkbox) or,
+  * style_id => array( $field_value => array(
+  *   'type'=>'text|number|checkbox' default is checkbox.
+  *   'label'=> label text or html string.
+  *   'attrs'=> string og attributes to be added to the field.
+  * ))
+  * for other fields.
+  */
+  public function set_styles($styles, $style_extras){
+    $this->styles = $styles;
+    $this->style_extras = $style_extras;
+  }
+  /**
+  * Set extra configuratino fields in the 'Other Attributes' fieldset of the tag manager form.
+  * @since 4.11.0
+  * @param Array $extras array of extra fields added to the 'Other attributes' fieldset, can either be array( $field_value => $field_label) (defaults to a checkbox) or,
+  * array( $field_value => array(
+  *   'type'=>'text|number|checkbox' default is checkbox.
+  *   'label'=> label text or html string.
+  *   'attrs'=> string of attributes to be added to the field.
+  * ))
+  * for other fields.
+  */
+  public function set_others_extras($extras){
+    $this->other_extras = $extras;
+  }
+  /**
   * function returns an array of dynamic field styles value=>label pairs for the admin tag generator.
   * these styles will be radio fields on the tag generator form.  The selected style for a given field
   * will be parametrised as a class on the dynamic field HTML element.
   * so for example the select2 jquery dropdown style would have a select2 class added to the select field.
   * @return Array value=>label pairs.
   */
-  abstract public function admin_generator_tag_styles();
+  public function get_tag_generator_styles(){
+    return $this->styles;
+  }
+  /**
+  * get extra fields associated with a given style field to display in the tag manager form.
+  * @since 4.11.0
+  * @param String  $style style id
+  */
+  public function get_style_extras($style){
+    $extras = array();
+    if(isset($this->style_extras[$style])) $extras = $this->style_extras[$style];
+    return $extras;
+  }
+  /**
+  * get extra fields associated with a given style field to display in the tag manager form.
+  * @since 4.11.0
+  * @param String  $style style id
+  */
+  public function get_other_extras(){
+    return $this->other_extras;
+  }
   /**
   * Function to get classes to be added to the form wrapper.
   * these classes will be passed in the resource enqueue action, allowing for specific js/css resources
@@ -32,7 +127,9 @@ abstract class CF7SG_Dynamic_list{
   * @param int $form_id cf7 fomr post ID..
   * @return Array an array of classes to be added to the form to which this tag belonggs to.
   */
-  abstract public function get_form_classes($tag, $form_id);
+  public function get_form_classes($tag, $form_id){
+     apply_filters('cf7sg_save_dynamic_list_form_classes', array(), $tag, $form_id);
+  }
 
   /**
 	 * Register a [dynamic_display] shortcode with CF7.
@@ -46,37 +143,9 @@ abstract class CF7SG_Dynamic_list{
    * @param String $selected default selected value.
    * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
    */
-  abstract public function get_dynamic_html_field($attrs, $options, $option_attrs, $is_multiselect, $selected);
-
-  /**
-  * Function called by the public class method when the Post My CF7 Form plugin maps a form submission
-  * to a post.
-  * @since 4.10.0
-  * @param String $post_id  the id of the post to which this submission was mapped
-  * @param String post ID of form being submitted
-  * @param String $cf7_key  the unique form key to identity the form being submitted
-  * @param Array $post_fields form fields mapped to post fields, form-field-name => post-field-name key value pairs
-  * @param Array $post_meta_fields form fields mapped to post meta fields,  form-field-name => post-meta-field-name key value pairs
-  * @param Array $submitted_data data submited in the form, form-field-name => submitted-value key value pairs
-  *@return string text_description
-  */
-  abstract public function save_form_2_post($post_id, $form_id, $cf7_key, $post_fields, $post_meta_fields, $submitted_data);
-
-  /**
-  * Called to register stylesheet resources on the frontend.
-  * IMPORTANT: use wp_register_style()
-  *@since 4.10.0
-  * @param Boolean $airplane if true load only local resources.
-  */
-  abstract public function register_styles($airplane);
-
-  /**
-  * Called to register stylesheet resources on the frontend.
-  * IMPORTANT: use wp_register_script()
-  *@since 4.10.0
-  * @param Boolean $airplane if true load only local resources.
-  */
-  abstract public function register_scripts($airplane);
+   public function get_dynamic_html_field($attrs, $options, $option_attrs, $is_multiselect, $selected){
+     apply_filters('cf7sg_dynamic_list_html_field', $html, $this->tag_id, $attrs, $options, $option_attrs, $is_multiselect, $selected);
+   }
 
   /**
   * function to register and track newly created dynamic list.
@@ -117,18 +186,17 @@ abstract class CF7SG_Dynamic_list{
    *
    * This function is called by cf7 plugin, and is registered with a hooked function above
    *
-   * @since 1.0.0
+   * @since 4.10.0
    * @param WPCF7_ContactForm $contact_form the cf7 form object
    * @param array $args arguments for this form.
    */
   public function admin_tag_generator( $contact_form, $args = ''){
     $args = wp_parse_args( $args, array() );
-    // add_action('cf7sg_', array($this, 'admin_generator_tag_styles'));
-		include plugin_dir_path( __FILE__ ) . '/admin/cf7-dynamic-tag-display.php';
+    do_action('cf7sg_display_dynamic_list_tag_manager', $this->tag_id, $this, $contact_form, $args);
   }
   /**
   * function to display taxonomy dropdown list for posts in tag generator */
-  protected function cf7sg_terms_to_options($taxonomy, $is_hierarchical, $parent=0, $level=1){
+  public function cf7sg_terms_to_options($taxonomy, $is_hierarchical, $parent=0, $level=1){
     $args = array('hide_empty' => 0);
     if($is_hierarchical){
       $args['parent'] = $parent;
@@ -176,7 +244,29 @@ abstract class CF7SG_Dynamic_list{
       );
     }
   }
-
+  /**
+	 * Function to retrieve dynamic-dropdown data attributes
+	 *
+	 * @since 4.11.0
+	 * @param      WPCF7_FormTag    $tag     cf7 tag object of basetype dynamic list.
+	 * @return     Array    an array of data attributes      .
+	**/
+	public function get_data_attributes($tag){
+	  if(is_array($tag) && isset($tag['basetype']) && $this->tag_id === $tag['basetype']){
+			$tag = new WPCF7_FormTag($tag);
+		}
+		if( !($tag instanceof WPCF7_FormTag) || $this->tag_id !== $tag['basetype']){
+			return false;
+		}
+		$attrs = array();
+    if(empty($tag->values)) debug_msg($tag, "CF7SG ERROR: malformed {$this->tag_id} tag, unable to retrieve values");
+    foreach($tag->values as $values){
+      if(false === stripos($values, 'data-')) continue;
+      $a = explode(':',$values);
+      if(isset($a[1])) $attrs[$a[0]] = $a[1];
+    }
+    return $attrs;
+  }
   /**
 	 * Function to retrieve dynamic-dropdown attributes
 	 *
@@ -185,14 +275,14 @@ abstract class CF7SG_Dynamic_list{
 	 * @return     array    an array of attributes with 'source'=>[post|taxonomy|filter],     .
 	**/
 	public function get_dynamic_attributes($tag){
-	  if(is_array($tag) && isset($tag['basetype']) && 'dynamic_select' === $tag['basetype']){
+	  if(is_array($tag) && isset($tag['basetype']) && $this->tag_id === $tag['basetype']){
 			$tag = new WPCF7_FormTag($tag);
 		}
-		if( !($tag instanceof WPCF7_FormTag) || 'dynamic_select' !== $tag['basetype']){
+		if( !($tag instanceof WPCF7_FormTag) || $this->tag_id !== $tag['basetype']){
 			return false;
 		}
 		$source = array();
-    if(empty($tag->values)) debug_msg($tag, "CF7SG ERROR: malformed dynamic dropdown tag, unable to retrieve values");
+    if(empty($tag->values)) debug_msg($tag, "CF7SG ERROR: malformed {$this->tag_id} tag, unable to retrieve values");
     foreach($tag->values as $values){
       if(0 === strpos($values, 'slug:') ){
         $source['source'] = "taxonomy";
@@ -226,7 +316,10 @@ abstract class CF7SG_Dynamic_list{
   */
   public function get_shortcode_html($field_name){
     $tag = new WPCF7_FormTag( $field_name );
+    // debug_msg($tag, 'tag object ');
 		$source = $this->get_dynamic_attributes($tag);
+    /** @since 4.11.0 enable data attributes */
+    $data_attrs = $this->get_data_attributes($tag);
 
     $validation_error = wpcf7_get_validation_error( $tag->name );
     $class = wpcf7_form_controls_class( $tag->type, 'cf7sg-dynamic-dropdown' );
@@ -236,28 +329,21 @@ abstract class CF7SG_Dynamic_list{
     $class = $tag->get_class_option( $class );
 
     $id = $tag->get_id_option();
-    // $default = $tag->get_default_option();
-    $has_permalinks = false;
-    /** @since 3.3.0 allow multiple */
+    //attributes to be added to the dropdown select field
     $select_attributes = '';
+    //capture any attributes to be added to individual options in dropdpwn list.
     $option_attrs = array();
-    // $option_attributes[$default] = ' ';
-    // $name_suffix='';
+    //other attrbutes captures in the tag manager.
+    $other_attrs = array();
     foreach($tag->options as $tag_option){
-      switch($tag_option){
-        case 'multiple':
-          $is_multiple = true;
-          break;
-        case 'permalinks': /** @since 4.0 */
-          $has_permalinks = true;
-          break;
-      }
+      if(false !== stripos($tag_option, ':')) continue;
+      $other_attrs[$tag_option] = true;
     }
     $options = array();
     $cf7_form = wpcf7_get_current_contact_form();
     $cf7_key = get_cf7form_key($cf7_form->id());
     $filter_options = false;
-
+    $selected='';
     if(!empty($tag->values)){
       if('taxonomy' == $source['source']){
         $taxonomy_query= array('hide_empty' => false, 'taxonomy'=>$source['taxonomy']);
@@ -296,17 +382,16 @@ abstract class CF7SG_Dynamic_list{
             * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
             * @since 2.0.0
             */
-            $attributes = apply_filters('cf7sg_dynamic_dropdown_option_attributes', array(), $term, $tag->name, $cf7_key);
-            if(!empty($attributes)){
-             foreach($attributes as $attribute => $avalue){
-               if(is_array($avalue)){
-                 $separator = ' ';
-                 if('style' === $attribute ) $separator = ';';
-                 $avalue = implode( $separator, $avalue);
-               }
-               $option_attrs[$term->slug] = ' '.$attribute.'="'.$avalue.'"';
-              }
-            }
+            $attributes = apply_filters_deprecated( 'cf7sg_dynamic_dropdown_option_attributes',
+              array(
+                array(),
+                $term,
+                $tag->name,
+                $cf7_key ), '4.11.0', 'cf7sg_dynamic_list_options_attributes' );
+            /** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
+            $attributes = apply_filters('cf7sg_dynamic_list_options_attributes', array(), $term, $tag, $cf7_key);
+            if(is_array($attributes)) $option_attrs[$term->slug] = $attributes;
+
           }
         }
         $filter_options = true;
@@ -328,6 +413,8 @@ abstract class CF7SG_Dynamic_list{
           		'terms'    => $term
           	);
           }
+          if(count($tax)>1) $tax['relation']='AND';
+
           $args['tax_query'] = $tax;
         }
         /**
@@ -339,6 +426,7 @@ abstract class CF7SG_Dynamic_list{
         */
         $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name, $cf7_key);
         $posts = get_posts($args);
+        // debug_msg($posts, 'post query ');
         if(!empty($posts)){
           $selected = $posts[0]->post_name;
 
@@ -364,20 +452,23 @@ abstract class CF7SG_Dynamic_list{
              * @since 2.0.0
             */
             $attributes = array();
-            if($has_permalinks){
+            if( isset($other_attrs['permalinks']) ){
               $attributes['data-permalink'] = get_permalink($post);
             }
-            $attributes = apply_filters('cf7sg_dynamic_dropdown_option_attributes', $attributes, $post, $tag->name, $cf7_key);
-            if(!empty($attributes)){
-              foreach($attributes as $attribute => $avalue){
-                if(is_array($avalue)){
-                  $separator = ' ';
-                  if('style' === $attribute ) $separator = ';';
-                  $avalue = implode( $separator, $avalue);
-                }
-                $option_attrs[$post->post_name] = ' '.$attribute.'="'.$avalue.'"';
-              }
+            if( isset($other_attrs['thumbnails']) ){
+              $size = apply_filters('cf7sg_dynamic_list_thumbnail_size', 'thumbnail', $tag->name, $cf7_key);
+              $attributes['data-thumbnail'] = get_the_post_thumbnail_url($post, $size);
             }
+            $attributes = apply_filters_deprecated( 'cf7sg_dynamic_dropdown_option_attributes',
+              array(
+                $attributes,
+                $post,
+                $tag->name,
+                $cf7_key ), '4.11.0', 'cf7sg_dynamic_list_options_attributes' );
+            /** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
+            $attributes = apply_filters('cf7sg_dynamic_list_options_attributes', $attributes, $post, $tag, $cf7_key);
+
+            if(is_array($attributes)) $option_attrs[$post->post_name] = $attributes;
           }
         }
         $filter_options = true;
@@ -387,13 +478,15 @@ abstract class CF7SG_Dynamic_list{
          * @param Array $options an array of value=>label pairs of options. Alternatively 2 arrays can be filtered, see return parameter description.
          * @param String $field_name name of field being populated.
          * @param String $cf7_key form unique key.
-         * @return Array either an array of value=>label pairs, or 2 arrays, 'values'=>array(value=>label), 'attributes'=>array(value=>attribute string), in order to add a set of attributes to be added to each option html element tag.
+         * @return Array either an array of option value=>option label pairs, or 2 arrays,
+         * 'values'=>array(option value=>option label),
+         * 'attributes'=>array(option value=> array(attribute name=>attribute value), in order to add a set of attributes to be added to each option html element tag.
          */
          $custom_options = apply_filters('cf7sg_dynamic_dropdown_custom_options', array(), $tag->name, $cf7_key);
          if(isset($custom_options['values']) && is_array($custom_options['values'])){
            $options = $custom_options['values'];
          }else $options = $custom_options;
-         $custom_options = apply_filters('cf7sg_dynamic_dropdown_custom_options', array(), $tag->name, $cf7_key);
+         // $custom_options = apply_filters('cf7sg_dynamic_dropdown_custom_options', array(), $tag->name, $cf7_key);
          if(isset($custom_options['attributes']) && is_array($custom_options['attributes'])){
            $option_attrs = $custom_options['attributes'];
          }
@@ -419,7 +512,7 @@ abstract class CF7SG_Dynamic_list{
      $attributes['name']=$tag->name;
 
      /** @since 4.0 */
-     if($has_permalinks) $class.=' cf7sg-permalinks';
+     if(isset($other_attrs['permalinks'])) $class.=' cf7sg-permalinks';
 
      /**
      * @since 2.2 allows custom filtered $options to be an html string.
@@ -437,12 +530,21 @@ abstract class CF7SG_Dynamic_list{
        $options['']=$default_value;
        $selected='';
      }
-
-     $html = '<span class="wpcf7-form-control-wrap '.$tag_name.'">'.PHP_EOL;
-     $html .= $this->get_dynamic_html_field($attributes, $options, $option_attrs, $is_multiple,$selected).PHP_EOL;
+     $other_classes='';
+     if(!empty($other_attrs)) $other_classes = ' cf7sg-'.implode(' cf7sg-',array_keys($other_attrs));
+     $html = '<span class="wpcf7-form-control-wrap '.$tag_name.$other_classes.'">'.PHP_EOL;
+     $html .= $this->get_dynamic_html_field($attributes, $options, $option_attrs, $other_attrs,$selected).PHP_EOL;
      $html .='</span>'.PHP_EOL;
 
      return $html;
+  }
+  public function format_attribute($name, $value){
+    if(is_array($value)){
+      $separator = ' ';
+      if('style' === $name ) $separator = ';';
+      $value = implode( $separator, $value);
+    }
+    return $name.'="'.$value.'"';
   }
   /**
    *
@@ -484,3 +586,61 @@ if(!function_exists('cf7sg_get_dynamic_lists')){
     return CF7SG_Dynamic_list::get_instances($tag_id);
   }
 }
+/* build a dynamic select dropdown */
+if( !function_exists('cf7sg_create_dynamic_select_tag') ){
+  function cf7sg_create_dynamic_select_tag(){
+    //check if there is an existing instance in memory.
+    $dl = CF7SG_Dynamic_List::get_instances('dynamic_select');
+    if(false === $dl){
+      $dl = new CF7SG_Dynamic_List('dynamic_select',__( 'dynamic-dropdown', 'cf7-grid-layout' ));
+      $dl->set_styles(array(
+        'select' => __('HTML Select field','cf7-grid-layout'),
+        'select2' => '<a target="_blank" href="https://select2.org/getting-started/basic-usage">'.__('jQuery Select2','cf7-grid-layout').'</a>'
+      ),array(
+        'select2'=>array(
+          'tags'=>array(
+            'label'=> '<a target="_blank" href="https://select2.org/tagging">'.__('Enable user options','cf7-grid-layout').'</a>',
+            'attrs'=>'disabled'
+          )
+        )
+      ));
+      $dl->set_others_extras(array(
+        'multiple'=> '<a target="_blank" href="https://www.w3schools.com/tags/att_select_multiple.asp">'.__('Enable multiple selection','cf7-grid-layout').'</a>'
+      ));
+    }
+    return $dl;
+  }
+}
+add_action('cf7sg_register_dynamic_lists', 'cf7sg_create_dynamic_select_tag');
+/**
+* Dynamic checkbox
+* @since 4.11.0
+*/
+if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
+  function cf7sg_create_dynamic_checkbox_tag(){
+    //check if there is an existing instance in memory.
+    $dl = CF7SG_Dynamic_List::get_instances('dynamic_checkbox');
+    if(false === $dl){
+      $dl = new CF7SG_Dynamic_List('dynamic_checkbox',__( 'dynamic-checkbox', 'cf7-grid-layout' ));
+      $dl->set_styles(array(
+        'checkbox' => __('Checkbox fields','cf7-grid-layout'),
+        'radio' => __('Radio fields','cf7-grid-layout'),
+      ),array(
+        'checkbox'=>array(
+          'maxcheck'=>array(
+            'label'=> __('Limit selections','cf7-grid-layout'),
+            'attrs'=>'class="limit-check"',
+            'html'=>'<input type="text" disabled placeholder="3" value="" class="max-selection"/>
+            <input type="hidden" value="" class="data-attribute" />'
+          )
+        )
+      ));
+      $dl->set_others_extras(array(
+        'treeview'=> __('Tree view','cf7-grid-layout'),
+        'imagegrid'=> __('Image grid','cf7-grid-layout'),
+      ));
+    }
+    return $dl;
+  }
+}
+add_action('cf7sg_register_dynamic_lists', 'cf7sg_create_dynamic_checkbox_tag');

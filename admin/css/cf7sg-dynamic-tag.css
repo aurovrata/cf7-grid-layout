@@ -2,6 +2,12 @@
 #TB_window .tag-generator-panel {
 	height: 100%;
 }
+#dynamic-checkbox-tag-generator .cf7sg-se-maxcheck .max-selection {
+	width: 35px;
+}
+#dynamic-checkbox-tag-generator .cf7sg-se-maxcheck {
+	margin-left: 10px;
+}
 .cf7sg-dynamic-list-tag-manager a.helper::before {
     content: 'Click to copy!';
     display: none;

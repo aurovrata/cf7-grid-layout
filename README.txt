@@ -310,6 +310,12 @@ The UI editor works by recognising the HTML structure that it creates.  If you c
 
 You need to refresh your permalinks, please go to Settings->Permalinks in your dashboard, scroll down and hit the 'Save' button.
 
+= 20. 522 Error on live sites =
+
+In some server configuration, acccessing cloudflare resources results in 522 error (see this [thread](https://wordpress.org/support/topic/522-error-with-codemirror-jump-to-line-js/)).  The plugin uses select2 javascript plugin library stored on the cdnjs cloudflare network for live sites.  To force the plugin to use the local resource, insert the following filter in your `functions.php` file,
+
+`add_filter('cf7sg_use_local_select2', '___return_true');`
+
 == Screenshots ==
 
 1. (1) This plugin replaces the CF7 post table page and post edit pages with WordPress core post edit and post pages.  This means that other plugins that build on WordPress standards for custom admin dashboard functionality should now play nicely with CF7.  One out-of-the-box improvement is the ability to customise the CF7 form table columns being displayed.
@@ -338,9 +344,13 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
-= 4.10.1 =
+= 4.11.0 =
 * cleanup code.
 * scroll up on slide change for multi-slider forms.
+* added data-attributes to customise dynamic lists.
+* added filter 'cf7sg_dynamic_list_options_attributes'.
+* deprecated filter 'cf7sg_dynamic_dropdown_option_attributes'.
+* added 'cf7sg_use_local_select2' filter to bypass cloudflare.
 = 4.10.0 =
 * abstraction of dynamic lists to open the possibility for other tag fields.
 * fix file required PHP fatal error.

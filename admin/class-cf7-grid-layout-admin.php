@@ -406,6 +406,8 @@ class Cf7_Grid_Layout_Admin {
           )
         );
         wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
+        wp_enqueue_script( 'cf7sg-dynamic-checkbox-js', $plugin_dir . 'admin/js/cf7sg-dynamic-checkbox.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
+        wp_enqueue_script( 'cf7sg-dynamic-select-js', $plugin_dir . 'admin/js/cf7sg-dynamic-select.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
         wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
         /** @since 3.2.0 */
         wp_enqueue_script('cf7sg-mail-tag-js', $plugin_dir.'admin/js/mail-tag-helper.js', array('jquery','jquery-clibboard'));
@@ -1232,7 +1234,54 @@ class Cf7_Grid_Layout_Admin {
     $args = wp_parse_args( $args, array() );
 		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-benchmark-tag.php');
 	}
+  /**
+  *
+  *
+  *@since 4.11.0
+  *@param string $param text_description
+  *@return string text_description
+  */
+  public function print_dynamic_list_generator($tag_id, $dlo, $form, $args){
+    include plugin_dir_path( __FILE__ ) . 'partials/cf7-dynamic-tag-display.php';
+  }
+  /**
+  * Function to get classes to be added to the form wrapper.
+  * these classes will be passed in the resource enqueue action, allowing for specific js/css resources
+  * to be queued up and loaded on the page where the form is being displayed.
+  * @param Array  array of classes to be added to the form wrapper.
+  * @param WPCF7_FormTag cf7 tag object for the form field.
+  * @param int $form_id cf7 fomr post ID..
+  * @return Array an array of classes to be added to the form to which this tag belonggs to.
+  */
+  public function save_dynamic_list_form_classes($form_classes, $tag, $form_id){
+    /* Bookeeping, set up tagged select2 fields to filter newly added options in case Post My CF7 Form plugin is running */
+    $class = $tag->get_class_option('');
 
+    switch($tag->basetype){
+      case 'dynamic_select':
+        if(strpos($class, 'select2')){
+          $form_classes[] = 'has-select2';
+          //track this field if user sets custom options.
+          if(strpos($class, 'tags')){
+            $tagged_fields = get_post_meta($form_id, '_cf7sg_select2_tagged_fields', true);
+            if(empty($tagged_fields)){
+              $tagged_fields = array();
+            }
+            if( !isset($tagged_fields[$tag->name]) ){
+              $tagged_fields[$tag->name] = $source;
+              update_post_meta($form_id, '_cf7sg_select2_tagged_fields',$tagged_fields);
+            }
+          }
+        }
+        if(false != strpos($class, 'nice-select') || false !=strpos($class, 'ui-select')){
+          $form_classes[] = 'has-nice-select';
+        }
+        break;
+      case 'dynamic_checkbox':
+        break;
+    }
+    return $form_classes;
+  }
   /**
   * Deactivate this plugin if CF7 plugin is deactivated.
   * Hooks on action 'admin_init'

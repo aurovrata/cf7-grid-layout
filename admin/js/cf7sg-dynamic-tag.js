@@ -56,6 +56,7 @@
         }
         break;
       case $target.is('.list-style'): //---------list-type
+        $target.closest('td.cf7sg-dl-styles').find('span.cf7sg-se-option').hide().find(':input').prop('checked', false).val('');
         break;
       case $target.is('.source-tab'): //source selection.
         break;
@@ -88,7 +89,7 @@
     }
     //update tag field.
     let $req = $('input[name="required"]', $form),
-      tagname = $('.select-multiple', $form).attr('id').replace('-multiple',''),
+      tagname = $form.data('tag'),
       id = $('input[name="id"]', $form).val(),
       classes = $('input[name="class"]', $form).val(),
       postlinks='',postimgs='',
@@ -115,10 +116,10 @@
         break;
       case 'post':
         if($post.val().length > 0){
-          let $tax = $('.post-taxonomies.cf7sg-dynamic-tag.'+$post.val()+' > select.select2');
+          let $tax = $('.post-taxonomies.'+$post.val()+' > select.select2', $form);
           /** @since 4.0 */
-          if($('.include-links',$form).is(':checked')) postlinks = ' permalinks';
-          if($('.include-images',$form).is(':checked')) postimgs = ' thumbnails';
+          if($('.include-links input',$form).is(':checked')) postlinks = ' permalinks';
+          if($('.include-images input',$form).is(':checked')) postimgs = ' thumbnails';
           values = ' "source:post:'+$post.val()+'"';
           if(null != $tax.val()){
             let term='';
@@ -134,7 +135,7 @@
     }
     //get any data-attribute hidden fields.
     $('input.data-attribute', $form).each(function(){
-      dataAttr += ' "data-'+this.value+'"';
+      if(''!=this.value.trim()) dataAttr += ' "data-'+this.value+'"';
     });
 
     //update tag.
