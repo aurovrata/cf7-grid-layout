@@ -128,7 +128,7 @@ class CF7SG_Dynamic_list{
   * @return Array an array of classes to be added to the form to which this tag belonggs to.
   */
   public function get_form_classes($tag, $form_id){
-     apply_filters('cf7sg_save_dynamic_list_form_classes', array(), $tag, $form_id);
+     return apply_filters('cf7sg_save_dynamic_list_form_classes', array(), $tag, $form_id);
   }
 
   /**
@@ -353,11 +353,11 @@ class CF7SG_Dynamic_list{
           foreach($terms as $term){
             /**
             * Filter dropdown options labels.
-            * @param string $label option label value.
+            * @param String $label option label value.
             * @param mixed $term the term object being used to populate this option.
-            * @param string $name the field name being populated.
-            * @param string $cf7_key  the form unique key.
-            * @return string $label option label value.
+            * @param WPCF7_FormTag $tag the field name being populated.
+            * @param String $cf7_key  the form unique key.
+            * @return String $label option label value.
             * @since 2.0.0
             */
             $label = $term->name;
@@ -375,7 +375,7 @@ class CF7SG_Dynamic_list{
             * Filter dropdown options  attributes.
             * @param array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
             * @param mixed either WP_Post or WP_Term object being used to populate this option.
-            * @param String $name the field name being populated.
+            * @param WPCF7_FormTag $tag the field name being populated.
             * @param String $cf7_key  the form unique key.
             * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
             * @since 2.0.0
@@ -418,8 +418,8 @@ class CF7SG_Dynamic_list{
         /**
         * Filter post query for dynamic dropdown options.
         * @param array $args an arra of query terms.
-        * @param string $name the field name being populated.
-        * @param string $cf7_key  the form unique key.
+        * @param WPCF7_FormTag $tag the field name being populated.
+        * @param String $cf7_key  the form unique key.
         * @return array an arra of query terms.
         */
         $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name, $cf7_key);
@@ -439,11 +439,11 @@ class CF7SG_Dynamic_list{
           foreach($posts as $post){
             /**
              * Filter dropdown options labels.
-             * @param string $label option label value.
+             * @param String $label option label value.
              * @param mixed $post the post object being used to populate this option.
-             * @param string $name the field name being populated.
-             * @param string $cf7_key  the form unique key.
-             * @return string $label option label value.
+             * @param WPCF7_FormTag $tag the field name being populated.
+             * @param String $cf7_key  the form unique key.
+             * @return String $label option label value.
              * @since 2.0.0
             */
             $label = $post->post_title;
@@ -456,15 +456,7 @@ class CF7SG_Dynamic_list{
               ), '4.11.0', "cf7sg_{$this->tag_id}_option_label" );
             $label = apply_filters("cf7sg_{$this->tag_id}_option_label", $label, $post, $tag, $cf7_key);
             $options[$post->post_name] = $label;
-            /**
-             * Filter dropdown options  attributes.
-             * @param Array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
-             * @param mixed either WP_Post or WP_Term object being used to populate this option.
-             * @param String $name the field name being populated.
-             * @param String $cf7_key  the form unique key.
-             * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
-             * @since 2.0.0
-            */
+
             $attributes = array();
             if( isset($other_attrs['permalinks']) ){
               $attributes['data-permalink'] = get_permalink($post);
@@ -478,7 +470,15 @@ class CF7SG_Dynamic_list{
                 $post,
                 $tag->name,
                 $cf7_key ), '4.11.0', "cf7sg_{$this->tag_id}_options_attributes" );
-            /** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
+            /**
+             * Filter dropdown options  attributes.
+             * @param Array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
+             * @param mixed either WP_Post or WP_Term object being used to populate this option.
+             * @param WPCF7_FormTag $tag the field name being populated.
+             * @param String $cf7_key  the form unique key.
+             * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
+             * @since 4.11.0
+            */
             $attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", $attributes, $post, $tag, $cf7_key);
 
             if(is_array($attributes)) $option_attrs[$post->post_name] = $attributes;
@@ -507,8 +507,8 @@ class CF7SG_Dynamic_list{
       /**
       * Allow filtering of options populated by posts or taxonomies.
       * @param array $options an array of $value=>$name pairs which will be used for populating select options.
-      * @param string $name the field name being populated.
-      * @param string $cf7_key  the form unique key.
+      * @param WPCF7_FormTag $tag the field name being populated.
+      * @param String $cf7_key  the form unique key.
       * @return array array of $value=>$name pairs which will be used for populating select options.
       * @since 1.4.0
       */
@@ -534,19 +534,26 @@ class CF7SG_Dynamic_list{
     if(!is_array($options) && !is_string($options)) $options = array();
     /**
     * Filter dynamic dropdown default empty value label.
-    * @param string $label the label for the default value, this is null by default and not shown.
-    * @param string $name the field name being populated.
-    * @param string $cf7_key  the form unique key.
-    * @return string the label for the default value, returning a non-null value with display this as the first option.
+    * @param String $label the label for the default value, this is null by default and not shown.
+    * @param WPCF7_FormTag $tag the field name being populated.
+    * @param String $cf7_key  the form unique key.
+    * @return String the label for the default value, returning a non-null value with display this as the first option.
     */
-    $default_value = apply_filters('cf7sg_dynamic_dropdown_default_value', null, $tag->name, $cf7_key);
+    $default_value = apply_filters_deprecated('cf7sg_dynamic_dropdown_default_value',
+      array(
+        null,
+        $tag->name,
+        $cf7_key
+      ),'4.11.0', "cf7sg_{$this->tag_id}_default_value");
+    $default_value = apply_filters("cf7sg_{$this->tag_id}_default_value", null, $tag, $cf7_key);
+
     if(!is_null($default_value)){
      $options['']=$default_value;
      $selected='';
     }
     $other_classes='';
     if(!empty($other_attrs)) $other_classes = ' cf7sg-'.implode(' cf7sg-',array_keys($other_attrs));
-    $html = '<span class="wpcf7-form-control-wrap '.$tag_name.$other_classes.'">'.PHP_EOL;
+    $html = '<span class="wpcf7-form-control-wrap cf7sg-dl-'. $source['source'] .' '. $tag_name . $other_classes . '">' . PHP_EOL;
     /**
     * Register a [dynamic_display] shortcode with CF7.
     * @since 4.11.0
@@ -557,7 +564,7 @@ class CF7SG_Dynamic_list{
     * @param String $selected default selected value.
     * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
     */
-    $html .= apply_filters('cf7sg_dynamic_list_html_field', '', $this->tag_id, $attributes, $options, $option_attrs, $other_attrs, $selected).PHP_EOL;
+    $html .= apply_filters("cf7sg_{$this->tag_id}_html_field", '', $attributes, $options, $option_attrs, $other_attrs, $selected).PHP_EOL;
     $html .='</span>'.PHP_EOL;
 
     return $html;

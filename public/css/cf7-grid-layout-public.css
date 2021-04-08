@@ -6,9 +6,14 @@
  .cf7sg-imagegrid .cf7sg-dynamic_checkbox {
  	display: flex;
  	flex-flow: row wrap;
- 	justify-content: center;
-  align-content: center;
+ 	justify-content: start;
+  /* align-content: center; */
  }
+ .cf7-smart-grid.has-grid .cf7sg-align-center .wpcf7-form-control {
+	width: max-content;
+	display: block;
+	margin: auto;
+}
 .cf7sg-imagegrid .cf7sg-dc input {
 	display: none;
 }

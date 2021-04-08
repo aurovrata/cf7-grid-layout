@@ -1270,6 +1270,7 @@ class Cf7_Grid_Layout_Admin {
   * Function to get classes to be added to the form wrapper.
   * these classes will be passed in the resource enqueue action, allowing for specific js/css resources
   * to be queued up and loaded on the page where the form is being displayed.
+  * hooked to 'cf7sg_save_dynamic_list_form_classes'
   * @param Array  array of classes to be added to the form wrapper.
   * @param WPCF7_FormTag cf7 tag object for the form field.
   * @param int $form_id cf7 fomr post ID..

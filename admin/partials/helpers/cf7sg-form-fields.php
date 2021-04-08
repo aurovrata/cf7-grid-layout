@@ -14,19 +14,19 @@ if(is_plugin_active( 'post-my-contact-form-7/cf7-2-post.php' )){
 }
 ?>
 <li class="cf7sg-tag-dynamic_list-post">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_post_query','{$field_name_slug}_dynamic_list',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_post_query','{$field_name_slug}_dynamic_list',10,3);
 /**
 * Filter post query for dynamic dropdown options.
 * @param array $args an arra of query terms.
-* @param string $name the field name being populated.
+* @param WPCF7_FormTag $tag the field being populated.
 * @param string $cf7_key  the form unique key.
 * @return array an arra of query terms.
 */
-function {$field_name_slug}_dynamic_list($query_args, $name, $cf7_key){
+function {$field_name_slug}_dynamic_list($query_args, $tag, $cf7_key){
   //if you have a dynamic dropdown field with posts as list source.
   //$query_args array to filter query arguments used to populate dynamic dropdown of posts.
   //these arguments are passed to the function get_posts($query_args). (codex: https://codex.wordpress.org/Template_Tags/get_posts)
-  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $name){
+  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
     return $query_args;
   }
   //setup your custom query...
@@ -34,36 +34,36 @@ function {$field_name_slug}_dynamic_list($query_args, $name, $cf7_key){
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('query arguments to retrieve posts for dynamic dropdown.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_list-taxonomy">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_label','{$field_name_slug}_dynamic_option_label',10,4);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_option_label','{$field_name_slug}_dynamic_option_label',10,4);
 /**
 * Filter dropdown options label for dynamic drodpwn list of taxonomy terms.
 * @param string $label option label value.
 * @param WP_Term $term the term object being used to populate this option.
-* @param string $name the field name being populated.
+* @param WPCF7_FormTag $tag the field being populated.
 * @param string $cf7_key  the form unique key.
 * @return string $label option label value.
 */
-function {$field_name_slug}_dynamic_option_label($label, $term, $name, $cf7_key){
+function {$field_name_slug}_dynamic_option_label($label, $term, $tag, $cf7_key){
   //these are the label users will see when the dropdown opens.
-  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $name){
+  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
     return $label;
   }
   return $label;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option label.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_list-taxonomy">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_taxonomy_query','{$field_name_slug}_taxonomy_query',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_taxonomy_query','{$field_name_slug}_taxonomy_query',10,3);
 /**
 * Filter dropdown taxonomy query parameter.
 * (see https://developer.wordpress.org/reference/classes/wp_term_query/__construct/)
 * @param array $args array of taxonomy query attributes.
-* @param string $name the field name being populated.
+* @param WPCF7_FormTag $tag the field being populated.
 * @param string $cf7_key  the form unique key.
 * @return array of query attributes.
 */
-function {$field_name_slug}_taxonomy_query($args, $name, $cf7_key){
+function {$field_name_slug}_taxonomy_query($args, $tag, $cf7_key){
   //these are the label users will see when the dropdown opens.
-  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $name){
+  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
     return $args;
   }
   //use only the child terms of a parent.
@@ -95,18 +95,18 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $term, $tag, 
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option attributes.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_list-post">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_option_label','{$field_name_slug}_dynamic_option_label',10,4);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_option_label','{$field_name_slug}_dynamic_option_label',10,4);
 /**
 * Filter dropdown options label for dynamic drodpwn list of existing posts.
 * @param string $label option label value.
 * @param WP_Post $post the post object being used to populate this option.
-* @param string $name the field name being populated.
+* @param WPCF7_FormTag $tag the field being populated.
 * @param string $cf7_key  the form unique key.
 * @return string $label option label value.
 */
-function {$field_name_slug}_dynamic_option_label($label, $post, $name, $cf7_key){
+function {$field_name_slug}_dynamic_option_label($label, $post, $tag, $cf7_key){
   //these are the label users will see when the dropdown opens.
-  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $name){
+  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
     return $label;
   }
   //setup a custom label
@@ -135,36 +135,17 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $post, $tag, 
   return $attributes;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option attributes.','cf7-grid-layout')?>
 </li>
-<li class="cf7sg-tag-dynamic_list-post cf7sg-tag-dynamic_list-taxonomy">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_filter_options','{$field_name_slug}_filter_options',10,3);
-/**
-* Allow filtering of options populated by posts or taxonomies.
-* @param array $options an array of $value=>$name pairs which will be used for populating select options.
-* @param string $name the field name being populated.
-* @param string $cf7_key  the form unique key.
-* @return array array of $value=>$label pairs which will be used for populating select options.
-*/
-function {$field_name_slug}_filter_options($options, $name, $cf7_key){
-  if('{$form_key}'!==$cf7_key || '{$field_name}' !==$name){
-    return $options;
-  }
-  foreach($options as $value=>$label){
-    $options[$value] = 'Buy '.$label; //pre-pone all labels with the word 'Buy'.
-  }
-  return $options;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option list.','cf7-grid-layout')?>
-</li>
 <li class="cf7sg-tag-dynamic_list">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_default_value','{$field_name_slug}_dynamic_default_option',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_default_value','{$field_name_slug}_dynamic_default_option',10,3);
 /**
 * Filter dynamic dropdown default empty label.
 * @param string $label the label for the default value, this is null by default and not shown.
-* @param string $name the field name being populated.
+* @param WPCF7_FormTag $tag the field being populated.
 * @param string $cf7_key  the form unique key.
 * @return string the label for the default value, returning a non-null value with display this as the first option.
 */
-function {$field_name_slug}_dynamic_default_option($default, $name, $cf7_key){
-  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $name){
+function {$field_name_slug}_dynamic_default_option($default, $tag, $cf7_key){
+  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
     return $default;
   }
   $default = 'Please select an option...';
@@ -178,7 +159,7 @@ function {$field_name_slug}_dynamic_default_option($default, $name, $cf7_key){
 * where the source of options come from post titles.  Filter is fired when a new value is submitted.
 * This plugin does not take any further action, ie no post of $post_type will be created. It is upto you to do so and return the slug of the newly created post.
 * @param  string  $post_name the new post slug.
-* @param  string  $field_name the name of the form field.
+* @param String $field name of the form field.
 * @param  string  $title  new value being submitted for a new post title.
 * @param  string $post_type  the post type from which this dropdown was built
 * @param  array  $args  an array of additional parameters that was set in the tag, for example the taxonomy and terms from which to filter the posts for the dynamic list.
@@ -239,7 +220,7 @@ function {$field_name_slug}_select2_filter_values($values, $field, $submitted_da
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('user selection with user added option.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_list-filter cf7sg_filter_source">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_custom_dynamic_list','{$field_name_slug}_dynamic_options',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_custom_{$field_type}','{$field_name_slug}_dynamic_options',10,3);
 /**
 * Filter dropdown options for dynamic drodpwn list of taxonomy terms.
 * @param Array $options the option to filter.

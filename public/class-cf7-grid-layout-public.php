@@ -1663,7 +1663,7 @@ class Cf7_Grid_Layout_Public {
   }
   /**
 	 * Register a [dynamic_display] shortcode with CF7.
-	 * hooked on 'cf7sg_dynamic_list_html_field'
+	 * hooked on 'cf7sg_dynamic_select_html_field'
 	 * This function registers a callback function to expand the shortcode for the googleMap form fields.
 	 * @since 4.11.0
    * @param Array $attrs array of attribute key=>value pairs to be included in the html element tag.
@@ -1672,68 +1672,77 @@ class Cf7_Grid_Layout_Public {
    * @param Array $other_attrs array of other attributes selected in tag field as $attr=>true.
    * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
    */
-  public function build_dynamic_list_field( $html, $tag_id, $attrs, $options, $option_attrs, $other_attrs, $selected){
-    switch($tag_id){
-      case 'dynamic_select': //---------- Dynmaic dropdown.
-        $attributes ='';
-        foreach($attrs as $key=>$value){
-          if('name'==$key && isset($other_attrs['multiple'])) $value.='[]';
-          $attributes .= ' '.$key.'="'.$value.'"';
-        }
-        $html = '<select value="'.$selected.'"'.$attributes.'>'.PHP_EOL;
-        if(is_array($options)){
-          foreach($options as $value=>$label){
-            $attributes ='';
-            if(isset($option_attrs[$value])){
-              foreach($option_attrs[$value] as $name=>$value){
-                $attributes .= ' '.$this->format_attribute($name,$value);
-              }
-            }
-            if($value==$selected) $attributes .=' selected="selected"';
-            $html .= '<option value="'.$value.'"'.$attributes.'>'.$label.'</option>'.PHP_EOL;
-          }
-        }else echo $options; //pre 4.10.0 backward compatibility.
-        $html .='</select>'.PHP_EOL;
-        break;
-      case 'dynamic_checkbox': //-------- Dunamic checkbox ------.
-        $classes = array();
-        if( isset($attrs['class']) ) $classes = explode(' ',$attrs['class']);
-        $type = 'radio';
-        $name_attr='';
-        if( isset($attrs['name'])){
-          $name_attr = 'name="'.$attrs['name'];
-          if(in_array('checkbox',$classes)){
-            $name_attr.='[]';
-            $type = 'checkbox';
-          }
-          $name_attr.='"';
-        }
-        $attributes = '';
-        foreach($attrs as $key=>$value){
-          if('name'==$key) continue;
-          $attributes .= ' '.$key.'="'.$value.'"';
-        }
-        $html = '<span '.$attributes.'>'.PHP_EOL;
-        foreach($options as $value=>$label){
-          $attributes ='';
-
-          // if($value==$selected) $attributes .=' checked="true"';
-          $html .= '<label class="cf7sg-dc">'.PHP_EOL;
-          $img_el = '';
-          if(isset($option_attrs[$value])){
-            foreach($option_attrs[$value] as $name=>$value){
-              if('data-thumbnail'==$name && isset($other_attrs['imagegrid'])){
-                $img_el = '  <span class="cf7sg-dc-img"><img src="'.$value.'"/></span>'.PHP_EOL;
-              }else $attributes .= ' '.$this->format_attribute($name,$value);
-            }
-          }
-          $html .= '  <input type="'.$type.'" value="'.$value.'" '.$attributes.' '.$name_attr.'/>'.PHP_EOL;
-          $html .= $img_el;
-          $html .= '  <span class="cf7sg-dc-label">'.$label.'</span>'.PHP_EOL;
-          $html .= '</label>'.PHP_EOL;
-        }
-        $html .='</span>'.PHP_EOL;
+  public function build_dynamic_select_field( $html, $attrs, $options, $option_attrs, $other_attrs, $selected){
+    $attributes ='';
+    foreach($attrs as $key=>$value){
+      if('name'==$key && isset($other_attrs['multiple'])) $value.='[]';
+      $attributes .= ' '.$key.'="'.$value.'"';
     }
+    $html = '<select value="'.$selected.'"'.$attributes.'>'.PHP_EOL;
+    if(is_array($options)){
+      foreach($options as $value=>$label){
+        $attributes ='';
+        if(isset($option_attrs[$value])){
+          foreach($option_attrs[$value] as $name=>$value){
+            $attributes .= ' '.$this->format_attribute($name,$value);
+          }
+        }
+        if($value==$selected) $attributes .=' selected="selected"';
+        $html .= '<option value="'.$value.'"'.$attributes.'>'.$label.'</option>'.PHP_EOL;
+      }
+    }else echo $options; //pre 4.10.0 backward compatibility.
+    $html .='</select>'.PHP_EOL;
+    return $html;
+  }
+  /**
+   * Register a [dynamic_display] shortcode with CF7.
+   * hooked on 'cf7sg_dynamic_checkbox_html_field'
+   * This function registers a callback function to expand the shortcode for the googleMap form fields.
+   * @since 4.11.0
+   * @param Array $attrs array of attribute key=>value pairs to be included in the html element tag.
+   * @param Array $options array of value=>label pairs  of options.
+   * @param Array $option_attrs array of value=>attribute pairs  for each options, such as permalinks for post sources..
+   * @param Array $other_attrs array of other attributes selected in tag field as $attr=>true.
+   * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
+   */
+  public function build_dynamic_checkbox_field( $html, $attrs, $options, $option_attrs, $other_attrs, $selected){
+    $classes = array();
+    if( isset($attrs['class']) ) $classes = explode(' ',$attrs['class']);
+    $type = 'radio';
+    $name_attr='';
+    if( isset($attrs['name'])){
+      $name_attr = 'name="'.$attrs['name'];
+      if(in_array('checkbox',$classes)){
+        $name_attr.='[]';
+        $type = 'checkbox';
+      }
+      $name_attr.='"';
+    }
+    $attributes = '';
+    foreach($attrs as $key=>$value){
+      if('name'==$key) continue;
+      $attributes .= ' '.$key.'="'.$value.'"';
+    }
+    $html = '<span '.$attributes.'>'.PHP_EOL;
+    foreach($options as $value=>$label){
+      $attributes ='';
+
+      // if($value==$selected) $attributes .=' checked="true"';
+      $html .= '<label class="cf7sg-dc">'.PHP_EOL;
+      $img_el = '';
+      if(isset($option_attrs[$value])){
+        foreach($option_attrs[$value] as $name=>$value){
+          if('data-thumbnail'==$name && isset($other_attrs['imagegrid'])){
+            $img_el = '  <span class="cf7sg-dc-img"><img src="'.$value.'"/></span>'.PHP_EOL;
+          }else $attributes .= ' '.$this->format_attribute($name,$value);
+        }
+      }
+      $html .= '  <input type="'.$type.'" value="'.$value.'" '.$attributes.' '.$name_attr.'/>'.PHP_EOL;
+      $html .= $img_el;
+      $html .= '  <span class="cf7sg-dc-label">'.$label.'</span>'.PHP_EOL;
+      $html .= '</label>'.PHP_EOL;
+    }
+    $html .='</span>'.PHP_EOL;
     return $html;
   }
   protected function format_attribute($name, $value){

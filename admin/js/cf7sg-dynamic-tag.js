@@ -5,6 +5,7 @@
   $('.cf7sg-dynamic-list-tag-manager').change(':input', function(e){
     let $target = $(e.target),
       $form = $target.closest('.cf7sg-dynamic-list-tag-manager'),
+      tagname = $form.data('tag'),
       $tab = $('input[name="sections"]:checked', $form),
       $is_cat = $('input[name="is_hierarchical"]', $form),
       $taxonomy = $('input[name="taxonomy_slug"]', $form),
@@ -83,6 +84,7 @@
           //get post slug
           let key = $('#post_name').val();
           text = text.replace(/\{\$form_key\}/gi, key);
+          text = text.replace(/\{\$field_type\}/gi, tagname);
           text = text.replace(/\{\$field_name\}/gi, $name.val());
           text = text.replace(/\{\$field_name_slug\}/gi, $name.val().replace(/\-/g,'_'));
           text = text.replace(/\[dqt\]/gi, '"');
@@ -92,7 +94,6 @@
     });
     //update tag field.
     let $req = $('input[name="required"]', $form),
-      tagname = $form.data('tag'),
       id = $('input[name="id"]', $form).val(),
       classes = $('input[name="class"]', $form).val(),
       postlinks='',postimgs='',
