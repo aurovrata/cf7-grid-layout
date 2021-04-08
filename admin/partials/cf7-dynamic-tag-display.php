@@ -83,7 +83,7 @@
                  ?>
                  <span class="cf7sg-se-option cf7sg-se-<?=$val?><?=$display_none?>">
                    <label for="<?=$s?>-<?=$val?>">
-                     <?=$pre?><input id="<?=$s?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>" <?=attrs?>/><?=$pst?><?=$html?>
+                     <?=$pre?><input id="<?=$s?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>" <?=$attributes?>/><?=$pst?><?=$html?>
                    </label>
                  </span>
                <?php endforeach;?>
@@ -180,6 +180,7 @@
             <input disabled="true"  class="cf72post-new-taxonomy" type="text" name="taxonomy_slug" value="" /></label>
             <label class="hidden"><input class="cf72post-new-taxonomy" type="checkbox" name="is_hierarchical" /><?=__('hierarchical','cf7-grid-layout')?></label>
           </div>
+          <?php do_action('cf7sg_dynamic_tag_manager_taxonomy_source', $tag_id); ?>
         </article>
       </section>
       <section class="post-source">
@@ -251,6 +252,7 @@
             </select>
           </div>
   <?php endforeach;  ?>
+  <?php do_action('cf7sg_dynamic_tag_manager_post_source', $tag_id); ?>
         </article>
       </section>
       <section class="custom-source">
@@ -258,13 +260,20 @@
         <label for="<?=$class?>-custom-tab"><?=__('Custom','cf7-grid-layout')?></label>
         <article>
           <h4><?=__('Custom source','cf7-grid-layout')?></h4>
-          <p class="position-relative">
-            <?= __('Copy the following <a href="javascript:void(0);">filter</a> to your <em>functions.php</em> file.', 'cf7-grid-layout');?>
+          <p class="position-relative filter-hook">
+            <?php
+            /** @since 4.11.0 generalise hook jelper code initialisation.
+            * use the provided template to display a message to copy the filter link.
+            * Insert the filter class name into the template, that matches the filter added to the list in
+            * the file admin/partials/helpers/cf7sg-form-fields.php.
+            */
+            echo sprintf(__('Copy the following <a class="%s" href="javascript:void(0);">filter</a> to your <em>functions.php</em> file.', 'cf7-grid-layout'), 'cf7sg_filter_source');?>
           </p>
+          <?php do_action('cf7sg_dynamic_tag_manager_custom_source', $tag_id); ?>
         </article>
       </section>
     </div> <!-- end-tabs-->
-
+    <?php do_action('cf7sg_dynamic_tag_manager_end', $tag_id); ?>
   </fieldset>
 </div>
 <div class="insert-box cf7sg-dynamic-tag-submit">

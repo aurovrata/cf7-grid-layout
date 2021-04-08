@@ -395,6 +395,9 @@ class Cf7_Grid_Layout_Admin {
         global $post;
 
         wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
+        /** @since 4.11.0 abstract out dynamic lists */
+        do_action('cf7sg_register_dynamic_lists');
+        $lists = cf7sg_get_dynamic_lists();
         wp_localize_script(
           $this->plugin_name,
           'cf7grid',
@@ -402,7 +405,8 @@ class Cf7_Grid_Layout_Admin {
             'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', '<div class="field"><label></label>', $post->post_name),
 						'postHTML' => apply_filters('cf7sg_post_cf7_field_html', '<p class="info-tip"></p></div>', $post->post_name),
 						'requiredHTML' => apply_filters('cf7sg_required_cf7_field_html', '<em>*</em>', $post->post_name),
-						'ui' => apply_filters('cf7sg_grid_ui', true, $post->post_name)
+						'ui' => apply_filters('cf7sg_grid_ui', true, $post->post_name),
+            'dynamicTags' => array_keys($lists)
           )
         );
         wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
@@ -1235,14 +1239,32 @@ class Cf7_Grid_Layout_Admin {
 		include( plugin_dir_path( __FILE__ ) . '/partials/cf7-benchmark-tag.php');
 	}
   /**
-  *
-  *
+  * Print the dynamic list tag generator form.
+  * Hooked on 'cf7sg_display_dynamic_list_tag_manager'.
+  * allows other plugins to customise the tag manager for their own dynamic field.
   *@since 4.11.0
-  *@param string $param text_description
-  *@return string text_description
+  *@param String $tag_id dynamic list tag id.
+  *@param CF7SG_Dynamic_list $dlo dynamic list object.
+  *@param WPCF7_Contact_Form $form cf7 form object.
+  *@param Array $args cf7 form shortcode attributes
   */
   public function print_dynamic_list_generator($tag_id, $dlo, $form, $args){
     include plugin_dir_path( __FILE__ ) . 'partials/cf7-dynamic-tag-display.php';
+  }
+  /**
+  * Add custom imagegrid hook to taxonomy source.
+  * Hooked to 'cf7sg_dynamic_tag_manager_taxonomy_source'
+  *@since 4.11.0
+  *@param String $tag_id dynamic list tag id.
+  */
+  public function add_taxonomy_imagegrid_hook($tag_id){
+    if('dynamic_checkbox' != $tag_id) return;
+    ?>
+    <p class="imagegrid-filter display-none filter-hook">
+      <strong><?=__('Filter imagegrid image sources','cf7-grid-layout')?></strong><br />
+      <?php echo sprintf(__('Copy the following <a class="%s" href="javascript:void(0);">filter</a> to your <em>functions.php</em> file.', 'cf7-grid-layout'), 'cf7sg_filter_taxonomy_images');?>
+    </p>
+    <?php
   }
   /**
   * Function to get classes to be added to the form wrapper.

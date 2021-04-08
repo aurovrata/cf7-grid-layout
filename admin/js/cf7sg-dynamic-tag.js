@@ -68,9 +68,12 @@
       source = 'post';
     }else if($tab.is('.custom-tab')){
       source = 'filter';
-      let $a = $('p.position-relative a', $tab.parent());
+    }
+    //set filters.
+    $('p.filter-hook a', $form).each(function(){
+      let $a=$(this);
       if( !$a.is('.init') ){
-        $a.attr('data-cf72post', $('#fieldhelperdiv li.cf7sg_filter_source a').data('cf72post') );
+        $a.attr('data-cf72post', $('#fieldhelperdiv li.'+this.classList+' a').data('cf72post') );
         $a.addClass('init').addClass('helper');
       }
       new Clipboard($a[0], {
@@ -86,7 +89,7 @@
           return text;
         }
       })
-    }
+    });
     //update tag field.
     let $req = $('input[name="required"]', $form),
       tagname = $form.data('tag'),

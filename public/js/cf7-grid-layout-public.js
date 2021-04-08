@@ -619,18 +619,23 @@
             'total': $glider.find('.glider-slide').length
           })
         }).on('glider-slide-visible', function(e){
+          /** @since 4.11.0 scroll to top of slide */
+          let scrollUp = true;
           $prev.show();
           $next.show();
           if(isSubmit) $submit.hide();
           switch(e.detail.slide){
             case 0: //hide prev button;
               $prev.hide();
+              scrollUp = false;
               break;
             case glider.slides.length-1:
               $next.hide();
               if(isSubmit) $submit.show();
               break;
           }
+          if(scrollUp) $(window).scrollTop($slider.offset().top-35);
+
           $(e.target).find('.glider-slide.active').trigger({
             type:'sgSlideChange',
             'current':e.detail.slide,

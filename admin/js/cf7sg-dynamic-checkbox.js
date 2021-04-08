@@ -20,11 +20,17 @@
 				if(e.target.checked) $('.cf7sg-se-maxcheck .max-selection').prop('disabled',false);
 				else $('.cf7sg-se-maxcheck .max-selection').prop('disabled',true);
 				break;
-			case $target.is('.list-style.dynamic_checkbox'):
-				if(e.target.checked) $target.next('span').show();
+			case $target.is('.list-style.dynamic_checkbox:checked'):
+				$target.next('span').show();
 				break;
 			case $target.is('.max-selection'): //update hidden value.
 				$('.cf7sg-se-maxcheck input.data-attribute').val('maxcheck:'+e.target.value);
+				break;
+			case $target.is('.select-imagegrid'): //update hidden value.
+				let $form = $target.closest('.cf7sg-dynamic-list-tag-manager'),
+	        $tab = $('input[name="sections"]:checked', $form);
+				if( $tab.is('.taxonomy-tab') && e.target.checked) $('p.filter-hook', $tab.closest('section')).show();
+				else $('p.filter-hook', $tab.closest('section')).hide();
 				break;
 		}
 	});

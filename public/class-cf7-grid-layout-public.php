@@ -237,11 +237,7 @@ class Cf7_Grid_Layout_Public {
     /** @since 4.2.0 enable Glider sliders for slider sections */
     wp_register_script('glider-js', $plugin_dir . 'assets/glider-js/glider.js', null, '1.7.4',true);
     //allow custom script registration
-    do_action('smart_grid_register_scripts');
-    /** @since 4.10.0 abstract out dynamic lists */
-    do_action('cf7sg_register_dynamic_lists');
-    $lists = cf7sg_get_dynamic_lists();
-    foreach($lists as $l) $l->register_styles($airplane);
+    do_action('smart_grid_register_scripts', $airplane);
 	}
   /**
    * Dequeue script 'contact-form-7'
@@ -1654,6 +1650,18 @@ class Cf7_Grid_Layout_Public {
     if(!empty($prefill)) setcookie('_cf7sg_'. sanitize_text_field( $_POST['_wpcf7_key'] ), json_encode($prefill),0,'/');
   }
   /**
+  * Wrap checkbox labels with p tags.
+  * Hooked on 'cf7sg_dynamic_checkbox_option_label'.
+  *@since 4.11.0
+  *@param String $label label
+  *@param mixed $obj source object.
+  *@return String label
+  */
+  public function wrap_label_in_paragraph($label, $obj, $tag){
+    if(in_array('imagegrid',$tag->options)) $label = "<p>$label</p>";
+    return $label;
+  }
+  /**
 	 * Register a [dynamic_display] shortcode with CF7.
 	 * hooked on 'cf7sg_dynamic_list_html_field'
 	 * This function registers a callback function to expand the shortcode for the googleMap form fields.
@@ -1673,16 +1681,18 @@ class Cf7_Grid_Layout_Public {
           $attributes .= ' '.$key.'="'.$value.'"';
         }
         $html = '<select value="'.$selected.'"'.$attributes.'>'.PHP_EOL;
-        foreach($options as $value=>$label){
-          $attributes ='';
-          if(isset($option_attrs[$value])){
-            foreach($option_attrs[$value] as $name=>$value){
-              $attributes .= ' '.$this->format_attribute($name,$value);
+        if(is_array($options)){
+          foreach($options as $value=>$label){
+            $attributes ='';
+            if(isset($option_attrs[$value])){
+              foreach($option_attrs[$value] as $name=>$value){
+                $attributes .= ' '.$this->format_attribute($name,$value);
+              }
             }
+            if($value==$selected) $attributes .=' selected="selected"';
+            $html .= '<option value="'.$value.'"'.$attributes.'>'.$label.'</option>'.PHP_EOL;
           }
-          if($value==$selected) $attributes .=' selected="selected"';
-          $html .= '<option value="'.$value.'"'.$attributes.'>'.$label.'</option>'.PHP_EOL;
-        }
+        }else echo $options; //pre 4.10.0 backward compatibility.
         $html .='</select>'.PHP_EOL;
         break;
       case 'dynamic_checkbox': //-------- Dunamic checkbox ------.
@@ -1719,14 +1729,21 @@ class Cf7_Grid_Layout_Public {
           }
           $html .= '  <input type="'.$type.'" value="'.$value.'" '.$attributes.' '.$name_attr.'/>'.PHP_EOL;
           $html .= $img_el;
-          $html .= '  <span class="cf7sg-dc-text">'.$label.'</span>'.PHP_EOL;
+          $html .= '  <span class="cf7sg-dc-label">'.$label.'</span>'.PHP_EOL;
           $html .= '</label>'.PHP_EOL;
         }
         $html .='</span>'.PHP_EOL;
     }
     return $html;
   }
-
+  protected function format_attribute($name, $value){
+    if(is_array($value)){
+      $separator = ' ';
+      if('style' === $name ) $separator = ';';
+      $value = implode( $separator, $value);
+    }
+    return $name.'="'.$value.'"';
+  }
   public function register_dynamic_select_styles($airplane){
     $ff = '';
     if(!defined('WP_DEBUG') || !WP_DEBUG){

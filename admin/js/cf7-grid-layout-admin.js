@@ -954,34 +954,34 @@
       let helpers = ['cf7sg-tag-all'], jsHelpers = ['cf7sg-tag-all'];
       helpers[helpers.length] = 'cf7sg-tag-'+tag;
       jsHelpers[jsHelpers.length] = 'cf7sg-tag-'+tag;
-      switch(tag){
-        case 'submit':
-        case 'save':
+      switch(true){
+        case 'submit'==tag:
+        case 'save'==tag:
           tag +='-button';
           isSubmit = true;
           break;
-        case 'textarea':
+        case 'textarea'==tag:
           if( match[0].search(/\s[0-9]{0,3}x[0-9]{1,3}\s?/ig) <0){
             let cf7sc = match[0].replace(match[2],match[2]+' x5'); //textarea prefill.
             cf7sc = search.replace(match[0], cf7sc);
             $this.val(cf7sc);
           }
           break;
-        case 'acceptance': //special case with closing tag.
+        case 'acceptance'==tag: //special case with closing tag.
           stopSearch = true;
           break;
-        case 'recaptch':
-        case 'recaptcha': //special case with closing tag.
+        case 'recaptch'==tag:
+        case 'recaptcha'==tag: //special case with closing tag.
           label='[recaptcha]';
           stopSearch = true;
           break;
-        case 'dynamic_select':
+        case cf7grid.dynamicTags.indexOf(tag)>=0:
           let source ='';
           switch(true){
             case ( match.length > 4 && 'undefined' !== typeof match[4] ) : //match[4] exists.
               source = match[4].split(':');
               source = source[0];
-              helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source;
+              helpers[helpers.length] = 'cf7sg-tag-dynamic_list-'+source;
             case match.length > 3:  //lets deal with match[3]
               if(0=== source.length){
                 source="filter";
@@ -994,7 +994,7 @@
                     break;
                 }
               }
-              helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source;
+              helpers[helpers.length] = 'cf7sg-tag-dynamic_list-'+source;
 
               if(match[3].indexOf('class:tags')>-1){
                 helpers[helpers.length] = 'cf7sg-tag-dynamic_select-tags';

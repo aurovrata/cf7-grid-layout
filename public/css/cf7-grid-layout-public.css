@@ -2,6 +2,38 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+ /** @since 4.11.0 layout for imagegrids */
+ .cf7sg-imagegrid .cf7sg-dynamic_checkbox {
+ 	display: flex;
+ 	flex-flow: row wrap;
+ 	justify-content: center;
+  align-content: center;
+ }
+.cf7sg-imagegrid .cf7sg-dc input {
+	display: none;
+}
+.cf7sg-imagegrid .cf7sg-dc-label p {
+	display: inline-flex;
+	margin: 0;
+	padding: 3px 10px;
+	background: #ffffff7d;
+	text-align: center;
+}
+.cf7sg-imagegrid .cf7sg-dc-label {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	align-items: center;
+  flex-direction: column;
+}
+
+ .cf7sg-imagegrid .cf7sg-dc {
+	position: relative;
+	display: inline-flex;
+  margin: 3px;
+}
  /*------ style rules -----*/
  .cf7-smart-grid.has-grid .wpcf7 .ajax-loader {
 	margin: -24px 0 0 5px;

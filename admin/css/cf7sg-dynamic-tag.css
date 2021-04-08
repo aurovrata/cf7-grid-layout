@@ -8,6 +8,9 @@
 #dynamic-checkbox-tag-generator .cf7sg-se-maxcheck {
 	margin-left: 10px;
 }
+p.imagegrid-filter {
+	clear: both;
+}
 .cf7sg-dynamic-list-tag-manager a.helper::before {
     content: 'Click to copy!';
     display: none;

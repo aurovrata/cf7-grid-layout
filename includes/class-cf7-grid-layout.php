@@ -255,6 +255,8 @@ class Cf7_Grid_Layout {
     /** @since 4.11.0 build dynamic list tag generator */
     $this->loader->add_action( 'cf7sg_display_dynamic_list_tag_manager', $plugin_admin, 'print_dynamic_list_generator', 5, 4);
     $this->loader->add_action( 'cf7sg_save_dynamic_list_form_classes', $plugin_admin, 'save_dynamic_list_form_classes', 5, 3);
+    $this->loader->add_action( 'cf7sg_dynamic_tag_manager_taxonomy_source', $plugin_admin, 'add_taxonomy_imagegrid_hook');
+    // $this->loader->add_action( 'cf7sg_dynamic_tag_manager_custom_source', $plugin_admin, 'add_custom_imagegrid_hook');
 
 	}
 
@@ -316,6 +318,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'cf7sg_dynamic_list_html_field', $plugin_public, 'build_dynamic_list_field',5,7);
     $this->loader->add_action( 'smart_grid_register_styles', $plugin_public,'register_dynamic_select_styles');
     $this->loader->add_action( 'smart_grid_register_scripts', $plugin_public,'register_dynamic_select_scripts');
+    $this->loader->add_action( 'cf7sg_dynamic_checkbox_option_label', $plugin_public,'wrap_label_in_paragraph',5,3);
 	}
 
 	/**
