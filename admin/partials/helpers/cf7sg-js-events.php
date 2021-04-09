@@ -197,15 +197,15 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgSlideChange','.cf7sg-slider-s
 });" href="javascript:void(0);"><?=__('on slide change','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Function: ','cf7-grid-layout')?>
-        <a class="helper slider" data-cf72post="
+        <a class="helper slider-fields" data-cf72post="
   // $slider is the slider jquery object. Function can be chained.
-  //index can either be empty/null, which will move to the next clide.
+  //index can either be empty/null, which will move to the next slide.
   //a positive index of an existing slide to move (slide index is 0 based) or,
   // -1 to move to the previous slide.
   $slider.sgChangeSlide(index);/* change slides. */" href="javascript:void(0);"><?=__('change slide','cf7-grid-layout')?></a>
       </li>
       <li><?= __('Function: ','cf7-grid-layout')?>
-        <a class="helper slider" data-cf72post="
+        <a class="helper slider-fields" data-cf72post="
   // $slider is the slider jquery object.  The slide index is 0 based,
   let idx = $slider.sgCurrentSlide();/* get the current slide index. */" href="javascript:void(0);"><?=__('current slide index','cf7-grid-layout')?></a>
       </li>

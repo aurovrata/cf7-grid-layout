@@ -590,12 +590,16 @@
               prev: '.slider-prev',
               next: '.slider-next'
           }};
-        if($slider.data("prev").length>0){
-          $prev.text($slider.data("prev")).addClass('ui-button');
-        }else $prev.addClass("dashicons dashicons-arrow-left-alt");
-        if($slider.data("next").length>0){
-          $next.text($slider.data("next")).addClass('ui-button');
-        }else $next.addClass("dashicons dashicons-arrow-right-alt");
+        if(!isEmpty($slider.data("prev"))){
+          if($slider.data("prev").length>0){
+            $prev.text($slider.data("prev")).addClass('ui-button');
+          }else $prev.addClass("dashicons dashicons-arrow-left-alt");
+        }
+        if(!isEmpty($slider.data("next"))){
+          if($slider.data("next").length>0){
+            $next.text($slider.data("next")).addClass('ui-button');
+          }else $next.addClass("dashicons dashicons-arrow-right-alt");
+        }
         $slider.append($prev).append($next);
         // $slider.append('<div role="tablist" class="dots"></div>');
         $prev.hide(); //hide on first slide.
@@ -662,9 +666,9 @@
         current = $slider.sgCurrentSlide();
 
       if(isEmpty(slide)){ //if empty move to next slide
-        if(current<go.slides.length) go.scrollItem(current++)
+        if(current<go.slides.length) go.scrollItem(current+1)
       }else if(slide < 0){ //move to previous slide.
-        if(current > 0) go.scrollItem(current--)
+        if(current > 0) go.scrollItem(current-1)
       }else{ //move to slide index.
         slide = parseInt(slide);
         if(slide>=0 && slide <= go.slides.length) go.scrollItem(slide);
