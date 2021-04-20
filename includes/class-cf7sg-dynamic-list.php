@@ -388,8 +388,14 @@ class CF7SG_Dynamic_list{
                 $cf7_key ), '4.11.0', "cf7sg_{$this->tag_id}_options_attributes" );
             /** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
             $attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", array(), $term, $tag, $cf7_key);
-            if(is_array($attributes)) $option_attrs[$term->slug] = $attributes;
+            if(is_array($attributes)){
+              if(isset($attributes['class'])){
+                if(!is_array($attributes['class'])) $attributes['class'] = array($attributes['class']);
+                $attributes['class'][]='cf7sg-dl';
+              }else $attributes['class']='cf7sg-dl';
+            }else $attributes = array('class'=>'cf7sg-dl');
 
+            $option_attrs[$term->slug] = $attributes;
           }
         }
         $filter_options = true;
@@ -422,7 +428,6 @@ class CF7SG_Dynamic_list{
         * @param String $cf7_key  the form unique key.
         * @return array an arra of query terms.
         */
-        $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name, $cf7_key);
         $args = apply_filters_deprecated('cf7sg_dynamic_dropdown_post_query',
           array(
             $args,
@@ -434,6 +439,8 @@ class CF7SG_Dynamic_list{
         $posts = get_posts($args);
         // debug_msg($posts, 'post query ');
         if(!empty($posts)){
+          $post_taxonomies = get_object_taxonomies($source['post']);
+
           $selected = $posts[0]->post_name;
 
           foreach($posts as $post){
@@ -462,11 +469,12 @@ class CF7SG_Dynamic_list{
               $attributes['data-permalink'] = get_permalink($post);
             }
             if( isset($other_attrs['thumbnails']) ){
-              $attributes['data-thumbnail'] = get_the_post_thumbnail_url($post, 'thumbnail');
+              $size = apply_filters("cf7sg_{$this->tag_id}_image_size", 'thumbnail', $post, $tag, $cf7_key);
+              $attributes['data-thumbnail'] = get_the_post_thumbnail_url($post, $size);
             }
-            $attributes = apply_filters_deprecated( 'cf7sg_dynamic_dropdown_option_attributes',
+            $filter_attributes = apply_filters_deprecated( 'cf7sg_dynamic_dropdown_option_attributes',
               array(
-                $attributes,
+                array(),
                 $post,
                 $tag->name,
                 $cf7_key ), '4.11.0', "cf7sg_{$this->tag_id}_options_attributes" );
@@ -479,24 +487,41 @@ class CF7SG_Dynamic_list{
              * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
              * @since 4.11.0
             */
-            $attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", $attributes, $post, $tag, $cf7_key);
+            $filter_attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", array(), $post, $tag, $cf7_key);
+            if(is_array($filter_attributes)){
+              if(isset($filter_attributes['class'])){
+                if(!is_array($filter_attributes['class'])) $filter_attributes['class'] = array($filter_attributes['class']);
+                $filter_attributes['class'][]='cf7sg-dl';
+              }else $filter_attributes['class']=array('cf7sg-dl');
+            }else $filter_attributes = array('class'=>array('cf7sg-dl'));
+            //setup classes for existing post terms.
+            if(apply_filters("cf7sg_{$this->tag_id}_include_post_terms_as_class", false, $tag, $cf7_key)){
+              foreach($post_taxonomies as $tx){
+                $ts = get_the_terms($post, $tx);
+                if(is_array($ts)) foreach($ts as $t) $filter_attributes['class'][]="$tx-$ts->slug";
+              }
+            }
 
-            if(is_array($attributes)) $option_attrs[$post->post_name] = $attributes;
+            $option_attrs[$post->post_name] = $attributes;
+            if(is_array($filter_attributes)){
+              $option_attrs[$post->post_name] = array_merge($attributes, $filter_attributes);
+            }
           }
         }
         $filter_options = true;
       }else if('filter' == $source['source']){
-        $custom_options = apply_filters_deprecated( 'cf7sg_dynamic_dropdown_custom_options',
+        $options = apply_filters_deprecated( 'cf7sg_dynamic_dropdown_custom_options',
           array(
-            array(),
+            '',
             $tag->name,
             $cf7_key
           ), '4.11.0', "cf7sg_custom_{$this->tag_id}" );
+
         /** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
         $custom_options = apply_filters("cf7sg_custom_{$this->tag_id}", array(), $tag, $cf7_key);
         if(isset($custom_options['values']) && is_array($custom_options['values'])){
          $options = $custom_options['values'];
-        }else $options = $custom_options;
+       }else if(!empty($custom_options)) $options = $custom_options;
         // $custom_options = apply_filters('cf7sg_dynamic_dropdown_custom_options', array(), $tag->name, $cf7_key);
         if(isset($custom_options['attributes']) && is_array($custom_options['attributes'])){
           $option_attrs = $custom_options['attributes'];

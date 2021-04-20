@@ -1,7 +1,7 @@
 === Smart Grid-Layout Design for Contact Form 7 ===
 Contributors: aurovrata, StrangeTech, altworks, Birmania, netzgestaltung
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EDV4MEJLPT4VY
-Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitie fields, form custom javascript
+Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitive fields, form custom JavaScript
 Requires at least: 4.7
 Requires PHP: 5.6
 Tested up to: 5.7.0
@@ -15,7 +15,7 @@ This plugins allow pure CSS responsive grid layouts for contact form 7.  It enab
 
 The plugin uses the [smart-grid](http://origin.css.gd/) CSS plugin to build beautiful form layouts.  It introduces a graphical editor to design your forms, as well as a coloured html syntax editor built using the excellent CodeMirror editor.  It is now possible to design smart layouts with ease.
 
-v4.0 introduces a tutorial sections within the dashboard for quick rerefence to various youtube tutorials.  For a full list of available tutorials visit this playlist.
+v4.0 introduces a tutorial sections within the dashboard for quick reference to various YouTube tutorials.  For a full list of available tutorials visit this playlist.
 
 [youtube https://www.youtube.com/playlist?list=PLblJwjs_dFBsynXEstrV3fCIC7GBmK9HW]
 
@@ -39,7 +39,7 @@ Are you a WordPress developer or an HTML/JavaScript wizard?  Want to collaborate
 If you wish to leverage the in-editor helper code functionality for your CF7 plugin, you need to use the following hooks,
 `cf7sg_ui_grid_js_helper_hooks` - include js bind event code helpers.
 `cf7sg_ui_grid_helper_hooks` - include php filter/action hooks code helpers.
-`cf7sg_enqueue_admin_editor_scripts` - to enqueue scipts on the admin editor page to bind to editor events for further dynamic code helpers.
+`cf7sg_enqueue_admin_editor_scripts` - to enqueue scripts on the admin editor page to bind to editor events for further dynamic code helpers.
 
 If you wish to see an example on how to use this, please check the Google Map CF7 extension plugin code.  The `cf7-google-map/includes/class-cf7-googleMap.php` list the above hooks and the function calls are in the `cf7-google-map/admin/class-cf7-googleMap-admin.php` file.
 
@@ -170,8 +170,8 @@ The plugin will look for a JavaScript file `js/{$cf7key}.js` from the base of yo
 
 In addition, if you need to localise your custom script, you can do so using the following action hook,
 `
-add_action('smart_grid_register_custom_script', 'localise_custom_scritp', 10,1);
-function localise_custom_scritp($cf7_key){
+add_action('smart_grid_register_custom_script', 'localise_custom_script', 10,1);
+function localise_custom_script($cf7_key){
   if('my-form'!=$cf7_key) return;
   //your script is enqueued with the handle $cf7_key.'-js'
   wp_localize_script($cf7_key.'-js', 'customObj', array('key1'=>'value1'));
@@ -312,7 +312,7 @@ You need to refresh your permalinks, please go to Settings->Permalinks in your d
 
 = 20. 522 Error on live sites =
 
-In some server configuration, acccessing cloudflare resources results in 522 error (see this [thread](https://wordpress.org/support/topic/522-error-with-codemirror-jump-to-line-js/)).  The plugin uses select2 javascript plugin library stored on the cdnjs cloudflare network for live sites.  To force the plugin to use the local resource, insert the following filter in your `functions.php` file,
+In some server configuration, accessing cloudflare resources results in 522 error (see this [thread](https://wordpress.org/support/topic/522-error-with-codemirror-jump-to-line-js/)).  The plugin uses select2 JavaScript plugin library stored on the cdnjs cloudflare network for live sites.  To force the plugin to use the local resource, insert the following filter in your `functions.php` file,
 
 `add_filter('cf7sg_use_local_select2', '___return_true');`
 
@@ -355,7 +355,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * abstraction of dynamic lists to open the possibility for other tag fields.
 * fix file required PHP fatal error.
 = 4.9.2 =
-* fix admin js to ensure form field udpates reflect.
+* fix admin js to ensure form field updates reflect.
 * added 'cf7sg_save_post' action for plugins to save form attributes.
 = 4.9.1 =
 * admin css style fix.
@@ -364,7 +364,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * fix css/js codemirror empty line.
 * change in file schema, CF7 5.4 file validation handling not longer exposes additional file validation/transport.
 * files now stored in submission data array.
-* added actino 'cf7sg_valid_form_submission' fired once submission is validated.
+* added action 'cf7sg_valid_form_submission' fired once submission is validated.
 = 4.8.2 =
 * fix for new file validation in CF7 5.4.
 * ajax submission spinner styling update.
@@ -385,7 +385,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * improve cf7sg js object validation.
 = 4.7.5 =
 * fix cf7sg js object validation for non-grid forms.
-* do not flag non-grid forms if not requiring grid js resoures.
+* do not flag non-grid forms if not requiring grid js resources.
 = 4.7.4 =
 * fix redirect for non-grid forms.
 = 4.7.3 =
@@ -429,7 +429,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * improve corrupt form code retrieval when js error prevents editor loading.
 = 4.4.3 =
 * fix for conditional groups.
-* fix for condiitonal plugin admin submit.
+* fix for conditional plugin admin submit.
 = 4.4.2 =
 * fix preview translated forms.
 = 4.4.1 =
@@ -447,13 +447,13 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * add auto re-fill for preview/demo forms.
 * enable toggle fields within sliders/accordions.
 * added filter 'cf7sg_max_form_width' to change max width of form.
-* added filter 'cf7sg_responsive_width'  to change responsive width cutoff limit.
+* added filter 'cf7sg_responsive_width'  to change responsive width cut-off limit.
 * updated translations PO files.
 * added tr_TR, de_DE, he_IL locales .po files to languages.
 = 4.3.2 =
 * fix js slider bug.
 = 4.3.1 =
-* rotate rows/columns for rtl forms to fix mobile screen collaspe order.
+* rotate rows/columns for rtl forms to fix mobile screen collapse order.
 * added tutorial for modular forms.
 = 4.3.0 =
 * added filter 'cf7sg_new_cf7_form_template_arguments' to enable new form template arguments, cf7-polylang can set locale.
@@ -494,7 +494,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * added js functionality to further customise tables and tab structures.
 * fixed table id attributes in tabbed sections.
 * improved grouped toggles.
-* tutorial admin page with embeded youtube videos.
+* tutorial admin page with embedded YouTube videos.
 * new pointers.
 * added a general form mailtag.
 * added html table construct for table/tabbed fields in mailtags.

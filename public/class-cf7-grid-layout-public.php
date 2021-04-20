@@ -182,15 +182,15 @@ class Cf7_Grid_Layout_Public {
     //others
     // get registered script object for jquery-ui
     global $wp_scripts;
-    $ui = $wp_scripts->query('jquery-ui-core');
-
+    $ui_ver = '1.12.1';
+    if(!empty($wp_scripts)) $ui_ver = $wp_scripts->query('jquery-ui-core')->ver;
     // tell WordPress to load the Smoothness theme from Google CDN
     if( !$airplane ){
       $protocol = is_ssl() ? 'https' : 'http';
-      $url_path = "$protocol://cdnjs.cloudflare.com/ajax/libs/jqueryui/{$ui->ver}/";
-      wp_register_style('cf7-jquery-ui', $url_path . 'themes/smoothness/jquery-ui.min.css', array(), $ui->ver , 'all');
-      wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui->ver, 'all');
-      wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui->ver, 'all');
+      $url_path = "$protocol://cdnjs.cloudflare.com/ajax/libs/jqueryui/{$ui_ver}/";
+      wp_register_style('cf7-jquery-ui', $url_path . 'themes/smoothness/jquery-ui.min.css', array(), $ui_ver , 'all');
+      wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui_ver, 'all');
+      wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui_ver, 'all');
     }
 
 
@@ -1690,7 +1690,7 @@ class Cf7_Grid_Layout_Public {
         if($value==$selected) $attributes .=' selected="selected"';
         $html .= '<option value="'.$value.'"'.$attributes.'>'.$label.'</option>'.PHP_EOL;
       }
-    }else echo $options; //pre 4.10.0 backward compatibility.
+    }else $html .= $options; //pre 4.10.0 backward compatibility.
     $html .='</select>'.PHP_EOL;
     return $html;
   }
@@ -1726,18 +1726,24 @@ class Cf7_Grid_Layout_Public {
     $html = '<span '.$attributes.'>'.PHP_EOL;
     foreach($options as $value=>$label){
       $attributes ='';
-
-      // if($value==$selected) $attributes .=' checked="true"';
-      $html .= '<label class="cf7sg-dc">'.PHP_EOL;
+      $has_classes = false;
       $img_el = '';
+      // if($value==$selected) $attributes .=' checked="true"';
       if(isset($option_attrs[$value])){
-        foreach($option_attrs[$value] as $name=>$value){
+        foreach($option_attrs[$value] as $name=>$aval){
           if('data-thumbnail'==$name && isset($other_attrs['imagegrid'])){
-            $img_el = '  <span class="cf7sg-dc-img"><img src="'.$value.'"/></span>'.PHP_EOL;
-          }else $attributes .= ' '.$this->format_attribute($name,$value);
+            $img_el = '  <span class="cf7sg-dc-img"><img src="'.$aval.'" alt="" title="" loading="lazy"/></span>'.PHP_EOL;
+          }else{
+            if('class'==$name){
+              array_push($aval,'cf7sg-dc');
+              $has_classes = true;
+            }
+            $attributes .= ' '.$this->format_attribute($name,$aval);
+          }
         }
       }
-      $html .= '  <input type="'.$type.'" value="'.$value.'" '.$attributes.' '.$name_attr.'/>'.PHP_EOL;
+      $html .= '<label '.($has_classes ? '':'class="cf7sg-dc" ').$attributes.'>'.PHP_EOL;
+      $html .= '  <input type="'.$type.'" value="'.$value.'" '.$name_attr.'/>'.PHP_EOL;
       $html .= $img_el;
       $html .= '  <span class="cf7sg-dc-label">'.$label.'</span>'.PHP_EOL;
       $html .= '</label>'.PHP_EOL;
@@ -1763,7 +1769,6 @@ class Cf7_Grid_Layout_Public {
     /** @since 3.2.1 use cloudflare for live sites */
     if( $airplane || (defined('WP_DEBUG') && WP_DEBUG || apply_filters('cf7sg_use_local_select2', false) ) ){
       wp_register_style('select2-style', "$plugin_dir../assets/select2/css/select2.min.css", array(), '4.0.13', 'all' );
-      debug_msg($plugin_dir);
     }else{
       wp_register_style('select2-style', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', array(), '4.0.13','all');
     }
