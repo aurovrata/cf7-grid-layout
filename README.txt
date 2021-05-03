@@ -351,6 +351,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * added filter 'cf7sg_dynamic_list_options_attributes'.
 * deprecated filter 'cf7sg_dynamic_dropdown_option_attributes'.
 * added 'cf7sg_use_local_select2' filter to bypass cloudflare.
+* css adjust not valid tip.
 = 4.10.0 =
 * abstraction of dynamic lists to open the possibility for other tag fields.
 * fix file required PHP fatal error.
