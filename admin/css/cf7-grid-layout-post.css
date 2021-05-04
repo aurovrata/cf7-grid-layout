@@ -101,7 +101,16 @@
   max-width: calc( 100% - 216px );
   display: inline-block;
   overflow-x: hidden;
-  height: 20px;
+  height: 15px;
+}
+.codemirror-theme span.file:hover {
+	max-width: none;
+	overflow-x: visible;
+	position: absolute;
+	right: 0;
+	z-index: 10;
+	height: auto;
+	width: auto;
 }
 #cf7-codemirror,#cf7-js-codemirror,#cf7-css-codemirror {position: relative;}
 label.accordion-label:hover + span.popup{display: inline;
