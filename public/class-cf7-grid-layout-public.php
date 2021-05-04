@@ -301,8 +301,12 @@ class Cf7_Grid_Layout_Public {
     wp_enqueue_script('contact-form-7'); //default cf7 plugin script.
     $cf7_id = $attr['id'];
     //validate version number.
+    /**
+    * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
+    */
+    $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
     $form_version = get_post_meta($cf7_id, '_cf7sg_version', true);
-    if(empty($form_version) || version_compare($form_version, CF7SG_VERSION_FORM_UPDATE, '<')){
+    if($is_form and (empty($form_version) or version_compare($form_version, CF7SG_VERSION_FORM_UPDATE, '<')) ){
       return '<p><em>'.__('Form is deprecated, please cotact the webmaster to <a href="https://wordpress.org/support/topic/upgrade-your-form-message-instead-of-form-being-displayed/">upgrade</a> this form.', 'cf7-grid-layout').'</em></p>';
     }
     //get the key
@@ -354,10 +358,6 @@ class Cf7_Grid_Layout_Public {
       wp_enqueue_style('cf7-jquery-ui');
       $use_grid_js=true;
     }
-    /**
-    * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
-    */
-    $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
 
     $use_grid_js = ($use_grid_js or $is_form);
 
@@ -1735,7 +1735,8 @@ class Cf7_Grid_Layout_Public {
             $img_el = '  <span class="cf7sg-dc-img"><img src="'.$aval.'" alt="" title="" loading="lazy"/></span>'.PHP_EOL;
           }else{
             if('class'==$name){
-              array_push($aval,'cf7sg-dc');
+              if(is_array($aval)) array_push($aval,'cf7sg-dc');
+              else $aval .= ' cf7sg-dc';
               $has_classes = true;
             }
             $attributes .= ' '.$this->format_attribute($name,$aval);

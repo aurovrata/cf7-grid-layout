@@ -574,7 +574,7 @@
 				});
 			});
 		}
-
+    /* init slider */
     var $form_slider = $('div.cf7-smart-grid.has-slider form.wpcf7-form');
     $form_slider.each(function(){
       var $form = $(this);
@@ -654,6 +654,7 @@
         })
       })
     });
+    /* custom jquery functions */
     $.fn.sgCurrentSlide = function(){
       var $slider = $(this);
       if( !$slider.is('.cf7sg-slider-section') ) return false;

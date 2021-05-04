@@ -1109,7 +1109,7 @@ class Cf7_Grid_Layout_Admin {
   */
   public function duplicate_form_properties($new_form_id, $form_id){
     //these properties will be preceded with an '_' by the cf7 plugin before being duplicated.
-    $properties = array('_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form','_cf7sg_script_classes', '_cf7sg_version');
+    $properties = array('_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form','_cf7sg_script_classes', '_cf7sg_version', '_cf7sg_grid_toggled_names', '_cf7sg_grid_tabbed_toggles', '_cf7sg_grid_grouped_toggles', '_cf7sg_has_toggles', '_cf7sg_disable_jstags_comments', '_cf7sg_page_redirect', '_cf7sg_cache_redirect_data');
     $properties = apply_filters('cf7sg_duplicate_form_properties', $properties);
     foreach($properties as $field){
       $value = get_post_meta($form_id, $field, true);
@@ -1135,6 +1135,17 @@ class Cf7_Grid_Layout_Admin {
   			$new_form = $form->copy();
   			$new_form->save();
         $this->duplicate_form_properties($new_form->id(), $_GET['post']);
+        /** @since 4.11 duplicate js/css files */
+        $new_key = get_cf7form_key($new_form->id());
+        $key = get_cf7form_key($form->id());
+        $js_file = get_stylesheet_directory()."/js/{$key}.js";
+        if( file_exists($js_file) ){
+          copy($js_file, get_stylesheet_directory()."/js/{$new_key}.js");
+        }
+        $css_file = get_stylesheet_directory()."/css/{$key}.css";
+        if( file_exists($css_file) ){
+          copy($css_file, get_stylesheet_directory()."/css/{$new_key}.css");
+        }
         wp_safe_redirect( admin_url( '/post.php?post='.$new_form->id().'&action=edit' ));
         exit;
   		}
@@ -1606,7 +1617,9 @@ class Cf7_Grid_Layout_Admin {
       global $wpdb;
       $post_type = $this->cf7_post_type();
       $result = $wpdb->get_col("SELECT pm.meta_value FROM {$wpdb->postmeta} as pm
-        INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id
+        INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id LEFT JOIN {$wpdb->postmeta} as pmf on pmf.post_id = pm.post_id
+        WHERE pmf.meta_key = '_cf7sg_managed_form'
+        AND pmf.meta_value = 1
         WHERE p.post_type = '{$post_type}'
         AND pm.meta_key = '_cf7sg_version'
         ORDER BY pm.meta_key
