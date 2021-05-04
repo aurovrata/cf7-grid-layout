@@ -307,7 +307,7 @@ class Cf7_Grid_Layout_Public {
     $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
     $form_version = get_post_meta($cf7_id, '_cf7sg_version', true);
     if($is_form and (empty($form_version) or version_compare($form_version, CF7SG_VERSION_FORM_UPDATE, '<')) ){
-      return '<p><em>'.__('Form is deprecated, please cotact the webmaster to <a href="https://wordpress.org/support/topic/upgrade-your-form-message-instead-of-form-being-displayed/">upgrade</a> this form.', 'cf7-grid-layout').'</em></p>';
+      return '<p><em>'.__('Form is deprecated, please contact the webmaster to <a href="https://wordpress.org/support/topic/upgrade-your-form-message-instead-of-form-being-displayed/">upgrade</a> this form.', 'cf7-grid-layout').'</em></p>';
     }
     //get the key
     $cf7post = get_post($cf7_id);
