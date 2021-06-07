@@ -197,7 +197,7 @@ class Cf7_Grid_Layout_Public {
     /** @since 3.1,0 improve live loading of resources */
     $ff = '';
     $pf='';
-    if(!defined('WP_DEBUG') || !WP_DEBUG){
+    if((!defined('WP_DEBUG') || !WP_DEBUG) && !isset($_GET['cf7sgdbg'])){
       $ff = '.min';
       $pf = '/min';
     }

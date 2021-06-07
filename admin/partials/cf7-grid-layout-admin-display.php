@@ -180,7 +180,7 @@ $cf7_key = $post->post_name;
   <div class="cf7sg-collapsible-title"><label><?=__('Section title','cf7-grid-layout')?> <input type="text" /><input type="hidden" /><input type="checkbox" /><span><?=__('toggled','cf7-grid-layout')?></span></label></div>
 </div>
 <div id="grid-collapsible-with-toggle">
-  <div class="toggle toggle-light" data-on="Yes" data-off="No"></div>
+  <div class="toggle toggle-light" data-on="<?=_x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?=_x('No','toggle label','cf7-grid-layout')?>"></div>
 </div>
 <div id="grid-tabs">
   <ul class="cf7-sg-tabs-list">
