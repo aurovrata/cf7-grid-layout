@@ -1766,10 +1766,10 @@ class Cf7_Grid_Layout_Public {
       $ff = '.min';
     }
     $plugin_dir = plugin_dir_url( __DIR__ );
-    wp_register_style('jquery-nice-select-css',  "$plugin_dir../assets/jquery-nice-select/css/nice-select{$ff}.css", array(), '1.1.0', 'all' );
+    wp_register_style('jquery-nice-select-css',  "{$plugin_dir}assets/jquery-nice-select/css/nice-select{$ff}.css", array(), '1.1.0', 'all' );
     /** @since 3.2.1 use cloudflare for live sites */
     if( $airplane || (defined('WP_DEBUG') && WP_DEBUG || apply_filters('cf7sg_use_local_select2', false) ) ){
-      wp_register_style('select2-style', "$plugin_dir../assets/select2/css/select2.min.css", array(), '4.0.13', 'all' );
+      wp_register_style('select2-style', "{$plugin_dir}assets/select2/css/select2.min.css", array(), '4.0.13', 'all' );
     }else{
       wp_register_style('select2-style', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', array(), '4.0.13','all');
     }
@@ -1778,11 +1778,11 @@ class Cf7_Grid_Layout_Public {
     /** @since 3.2.1 use cloudflare for live sites */
     $plugin_dir = plugin_dir_url( __DIR__ );
     if( $airplane || (defined('WP_DEBUG') && WP_DEBUG) || apply_filters('cf7sg_use_local_select2', false) ){
-      wp_register_script('jquery-select2',  "$plugin_dir../assets/select2/js/select2.min.js", array( 'jquery' ), '4.0.13', true );
+      wp_register_script('jquery-select2',  "{$plugin_dir}assets/select2/js/select2.min.js", array( 'jquery' ), '4.0.13', true );
     }else{
       wp_register_script('jquery-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array( 'jquery' ), '4.0.13', true );
     }
-    wp_register_script('jquery-nice-select', "$plugin_dir../assets/jquery-nice-select/js/jquery.nice-select.min.js", array( 'jquery' ), '1.1.0', true );
+    wp_register_script('jquery-nice-select', "{$plugin_dir}assets/jquery-nice-select/js/jquery.nice-select.min.js", array( 'jquery' ), '1.1.0', true );
 
     //listen for script enqueue action.
     add_action('smart_grid_enqueue_scripts', function($cf7_key, $atts, $classes){
