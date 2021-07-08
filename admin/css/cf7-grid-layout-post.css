@@ -158,7 +158,7 @@ a.helper:hover + span.helper {display: inline;}
 }
 #full-screen-cf7 {
     position: absolute;
-    top: -39px;
+    top: -2.4rem;
     left: 160px;
 		z-index: 100;
 }

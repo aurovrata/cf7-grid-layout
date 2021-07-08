@@ -308,7 +308,7 @@ class Cf7_Grid_Layout {
 		/** track toggles
 		*@since 1.1.0  */
 		$this->loader->add_action('cf7_2_post_form_posted', $plugin_public, 'save_toggle_status', 10, 5 );
-    /** @since 2.4.1 attache array file fields to mails */
+    /** @since 2.4.1 attach array file fields to mails */
     $this->loader->add_filter( 'wpcf7_mail_components', $plugin_public, 'wpcf7_mail_components' , 999,3);
     /** @since 4.0.0 enable/disable autop with filter */
     $this->loader->add_filter( 'wpcf7_autop_or_not', $plugin_public, 'disable_autop_for_grid' ,5,1);

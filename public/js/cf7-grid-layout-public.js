@@ -590,12 +590,12 @@
               prev: '.slider-prev',
               next: '.slider-next'
           }};
-        if(!isEmpty($slider.data("prev"))){
+        if('undefined' != typeof $slider.data("prev")){
           if($slider.data("prev").length>0){
             $prev.text($slider.data("prev")).addClass('ui-button');
           }else $prev.addClass("dashicons dashicons-arrow-left-alt");
         }
-        if(!isEmpty($slider.data("next"))){
+        if('undefined' != typeof $slider.data("next")){
           if($slider.data("next").length>0){
             $next.text($slider.data("next")).addClass('ui-button');
           }else $next.addClass("dashicons dashicons-arrow-right-alt");
