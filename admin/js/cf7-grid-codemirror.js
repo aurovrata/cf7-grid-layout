@@ -81,7 +81,15 @@
       jscmUpdated = false, jsInsertAtLine = false,
       csscmUpdated = false, cssInsertAtLine = false,
       $jsThemeRadio = $('.codemirror-theme', $jsCodemirror),
-      $cssThemeRadio = $('.codemirror-theme', $cssCodemirror);
+      $cssThemeRadio = $('.codemirror-theme', $cssCodemirror),
+      $cf7Tabs = $('#contact-form-editor-tabs');
+    /** @since 4.11 update the hidden cf7 textarea when the cf7 tabs are achanged.*/
+    $cf7Tabs.on('mousedown', 'li',function(e){
+      let active = e.delegateTarget.querySelector('.ui-state-active');
+      if( active && 'form-panel-tab' == active.id){
+        $wpcf7Editor.text(cme.getValue());
+      }
+    })
 
     const $cf7key = $('#post_name');
     $.fn.beautify = function(cursor){

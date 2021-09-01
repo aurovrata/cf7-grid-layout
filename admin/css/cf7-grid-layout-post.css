@@ -113,14 +113,20 @@
 	width: auto;
 }
 #cf7-codemirror,#cf7-js-codemirror,#cf7-css-codemirror {position: relative;}
-label.accordion-label:hover + span.popup{display: inline;
-position: absolute;
-background: white;
-margin-left: 6px;
-width: 200px;
-border: solid 1px gray;
-border-radius: 3px;
-padding: 1px 5px;}
+label.grouping-option:hover + span.popup{
+	display: inline;
+	position: absolute;
+	background: white;
+	margin-left: 6px;
+	width: 200px;
+	border: solid 1px gray;
+	border-radius: 3px;
+	padding: 1px 5px;
+	color: inherit;
+	top: auto;
+	left: auto;
+	font-weight: normal;
+}
 #grid-form .js-help + .cf7sg-helper-list{margin-top:39px;}
 span.js-icon.column-control{
   background-image: url('./image/js-sprite.png');
@@ -294,12 +300,15 @@ textarea.grid-input {
     background: #f1f1f1;
     padding: 5px;
     border: solid 1px grey;
-    width: 137px;
+    width: 144px;
     z-index:1008;
 }
 #grid-form .container,
 #grid-form .table-row-button input  {
     max-width: 100%;
+}
+#grid-form  .cf7sg-slider-controls .button.slider-control {
+	display: none;
 }
 #cf7-codemirror .CodeMirror,
 #cf7-js-codemirror .CodeMirror,
@@ -382,6 +391,7 @@ textarea.grid-input {
     left: 0;
     text-align: center;
     width: 100%;
+    line-height: 1em;
 }
 #grid-form .helper-popup .dashicons.dashicons-no-alt {
     position: absolute;
@@ -536,7 +546,8 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 .columns .row-controls .table-row-label,
 .columns .row-controls .tabs-row-label,
-.container.cf7-sg-table + .container  > .row .row-controls .footer-row-label{
+.container.cf7-sg-table + .container  > .row .row-controls .footer-row-label,
+.container.cf7sg-slider + .container  > .row .row-controls .slider-control-label{
     display: inline-block;
 }
 #grid-form ul.cf7-sg-tabs-list{

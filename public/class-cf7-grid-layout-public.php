@@ -208,7 +208,9 @@ class Cf7_Grid_Layout_Public {
     wp_register_style('jquery-toggles-light-css', $plugin_dir . "assets/jquery-toggles/css/themes/toggles-light{$ff}.css", array('jquery-toggles-css'), $this->version, 'all' );
 
     /** @since 4.2.0 enable Gliderliders for slider sections */
-    wp_register_style('glider-style', $plugin_dir . 'assets/glider-js/glider.min.css', array(), '1.7.4','all');
+    $min = '';
+    if(!defined('WP_GURUS_DEBUG') || !WP_GURUS_DEBUG) $min = '.min';
+    wp_register_style('glider-style', $plugin_dir . "assets/glider-js/glider{$min}.css", array(), '1.7.4','all');
 
     //allow custom script registration
     do_action('smart_grid_register_styles',$airplane);
@@ -226,16 +228,17 @@ class Cf7_Grid_Layout_Public {
     }
     /** @since 3.1,0 improve live loading of resources */
     $pf='';
-    if(!defined('WP_DEBUG') || !WP_DEBUG){
-      $pf = '/min';
-    }
+    if(!defined('WP_DEBUG') || !WP_DEBUG) $pf = '/min';
+
     $plugin_dir = plugin_dir_url( __DIR__ );
 		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public.js", array( 'jquery','contact-form-7' ), $this->version, true );
 
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
     /** @since 4.2.0 enable Glider sliders for slider sections */
-    wp_register_script('glider-js', $plugin_dir . 'assets/glider-js/glider.js', null, '1.7.4',true);
+    $min = '';
+    if(!defined('WP_GURUS_DEBUG') || !WP_GURUS_DEBUG) $min = '.min';
+    wp_register_script('glider-js', $plugin_dir . "assets/glider-js/glider{$min}.js", null, '1.7.4',true);
     //allow custom script registration
     do_action('smart_grid_register_scripts', $airplane);
 	}
@@ -1683,8 +1686,8 @@ class Cf7_Grid_Layout_Public {
       foreach($options as $value=>$label){
         $attributes ='';
         if(isset($option_attrs[$value])){
-          foreach($option_attrs[$value] as $name=>$value){
-            $attributes .= ' '.$this->format_attribute($name,$value);
+          foreach($option_attrs[$value] as $name=>$attval){
+            $attributes .= ' '.$this->format_attribute($name,$attval);
           }
         }
         if($value==$selected) $attributes .=' selected="selected"';

@@ -140,6 +140,10 @@ $cf7_key = $post->post_name;
             <?=__('Tabbed section','cf7-grid-layout')?>
             <input type="checkbox" class="tabs-row" />
           </label>
+          <label class="cf7-sg-hidden slider-control-label unique-mod">
+            <?=__('Slider control','cf7-grid-layout')?>
+            <input type="checkbox" class="slider-control" />
+          </label>
           <a class="display-none button make-grid row-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
         </div>
       </div>

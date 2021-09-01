@@ -582,6 +582,7 @@
         var glider, $slider = $(this).wrapInner('<div class="glider"></div>'),
           slideCount = -1,
           $glider = $('.glider',$slider),
+          $control = $slider.closest('.container').next('.cf7sg-slider-controls'),
           $prev = $('<span class="slider-control slider-prev"></span>'),
           $next = $('<span class="slider-control slider-next"></span>'),
           isSubmit=false, $submit=null,
@@ -590,27 +591,36 @@
               prev: '.slider-prev',
               next: '.slider-next'
           }};
-        if('undefined' != typeof $slider.data("prev")){
-          if($slider.data("prev").length>0){
-            $prev.text($slider.data("prev")).addClass('ui-button');
-          }else $prev.addClass("dashicons dashicons-arrow-left-alt");
+        if($control){
+          $prev = $('.slider-prev', $control);
+          $next = $('.slider-next', $control);
+        }else{
+          if('undefined' != typeof $slider.data("prev")){
+            if($slider.data("prev").length>0){
+              $prev.text($slider.data("prev")).addClass('ui-button');
+            }else $prev.addClass("dashicons dashicons-arrow-left-alt");
+          }
+          if('undefined' != typeof $slider.data("next")){
+            if($slider.data("next").length>0){
+              $next.text($slider.data("next")).addClass('ui-button');
+            }else $next.addClass("dashicons dashicons-arrow-right-alt");
+          }
+          /** @since 4.11 enable custom slider control row */
+
+          $slider.append($prev).append($next);
+
+          if($slider.data('submit').length>0){
+            isSubmit = true;
+            $submit = $('<span><input type="submit" value="'+$slider.data('submit')+'" class="slider-control wpcf7-form-control wpcf7-submit"></span>');
+            $next.after($submit);
+            let m = ( $submit.outerHeight() - 16 )/2;
+            $submit.hide().append('<span style="margin:'+m+'px 5px;" class="ajax-loader"></span>');
+          }
         }
-        if('undefined' != typeof $slider.data("next")){
-          if($slider.data("next").length>0){
-            $next.text($slider.data("next")).addClass('ui-button');
-          }else $next.addClass("dashicons dashicons-arrow-right-alt");
-        }
-        $slider.append($prev).append($next);
         // $slider.append('<div role="tablist" class="dots"></div>');
         $prev.hide(); //hide on first slide.
 
-        if($slider.data('submit').length>0){
-          isSubmit = true;
-          $submit = $('<input type="submit" value="'+$slider.data('submit')+'" class="wpcf7-form-control wpcf7-submit">');
-          $next.after($submit);
-          let m = ( $submit.outerHeight() - 16 )/2;
-          $submit.hide().after('<span style="margin:'+m+'px 5px;" class="ajax-loader"></span>');
-        }
+
         /** @since 4.7.2 enable dots */
         if($slider.data('dots')){
           $prev.before('<span class="slider-dots"></span>');
@@ -786,7 +796,7 @@
     */
     $('div.cf7-smart-grid.has-grid .wpcf7-submit').each(function(){
       var $submit = $(this), fid=$submit.closest('div.cf7-smart-grid').attr('id');
-      $submit.after('<span class="cf7sg-popup display-none">'+cf7sg[fid].submit_disabled+'</span>').parent().addClass('cf7sg-popup');
+      $submit.after('<span class="cf7sg-popup display-none">'+cf7sg[fid].submit_disabled+'</span>').parent().addClass('cf7sg-popup-box');
     });
     /** enable max rows.
     * @since 2.8.0
