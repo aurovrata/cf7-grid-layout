@@ -638,8 +638,16 @@
           $prev.before('<span class="slider-dots"></span>');
           sOptions['dots']= '.slider-dots';
           let dots = $slider.data('dots');
-          if(true===dots) dots='';
-          sOptions['labelDots'] = dots.split(',');
+          if(true!==dots) sOptions['labelDots'] = dots.split(',');
+          let sbmt = $('form.wpcf7-form input[type=submit]:not(.cf7_2_post_save)').get(0);
+          if(sbmt){
+            sbmt = window.getComputedStyle(sbmt);
+            let style = document.createElement('style');
+            style.setAttribute('id','cf7sg-slider-dots');
+            style.type = "text/css";
+            style.innerText = '.glider-dot:hover, .glider-dot:focus, .glider-dot.active{background:'+sbmt['background-color']+';color:'+sbmt['color']+'}';
+            document.body.appendChild(style);
+          }
         }
         //bind events.
         $glider.on('glider-loaded',function(e){
