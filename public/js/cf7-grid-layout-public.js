@@ -637,6 +637,9 @@
         if($slider.data('dots')){
           $prev.before('<span class="slider-dots"></span>');
           sOptions['dots']= '.slider-dots';
+          let dots = $slider.data('dots');
+          if(true===dots) dots='';
+          sOptions['labelDots'] = dots.split(',');
         }
         //bind events.
         $glider.on('glider-loaded',function(e){
