@@ -577,7 +577,9 @@
     /* init slider */
     var $form_slider = $('div.cf7-smart-grid.has-slider form.wpcf7-form');
     $form_slider.each(function(){
-      var $form = $(this);
+      var $form = $(this),
+        id = $form.closest('.cf7-smart-grid').attr('id');
+
       $('.cf7sg-slider-section').each(function(){
         var glider, $slider = $(this).wrapInner('<div class="glider"></div>'),
           slideCount = -1,
@@ -594,6 +596,16 @@
         if($control){
           $prev = $('.slider-prev', $control);
           $next = $('.slider-next', $control);
+          let rowStyle = document.createElement('style');
+          rowStyle.setAttribute('id',id+'-slider-controls');
+          rowStyle.type = "text/css";
+          rowStyle.innerText = "#"+id+" .cf7sg-slider-controls > .cf7sg-submit-controls {max-width: calc(100% - "+$prev.outerWidth()+"px)}"
+          document.head.appendChild(rowStyle);
+          $submit = $('.cf7sg-submit-controls',$control);
+          if($submit){
+            isSubmit = true;
+            $submit.hide();//shown on the last slide.
+          }
         }else{
           if('undefined' != typeof $slider.data("prev")){
             if($slider.data("prev").length>0){

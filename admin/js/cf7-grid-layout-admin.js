@@ -456,11 +456,13 @@
         $parentRow = $target.closest('.row');
         if($target.is(':checked')){
           $parentContainer.addClass('cf7sg-slider-controls').fireGridUpdate('add','slider-control');
+          $parentRow.addClass('cf7sg-submit-controls');
           $parentRow.before('<span class="button slider-control slider-prev">Prev</span>');
           $parentRow.after('<span class="button slider-control slider-next">Next</span>');
         }else{
           $parentContainer.removeClass('cf7sg-slider-controls').fireGridUpdate('remove','slider-control');
           $('.button.slider-control',$parentContainer).remove();
+          $parentRow.removeClass('cf7sg-submit-controls');
         }
       }
 

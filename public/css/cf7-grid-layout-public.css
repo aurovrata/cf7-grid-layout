@@ -113,6 +113,14 @@
  .glider-dot[data-cf7sg="error"] {background-color: #df8b8b}
  .glider-dot[data-cf7sg="error"]:focus {background-color: #ffb3b3}
  .glider-dot[data-cf7sg="error"].active {background-color: red}
+
+ .container.cf7sg-slider-controls .slider-control {
+	margin: 0;
+	display: inline-block;
+	vertical-align: top;
+}
+.container.cf7sg-slider-controls .slider-next{float:right;}
+.cf7sg-slider-controls > .row {width:100%;float:right;}
  .cf7-smart-grid.has-grid .ui-button {
     border-radius: 3px;
     border: 1px solid #aaa;
