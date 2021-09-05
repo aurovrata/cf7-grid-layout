@@ -599,7 +599,7 @@
           let rowStyle = document.createElement('style');
           rowStyle.setAttribute('id',id+'-slider-controls');
           rowStyle.type = "text/css";
-          rowStyle.innerText = "#"+id+" .cf7sg-slider-controls > .cf7sg-submit-controls {max-width: calc(100% - "+$prev.outerWidth()+"px)}"
+          rowStyle.innerText = "#"+id+" .cf7sg-slider-controls > .cf7sg-submit-controls {max-width: calc(100% - "+($prev.outerWidth()+10)+"px)}"
           document.head.appendChild(rowStyle);
           $submit = $('.cf7sg-submit-controls',$control);
           if($submit){

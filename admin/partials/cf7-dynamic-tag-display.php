@@ -100,8 +100,8 @@
           <td>
             <?php
               $others = $dlo->get_other_extras();
+              $type = $dlo->get_other_extras_type();
               foreach($others as $val=>$field):
-                $type = 'checkbox';
                 $label = '<em>unknown field</em>';
                 $attributes = '';
                 if(is_array($field)){
@@ -111,6 +111,7 @@
                 }else $label = $field;
                 $pre='';
                 $pst='';
+                $name ='';
                 switch($type){
                   case 'checkbox':
                     $pst=$label;
@@ -119,11 +120,15 @@
                   case 'text':
                     $pre=$label;
                     break;
+                  case 'radio':
+                    $name = ' name="dl_extras[]"';
+                    if(empty($val)) $name .=' checked'; 
+                    break;
                   }
                 ?>
                 <span class="<?=$val?>">
                   <label for="<?=$tag_id?>-<?=$val?>">
-                    <input class="select-<?=$val?>" id="<?=$tag_id?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>"/>
+                    <input class="select-<?=$val?>" id="<?=$tag_id?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>"<?=$name?>/>
                     <?=$label?>
                   </label>
                 </span>

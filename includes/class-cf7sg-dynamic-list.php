@@ -50,6 +50,12 @@ class CF7SG_Dynamic_list{
   */
   protected $other_extras = array();
   /**
+  * @since 4.11.0
+  * @access   protected
+  * @var String default checkbox, can be set to radio isntead for extra configuration fields using hte set_others_extras_radio();
+  */
+  protected $other_extras_type = 'checkbox';
+  /**
   * @since    4.10.0
   * @access   protected
   * @var Array $instances array of tag_id=>CF7SG_Dynamic_list objects to keep track of instances.
@@ -92,6 +98,13 @@ class CF7SG_Dynamic_list{
     $this->other_extras = $extras;
   }
   /**
+  * Set the extra configuration fields to be radio fields instead of the default checkbox.
+  * @since 4.11.0
+  */
+  public function set_others_extras_radio(){
+    $this->other_extras_type = 'radio';
+  }
+  /**
   * function returns an array of dynamic field styles value=>label pairs for the admin tag generator.
   * these styles will be radio fields on the tag generator form.  The selected style for a given field
   * will be parametrised as a class on the dynamic field HTML element.
@@ -118,6 +131,15 @@ class CF7SG_Dynamic_list{
   */
   public function get_other_extras(){
     return $this->other_extras;
+  }
+  /**
+  * get the extra fields type
+  *
+  *@since 4.11.0
+  *@return String checkbox | radio
+  */
+  public function get_other_extras_type(){
+    return $this->other_extras_type;
   }
   /**
   * Function to get classes to be added to the form wrapper.
@@ -683,8 +705,12 @@ if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
           )
         )
       ));
+      $dl->set_others_extras_radio(); //default is checkbox.
       $dl->set_others_extras(array(
-        'treeview'=> __('Tree view','cf7-grid-layout'),
+        ''=> __('List','cf7-grid-layout'),
+        'hybriddd'=> '<a href="https://aurovrata.github.io/hybrid-html-dropdown/">Hybrid Dropdown</a>',
+        'treeview'=> sprintf(__('<a href="%s">Treeview dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#hybrid-dropdown-with-treeview-selection'),
+        'imagehdd'=> sprintf(__('<a href="%s">Image dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images'),
         'imagegrid'=> __('Image grid','cf7-grid-layout'),
       ));
     }
