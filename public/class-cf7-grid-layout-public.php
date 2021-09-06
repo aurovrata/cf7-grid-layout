@@ -1708,11 +1708,26 @@ class Cf7_Grid_Layout_Public {
    * @param Array $other_attrs array of other attributes selected in tag field as $attr=>true.
    * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
    */
-  public function build_dynamic_checkbox_field( $html, $attrs, $options, $option_attrs, $other_attrs, $selected){
+  public function build_dynamic_checkbox_field( $html, $attrs, $options, $option_attrs, $other_attrs, $selected,$children){
     $classes = array();
     if( isset($attrs['class']) ) $classes = explode(' ',$attrs['class']);
     $type = 'radio';
     $name_attr='';
+    //check if hybrid.
+    $dl_construct = array_keys($other_attrs);
+    $isHybrid = false;
+    $attributes = '';
+    $hybrid_data = array();
+    switch($dl_construct[0]){
+      case 'hybriddd':
+      case 'treeview':
+      case 'imagehdd':
+        $isHybrid = true;
+        $default = apply_filters('cf7sg_hybrid_dynamic_checkbox_default_value','',$attrs['name']);
+        if(!empty($default)) $hybrid_data['']=$default;
+        break;
+    }
+
     if( isset($attrs['name'])){
       $name_attr = 'name="'.$attrs['name'];
       if(in_array('checkbox',$classes)){
@@ -1721,19 +1736,32 @@ class Cf7_Grid_Layout_Public {
       }
       $name_attr.='"';
     }
-    $attributes = '';
+    $hasId = false;
     foreach($attrs as $key=>$value){
       if('name'==$key) continue;
+      if('id'==$key) $hasId = true;
+      if('data-maxcheck'==$key && $isHybrid) $key = 'data-limit-selection';
       $attributes .= ' '.$key.'="'.$value.'"';
     }
+    if(!$hasId) $attributes = 'id="dl-'.$attrs['name'].'" '.$attributes;
+    if($isHybrid){
+      if(!empty($name_attr)) $attributes .= ' data-field-name="'.$name_attr.'"';
+      if( isset($other_attrs['treeview']) ) $attributes.= ' data-tree-view="true"';
+    }
     $html = '<span '.$attributes.'>'.PHP_EOL;
+
     foreach($options as $value=>$label){
       $attributes ='';
+      if($isHybrid) $attributes = array($label);
       $has_classes = false;
       $img_el = '';
       // if($value==$selected) $attributes .=' checked="true"';
       if(isset($option_attrs[$value])){
         foreach($option_attrs[$value] as $name=>$aval){
+          if($isHybrid){
+            $attributes[] = $this->format_attribute($name,$aval);
+            continue;
+          }
           if('data-thumbnail'==$name && isset($other_attrs['imagegrid'])){
             $img_el = '  <span class="cf7sg-dc-img"><img src="'.$aval.'" alt="" title="" loading="lazy"/></span>'.PHP_EOL;
           }else{
@@ -1746,14 +1774,36 @@ class Cf7_Grid_Layout_Public {
           }
         }
       }
+      if($isHybrid){
+        $hybrid_data[$value] = array('label'=>$attributes);
+        continue;
+      }
       $html .= '<label '.($has_classes ? '':'class="cf7sg-dc" ').$attributes.'>'.PHP_EOL;
       $html .= '  <input type="'.$type.'" value="'.$value.'" '.$name_attr.'/>'.PHP_EOL;
       $html .= $img_el;
       $html .= '  <span class="cf7sg-dc-label">'.$label.'</span>'.PHP_EOL;
       $html .= '</label>'.PHP_EOL;
     }
+    if($isHybrid){
+      $html .= '<script type="application/json">'.PHP_EOL;
+      $html .= json_encode($hybrid_data).PHP_EOL;
+      $html .= '</script>'.PHP_EOL;
+    }
     $html .='</span>'.PHP_EOL;
     return $html;
+  }
+  /**
+  *
+  *
+  * @since 4.11.0
+  * @param Array $attrs array of attribute key=>value pairs to be included in the html element tag.
+  * @param Array $options array of value=>label pairs  of options.
+  * @param Array $option_attrs array of value=>attribute pairs  for each options, such as permalinks for post sources..
+  * @param Array $other_attrs array of other attributes selected in tag field as $attr=>true.
+  * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
+  */
+  protected function buid_hybriddd($html, $attrs, $options, $option_attrs, $other_attrs, $selected, $children){
+
   }
   protected function format_attribute($name, $value){
     if(is_array($value)){

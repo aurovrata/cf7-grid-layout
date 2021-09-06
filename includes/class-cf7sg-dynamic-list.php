@@ -371,8 +371,15 @@ class CF7SG_Dynamic_list{
           debug_msg($terms, 'Unable to retrieve taxonomy <em>'.$source['taxonomy'].'</em> terms');
           $terms = array();
         }else{
+          $collectKids = is_taxonomy_hierarchical($source['taxonomy']);
+          $children = array();
+
           if(!empty($terms)) $selected = $terms[0]->slug;
           foreach($terms as $term){
+            if($collectKids){
+              if(!isset($children[$term->parent])) $children[$term->parent]=array();
+              $children[$term->parent][]=array($term->slug, $term->id);
+            }
             /**
             * Filter dropdown options labels.
             * @param String $label option label value.
@@ -608,9 +615,10 @@ class CF7SG_Dynamic_list{
     * @param Array $option_attrs array of value=>attribute pairs  for each options, such as permalinks for post sources..
     * @param Boolean $is_multiselect if the field has multiple selection enabled..
     * @param String $selected default selected value.
+    * @param Array $children array of parentID=>array(slug,childID) to reconstruct hierrarchical lists.
     * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
     */
-    $html .= apply_filters("cf7sg_{$this->tag_id}_html_field", '', $attributes, $options, $option_attrs, $other_attrs, $selected).PHP_EOL;
+    $html .= apply_filters("cf7sg_{$this->tag_id}_html_field", '', $attributes, $options, $option_attrs, $other_attrs, $selected, $children).PHP_EOL;
     $html .='</span>'.PHP_EOL;
 
     return $html;
@@ -700,8 +708,8 @@ if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
           'maxcheck'=>array(
             'label'=> __('Limit selections','cf7-grid-layout'),
             'attrs'=>'class="limit-check"',
-            'html'=>'<input type="text" disabled placeholder="3" value="" class="max-selection"/>
-            <input type="hidden" value="" class="data-attribute" />'
+            'html'=>'<input type="text" value="3" class="max-selection"/>
+            <input type="hidden" value="maxcheck:3" class="data-attribute" />'
           )
         )
       ));
