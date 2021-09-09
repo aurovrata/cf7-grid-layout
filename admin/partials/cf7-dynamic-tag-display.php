@@ -122,16 +122,16 @@
                     break;
                   case 'radio':
                     $name = ' name="dl_extras[]"';
-                    if(empty($val)) $name .=' checked'; 
+                    if(empty($val)) $name .=' checked';
                     break;
                   }
                 ?>
-                <span class="<?=$val?>">
+                <div class="<?=$val?>">
                   <label for="<?=$tag_id?>-<?=$val?>">
                     <input class="select-<?=$val?>" id="<?=$tag_id?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>"<?=$name?>/>
                     <?=$label?>
                   </label>
-                </span>
+                </div>
                 <?php
               endforeach;
             ?>
@@ -160,21 +160,27 @@
               }else{
                 $slugs[$slug] = $slug;
               }
-              echo '<option data-name="' . $taxonomy['singular'] . '" value="'. $taxonomy['slug'] . '" class="cf7sg-taxonomy">' . $taxonomy['plural'] . '</option>';
+              echo '<option data-name="' . $taxonomy['singular'] . '" value="'. $taxonomy['slug'] . '" class="cf7sg-taxonomy'.$taxonomy['hierarchical']?' hierarchical':''.'">' . $taxonomy['plural'] . '</option>';
             }
           }
           //inset the default post tags and category
           ?>
           <option value="post_tag" data-name="Post Tag" class="system-taxonomy"><?=__('Post Tags','cf7-grid-layout')?></option>
-          <option value="category" data-name="Post Category" class="system-taxonomy"><?=__('Post Categories','cf7-grid-layout')?></option>
+          <option value="category" data-name="Post Category" class="system-taxonomy hierarchical"><?=__('Post Categories','cf7-grid-layout')?></option>
           <?php
           $system_taxonomies = get_taxonomies( array('public'=>true, '_builtin' => false), 'objects' );
           foreach($system_taxonomies as $taxonomy){
             if( !empty($taxonomy_slug) && $taxonomy_slug == $taxonomy->name ) continue;
-            echo '<option value="' . $taxonomy->name . '" data-name="' . $taxonomy->labels->singular_name . '" class="system-taxonomy">' . $taxonomy->labels->name . '</option>';
+            echo '<option value="' . $taxonomy->name . '" data-name="' . $taxonomy->labels->singular_name . '" class="system-taxonomy'.$taxonomy->hierarchical? ' hierarchical':''.'">' . $taxonomy->labels->name . '</option>';
           }
           ?>
           </select>
+          <?php if($dlo->has_nesting()):/*@since 4.11 enable nested lists*/?>
+          <label id="enable-branches" class="display-none">
+            <input type="checkbox" />
+            <?= __('Include branches','cf7-grid-layout');?>
+          </label>
+        <?php endif;?>
           <div class="cf72post-new-taxonomy">
             <div><strong><?=__('New Taxonomy','cf7-grid-layout')?></strong></div>
             <label><?=__('Plural Name','cf7-grid-layout')?><br />

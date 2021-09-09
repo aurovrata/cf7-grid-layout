@@ -12,6 +12,7 @@
       $plural = $('input[name="plural_name"]', $form),
       $single = $('input[name="singular_name"]', $form),
       $name = $('input[name="name"]', $form),
+      $hasNesting = $('#enable-branches'),
       source = 'taxonomy',
       selectType = $('.list-style:checked', $form).val();
 
@@ -54,6 +55,12 @@
         }else if($option.is('.cf7sg-taxonomy')){
           $plural.prop('disabled',false);
           $single.prop('disabled',false);
+        }
+        /** @since 4.11 allow nesting of lists */
+        if($option.is('.hierarchical') && $hasNesting) $hasNesting.show();
+        else if($hasNesting){
+          $('input',$hasNesting).prop('checked',false); 
+          $hasNesting.hide();
         }
         break;
       case $target.is('.list-style'): //---------list-type
@@ -115,7 +122,9 @@
     switch(source){
       case 'taxonomy':
         if($taxonomy.val().length > 0){
-          values = '"slug:'+ $taxonomy.val()+'"';
+          values = '"slug:'+ $taxonomy.val();
+          if($hasNesting && $('input',$hasNesting).is(':checked')) values +=':tree';
+          values +='"';
         }
         break;
       case 'post':

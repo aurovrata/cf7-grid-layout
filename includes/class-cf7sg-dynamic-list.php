@@ -56,6 +56,13 @@ class CF7SG_Dynamic_list{
   */
   protected $other_extras_type = 'checkbox';
   /**
+  * flag that determines if field can accepted nested lists such as hierarchical taxonomies.
+  * @since 4.11.0
+  * @access   protected
+  * @var String default false, can be changed with allow_nesting() method;
+  */
+  protected $nesting = false;
+  /**
   * @since    4.10.0
   * @access   protected
   * @var Array $instances array of tag_id=>CF7SG_Dynamic_list objects to keep track of instances.
@@ -103,6 +110,22 @@ class CF7SG_Dynamic_list{
   */
   public function set_others_extras_radio(){
     $this->other_extras_type = 'radio';
+  }
+  /**
+  * This field can handle nesting of values (hierarchical lists)
+  *
+  *@since 4.11.0
+  */
+  public function allow_nesting(){
+    $this->nesting = true;
+  }
+  /**
+  * Return the nesting boolean to determine if the list can display nested lists.
+  *@since 4.11.0
+  *@return Boolean false or true.
+  */
+  public function has_nesting(){
+    return $this->nesting;
   }
   /**
   * function returns an array of dynamic field styles value=>label pairs for the admin tag generator.
@@ -292,7 +315,9 @@ class CF7SG_Dynamic_list{
     foreach($tag->values as $values){
       if(0 === strpos($values, 'slug:') ){
         $source['source'] = "taxonomy";
-        $source['taxonomy'] = str_replace('slug:', '', $values);
+        $s = explode(':',$values);
+        $source['taxonomy'] = $s[1];
+        $source['tree'] = isset($s[2]) && 'tree'==$s[2]; /** @since 4.11 */
       }
       if(0 === strpos($values, 'source:post')){
         $source['source'] = "post";
@@ -371,15 +396,12 @@ class CF7SG_Dynamic_list{
           debug_msg($terms, 'Unable to retrieve taxonomy <em>'.$source['taxonomy'].'</em> terms');
           $terms = array();
         }else{
-          $collectKids = is_taxonomy_hierarchical($source['taxonomy']);
-          $children = array();
-
+          //need ability to build hierarchy
+          if($this->nesting && is_taxonomy_hierarchical($source['taxonomy']) && $source['tree']){
+             //apply_filters("cf7sg_{$this->tag_id}_{$tag}_{$cf7_key}_include_children ", false)
+          }
           if(!empty($terms)) $selected = $terms[0]->slug;
           foreach($terms as $term){
-            if($collectKids){
-              if(!isset($children[$term->parent])) $children[$term->parent]=array();
-              $children[$term->parent][]=array($term->slug, $term->id);
-            }
             /**
             * Filter dropdown options labels.
             * @param String $label option label value.
@@ -708,8 +730,8 @@ if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
           'maxcheck'=>array(
             'label'=> __('Limit selections','cf7-grid-layout'),
             'attrs'=>'class="limit-check"',
-            'html'=>'<input type="text" value="3" class="max-selection"/>
-            <input type="hidden" value="maxcheck:3" class="data-attribute" />'
+            'html'=>'<input type="number" min="1" value="3" class="max-selection"/>
+            <input type="hidden" value="" class="data-attribute" />'
           )
         )
       ));
@@ -721,6 +743,7 @@ if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
         'imagehdd'=> sprintf(__('<a href="%s">Image dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images'),
         'imagegrid'=> __('Image grid','cf7-grid-layout'),
       ));
+      $dl->allow_nesting(); //flag as able to handle hierarchical lists.
     }
     return $dl;
   }

@@ -17,14 +17,19 @@
 				else $('#image-grid').hide().find(':input').prop('checked', false);
 				break;
 			case $target.is('#checkbox-maxcheck'):
-				if(e.target.checked) $('.cf7sg-se-maxcheck .max-selection').prop('disabled',false);
-				else $('.cf7sg-se-maxcheck .max-selection').prop('disabled',true);
+				if(e.target.checked){
+					let l = $('.cf7sg-se-maxcheck .max-selection').prop('disabled',false).val();
+					$('.cf7sg-se-maxcheck input.data-attribute').val('maxcheck:'+l).trigger('change'); //hidden field
+				}else{
+					$('.cf7sg-se-maxcheck input.data-attribute').val('').trigger('change'); //empty hidden field
+					$('.cf7sg-se-maxcheck .max-selection').prop('disabled',true);
+				}
 				break;
 			case $target.is('.list-style.dynamic_checkbox:checked'):
 				$target.next('span').show();
 				break;
 			case $target.is('.max-selection'): //update hidden value.
-				$('.cf7sg-se-maxcheck input.data-attribute').val('maxcheck:'+e.target.value);
+				$('.cf7sg-se-maxcheck input.data-attribute').val('maxcheck:'+e.target.value).trigger('change');
 				break;
 			case $target.is('.select-imagegrid'): //update hidden value.
 				let $form = $target.closest('.cf7sg-dynamic-list-tag-manager'),
