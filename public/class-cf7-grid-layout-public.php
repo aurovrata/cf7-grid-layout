@@ -1671,11 +1671,10 @@ class Cf7_Grid_Layout_Public {
 	 * @since 4.11.0
    * @param Array $attrs array of attribute key=>value pairs to be included in the html element tag.
    * @param Array $options array of value=>label pairs  of options.
-   * @param Array $option_attrs array of value=>attribute pairs  for each options, such as permalinks for post sources..
    * @param Array $other_attrs array of other attributes selected in tag field as $attr=>true.
    * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
    */
-  public function build_dynamic_select_field( $html, $attrs, $options, $option_attrs, $other_attrs, $selected){
+  public function build_dynamic_select_field( $html, $attrs, $options, $other_attrs, $selected){
     $attributes ='';
     foreach($attrs as $key=>$value){
       if('name'==$key && isset($other_attrs['multiple'])) $value.='[]';
@@ -1683,15 +1682,13 @@ class Cf7_Grid_Layout_Public {
     }
     $html = '<select value="'.$selected.'"'.$attributes.'>'.PHP_EOL;
     if(is_array($options)){
-      foreach($options as $value=>$label){
+      foreach($options as $value=>$details){
         $attributes ='';
-        if(isset($option_attrs[$value])){
-          foreach($option_attrs[$value] as $name=>$attval){
-            $attributes .= ' '.$this->format_attribute($name,$attval);
-          }
+        foreach($details[1] as $name=>$attval){
+          $attributes .= ' '.$this->format_attribute($name,$attval);
         }
         if($value==$selected) $attributes .=' selected="selected"';
-        $html .= '<option value="'.$value.'"'.$attributes.'>'.$label.'</option>'.PHP_EOL;
+        $html .= '<option value="'.$value.'"'.$attributes.'>'.$details[0].'</option>'.PHP_EOL;
       }
     }else $html .= $options; //pre 4.10.0 backward compatibility.
     $html .='</select>'.PHP_EOL;
@@ -1704,21 +1701,19 @@ class Cf7_Grid_Layout_Public {
    * @since 4.11.0
    * @param Array $attrs array of attribute key=>value pairs to be included in the html element tag.
    * @param Array $options array of value=>label pairs  of options.
-   * @param Array $option_attrs array of value=>attribute pairs  for each options, such as permalinks for post sources..
    * @param Array $other_attrs array of other attributes selected in tag field as $attr=>true.
    * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
    */
-  public function build_dynamic_checkbox_field( $html, $attrs, $options, $option_attrs, $other_attrs, $selected,$children){
+  public function build_dynamic_checkbox_field( $html, $attrs, $options, $other_attrs, $selected){
     $classes = array();
     if( isset($attrs['class']) ) $classes = explode(' ',$attrs['class']);
     $type = 'radio';
     $name_attr='';
     //check if hybrid.
-    $dl_construct = array_keys($other_attrs);
     $isHybrid = false;
     $attributes = '';
     $hybrid_data = array();
-    switch($dl_construct[0]){
+    switch(array_key_first($other_attrs)){
       case 'hybriddd':
       case 'treeview':
       case 'imagehdd':
@@ -1750,28 +1745,26 @@ class Cf7_Grid_Layout_Public {
     }
     $html = '<span '.$attributes.'>'.PHP_EOL;
 
-    foreach($options as $value=>$label){
+    foreach($options as $value=>$details){
       $attributes ='';
-      if($isHybrid) $attributes = array($label);
+      if($isHybrid) $attributes = array($details[0]);
       $has_classes = false;
       $img_el = '';
       // if($value==$selected) $attributes .=' checked="true"';
-      if(isset($option_attrs[$value])){
-        foreach($option_attrs[$value] as $name=>$aval){
-          if($isHybrid){
-            $attributes[] = $this->format_attribute($name,$aval);
-            continue;
+      foreach($details[1] as $name=>$aval){
+        if($isHybrid){
+          $attributes[] = $this->format_attribute($name,$aval);
+          continue;
+        }
+        if('data-thumbnail'==$name && isset($other_attrs['imagegrid'])){
+          $img_el = '  <span class="cf7sg-dc-img"><img src="'.$aval.'" alt="" title="" loading="lazy"/></span>'.PHP_EOL;
+        }else{
+          if('class'==$name){
+            if(is_array($aval)) array_push($aval,'cf7sg-dc');
+            else $aval .= ' cf7sg-dc';
+            $has_classes = true;
           }
-          if('data-thumbnail'==$name && isset($other_attrs['imagegrid'])){
-            $img_el = '  <span class="cf7sg-dc-img"><img src="'.$aval.'" alt="" title="" loading="lazy"/></span>'.PHP_EOL;
-          }else{
-            if('class'==$name){
-              if(is_array($aval)) array_push($aval,'cf7sg-dc');
-              else $aval .= ' cf7sg-dc';
-              $has_classes = true;
-            }
-            $attributes .= ' '.$this->format_attribute($name,$aval);
-          }
+          $attributes .= ' '.$this->format_attribute($name,$aval);
         }
       }
       if($isHybrid){
@@ -1781,7 +1774,7 @@ class Cf7_Grid_Layout_Public {
       $html .= '<label '.($has_classes ? '':'class="cf7sg-dc" ').$attributes.'>'.PHP_EOL;
       $html .= '  <input type="'.$type.'" value="'.$value.'" '.$name_attr.'/>'.PHP_EOL;
       $html .= $img_el;
-      $html .= '  <span class="cf7sg-dc-label">'.$label.'</span>'.PHP_EOL;
+      $html .= '  <span class="cf7sg-dc-label">'.$details[0].'</span>'.PHP_EOL;
       $html .= '</label>'.PHP_EOL;
     }
     if($isHybrid){

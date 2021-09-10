@@ -315,8 +315,8 @@ class Cf7_Grid_Layout {
     /** @since 4.4 prefill preview forms */
     $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'on_submit_success');
     /** @since 4.11.0 abstract out dynamic lsits*/
-    $this->loader->add_action( 'cf7sg_dynamic_select_html_field', $plugin_public, 'build_dynamic_select_field',5,6);
-    $this->loader->add_action( 'cf7sg_dynamic_checkbox_html_field', $plugin_public, 'build_dynamic_checkbox_field',5,7);
+    $this->loader->add_action( 'cf7sg_dynamic_select_html_field', $plugin_public, 'build_dynamic_select_field',5,5);
+    $this->loader->add_action( 'cf7sg_dynamic_checkbox_html_field', $plugin_public, 'build_dynamic_checkbox_field',5,5);
     $this->loader->add_action( 'smart_grid_register_styles', $plugin_public,'register_dynamic_select_styles');
     $this->loader->add_action( 'smart_grid_register_scripts', $plugin_public,'register_dynamic_select_scripts');
     $this->loader->add_action( 'cf7sg_dynamic_checkbox_option_label', $plugin_public,'wrap_label_in_paragraph',5,3);

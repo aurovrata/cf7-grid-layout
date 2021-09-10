@@ -374,81 +374,15 @@ class CF7SG_Dynamic_list{
     $cf7_form = wpcf7_get_current_contact_form();
     $cf7_key = get_cf7form_key($cf7_form->id());
     $filter_options = false;
+    /** @since 4.11 enable branches in nesting lists */
+    $branch = ($this->nesting && is_taxonomy_hierarchical($source['taxonomy']) && $source['tree']) ? array(0):null;
     $selected='';
     if(!empty($tag->values)){
       if('taxonomy' == $source['source']){
-        $taxonomy_query= array('hide_empty' => false, 'taxonomy'=>$source['taxonomy']);
-        $taxonomy_query = apply_filters_deprecated('cf7sg_dynamic_dropdown_taxonomy_query',
-          array(
-            $taxonomy_query,
-            $tag->name,
-            $cf7_key
-          ), '4.11.0', 'cf7sg_dynamic_list_taxonomy_query' );
-        $taxonomy_query = apply_filters("cf7sg_{$this->tag_id}_taxonomy_query", $taxonomy_query, $tag, $cf7_key);
-        //check the WP version
-        global $wp_version;
-        if ( $wp_version >= 4.5 ) {
-        $terms = get_terms($taxonomy_query); //WP>= 4.5 the get_terms does not take a taxonomy slug field
-        }else{
-        $terms = get_terms($source['taxonomy'], $taxonomy_query);
-        }
-        if( is_wp_error( $terms )) {
-          debug_msg($terms, 'Unable to retrieve taxonomy <em>'.$source['taxonomy'].'</em> terms');
-          $terms = array();
-        }else{
-          //need ability to build hierarchy
-          if($this->nesting && is_taxonomy_hierarchical($source['taxonomy']) && $source['tree']){
-             //apply_filters("cf7sg_{$this->tag_id}_{$tag}_{$cf7_key}_include_children ", false)
-          }
-          if(!empty($terms)) $selected = $terms[0]->slug;
-          foreach($terms as $term){
-            /**
-            * Filter dropdown options labels.
-            * @param String $label option label value.
-            * @param mixed $term the term object being used to populate this option.
-            * @param WPCF7_FormTag $tag the field name being populated.
-            * @param String $cf7_key  the form unique key.
-            * @return String $label option label value.
-            * @since 2.0.0
-            */
-            $label = $term->name;
-            $label = apply_filters_deprecated('cf7sg_dynamic_dropdown_option_label',
-              array(
-                $label,
-                $term,
-                $tag->name,
-                $cf7_key
-              ), '4.11.0', "cf7sg_{$this->tag_id}_option_label" );
-            $label = apply_filters("cf7sg_{$this->tag_id}_option_label", $label, $term, $tag, $cf7_key);
-            $options[$term->slug] = $label;
+        $options = $this->get_taxonomy_terms($source, $branch, $tag, $cf7_key);
 
-            /**
-            * Filter dropdown options  attributes.
-            * @param array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
-            * @param mixed either WP_Post or WP_Term object being used to populate this option.
-            * @param WPCF7_FormTag $tag the field name being populated.
-            * @param String $cf7_key  the form unique key.
-            * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
-            * @since 2.0.0
-            */
-            $attributes = apply_filters_deprecated( 'cf7sg_dynamic_dropdown_option_attributes',
-              array(
-                array(),
-                $term,
-                $tag->name,
-                $cf7_key ), '4.11.0', "cf7sg_{$this->tag_id}_options_attributes" );
-            /** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
-            $attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", array(), $term, $tag, $cf7_key);
-            if(is_array($attributes)){
-              if(isset($attributes['class'])){
-                if(!is_array($attributes['class'])) $attributes['class'] = array($attributes['class']);
-                $attributes['class'][]='cf7sg-dl';
-              }else $attributes['class']='cf7sg-dl';
-            }else $attributes = array('class'=>'cf7sg-dl');
+        if(!empty($options)) $selected = array_key_first($options);
 
-            $option_attrs[$term->slug] = $attributes;
-          }
-        }
         $filter_options = true;
       }else if('post' == $source['source']){
         $args = array(
@@ -513,7 +447,7 @@ class CF7SG_Dynamic_list{
                 $cf7_key
               ), '4.11.0', "cf7sg_{$this->tag_id}_option_label" );
             $label = apply_filters("cf7sg_{$this->tag_id}_option_label", $label, $post, $tag, $cf7_key);
-            $options[$post->post_name] = $label;
+
             $attributes = array();
             if( isset($other_attrs['permalinks']) ){
               $attributes['data-permalink'] = get_permalink($post);
@@ -545,17 +479,18 @@ class CF7SG_Dynamic_list{
               }else $filter_attributes['class']=array('cf7sg-dl');
             }else $filter_attributes = array('class'=>array('cf7sg-dl'));
             //setup classes for existing post terms.
-            if(apply_filters("cf7sg_{$this->tag_id}_include_post_terms_as_class", false, $tag, $cf7_key)){
+            if(apply_filters("cf7sg_{$this->tag_id}_include_post_terms_as_class", true, $tag, $cf7_key)){
               foreach($post_taxonomies as $tx){
                 $ts = get_the_terms($post, $tx);
                 if(is_array($ts)) foreach($ts as $t) $filter_attributes['class'][]="$tx-$ts->slug";
               }
             }
 
-            $option_attrs[$post->post_name] = $attributes;
             if(is_array($filter_attributes)){
-              $option_attrs[$post->post_name] = array_merge($attributes, $filter_attributes);
+              $attributes = array_merge($attributes, $filter_attributes);
             }
+
+            $options[$post->post_name] = array($label, $attributes, array());
           }
         }
         $filter_options = true;
@@ -566,19 +501,14 @@ class CF7SG_Dynamic_list{
             $tag->name,
             $cf7_key
           ), '4.11.0', "cf7sg_custom_{$this->tag_id}" );
-
+        if(empty($options)) $options = array();
         /** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
         $custom_options = apply_filters("cf7sg_custom_{$this->tag_id}", array(), $tag, $cf7_key);
-        if(isset($custom_options['values']) && is_array($custom_options['values'])){
-         $options = $custom_options['values'];
-       }else if(!empty($custom_options)) $options = $custom_options;
-        // $custom_options = apply_filters('cf7sg_dynamic_dropdown_custom_options', array(), $tag->name, $cf7_key);
-        if(isset($custom_options['attributes']) && is_array($custom_options['attributes'])){
-          $option_attrs = $custom_options['attributes'];
-        }
+
+        if(!empty($custom_options)) $options = $custom_options;
       }
     }
-    if($filter_options){ //true if either taxonomy or post dropdpwn;
+    if($filter_options){ //true if either taxonomy or post dropdpwn...but deprecated.
       /**
       * Allow filtering of options populated by posts or taxonomies.
       * @param array $options an array of $value=>$name pairs which will be used for populating select options.
@@ -623,33 +553,115 @@ class CF7SG_Dynamic_list{
     $default_value = apply_filters("cf7sg_{$this->tag_id}_default_value", null, $tag, $cf7_key);
 
     if(!is_null($default_value)){
-     $options['']=$default_value;
+     $options['']=array($default_value, array(), array());
      $selected='';
     }
     $other_classes='';
-    if(!empty($other_attrs)) $other_classes = ' cf7sg-'.implode(' cf7sg-',array_keys($other_attrs));
+    if(!empty($other_attrs)) $other_classes = ' cf7sg-'.implode(' cf7sg-', array_keys($other_attrs));
     $html = '<span class="wpcf7-form-control-wrap cf7sg-dl-'. $source['source'] .' '. $tag_name . $other_classes . '">' . PHP_EOL;
     /**
     * Register a [dynamic_display] shortcode with CF7.
     * @since 4.11.0
-    * @param Array $attrs array of attribute key=>value pairs to be included in the html element tag.
-    * @param Array $options array of value=>label pairs  of options.
-    * @param Array $option_attrs array of value=>attribute pairs  for each options, such as permalinks for post sources..
-    * @param Boolean $is_multiselect if the field has multiple selection enabled..
+    * @param Array $attributes array of attribute key=>value pairs to be included in the html element tag.
+    * @param Array $options array of $value=>array($label,$option_attributes, $children) pairs  of options, where $option_attributes is an array of attributest to be added to the option element, and $children is an array of options with the same format representing the nested children of this option parent.
+    * @param Array $other_attrs array of additional attributes $attr=>true (e.g. permalink=>1) added in the form field tag.
     * @param String $selected default selected value.
-    * @param Array $children array of parentID=>array(slug,childID) to reconstruct hierrarchical lists.
     * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
     */
-    $html .= apply_filters("cf7sg_{$this->tag_id}_html_field", '', $attributes, $options, $option_attrs, $other_attrs, $selected, $children).PHP_EOL;
-    $html .='</span>'.PHP_EOL;
+    $html .= apply_filters("cf7sg_{$this->tag_id}_html_field", '', $attributes, $options, $other_attrs,$selected );
+    $html .= PHP_EOL . '</span>' . PHP_EOL;
 
     return $html;
   }
-
   /**
+  * Retrieve terms to list in dynamic lists.
+  *
+  *@since 4.11.0
+  *@param Array $source array of taxonomy attributes.
+  *@param Array $branch array of term IDs representing the current branch.
+  *@return Array array of WP_Term objects.
+  */
+  protected function get_taxonomy_terms($source, $branch, $tag, $cf7_key){
+    $taxonomy_query= array('hide_empty' => false, 'taxonomy'=>$source['taxonomy']);
+    if(!empty($branch)) $taxonomy_query['parent']=end($branch);
+    $taxonomy_query = apply_filters_deprecated('cf7sg_dynamic_dropdown_taxonomy_query',
+      array(
+        $taxonomy_query,
+        $tag->name,
+        $cf7_key
+      ), '4.11.0', "cf7sg_{$this->tag_id}_taxonomy_query" );
+    $taxonomy_query = apply_filters("cf7sg_{$this->tag_id}_taxonomy_query", $taxonomy_query, $branch, $tag, $cf7_key);
+    //check the WP version
+    if(empty($taxonomy_query)) return array(); //nothing more to be done here.
+    global $wp_version;
+    if ( $wp_version >= 4.5 ) {
+      $terms = get_terms($taxonomy_query); //WP>= 4.5 the get_terms does not take a taxonomy slug field
+    }else{
+      $terms = get_terms($source['taxonomy'], $taxonomy_query);
+    }
+    if( is_wp_error( $terms )) {
+      debug_msg($terms, 'Unable to retrieve taxonomy <em>'.$source['taxonomy'].'</em> terms');
+      $terms = array();
+    }else{
+      foreach($terms as $term){
+        /**
+        * Filter dropdown options labels.
+        * @param String $label option label value.
+        * @param mixed $term the term object being used to populate this option.
+        * @param WPCF7_FormTag $tag the field name being populated.
+        * @param String $cf7_key  the form unique key.
+        * @return String $label option label value.
+        * @since 2.0.0
+        */
+        $label = $term->name;
+        $label = apply_filters_deprecated('cf7sg_dynamic_dropdown_option_label',
+          array(
+            $label,
+            $term,
+            $tag->name,
+            $cf7_key
+          ), '4.11.0', "cf7sg_{$this->tag_id}_option_label" );
+        $label = apply_filters("cf7sg_{$this->tag_id}_option_label", $label, $term, $tag, $cf7_key);
+
+        /**
+        * Filter dropdown options  attributes.
+        * @param array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
+        * @param mixed either WP_Post or WP_Term object being used to populate this option.
+        * @param WPCF7_FormTag $tag the field name being populated.
+        * @param String $cf7_key  the form unique key.
+        * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
+        * @since 2.0.0
+        */
+        $attributes = apply_filters_deprecated( 'cf7sg_dynamic_dropdown_option_attributes',
+          array(
+            array(),
+            $term,
+            $tag->name,
+            $cf7_key ), '4.11.0', "cf7sg_{$this->tag_id}_options_attributes" );
+        /** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
+        $attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", array(), $term, $tag, $cf7_key);
+        if(is_array($attributes)){
+          if(isset($attributes['class'])){
+            if(!is_array($attributes['class'])) $attributes['class'] = array($attributes['class']);
+            $attributes['class'][]='cf7sg-dl';
+          }else $attributes['class']='cf7sg-dl';
+        }else $attributes = array('class'=>'cf7sg-dl');
+
+        $children = array();
+        //need to build hierarchy if branch is active.
+        if(!empty($branch)){
+          $branch[]=$term->term_id;
+          $children = $this->get_taxonomy_terms($source, $branch, $tag, $cf7_key);
+        }
+        $options[$term->slug] = array($label, $attributes, $children);
+      }
+    }
+    return $options;
+  }
+  /**
+   * Function to update form classes to track dependencies.
    *
-   *
-   * @since 5.0.0
+   * @since 4.11.0
    * @param      mixed    $class    array of classes or string to set class for form and dependency loading .
    * @param      Object    $cf7_form    cf7 post id against which set the c$lass .
   **/

@@ -358,6 +358,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * enable rtl slider forms with glider.js lib update.
 * enable custom slider control row.
 * enable slider labelled dots.
+* added dynamic checkbox field with nested lists.
 = 4.10.0 =
 * abstraction of dynamic lists to open the possibility for other tag fields.
 * fix file required PHP fatal error.
