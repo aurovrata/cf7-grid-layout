@@ -3,7 +3,23 @@
  * included in this file.
  */
  /** @since 4.11.0 layout for imagegrids */
- .cf7sg-imagegrid .cf7sg-dc .cf7sg-dc-img {
+ .cf7sg-list .cf7sg-dl.cf7sg-dc {
+	display: block;
+}
+.cf7sg-list .cf7sg-dc.level-6 {margin: 0 0 0 48px}
+.cf7sg-list .cf7sg-dc.level-5 {margin: 0 0 0 40px}
+.cf7sg-list .cf7sg-dc.level-4 {margin: 0 0 0 32px}
+.cf7sg-list .cf7sg-dc.level-3 {margin: 0 0 0 24px}
+.cf7sg-list .cf7sg-dc.level-2 {margin: 0 0 0 16px}
+.cf7sg-list .cf7sg-dc.level-1 {margin: 0 0 0 8px}
+.cf7sg-list .cf7sg-dc.level-6:dir(rtl) {margin: 0 48px 0 0}
+.cf7sg-list .cf7sg-dc.level-5:dir(rtl) {margin: 0 40px 0 0}
+.cf7sg-list .cf7sg-dc.level-4:dir(rtl) {margin: 0 32px 0 0}
+.cf7sg-list .cf7sg-dc.level-3:dir(rtl) {margin: 0 24px 0 0}
+.cf7sg-list .cf7sg-dc.level-2:dir(rtl) {margin: 0 16px 0 0}
+.cf7sg-list .cf7sg-dc.level-1:dir(rtl) {margin: 0 8px 0 0}
+
+.cf7sg-imagegrid .cf7sg-dc .cf7sg-dc-img {
 	border: solid 1px #fff0;
 }
 .cf7sg-imagegrid .cf7sg-dc .cf7sg-dc-img:before {

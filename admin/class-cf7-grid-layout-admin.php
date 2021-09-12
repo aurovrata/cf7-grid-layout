@@ -622,7 +622,7 @@ class Cf7_Grid_Layout_Admin {
     register_taxonomy( $slug, $this->cf7_post_type(), $args );
   }
   /**
-   * CF7 Form saved from backend, check if dynamic-select are used
+   * CF7 Form saved from backend, check if dynamic lists are used
    * Hooked on 'wpcf7_save_contact_form'
    * @since 1.0.0
    * @param  WPCF7_Contact_Form $cf7_form  cf7 form object
@@ -1312,7 +1312,18 @@ class Cf7_Grid_Layout_Admin {
         }
         break;
       case 'dynamic_checkbox':
-        
+        //other attrbutes captures in the tag manager.
+        $other_attrs = array();
+        foreach($tag->options as $tag_option){
+          if(false !== stripos($tag_option, ':')) continue; //ignore as these are reserved for list sources.
+          switch($tag_option){
+            case 'hybriddd':
+            case 'imagehdd':
+            case 'treeview':
+              $form_classes[] = 'has-hybriddd';
+              break;
+          }
+        }
         break;
     }
     return $form_classes;

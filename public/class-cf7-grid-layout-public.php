@@ -213,7 +213,7 @@ class Cf7_Grid_Layout_Public {
     wp_register_style('glider-style', $plugin_dir . "assets/glider-js/glider{$min}.css", array(), '1.7.4','all');
 
     //allow custom script registration
-    do_action('smart_grid_register_styles',$airplane);
+    do_action('smart_grid_register_styles',$airplane, $min);
 	}
 
 	/**
@@ -240,7 +240,7 @@ class Cf7_Grid_Layout_Public {
     if(!defined('WP_GURUS_DEBUG') || !WP_GURUS_DEBUG) $min = '.min';
     wp_register_script('glider-js', $plugin_dir . "assets/glider-js/glider{$min}.js", null, '1.7.4',true);
     //allow custom script registration
-    do_action('smart_grid_register_scripts', $airplane);
+    do_action('smart_grid_register_scripts', $airplane, $min);
 	}
   /**
    * Dequeue script 'contact-form-7'
@@ -1705,15 +1705,22 @@ class Cf7_Grid_Layout_Public {
    * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
    */
   public function build_dynamic_checkbox_field( $html, $attrs, $options, $other_attrs, $selected){
-    $classes = array();
-    if( isset($attrs['class']) ) $classes = explode(' ',$attrs['class']);
+
+    if( !isset($attrs['class']) ) $attrs['class'] = '';
+    $classes = explode(' ',$attrs['class']);
+
+    $list_type = array_key_first($other_attrs);
+    if(empty($list_type)) $attrs['class'] .=' cf7sg-list';
+    else $attrs['class'] .='cf7sg-'.$list_type;
+
     $type = 'radio';
     $name_attr='';
+    $isImageGrid = isset($other_attrs['imagegrid']);
     //check if hybrid.
     $isHybrid = false;
     $attributes = '';
     $hybrid_data = array();
-    switch(array_key_first($other_attrs)){
+    switch($list_type){
       case 'hybriddd':
       case 'treeview':
       case 'imagehdd':
@@ -1744,60 +1751,86 @@ class Cf7_Grid_Layout_Public {
       if( isset($other_attrs['treeview']) ) $attributes.= ' data-tree-view="true"';
     }
     $html = '<span '.$attributes.'>'.PHP_EOL;
-
+    if($isHybrid){
+      $html .= '<script type="application/json">'.PHP_EOL;
+      $html .= json_encode($this->build_hybrid_list($options)).PHP_EOL;
+      $html .= '</script>'.PHP_EOL;
+    }else $html .= $this->build_nested_list($type, $name_attr, $options, $isImageGrid, $selected, 0);
+    $html .='</span>'.PHP_EOL;
+    return $html;
+  }
+  /**
+  * Build recursively nested list.
+  *
+  * @since 4.11.0
+  * @param Array $options array of value=>label pairs  of options.
+  * @param Boolean $isImageGrid is image grid is to be built.
+  * @param String $selected preselected value.
+  * @param String $level recursive level
+  * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
+  */
+  protected function build_nested_list($type, $name_attr, $options, $isImageGrid, $selected, $level){
+    $html='';
+    $reverse = is_rtl() && !$isImageGrid;
     foreach($options as $value=>$details){
       $attributes ='';
-      if($isHybrid) $attributes = array($details[0]);
       $has_classes = false;
       $img_el = '';
       // if($value==$selected) $attributes .=' checked="true"';
       foreach($details[1] as $name=>$aval){
-        if($isHybrid){
-          $attributes[] = $this->format_attribute($name,$aval);
-          continue;
-        }
-        if('data-thumbnail'==$name && isset($other_attrs['imagegrid'])){
+        if('data-thumbnail'==$name && $isImageGrid){
           $img_el = '  <span class="cf7sg-dc-img"><img src="'.$aval.'" alt="" title="" loading="lazy"/></span>'.PHP_EOL;
         }else{
           if('class'==$name){
             if(is_array($aval)) array_push($aval,'cf7sg-dc');
-            else $aval .= ' cf7sg-dc';
+            else $aval .= ' cf7sg-dc level-'.$level;
             $has_classes = true;
           }
           $attributes .= ' '.$this->format_attribute($name,$aval);
         }
       }
-      if($isHybrid){
-        $hybrid_data[$value] = array('label'=>$attributes);
-        continue;
-      }
-      $html .= '<label '.($has_classes ? '':'class="cf7sg-dc" ').$attributes.'>'.PHP_EOL;
-      $html .= '  <input type="'.$type.'" value="'.$value.'" '.$name_attr.'/>'.PHP_EOL;
+
+      $html .= '<label '.($has_classes ? '':'class="cf7sg-dc level-'.$level.'" ').$attributes.'>'.PHP_EOL;
+      if($reverse) $html .= '  <span class="cf7sg-dc-label">'.$details[0].'</span>'.PHP_EOL;
+      $html .= '  <input type="'.$type.'" value="'.$value.'" '.$name_attr. ($selected==$value?' checked':'').'/>'.PHP_EOL;
       $html .= $img_el;
-      $html .= '  <span class="cf7sg-dc-label">'.$details[0].'</span>'.PHP_EOL;
+      if(!$reverse) $html .= '  <span class="cf7sg-dc-label">'.$details[0].'</span>'.PHP_EOL;
       $html .= '</label>'.PHP_EOL;
+      if(isset($details[2])){
+        $html .= $this->build_nested_list($type, $name_attr, $details[2], $isImageGrid, $selected, $level+1);
+      }
     }
-    if($isHybrid){
-      $html .= '<script type="application/json">'.PHP_EOL;
-      $html .= json_encode($hybrid_data).PHP_EOL;
-      $html .= '</script>'.PHP_EOL;
-    }
-    $html .='</span>'.PHP_EOL;
     return $html;
   }
   /**
-  *
+  * Build recursively nested list.
   *
   * @since 4.11.0
-  * @param Array $attrs array of attribute key=>value pairs to be included in the html element tag.
   * @param Array $options array of value=>label pairs  of options.
-  * @param Array $option_attrs array of value=>attribute pairs  for each options, such as permalinks for post sources..
-  * @param Array $other_attrs array of other attributes selected in tag field as $attr=>true.
   * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
   */
-  protected function buid_hybriddd($html, $attrs, $options, $option_attrs, $other_attrs, $selected, $children){
+  protected function build_hybrid_list($options){
+    $hybrid_data = array();
 
+    foreach($options as $value=>$details){
+      $attributes = array($details[0]); //option label
+      // if($value==$selected) $attributes .=' checked="true"';
+      foreach($details[1] as $name=>$aval){
+        $attributes[]= $this->format_attribute($name,$aval);
+      }
+      $children = array();
+      if(isset($details[2])) $children = $this->build_hybrid_list($details[2]);
+      $hybrid_data[$value] = array('label'=>$attributes) + $children;
+    }
+    return $hybrid_data;
   }
+  /**
+  * format html attribute as $name="$value".
+  * @since 4.11.0
+  * @param String $name
+  * @param Mixed $value either a string or an array.
+  * @return String
+  */
   protected function format_attribute($name, $value){
     if(is_array($value)){
       $separator = ' ';
@@ -1806,7 +1839,14 @@ class Cf7_Grid_Layout_Public {
     }
     return $name.'="'.$value.'"';
   }
-  public function register_dynamic_select_styles($airplane){
+  /**
+  * register scripts for dynamic select
+  * hooked on 'smart_grid_register_styles'
+  * @since 4.11.0
+  * @param Boolean $airplane if airplane mode is on, do not load remote scripts/styles.
+  * @param String $min set to '.min' by default, empty if in WP_DEBUG mode.
+  */
+  public function register_dynamic_list_styles($airplane, $min){
     $ff = '';
     if(!defined('WP_DEBUG') || !WP_DEBUG){
       $ff = '.min';
@@ -1819,8 +1859,17 @@ class Cf7_Grid_Layout_Public {
     }else{
       wp_register_style('select2-style', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', array(), '4.0.13','all');
     }
+    //hybrid style for the dynamic checkbox.
+    wp_register_style('hybriddd-style', $plugin_dir . "assets/hybrid-html-dropdown/hybrid-dropdown{$min}.css", array(), '2.0.5','all');
   }
-  public function register_dynamic_select_scripts($airplane){
+  /**
+  * register scripts for dynamic select
+  * hooked on 'smart_grid_register_scripts'
+  * @since 4.11.0
+  * @param Boolean $airplane if airplane mode is on, do not load remote scripts/styles.
+  * @param String $min set to '.min' by default, empty if in WP_DEBUG mode.
+  */
+  public function register_dynamic_list_scripts($airplane, $min){
     /** @since 3.2.1 use cloudflare for live sites */
     $plugin_dir = plugin_dir_url( __DIR__ );
     if( $airplane || (defined('WP_DEBUG') && WP_DEBUG) || apply_filters('cf7sg_use_local_select2', false) ){
@@ -1829,10 +1878,12 @@ class Cf7_Grid_Layout_Public {
       wp_register_script('jquery-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array( 'jquery' ), '4.0.13', true );
     }
     wp_register_script('jquery-nice-select', "{$plugin_dir}assets/jquery-nice-select/js/jquery.nice-select.min.js", array( 'jquery' ), '1.1.0', true );
+    wp_register_script('hybriddd-js', $plugin_dir . "assets/hybrid-html-dropdown/hybrid-dropdown{$min}.js", null, '2.0.5',true);
+
 
     //listen for script enqueue action.
     add_action('smart_grid_enqueue_scripts', function($cf7_key, $atts, $classes){
-      //check for classes set in get_form_classes()method above.
+      //check for classes set in get_form_classes() method in CF7SG_Dynamic_list class.
       if(in_array('has-select2', $classes)){
         wp_enqueue_style('select2-style');
         wp_enqueue_script('jquery-select2');
@@ -1840,6 +1891,10 @@ class Cf7_Grid_Layout_Public {
       if(in_array('has-nice-select', $classes)){
         wp_enqueue_style('jquery-nice-select-css');
         wp_enqueue_script('jquery-nice-select');
+      }
+      if( in_array('has-hybriddd', $classes) ){
+        wp_enqueue_style('hybriddd-style');
+        wp_enqueue_script('hybriddd-js');
       }
     },10,3);
   }

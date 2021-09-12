@@ -381,7 +381,7 @@ class CF7SG_Dynamic_list{
       if('taxonomy' == $source['source']){
         $options = $this->get_taxonomy_terms($source, $branch, $tag, $cf7_key);
 
-        if(!empty($options)) $selected = array_key_first($options);
+        // if(!empty($options)) $selected = array_key_first($options);
 
         $filter_options = true;
       }else if('post' == $source['source']){
@@ -426,7 +426,7 @@ class CF7SG_Dynamic_list{
         if(!empty($posts)){
           $post_taxonomies = get_object_taxonomies($source['post']);
 
-          $selected = $posts[0]->post_name;
+          // $selected = $posts[0]->post_name;
 
           foreach($posts as $post){
             /**
@@ -582,6 +582,7 @@ class CF7SG_Dynamic_list{
   *@return Array array of WP_Term objects.
   */
   protected function get_taxonomy_terms($source, $branch, $tag, $cf7_key){
+    $options = array();
     $taxonomy_query= array('hide_empty' => false, 'taxonomy'=>$source['taxonomy']);
     if(!empty($branch)) $taxonomy_query['parent']=end($branch);
     $taxonomy_query = apply_filters_deprecated('cf7sg_dynamic_dropdown_taxonomy_query',
