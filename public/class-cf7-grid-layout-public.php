@@ -1711,25 +1711,35 @@ class Cf7_Grid_Layout_Public {
 
     $list_type = array_key_first($other_attrs);
     if(empty($list_type)) $attrs['class'] .=' cf7sg-list';
-    else $attrs['class'] .='cf7sg-'.$list_type;
+    else $attrs['class'] .=' cf7sg-'.$list_type;
 
     $type = 'radio';
     $name_attr='';
     $isImageGrid = isset($other_attrs['imagegrid']);
     //check if hybrid.
-    $isHybrid = false;
+    $isHybrid = true;
     $attributes = '';
     $hybrid_data = array();
     switch($list_type){
       case 'hybriddd':
-      case 'treeview':
+        break;
       case 'imagehdd':
-        $isHybrid = true;
-        $default = apply_filters('cf7sg_hybrid_dynamic_checkbox_default_value','',$attrs['name']);
-        if(!empty($default)) $hybrid_data['']=$default;
+        $attrs['data-checkboxes']='false';
+        $attrs['data-dropdown']='landscape';
+        break;
+      case 'treeview':
+        $attrs['class'] .=' cf7sg-hybriddd';
+        $attrs['data-tree-view']='true';
+        break;
+      default:
+        $isHybrid = false;
         break;
     }
-
+    if($isHybrid){
+      $default = apply_filters('cf7sg_hybrid_dynamic_checkbox_default_value','',$attrs['name']);
+      if(!empty($default)) $hybrid_data['']=$default;
+      if(!empty($attrs['name'])) $attributes .= ' data-field-name="'.$attrs['name'].'"';
+    }
     if( isset($attrs['name'])){
       $name_attr = 'name="'.$attrs['name'];
       if(in_array('checkbox',$classes)){
@@ -1746,10 +1756,7 @@ class Cf7_Grid_Layout_Public {
       $attributes .= ' '.$key.'="'.$value.'"';
     }
     if(!$hasId) $attributes = 'id="dl-'.$attrs['name'].'" '.$attributes;
-    if($isHybrid){
-      if(!empty($name_attr)) $attributes .= ' data-field-name="'.$name_attr.'"';
-      if( isset($other_attrs['treeview']) ) $attributes.= ' data-tree-view="true"';
-    }
+
     $html = '<span '.$attributes.'>'.PHP_EOL;
     if($isHybrid){
       $html .= '<script type="application/json">'.PHP_EOL;
@@ -1816,7 +1823,7 @@ class Cf7_Grid_Layout_Public {
       $attributes = array($details[0]); //option label
       // if($value==$selected) $attributes .=' checked="true"';
       foreach($details[1] as $name=>$aval){
-        $attributes[]= $this->format_attribute($name,$aval);
+        $attributes[] = $this->format_attribute($name,$aval);
       }
       $children = array();
       if(isset($details[2])) $children = $this->build_hybrid_list($details[2]);

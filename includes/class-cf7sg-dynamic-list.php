@@ -557,7 +557,7 @@ class CF7SG_Dynamic_list{
      $selected='';
     }
     $other_classes='';
-    if(!empty($other_attrs)) $other_classes = ' cf7sg-'.implode(' cf7sg-', array_keys($other_attrs));
+    if(!empty($other_attrs)) $other_classes = ' cf7sg-dl-'.implode(' cf7sg-dl-', array_keys($other_attrs));
     $html = '<span class="wpcf7-form-control-wrap cf7sg-dl-'. $source['source'] .' '. $tag_name . $other_classes . '">' . PHP_EOL;
     /**
     * Register a [dynamic_display] shortcode with CF7.

@@ -359,6 +359,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * enable custom slider control row.
 * enable slider labelled dots.
 * added dynamic checkbox field with nested lists.
+* force dynamic tag select2 to open above (see select2 [issue](https://github.com/select2/select2/issues/3121#issuecomment-918379458) )
 = 4.10.0 =
 * abstraction of dynamic lists to open the possibility for other tag fields.
 * fix file required PHP fatal error.

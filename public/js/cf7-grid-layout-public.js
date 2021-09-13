@@ -33,9 +33,9 @@
       $form.attr('id','wpcf7-'+id);
     });
     //.cf7-sg-table structure, smart grid only.
-    var $cf7Form_table = $('div.cf7-smart-grid.has-table form.wpcf7-form');
-    if($cf7Form_table.length){
-      $('.container.cf7-sg-table', $cf7Form_table).each(function(){
+    var cf7Forms = $('div.cf7-smart-grid.has-table form.wpcf7-form');
+    if(cf7Forms.length){
+      $('.container.cf7-sg-table', cf7Forms).each(function(){
         var $table = $(this), fid = $table.closest('div.cf7-smart-grid').attr('id');
         if($table[0].hasAttribute('id')){ /** @since 2.4.2 track table fields*/
           var $tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $table.attr('id'));
@@ -54,7 +54,7 @@
         }
         //change the input and select fields to arrays for storage
         var trackFields = false;
-        //  if($cf7Form_table.is('div.has-update form.wpcf7-form')) trackFields = 'table';
+        //  if(cf7Forms.is('div.has-update form.wpcf7-form')) trackFields = 'table';
         $row.find(':input').each(function(){
           var $this = $(this);
           var name = $this.attr('name').replace('[]','');
@@ -91,12 +91,12 @@
         //add controls to the row to delete
         $row.append('<span class="row-control"><span class="dashicons dashicons-no-alt"></span></span>');
         //trigger table ready event for custom scripts to change the button text
-        $cf7Form_table.on('cf7SmartGridReady', function(e){
+        cf7Forms.on('cf7SmartGridReady', function(e){
           $table.trigger({type:'sgTableReady', 'table-id':$table.attr('id')});
         })
       });
       //event delegation on table buttons
-      $cf7Form_table.click('.container', function(e){
+      cf7Forms.click('.container', function(e){
         var $button = $(e.target);
         if( $button.is('div.cf7-sg-table-button a') ){ //----------add a row
           $button = $button.parent();
@@ -113,10 +113,10 @@
     }//end table structure
 
     //inline validation any forms
-    var cf7Form_validation = $('div.cf7-smart-grid.has-validation form.wpcf7-form');
-    if(cf7Form_validation.length){
+    cf7Forms = $('div.cf7-smart-grid.has-validation form.wpcf7-form');
+    if(cf7Forms.length){
 
-      var validation = $('input[type="number"][class*="sgv-"]', cf7Form_validation)
+      var validation = $('input[type="number"][class*="sgv-"]', cf7Forms)
       validation.each(function(){
         var $this = $(this), name = $this.attr('name'),
           fid = $this.closest('div.cf7-smart-grid').attr('id'),
@@ -128,7 +128,7 @@
         }
         $this.data('current',val);
       });
-      cf7Form_validation.change( 'input[type="number"]', function( event ) {
+      cf7Forms.change( 'input[type="number"]', function( event ) {
         if( !$(event.target).is('input[type="number"]')){
           return;
         }
@@ -157,10 +157,10 @@
       });
     }//end validation
     //enable collapsible rows only smart grid
-    var cf7Form_accordion = $('div.cf7-smart-grid.has-accordion form.wpcf7-form');
-    if(cf7Form_accordion.length>0){
+    var cf7Forms = $('div.cf7-smart-grid.has-accordion form.wpcf7-form');
+    if(cf7Forms.length>0){
       //enable the toggle buttons
-      cf7Form_accordion.filter('div.has-toggles form.wpcf7-form').each(function(){
+      cf7Forms.filter('div.has-toggles form.wpcf7-form').each(function(){
         var $form = $(this);
         var toggled_accordion = $('.cf7sg-collapsible.with-toggle', $form);
         /**
@@ -329,7 +329,7 @@
       }); //end collapsible rows with toggle buttons
 
       //now enable the other collapsible rows
-      cf7Form_accordion.each(function(){
+      cf7Forms.each(function(){
         /** @since 3.4.0 differentiate accordion of collapsible rows*/
         var $form = $(this),$rows = $('.cf7sg-collapsible', $form).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-accordion-rows > .cf7sg-collapsible').not('.cf7sg-slider-section >.cf7sg-collapsible');
         $rows = $rows.add( $('.cf7sg-accordion-rows', $form) );
@@ -383,14 +383,14 @@
           })
         })
       })
-      // cf7Form_accordion
+      // cf7Forms
     }//end collapsible rows
     //enable the tabs smart grid only.
-    var $cf7Form_tabs = $('div.cf7-smart-grid.has-tabs form.wpcf7-form');
-    if($cf7Form_tabs.length){
+    cf7Forms = $('div.cf7-smart-grid.has-tabs form.wpcf7-form');
+    if(cf7Forms.length){
       cf7sgPanels = {}; //object to store cloned panels
       //delegate tab addition/deletion
-      $cf7Form_tabs.click('ul.ui-tabs-nav li', function(e){
+      cf7Forms.click('ul.ui-tabs-nav li', function(e){
         var $target = $(e.target);
         var $container = $target.closest('.cf7-sg-tabs');
         if($target.is('.cf7sg-close-tab')){ //---------------------- close/delete tab.
@@ -399,7 +399,7 @@
           $container.cf7sgCloneTab(true,true);
         }
       });
-      $( ".cf7-sg-tabs",  $cf7Form_tabs).each(function(){
+      $( ".cf7-sg-tabs",  cf7Forms).each(function(){
         var $this = $(this), fid = $this.closest('div.cf7-smart-grid').attr('id');
         //add a button to create more tabs
         var $list = $this.children('.cf7-sg-tabs-list');
@@ -451,10 +451,10 @@
       }
     });
     //enable jquery-ui select menu, any forms.
-    var cf7Form_niceSelect = $('div.cf7-smart-grid.has-nice-select form.wpcf7-form');
-    if(cf7Form_niceSelect.length > 0){
+    cf7Forms = $('div.cf7-smart-grid.has-nice-select form.wpcf7-form');
+    if(cf7Forms.length > 0){
       //check if this is a mapped cf7-2-post form
-      cf7Form_niceSelect.filter('div.cf7_2_post form.wpcf7-form').each(function(){
+      cf7Forms.filter('div.cf7_2_post form.wpcf7-form').each(function(){
         var $form = $(this);
         var nonceID = $form.closest('div.cf7_2_post').attr('id');
         if(nonceID.length>0){
@@ -470,7 +470,7 @@
         }
       });
       //for non cf7 2 post forms, just enable the nice select
-      cf7Form_niceSelect.not('div.cf7_2_post form.wpcf7-form').each(function(){
+      cf7Forms.not('div.cf7_2_post form.wpcf7-form').each(function(){
         var $form = $(this);
         $('.cf7sg-dynamic-dropdown.ui-select:enabled', $form).each(function(){
           $(this).niceSelect();
@@ -484,11 +484,11 @@
       });
     }
     //enabled select2 dropdowns any forms.
-    var cf7Form_select2 = $('div.cf7-smart-grid.has-select2 form.wpcf7-form');
+    cf7Forms = $('div.cf7-smart-grid.has-select2 form.wpcf7-form');
 
-    if(cf7Form_select2.length > 0){
+    if(cf7Forms.length > 0){
       //check if this is a mapped cf7-2-post form
-      cf7Form_select2.filter('div.cf7_2_post form.wpcf7-form').each(function(){
+      cf7Forms.filter('div.cf7_2_post form.wpcf7-form').each(function(){
         var $form = $(this);
         var nonceID = $form.closest('div.cf7_2_post').attr('id');
         if(nonceID.length>0){
@@ -503,7 +503,7 @@
         }
       });
       //for non cf7 2 post forms, just enable the nice select
-      cf7Form_select2.not('div.cf7_2_post form.wpcf7-form').each(function(){
+      cf7Forms.not('div.cf7_2_post form.wpcf7-form').each(function(){
         var $form = $(this);
         $('select.wpcf7-form-control.select2:enabled', $form).each(function(){
           var $select2 = $(this);
@@ -513,14 +513,63 @@
         $form.on('cf7SmartGridReady', function(e){ $form.trigger('sgSelect2')})
       });
     }
+    /** @since 4.11 enable hybriddd fields */
+    cf7Forms= $('div.cf7-smart-grid.has-hybriddd form.wpcf7-form');
+
+    if(cf7Forms.length > 0){
+      //check if this is a mapped cf7-2-post form
+      var initHybridDropdowns = function($form){
+        $('.cf7sg-hybriddd',$form).each(function(){ //normal hybriddd dropdown.
+          new HybridDropdown(this,{
+            'optionLabel':function(lbl){ //is a value=>label object.
+              let l ='', a='';
+              if(Array.isArray(lbl)){
+                l = lbl[0];
+                for(let i=1;i<lbl.length;i++) a+=` ${lbl[i]}`;
+              }else{
+                l = lbl;
+              }
+              return `<span${a}>${l}</span>`;
+            }
+          });
+        });
+        $('.cf7sg-imagehdd',$form).each(function(){ //image hybriddd dropdown.
+          new HybridDropdown(this,{
+            'optionLabel':function(lbl){ //is a value=>label object.
+              let l='',a='',img='';
+              if(Array.isArray(lbl)){
+                l=lbl[0];
+                for(let i=1;i<lbl.length;i++){
+                  if(lbl[i].indexOf('data-thumbnail')>-1) img = lbl[i].replace('data-thumbnail', 'src');
+                  else a+=` ${lbl[i]}`;
+                }
+              }
+              return `<div${a}><img ${img} alt="${l}" /><p>${l}</p></div>`;
+            }
+          });
+        });
+      }
+      cf7Forms.filter('div.cf7_2_post form.wpcf7-form').each(function(){
+        var $form = $(this);
+        var nonceID = $form.closest('div.cf7_2_post').attr('id');
+        if(nonceID.length>0){
+          $form.on(nonceID, function(event){
+            initHybridDropdowns($(this));
+          });
+        }
+      });
+      cf7Forms.not('div.cf7_2_post form.wpcf7-form').each(function(){
+        initHybridDropdowns($(this));
+      })
+    }
 		//enable datepicker
     var input = document.createElement( 'input' );
     input.setAttribute('type','date');
     var html5date = (input.type == 'date');
-		var cf7Form_datepicker = $('div.cf7-smart-grid.has-date form.wpcf7-form');
-		if(cf7Form_datepicker.length > 0){
+		cf7Forms = $('div.cf7-smart-grid.has-date form.wpcf7-form');
+		if(cf7Forms.length > 0){
 			//check if this is a mapped cf7-2-post form
-			cf7Form_datepicker.filter('div.cf7_2_post form.wpcf7-form').each(function(){
+			cf7Forms.filter('div.cf7_2_post form.wpcf7-form').each(function(){
         var $form = $(this);
 				var nonceID = $form.closest('div.cf7_2_post').attr('id');
 				if(nonceID.length>0){
@@ -551,7 +600,7 @@
 				}
 			});
 			//for non cf7 2 post forms, just enable the datepicker
-			cf7Form_datepicker.not('div.cf7_2_post form.wpcf7-form').each(function(){
+			cf7Forms.not('div.cf7_2_post form.wpcf7-form').each(function(){
 				$('input.wpcf7-text.datepicker:enabled', $(this)).each(function(){
           var $date = $(this);
 					var id = $date.attr('id');
@@ -575,8 +624,8 @@
 			});
 		}
     /* init slider */
-    var $form_slider = $('div.cf7-smart-grid.has-slider form.wpcf7-form');
-    $form_slider.each(function(){
+    cf7Forms = $('div.cf7-smart-grid.has-slider form.wpcf7-form');
+    cf7Forms.each(function(){
       var $form = $(this),
         id = $form.closest('.cf7-smart-grid').attr('id');
 

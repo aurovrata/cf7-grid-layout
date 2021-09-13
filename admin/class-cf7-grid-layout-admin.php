@@ -636,9 +636,9 @@ class Cf7_Grid_Layout_Admin {
     $dynamic_fields = array();
     $form_classes = array();
     foreach($tags as $tag){
-      if(in_array($tag['basetype'],$dynamic_tags)){
-        $dynamic_fields[$tag['basetype']]=$tag;
-        $form_classes = array_merge($form_classes, $dynamic_lists[$tag['basetype']]->get_form_classes($tag, $cf7_post_id));
+      if(in_array($tag->basetype, $dynamic_tags)){
+        $dynamic_fields[$tag->basetype]=$tag;
+        $form_classes = array_merge($form_classes, $dynamic_lists[$tag->basetype]->get_form_classes($tag, $cf7_post_id));
       }
     }
     if(!empty($form_classes)){
@@ -648,7 +648,7 @@ class Cf7_Grid_Layout_Admin {
       }
       $form_classes = array_diff(array_unique($form_classes), $classes); //any new classes?
       if(!empty($form_classes)) {
-        update_post_meta($cf7_post_id, '_cf7sg_script_classes', array_merge( $form_classes, $classes));
+        update_post_meta($cf7_post_id, '_cf7sg_script_classes', array_merge($classes, $form_classes));
       }
     }
     //check for newly created taxonomy lists.
@@ -920,14 +920,7 @@ class Cf7_Grid_Layout_Admin {
 	}
   	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] ) ? sanitize_textarea_field($_POST['wpcf7-additional-settings']) : '';
 
-    //need to unhook this function so as not to loop infinitely
-    //debug_msg($args, 'saving cf7 posts');
-    remove_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
-    // debug_msg($args['form'],'form ');
-    $contact_form = wpcf7_save_contact_form( $args );
-    add_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
-    //flag as a grid form
-    //update_post_meta($post_id, 'cf7_grid_form', true); removed since v2.3 as not used.
+
     //save sub-forms if any
     $sub_forms = json_decode(stripslashes($_POST['cf7sg-embeded-forms']));
     if(empty($sub_forms)) $sub_forms = array();
@@ -1004,11 +997,7 @@ class Cf7_Grid_Layout_Admin {
     update_post_meta($post_id, '_cf7sg_has_tables', $has_tables);
     $has_toggles = ( 'true' === $_POST['cf7sg-has-toggles']) ? true : false;
     update_post_meta($post_id, '_cf7sg_has_toggles', $has_toggles);
-    /** @since 3.3.5 track toggles in tabs */
-    // $toggle_in_tabs = json_decode(stripslashes($_POST['cf7sg-toggle-in-tabs']));
-    // if(empty($toggle_in_tabs)) $toggle_in_tabs = array();
-    // if(!is_array($toggle_in_tabs)) $toggle_in_tabs = array($toggle_in_tabs);
-    // update_post_meta($post_id, '_cf7sg_grid_toggle_in_tabs', $toggle_in_tabs);
+
     /**
     * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
     */
@@ -1087,6 +1076,14 @@ class Cf7_Grid_Layout_Admin {
     if(!is_wp_error($preview_id)){
       update_post_meta($post->ID, '_cf7sg_form_page',$preview_id);
     }
+    //save wpcf7 form
+    //need to unhook this function so as not to loop infinitely
+    //debug_msg($args, 'saving cf7 posts');
+    remove_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
+    // debug_msg($args['form'],'form ');
+    $contact_form = wpcf7_save_contact_form( $args );
+    add_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
+
     /** @since 4.9.2 fire form saving action so as to prevent double save_post hook calls on other plugins */
     do_action('cf7sg_save_post',$post_id, $post, $update);
   }
@@ -1290,7 +1287,6 @@ class Cf7_Grid_Layout_Admin {
   public function save_dynamic_list_form_classes($form_classes, $tag, $form_id){
     /* Bookeeping, set up tagged select2 fields to filter newly added options in case Post My CF7 Form plugin is running */
     $class = $tag->get_class_option('');
-
     switch($tag->basetype){
       case 'dynamic_select':
         if(strpos($class, 'select2')){
@@ -1314,9 +1310,9 @@ class Cf7_Grid_Layout_Admin {
       case 'dynamic_checkbox':
         //other attrbutes captures in the tag manager.
         $other_attrs = array();
-        foreach($tag->options as $tag_option){
-          if(false !== stripos($tag_option, ':')) continue; //ignore as these are reserved for list sources.
-          switch($tag_option){
+        foreach($tag->options as $option){
+          if(false !== stripos($option, ':')) continue; //ignore these.
+          switch($option){
             case 'hybriddd':
             case 'imagehdd':
             case 'treeview':

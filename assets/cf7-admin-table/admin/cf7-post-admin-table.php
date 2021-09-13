@@ -410,7 +410,7 @@ if(!class_exists('CF7SG_WP_Post_Table')){
       switch ( $column_name ) {
         case 'cf7_key':
       ?>
-      <span class="cf7-form-key-error">Your key in not unique or contains spaces</span>
+      <span class="cf7-form-key-error display-none">Your key in not unique or contains spaces</span>
       <?php
         break;
         default:

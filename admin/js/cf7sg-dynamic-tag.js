@@ -26,6 +26,7 @@
           multiple:true,
           dropdownParent:$tax,
           allowClear:true,
+          forceAbove:true,
           templateSelection: function (state) {
             if (!state.id) {
               return state.text;
@@ -59,7 +60,7 @@
         /** @since 4.11 allow nesting of lists */
         if($option.is('.hierarchical') && $hasNesting) $hasNesting.show();
         else if($hasNesting){
-          $('input',$hasNesting).prop('checked',false); 
+          $('input',$hasNesting).prop('checked',false);
           $hasNesting.hide();
         }
         break;
