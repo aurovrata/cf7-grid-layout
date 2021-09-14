@@ -41,6 +41,13 @@ select.hybridddised{
   display: none;
 	background-color: inherit;
 }
+.hybrid-dropdown.hybriddd-top .hybriddd-wrapper{
+  bottom:calc(var(--hybriddd-top) - 1px);
+}
+.hybrid-dropdown.hybriddd-left .hybriddd-wrapper{
+	right:0;
+	left:auto;
+}
 .hybrid-dropdown ul.hybriddd-options {
 	border: 1px solid #6f6f6f;
 	border-radius: 0.25em;

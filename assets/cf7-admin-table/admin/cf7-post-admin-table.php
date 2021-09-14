@@ -389,35 +389,33 @@ if(!class_exists('CF7SG_WP_Post_Table')){
        return $location;
      }
 
-    /**
-     * Function to populate the quick edit form
-     * Hooked on 'quick_edit_custom_box' action
-     *
-     * @since 1.0.0
-     * @param      string    $column_name     column name to add edit field.
-     * @param      string    $post_type     post type being displayed.
-     * @return     string    echos the html fields.
-    **/
-    public function quick_edit_box( $column_name, $post_type ) {
-      if(self::cf7_post_type() != $post_type){
-        return;
-      }
-      static $printNonce = TRUE;
-      if ( $printNonce ) {
-          $printNonce = FALSE;
-          wp_nonce_field( plugin_basename( __DIR__ ), 'cf7_key_nonce' );
-      }
-      switch ( $column_name ) {
-        case 'cf7_key':
-      ?>
-      <span class="cf7-form-key-error display-none">Your key in not unique or contains spaces</span>
-      <?php
-        break;
-        default:
-          echo '';
-          break;
-      }
-    }
+    // /**
+    //  * Function to populate the quick edit form
+    //  * Hooked on 'quick_edit_custom_box' action
+    //  *
+    //  * @since 1.0.0
+    //  * @param      string    $column_name     column name to add edit field.
+    //  * @param      string    $post_type     post type being displayed.
+    //  * @return     string    echos the html fields.
+    // **/
+    // public function quick_edit_box( $column_name, $post_type ) {
+    //   if(self::cf7_post_type() != $post_type){
+    //     return;
+    //   }
+    //   static $printNonce = TRUE;
+    //   if ( $printNonce ) {
+    //       $printNonce = FALSE;
+    //       wp_nonce_field( plugin_basename( __DIR__ ), 'cf7_key_nonce' );
+    //   }
+    //   switch ( $column_name ) {
+    //     case 'cf7_key':
+    //   
+    //     break;
+    //     default:
+    //       echo '';
+    //       break;
+    //   }
+    // }
     /**
      *cf7-form Shortcode handler
      *

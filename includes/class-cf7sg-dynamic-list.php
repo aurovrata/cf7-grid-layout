@@ -527,12 +527,12 @@ class CF7SG_Dynamic_list{
      '4.11.0',"cf7sg_{$this->tag_id}_attributes");
     $attributes = apply_filters("cf7sg_{$this->tag_id}_attributes", array(), $tag, $cf7_key);
     if(!empty($id)) $attributes['id']=$id;
-    $attributes['class']=$class;
     $attributes['name']=$tag->name;
 
     /** @since 4.0 */
     if(isset($other_attrs['permalinks'])) $class.=' cf7sg-permalinks';
-
+    $attributes['class']=$class;
+    
     /**
     * @since 2.2 allows custom filtered $options to be an html string.
     */

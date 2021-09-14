@@ -992,6 +992,8 @@ class HybridDDError extends Error {
       _.closeSelect();
       return;
     }
+    //set the height of the wrapper for placing it on top.
+    _.hdd.listwrap.style['--hybriddd-top'] = _.hdd.offsetHeight+'px'
     _.hdd.classList.add('active');
     //adjust width of dropdown.
     //setup wrapper height and width.
