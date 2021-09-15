@@ -482,7 +482,7 @@ class CF7SG_Dynamic_list{
             if(apply_filters("cf7sg_{$this->tag_id}_include_post_terms_as_class", true, $tag, $cf7_key)){
               foreach($post_taxonomies as $tx){
                 $ts = get_the_terms($post, $tx);
-                if(is_array($ts)) foreach($ts as $t) $filter_attributes['class'][]="$tx-$ts->slug";
+                if(!is_wp_error($ts)) foreach($ts as $t) $filter_attributes['class'][]="$tx-$t->slug";
               }
             }
 
@@ -532,7 +532,7 @@ class CF7SG_Dynamic_list{
     /** @since 4.0 */
     if(isset($other_attrs['permalinks'])) $class.=' cf7sg-permalinks';
     $attributes['class']=$class;
-    
+
     /**
     * @since 2.2 allows custom filtered $options to be an html string.
     */

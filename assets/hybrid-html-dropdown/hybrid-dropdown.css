@@ -40,6 +40,7 @@ select.hybridddised{
 	min-width: max-content;
   display: none;
 	background-color: inherit;
+	line-height: 0;
 }
 .hybrid-dropdown.hybriddd-top .hybriddd-wrapper{
   bottom:calc(var(--hybriddd-top) - 1px);
@@ -83,6 +84,7 @@ select.hybridddised{
 	max-width: inherit;
   display: inline-block;
 	z-index: 7;
+	line-height: normal;
 }
 
 .hybriddd-selected::after {
@@ -165,6 +167,10 @@ ul.hybriddd-options::-webkit-scrollbar-track {
   -moz-user-select: none; /* Gecko (Firefox) */
   -webkit-user-select: none; /* Webkit (Safari, Chrome) */
   display:block;
+	line-height: 0;
+}
+.hybriddd-option .hybridddl{
+	line-height: normal;
 }
 .hybriddd-option label > *{
 	display: inline-block;
@@ -185,9 +191,10 @@ ul.hybriddd-options::-webkit-scrollbar-track {
 }
 .hybriddd-option > label > input {
 	opacity: 0;
-	/* margin-left: -15px; */
+	border: none;
 	width: 0;
 	height: 0;
+	position: absolute;
 }
 .hybridddcb::before {
 	content: '';
