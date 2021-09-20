@@ -482,7 +482,7 @@ class CF7SG_Dynamic_list{
             if(apply_filters("cf7sg_{$this->tag_id}_include_post_terms_as_class", true, $tag, $cf7_key)){
               foreach($post_taxonomies as $tx){
                 $ts = get_the_terms($post, $tx);
-                if(!is_wp_error($ts)) foreach($ts as $t) $filter_attributes['class'][]="$tx-$t->slug";
+                if($ts && !is_wp_error($ts)) foreach($ts as $t) $filter_attributes['class'][]="$tx-$t->slug";
               }
             }
 
@@ -736,25 +736,15 @@ if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
     if(false === $dl){
       $dl = new CF7SG_Dynamic_List('dynamic_checkbox',__( 'dynamic-checkbox', 'cf7-grid-layout' ));
       $dl->set_styles(array(
-        'checkbox' => __('Checkbox fields','cf7-grid-layout'),
-        'radio' => __('Radio fields','cf7-grid-layout'),
-      ),array(
-        'checkbox'=>array(
-          'maxcheck'=>array(
-            'label'=> __('Limit selections','cf7-grid-layout'),
-            'attrs'=>'class="limit-check"',
-            'html'=>'<input type="number" min="1" value="3" class="max-selection"/>
-            <input type="hidden" value="" class="data-attribute" />'
-          )
-        )
-      ));
-      $dl->set_others_extras_radio(); //default is checkbox.
-      $dl->set_others_extras(array(
-        ''=> __('List','cf7-grid-layout'),
         'hybriddd'=> '<a href="https://aurovrata.github.io/hybrid-html-dropdown/">Hybrid Dropdown</a>',
         'treeview'=> sprintf(__('<a href="%s">Treeview dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#hybrid-dropdown-with-treeview-selection'),
         'imagehdd'=> sprintf(__('<a href="%s">Image dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images'),
-        'imagegrid'=> __('Image grid','cf7-grid-layout'),
+        'imagegrid'=> sprintf(__('<a href="%s">Image grid</a>, no dropdown','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images')
+      ),array());
+      $dl->set_others_extras_radio(); //default is checkbox.
+      $dl->set_others_extras(array(
+        'limit'=> __('Limit selections','cf7-grid-layout').'<input type="number" min="1" value="3" class="max-selection"/><input type="hidden" value="" class="data-attribute" />',
+        'nolimit' => __('Unlimited selections','cf7-grid-layout')
       ));
       $dl->allow_nesting(); //flag as able to handle hierarchical lists.
     }
