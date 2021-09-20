@@ -101,6 +101,7 @@
             <?php
               $others = $dlo->get_other_extras();
               $type = $dlo->get_other_extras_type();
+              $ckd = ' checked';
               foreach($others as $val=>$field):
                 $label = '<em>unknown field</em>';
                 $attributes = '';
@@ -128,11 +129,12 @@
                 ?>
                 <div class="<?=$val?>">
                   <label for="<?=$tag_id?>-<?=$val?>">
-                    <input class="select-<?=$val?>" id="<?=$tag_id?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>"<?=$name?>/>
+                    <input class="select-<?=$val?>" id="<?=$tag_id?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>"<?=$name?><?=$ckd?>/>
                     <?=$label?>
                   </label>
                 </div>
                 <?php
+                $ckd='';
               endforeach;
             ?>
           </td>

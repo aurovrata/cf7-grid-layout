@@ -1,10 +1,23 @@
 (function($){
 	$('#dynamic-checkbox-tag-generator').change(':input',function(e){
-		let $target = $(e.target), $form = $(this);
+		let $target = $(e.target),
+			$form = $(this),
+			$l = $('#dynamic_checkbox-limit', $form).next('.max-selection'), //limit selection
+			$t = $('#dynamic-checkbox-post-images', $form), //post thumbnails
+			$style = $('input[name="dynamic_checkbox-style[]"]', $form),//styles.
+			$source = $('input[name="sections[]"]', $form); //source of data
+
 		switch(true){
-			case $target.is('.post-tab'):
-				if($('#dynamic-checkbox-post-images').is(':checked')) $('#image-grid').show();
-				break; //nothing to do.
+			case $target.is('.source-tab'):
+				if($t.is(':checked')){
+					$t.prop('checked',false);
+					$style.filter('#dynamic_checkbox-hybriddd, #dynamic_checkbox-treeview').attr('disabled',false);
+				}
+				if(['imagehdd','imagegrid'].includes($style.filter(':checked').val()){
+					//display filter for images
+					$source.filter(':checked').is('.custom-tab');
+				}
+				break;
 			case $target.is('.custom-tab'):
 				$('#image-grid').show();
 				//enable image filter.
@@ -14,21 +27,23 @@
 				break;
 			case $target.is('#dynamic-checkbox-post-images'):
 				if(e.target.checked){
-					let $style = $('input[name="dynamic_checkbox-style[]"]', $form);
 					switch($style.val()){
 						case 'hybriddd':
 						case 'treeview':
-							$('#dynamic_checkbox-imagehdd',$form).prop('checked',true);
+							$style.filter('#dynamic_checkbox-imagehdd').prop('checked',true);
 							break;
 					}
+					$style.filter('#dynamic_checkbox-hybriddd, #dynamic_checkbox-treeview').attr('disabled',true);
 				}
 				break;
 			case $target.is('#dynamic_checkbox-limit'): //enable limit selection
-			let $l = $target.next('.max-selection');
 				if(e.target.checked){
 					$l.prop('disabled',false);
 					$l.next('input.data-attribute').val('maxcheck:'+$l.val()).trigger('change'); //hidden field
-				}else{
+				}
+				break;
+			case $target.is('#dynamic_checkbox-nolimit'): //enable limit selection
+				if(e.target.checked){
 					$l.next('input.data-attribute').val('').trigger('change'); //empty hidden field
 					$l.prop('disabled',true);
 				}

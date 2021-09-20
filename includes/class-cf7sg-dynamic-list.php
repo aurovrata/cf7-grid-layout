@@ -743,7 +743,7 @@ if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
       ),array());
       $dl->set_others_extras_radio(); //default is checkbox.
       $dl->set_others_extras(array(
-        'limit'=> __('Limit selections','cf7-grid-layout').'<input type="number" min="1" value="3" class="max-selection"/><input type="hidden" value="" class="data-attribute" />',
+        'limit'=> __('Limit selections','cf7-grid-layout').'<input type="number" min="1" value="1" class="max-selection"/><input type="hidden" value="" class="data-attribute" />',
         'nolimit' => __('Unlimited selections','cf7-grid-layout')
       ));
       $dl->allow_nesting(); //flag as able to handle hierarchical lists.
