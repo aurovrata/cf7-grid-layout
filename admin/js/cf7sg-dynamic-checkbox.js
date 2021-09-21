@@ -1,11 +1,32 @@
 (function($){
+	let $imgFilter = $('#fieldhelperdiv .cf7sg_filter_taxonomy_images a.helper');
+	$imgFilter = $('#dynamic_checkbox-imagehdd, #dynamic_checkbox-imagegrid').siblings('.cf7sg-se-option').children('a').attr('data-cf7sghelp', $imgFilter.attr('data-cf72post'));
+	//enable the filter helper code.
+	$imgFilter.each(function(){
+		new Clipboard(this, {
+			text: function(trigger) {
+				let $target = $(trigger),
+				  text = $target.data('cf7sghelp'),
+				  key = $('#post_name').val(), //get post slug
+					$form = $target.closest('.cf7sg-dynamic-list-tag-manager'),
+				  field = $('input.tg-name',$form).val();
+				text = text.replace(/\{\$form_key\}/gi, key);
+				text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
+				text = text.replace(/\{\$field_name\}/gi, field);
+				text = text.replace(/\{\$field_name_slug\}/gi, field.replace(/\-/g,'_'));
+				text = text.replace(/\{\$field_type\}/gi, 'dynamic_checkbox');
+				text = text.replace(/\[dqt\]/gi, '"');
+				return text;
+			}
+		})
+	})
 	$('#dynamic-checkbox-tag-generator').change(':input',function(e){
 		let $target = $(e.target),
 			$form = $(this),
 			$l = $('#dynamic_checkbox-limit', $form).next('.max-selection'), //limit selection
 			$t = $('#dynamic-checkbox-post-images', $form), //post thumbnails
 			$style = $('input[name="dynamic_checkbox-style[]"]', $form),//styles.
-			$source = $('input[name="sections[]"]', $form); //source of data
+			$source = $('input[name="sections"]', $form); //source of data
 
 		switch(true){
 			case $target.is('.source-tab'):
@@ -13,17 +34,11 @@
 					$t.prop('checked',false);
 					$style.filter('#dynamic_checkbox-hybriddd, #dynamic_checkbox-treeview').attr('disabled',false);
 				}
-				if(['imagehdd','imagegrid'].includes($style.filter(':checked').val()){
-					//display filter for images
-					$source.filter(':checked').is('.custom-tab');
+				$imgFilter.closest('.cf7sg-se-option').hide(); //hide all filters
+				if($target.is('.taxonomy-tab') && ['imagehdd','imagegrid'].includes($style.filter(':checked').val())){
+					//shoe the image filter option.
+					$style.filter(':checked').siblings('.cf7sg-se-option').show();
 				}
-				break;
-			case $target.is('.custom-tab'):
-				$('#image-grid').show();
-				//enable image filter.
-				break; //nothing to do.
-			case $target.is('.source-tab'): //alternative source.
-				$('#image-grid').hide().find(':input').prop('checked', false);
 				break;
 			case $target.is('#dynamic-checkbox-post-images'):
 				if(e.target.checked){
@@ -51,12 +66,10 @@
 			case $target.is('.max-selection'): //update hidden value.
 				$target.next('input.data-attribute').val('maxcheck:'+e.target.value).trigger('change');
 				break;
-			case $target.is('#dynamic_checkbox-imagehdd'): //update hidden value.
-			case $target.is('#dynamic_checkbox-imagegrid'): //update hidden value.
-				// let $form = $target.closest('.cf7sg-dynamic-list-tag-manager'),
-	      let $tab = $('input[name="sections"]:checked', $form);
-				if( $tab.is('.taxonomy-tab') && e.target.checked) $('p.filter-hook', $tab.closest('section')).show();
-				else $('p.filter-hook', $tab.closest('section')).hide();
+			case $target.is('.list-style'):
+				if($source.filter(':checked').is('.taxonomy-tab')){
+					$target.siblings('.cf7sg-se-option').show(); //show the current one.
+				}
 				break;
 		}
 	});

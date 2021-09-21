@@ -145,6 +145,7 @@ class CF7SG_Dynamic_list{
   public function get_style_extras($style){
     $extras = array();
     if(isset($this->style_extras[$style])) $extras = $this->style_extras[$style];
+    if(!is_array($extras)) $extras = array($extras);
     return $extras;
   }
   /**
@@ -419,7 +420,7 @@ class CF7SG_Dynamic_list{
             $tag->name,
             $cf7_key
           ), '4.11.0', 'cf7sg_dynamic_list_post_query' );
-        $args = apply_filters('cf7sg_dynamic_list_post_query', $args, $tag, $cf7_key);
+        $args = apply_filters('cf7sg_dynamic_list_post_query', $args, $tag->name, $cf7_key);
 
         $posts = get_posts($args);
         // debug_msg($posts, 'post query ');
@@ -740,7 +741,10 @@ if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
         'treeview'=> sprintf(__('<a href="%s">Treeview dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#hybrid-dropdown-with-treeview-selection'),
         'imagehdd'=> sprintf(__('<a href="%s">Image dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images'),
         'imagegrid'=> sprintf(__('<a href="%s">Image grid</a>, no dropdown','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images')
-      ),array());
+      ),array(
+        'imagehdd'=>sprintf('('.__('<a href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);'),
+        'imagegrid'=>sprintf('('.__('<a href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);')
+      ));
       $dl->set_others_extras_radio(); //default is checkbox.
       $dl->set_others_extras(array(
         'limit'=> __('Limit selections','cf7-grid-layout').'<input type="number" min="1" value="1" class="max-selection"/><input type="hidden" value="" class="data-attribute" />',

@@ -4,6 +4,7 @@
 Available replacement varaibles:
 {$form_key}  - unique form key.
 {$form_key_slug}  - unique form key slug for function names.
+($field_type) - tag field id, eg dynamic_select.
 ($field_name) - unique field name.
 ($field_name_slug) - unique field name slug for function names.
 [dqt] - double quote for html attributes.
@@ -72,7 +73,7 @@ function {$field_name_slug}_taxonomy_query($args, $tag, $cf7_key){
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the taxonomy query.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_list-taxonomy cf7sg_filter_taxonomy_images">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_list_options_attributes','{$field_name_slug}_dynamic_option_attributes',10,4);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_options_attributes','{$field_name_slug}_dynamic_option_attributes',10,4);
 /**
 * Filter dropdown options  attributes.
 * @param array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
@@ -89,10 +90,10 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $term, $tag, 
   }
   //example: $attributes['class'] = array($term->slug);
   //if this is a dynamic_checkbox with imagegrid option selected, then you will will need to provide image sources for each term,
-  //$attributes['data-thumbnail'] = <url of image> .
+  //$attributes['data-thumbnail'] = <url of image>
 
   return $attributes;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option attributes.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('options attributes.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_list-post">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_option_label','{$field_name_slug}_dynamic_option_label',10,4);
@@ -158,14 +159,14 @@ function {$field_name_slug}_dynamic_default_option($default, $tag, $cf7_key){
 * Filter custom options from tag enabled select2 dynamic-dropdown fields
 * where the source of options come from post titles.  Filter is fired when a new value is submitted.
 * This plugin does not take any further action, ie no post of $post_type will be created. It is upto you to do so and return the slug of the newly created post.
-* @param  string  $post_name the new post slug.
+* @param  String  $post_name the new post slug.
 * @param String $field name of the form field.
-* @param  string  $title  new value being submitted for a new post title.
-* @param  string $post_type  the post type from which this dropdown was built
-* @param  array  $args  an array of additional parameters that was set in the tag, for example the taxonomy and terms from which to filter the posts for the dynamic list.
-* @param  array  $submitted_data  array of other submitted $field=>$value pairs.
-* @param string $key  the form unique key.
-* @return string value to be stored for this field.
+* @param  String  $title  new value being submitted for a new post title.
+* @param  String $post_type  the post type from which this dropdown was built
+* @param  Array  $args  an array of additional parameters that was set in the tag, for example the taxonomy and terms from which to filter the posts for the dynamic list.
+* @param  Array  $submitted_data  array of other submitted $field=>$value pairs.
+* @param String $key  the form unique key.
+* @return String value to be stored for this field, the post slug.
 */
 function {$field_name_slug}_select2_newpost($post_name, $field, $title, $post_type, $args, $submitted_data, $cf7_key){
   /*
@@ -186,9 +187,31 @@ function {$field_name_slug}_select2_newpost($post_name, $field, $title, $post_ty
     return $default;
   }
   //create your new post using wp_insert_post();
-  $post_name = 'new_sbummision';
+  $post_name = 'new_submision';
   return $post_name;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('user added option.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?=__('Insert','cf7-grid-layout')?></a> <?=__('user added post.','cf7-grid-layout')?>
+</li>
+<li class="cf7sg-tag-dynamic_select-post-tags <?=$post_my_form_only?>">
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_new_term','{$field_name_slug}_select2_newterm',10,7);
+/**
+* Filter custom options from tag enabled select2 dynamic-select fields
+* where the source of options come from taxonomy terms.  Filter is fired when a new value is submitted.
+* This plugin will attempt to insert the new term, whether filtered or not,
+* however you can return an empty string to stop the term being inserted.
+* @param  String  $term_name the new term name.
+* @param String $field name of the form field.
+* @param  String  $taxonomy  the taxonomy for which the new term is to be added to.
+* @param  Array  $submitted_data  array of other submitted $field=>$value pairs.
+* @param String $key  the form unique key.
+* @return String name of the new term, empty value will not be inserted.
+*/
+function {$field_name_slug}_select2_newpost($term_name, $field, $taxonomy, $submitted_data, $cf7_key){
+  if('{$form_key}'!==$cf7_key || '{$field_name}' !== $field){
+    return $default;
+  }
+  //change the name if need be.
+  return $term_name;
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('user added term.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-filter <?=$post_my_form_only?>">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_filter_select2_submission','{$field_name_slug}_select2_filter_values',10,4);
@@ -217,7 +240,7 @@ function {$field_name_slug}_select2_filter_values($values, $field, $submitted_da
   }
   //do something...
   return $values;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('user selection with user added option.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('user added option.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_list-filter cf7sg_filter_source">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_custom_{$field_type}','{$field_name_slug}_dynamic_options',10,3);

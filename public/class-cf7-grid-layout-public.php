@@ -1284,10 +1284,12 @@ class Cf7_Grid_Layout_Public {
               * @since 2.0.0
               */
               $term = apply_filters('cf7sg_dynamic_dropdown_new_term', $term, $field_name, $taxonomy, $submitted_data, $cf7_key);
-              $new_term = wp_insert_term($term, $taxonomy);
-              if(!is_wp_error($new_term)){
-                $new_term = get_term($new_term['term_id'], $taxonomy);
-                $value[$idx] = $new_term->slug;
+              if(!empty($term)){
+                $new_term = wp_insert_term($term, $taxonomy);
+                if(!is_wp_error($new_term)){
+                  $new_term = get_term($new_term['term_id'], $taxonomy);
+                  $value[$idx] = $new_term->slug;
+                }
               }
             }
             $idx++;
@@ -1313,7 +1315,13 @@ class Cf7_Grid_Layout_Public {
             }
             $args['tax_query'] = $tax;
          }
-         $args = apply_filters('cf7sg_dynamic_dropdown_post_query', $args, $tag->name, $cf7_key);
+         apply_filters_deprecated('cf7sg_dynamic_dropdown_post_query',
+           array(
+             $args,
+             $tag->name,
+             $cf7_key
+           ), '4.11.0', 'cf7sg_dynamic_list_post_query' );
+         $args = apply_filters('cf7sg_dynamic_list_post_query', $args, $tag->name, $cf7_key);
          $posts = get_posts($args);
          $options = array();
          if(!empty($posts)){

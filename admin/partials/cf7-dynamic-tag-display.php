@@ -58,9 +58,10 @@
                 <?=$label?>
                 <?php
                 $extras = $dlo->get_style_extras($s);
+                // debug_msg($extras, "$tag_id ");
                 foreach($extras as $val => $field):
                   $type = 'checkbox';
-                  $label = '<em>unknown field</em>';
+                  $label = '';
                   $attributes = 'disabled';
                   $html='';
                   if(is_array($field)){
@@ -68,7 +69,10 @@
                     if(isset($field['type'])) $type = $field['type'];
                     if(isset($field['attrs'])) $attributes = $field['attrs'];
                     if(isset($field['html'])) $html = $field['html'];
-                  }else $label = $field;
+                  }else{
+                    $val = $s; 
+                    $html = $field;
+                  }
                   $pre='';
                   $pst='';
                   switch($type){
@@ -82,9 +86,14 @@
                     }
                  ?>
                  <span class="cf7sg-se-option cf7sg-se-<?=$val?><?=$display_none?>">
+                   <?php if(!empty($label)):?>
                    <label for="<?=$s?>-<?=$val?>">
-                     <?=$pre?><input id="<?=$s?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>" <?=$attributes?>/><?=$pst?><?=$html?>
+                     <?=$pre?><input id="<?=$s?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>" <?=$attributes?>/><?=$pst?>
                    </label>
+                 <?php endif;
+                 if(!empty($html)):?>
+                   <?=$html?>
+                 <?php endif;?>
                  </span>
                <?php endforeach;?>
               </label>

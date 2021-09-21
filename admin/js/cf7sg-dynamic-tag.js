@@ -65,7 +65,7 @@
         }
         break;
       case $target.is('.list-style'): //---------list-type
-        $target.closest('td.cf7sg-dl-styles').find('span.cf7sg-se-option').hide().find(':input').prop('checked', false).val('');
+        $target.closest('td.cf7sg-dl-styles').find('span.cf7sg-se-option').hide().find(':input').prop('checked', false).val(''); //rest all/
         break;
       case $target.is('.source-tab'): //source selection.
         break;

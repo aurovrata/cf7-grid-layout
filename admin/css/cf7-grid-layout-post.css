@@ -382,7 +382,7 @@ textarea.grid-input {
     z-index: 9;
     background: #d8d8d8;
     border: solid 1px #787878;
-    width: 300px;
+    width: max-content;
 }
 #grid-form .helper-popup p {
     margin: 0;
@@ -391,7 +391,7 @@ textarea.grid-input {
     left: 0;
     text-align: center;
     width: 100%;
-    line-height: 1em;
+    line-height: normal;
 }
 #grid-form .helper-popup .dashicons.dashicons-no-alt {
     position: absolute;

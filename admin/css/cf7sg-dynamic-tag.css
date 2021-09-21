@@ -11,6 +11,9 @@
 p.imagegrid-filter {
 	clear: both;
 }
+.tag-generator-panel .cf7sg-se-option {
+	margin-left: 8px;
+}
 .cf7sg-dynamic-list-tag-manager a.helper::before {
     content: 'Click to copy!';
     display: none;
