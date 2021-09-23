@@ -1315,6 +1315,7 @@ class Cf7_Grid_Layout_Admin {
           switch($option){
             case 'hybriddd':
             case 'imagehdd':
+            case 'imagegrid':
             case 'treeview':
               $form_classes[] = 'has-hybriddd';
               break;

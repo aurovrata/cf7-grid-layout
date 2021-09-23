@@ -54,6 +54,9 @@ select.hybridddised{
 }
 .hybrid-dropdown.hybriddd-none .hybriddd-options > li {
 	display: inline-block;
+	line-height: normal;
+	vertical-align: top;
+	padding: 3px;
 }
 .hybrid-dropdown.hybriddd-top .hybriddd-wrapper{
   bottom:var(--hybriddd-top);
@@ -81,8 +84,7 @@ select.hybridddised{
 }
 .hybrid-dropdown.hybriddd-none .hybriddd-options {
 	display: block;
-	width: auto;
-	margin: 0;
+	margin: 0 auto;
 	padding: 0;
 }
 .hybrid-dropdown.active > .hybriddd-wrapper{

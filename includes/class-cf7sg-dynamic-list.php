@@ -448,7 +448,6 @@ class CF7SG_Dynamic_list{
                 $cf7_key
               ), '4.11.0', "cf7sg_{$this->tag_id}_option_label" );
             $label = apply_filters("cf7sg_{$this->tag_id}_option_label", $label, $post, $tag, $cf7_key);
-
             $attributes = array();
             if( isset($other_attrs['permalinks']) ){
               $attributes['data-permalink'] = get_permalink($post);

@@ -45,6 +45,10 @@
 .hybrid-dropdown.cf7sg-imagehdd .hybriddd-option{
 	height: auto;
 }
+/* image grid */
+.hybriddd-none .hybriddd-option > label > input {
+	position: absolute;
+}
 .cf7sg-imagehdd .hybridddcb::before {
 	content: '';
 	display: block;

@@ -1661,18 +1661,6 @@ class Cf7_Grid_Layout_Public {
     if(!empty($prefill)) setcookie('_cf7sg_'. sanitize_text_field( $_POST['_wpcf7_key'] ), json_encode($prefill),0,'/');
   }
   /**
-  * Wrap checkbox labels with p tags.
-  * Hooked on 'cf7sg_dynamic_checkbox_option_label'.
-  *@since 4.11.0
-  *@param String $label label
-  *@param mixed $obj source object.
-  *@return String label
-  */
-  public function wrap_label_in_paragraph($label, $obj, $tag){
-    if(in_array('imagegrid',$tag->options)) $label = "<p>$label</p>";
-    return $label;
-  }
-  /**
 	 * Register a [dynamic_display] shortcode with CF7.
 	 * hooked on 'cf7sg_dynamic_select_html_field'
 	 * This function registers a callback function to expand the shortcode for the googleMap form fields.
@@ -1724,8 +1712,6 @@ class Cf7_Grid_Layout_Public {
     $type = 'radio';
     $name_attr='';
     $isImageGrid = isset($other_attrs['imagegrid']);
-    //check if hybrid.
-    $isHybrid = true;
     $attributes = '';
     $hybrid_data = array();
     switch($list_type){
@@ -1739,15 +1725,14 @@ class Cf7_Grid_Layout_Public {
         $attrs['class'] .=' cf7sg-hybriddd';
         $attrs['data-tree-view']='true';
         break;
-      default:
-        $isHybrid = false;
+      case 'imagegrid':
+        $attrs['class'] .=' cf7sg-imagehdd';
+        $attrs['data-dropdown']='none';
         break;
     }
-    if($isHybrid){
-      $default = apply_filters('cf7sg_hybrid_dynamic_checkbox_default_value','',$attrs['name']);
-      if(!empty($default)) $hybrid_data['']=$default;
-      if(!empty($attrs['name'])) $attributes .= ' data-field-name="'.$attrs['name'].'"';
-    }
+    $default = apply_filters('cf7sg_hybrid_dynamic_checkbox_default_value','',$attrs['name']);
+    if(!empty($default)) $hybrid_data['']=$default;
+    if(!empty($attrs['name'])) $attributes .= ' data-field-name="'.$attrs['name'].'"';
     if( isset($attrs['name'])){
       $name_attr = 'name="'.$attrs['name'];
       if(in_array('checkbox',$classes)){
@@ -1760,63 +1745,19 @@ class Cf7_Grid_Layout_Public {
     foreach($attrs as $key=>$value){
       if('name'==$key) continue;
       if('id'==$key) $hasId = true;
-      if('data-maxcheck'==$key && $isHybrid) $key = 'data-limit-selection';
+      if( 'data-maxcheck'==$key ) $key = 'data-limit-selection';
       $attributes .= ' '.$key.'="'.$value.'"';
     }
     if(!$hasId) $attributes = 'id="dl-'.$attrs['name'].'" '.$attributes;
 
     $html = '<span '.$attributes.'>'.PHP_EOL;
-    if($isHybrid){
-      $html .= '<script type="application/json">'.PHP_EOL;
-      $html .= json_encode($this->build_hybrid_list($options)).PHP_EOL;
-      $html .= '</script>'.PHP_EOL;
-    }else $html .= $this->build_nested_list($type, $name_attr, $options, $isImageGrid, $selected, 0);
+    $html .= '<script type="application/json">'.PHP_EOL;
+    $html .= json_encode($this->build_hybrid_list($options)).PHP_EOL;
+    $html .= '</script>'.PHP_EOL;
     $html .='</span>'.PHP_EOL;
     return $html;
   }
-  /**
-  * Build recursively nested list.
-  *
-  * @since 4.11.0
-  * @param Array $options array of value=>label pairs  of options.
-  * @param Boolean $isImageGrid is image grid is to be built.
-  * @param String $selected preselected value.
-  * @param String $level recursive level
-  * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
-  */
-  protected function build_nested_list($type, $name_attr, $options, $isImageGrid, $selected, $level){
-    $html='';
-    $reverse = is_rtl() && !$isImageGrid;
-    foreach($options as $value=>$details){
-      $attributes ='';
-      $has_classes = false;
-      $img_el = '';
-      // if($value==$selected) $attributes .=' checked="true"';
-      foreach($details[1] as $name=>$aval){
-        if('data-thumbnail'==$name && $isImageGrid){
-          $img_el = '  <span class="cf7sg-dc-img"><img src="'.$aval.'" alt="" title="" loading="lazy"/></span>'.PHP_EOL;
-        }else{
-          if('class'==$name){
-            if(is_array($aval)) array_push($aval,'cf7sg-dc');
-            else $aval .= ' cf7sg-dc level-'.$level;
-            $has_classes = true;
-          }
-          $attributes .= ' '.$this->format_attribute($name,$aval);
-        }
-      }
 
-      $html .= '<label '.($has_classes ? '':'class="cf7sg-dc level-'.$level.'" ').$attributes.'>'.PHP_EOL;
-      if($reverse) $html .= '  <span class="cf7sg-dc-label">'.$details[0].'</span>'.PHP_EOL;
-      $html .= '  <input type="'.$type.'" value="'.$value.'" '.$name_attr. ($selected==$value?' checked':'').'/>'.PHP_EOL;
-      $html .= $img_el;
-      if(!$reverse) $html .= '  <span class="cf7sg-dc-label">'.$details[0].'</span>'.PHP_EOL;
-      $html .= '</label>'.PHP_EOL;
-      if(isset($details[2])){
-        $html .= $this->build_nested_list($type, $name_attr, $details[2], $isImageGrid, $selected, $level+1);
-      }
-    }
-    return $html;
-  }
   /**
   * Build recursively nested list.
   *
