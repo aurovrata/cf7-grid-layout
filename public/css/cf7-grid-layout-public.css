@@ -36,10 +36,16 @@
 	margin: auto;
 	font-size: 18px;
 }
+.cf7sg-imagehdd .hybriddd-option {
+	line-height: 0;
+	vertical-align: top;
+}
+.cf7sg-imagegrid.hybrid-dropdown, .cf7sg-imagegrid .hybriddd-wrapper {
+	border: none;
+}
 .hybriddd-landscape.cf7sg-imagehdd .hybriddd-option > label {
 	padding: 2px;
 	position: relative;
-	/* height: 154px; */
 }
 .hybrid-dropdown.cf7sg-imagehdd ul.hybriddd-options,
 .hybrid-dropdown.cf7sg-imagehdd .hybriddd-option{

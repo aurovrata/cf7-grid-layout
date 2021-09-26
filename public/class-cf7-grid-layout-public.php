@@ -1816,7 +1816,7 @@ class Cf7_Grid_Layout_Public {
       wp_register_style('select2-style', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', array(), '4.0.13','all');
     }
     //hybrid style for the dynamic checkbox.
-    wp_register_style('hybriddd-style', $plugin_dir . "assets/hybrid-html-dropdown/hybrid-dropdown{$min}.css", array(), '2.0.5','all');
+    wp_register_style('hybriddd-style', $plugin_dir . "assets/hybrid-html-dropdown/hybrid-dropdown{$min}.css", array(), $this->version,'all');
   }
   /**
   * register scripts for dynamic select
@@ -1834,7 +1834,7 @@ class Cf7_Grid_Layout_Public {
       wp_register_script('jquery-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array( 'jquery' ), '4.0.13', true );
     }
     wp_register_script('jquery-nice-select', "{$plugin_dir}assets/jquery-nice-select/js/jquery.nice-select.min.js", array( 'jquery' ), '1.1.0', true );
-    wp_register_script('hybriddd-js', $plugin_dir . "assets/hybrid-html-dropdown/hybrid-dropdown{$min}.js", null, '2.0.5',true);
+    wp_register_script('hybriddd-js', $plugin_dir . "assets/hybrid-html-dropdown/hybrid-dropdown{$min}.js", null, $this->version, true);
 
 
     //listen for script enqueue action.
