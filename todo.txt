@@ -1,0 +1,10 @@
+v5.0
+
+ - recode public enqueue of resources (css/js) on wp_enquque_scripts hook instead of registration.
+ This will ensure scripts are not registered on every single page requests, and clean up do_shortcode_tag hooked method.
+
+ - recode toggled sections/sections from js to pure css, to improve selection and reduce js.
+- recode accordion step forms, and allow numbers/labels vertical as well as horizontal.
+- recode tabs ? ...possibly not.
+
+- compress all js and all css into single files for each form at admin form save time, store the compressed resource file in the child theme.
