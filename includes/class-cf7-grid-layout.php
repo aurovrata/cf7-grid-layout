@@ -272,8 +272,7 @@ class Cf7_Grid_Layout {
 		$plugin_public = new Cf7_Grid_Layout_Public( $this->get_plugin_name(), $this->get_version() );
 
     //register front-end scripts for CF7 forms
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_styles' );
-    $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_scripts' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_styles_and_scripts' );
     $this->loader->add_action( 'wp_print_scripts', $plugin_public, 'dequeue_cf7_scripts',100 );
 		$this->loader->add_action( 'wp_print_styles', $plugin_public, 'dequeue_cf7_styles',100 );
     $this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'cf7_shortcode_request',5,3 );

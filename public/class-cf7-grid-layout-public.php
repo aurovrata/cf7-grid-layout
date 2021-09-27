@@ -172,7 +172,28 @@ class Cf7_Grid_Layout_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function register_styles() {
+	public function register_styles_and_scripts() {
+    global $wp_scripts, $post;
+    $cf7id = $cf7key = '';
+    if ( is_a( $post, 'WP_Post' )  ) { //&& has_shortcode( , 'cf7form')
+      preg_match_all( '/' . get_shortcode_regex() . '/', $post->post_content, $matches, PREG_SET_ORDER );
+      foreach($matches as $sc){
+        if('cf7form' === $sc[2]){
+          $attrs = shortcode_parse_atts($sc[3]);
+          if(is_array($attrs) && isset($attrs['cf7key'])){
+            $cf7key = $attrs['cf7key'];
+            $cf7id = get_cf7form_id($cf7key);
+          }
+        }
+      }
+    }
+    if(empty($cf7id)){
+      return; //unknown form, nothing to load here.
+    }
+    $resources = get_post_meta($cf7id, '_cf7sg_script_classes', true);
+    if(empty($resources)){
+      $resources = array();
+    }
     $airplane=false;
     if( class_exists( 'Airplane_Mode_Core' ) && Airplane_Mode_Core::getInstance()->enabled()){
       $airplane=true;
@@ -181,7 +202,6 @@ class Cf7_Grid_Layout_Public {
     //default style for cf7 grid forms (row buttons and tables mainly).
     //others
     // get registered script object for jquery-ui
-    global $wp_scripts;
     $ui_ver = '1.12.1';
     if(!empty($wp_scripts)) $ui_ver = $wp_scripts->query('jquery-ui-core')->ver;
     // tell WordPress to load the Smoothness theme from Google CDN
@@ -202,7 +222,7 @@ class Cf7_Grid_Layout_Public {
       $pf = '/min';
     }
     wp_register_style( 'cf7-benchmark-css', $plugin_dir . "public/css{$pf}/cf7-benchmark.css", array(), $this->version, 'all' );
-    wp_register_style( $this->plugin_name, $plugin_dir . "public/css{$pf}/cf7-grid-layout-public.css", array(), $this->version, 'all' );
+
     wp_register_style( 'smart-grid', $plugin_dir . "assets/css.gs/smart-grid{$ff}.css", array(), $this->version, 'all' );
     wp_register_style('jquery-toggles-css', $plugin_dir . "assets/jquery-toggles/css/toggles{$ff}.css", array(), $this->version, 'all' );
     wp_register_style('jquery-toggles-light-css', $plugin_dir . "assets/jquery-toggles/css/themes/toggles-light{$ff}.css", array('jquery-toggles-css'), $this->version, 'all' );
@@ -212,35 +232,55 @@ class Cf7_Grid_Layout_Public {
     if(!defined('WP_GURUS_DEBUG') || !WP_GURUS_DEBUG) $min = '.min';
     wp_register_style('glider-style', $plugin_dir . "assets/glider-js/glider{$min}.css", array(), '1.7.4','all');
 
-    //allow custom script registration
-    do_action('smart_grid_register_styles',$airplane, $min);
-	}
+    $dep = array();
+    foreach($resources as $class){
+      switch($class){
+        case 'has-hybriddd':
+          $dep[] ='hybriddd-style';
+          break;
+        case 'has-select2':
+          $dep[] ='select2-style';
+          break;
+        case 'has-nice-select':
+          $dep[] ='jquery-nice-select-css';
+          break;
+        case 'has-slider':
+          $dep[] ='glider-style';
+          break;
+        case 'has-toggles':
+          $dep[] = 'jquery-toggles-light-css';
+          $dep[] = 'cf7-jquery-ui';
+          $dep[] = 'cf7-jquery-ui-theme';
+          $dep[] = 'cf7-jquery-ui-structure';
+          break;
+        case 'has-date':
+          $dep[] = 'cf7-jquery-ui';
+        case 'has-tabs':
+          $dep[] = 'cf7-jquery-ui';
+          $dep[] = 'cf7-jquery-ui-theme';
+          $dep[] = 'cf7-jquery-ui-structure';
+          break;
+        case 'has-accodrion':
+          $dep[] = 'cf7-jquery-ui';
+          $dep[] = 'cf7-jquery-ui-theme';
+          $dep[] = 'cf7-jquery-ui-structure';
+          break;
 
-	/**
-	 * Register the JavaScript for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
-	public function register_scripts() {
-    $airplane=false;
-    if( class_exists( 'Airplane_Mode_Core' ) && Airplane_Mode_Core::getInstance()->enabled()){
-      $airplane=true;
+      }
     }
-    /** @since 3.1,0 improve live loading of resources */
-    $pf='';
-    if(!defined('WP_DEBUG') || !WP_DEBUG) $pf = '/min';
+    wp_register_style( $this->plugin_name, $plugin_dir . "public/css{$pf}/cf7-grid-layout-public.css", $dep, $this->version, 'all' );
 
-    $plugin_dir = plugin_dir_url( __DIR__ );
+    //script registration
+    do_action('smart_grid_register_styles',$airplane, $min, $resources, $cf7key, $cf7id);
+
 		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public.js", array( 'jquery','contact-form-7' ), $this->version, true );
 
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
-    /** @since 4.2.0 enable Glider sliders for slider sections */
-    $min = '';
-    if(!defined('WP_GURUS_DEBUG') || !WP_GURUS_DEBUG) $min = '.min';
+
     wp_register_script('glider-js', $plugin_dir . "assets/glider-js/glider{$min}.js", null, '1.7.4',true);
     //allow custom script registration
-    do_action('smart_grid_register_scripts', $airplane, $min);
+    do_action('smart_grid_register_scripts', $airplane, $min, $resources, $cf7key, $cf7id);
 	}
   /**
    * Dequeue script 'contact-form-7'
@@ -324,6 +364,7 @@ class Cf7_Grid_Layout_Public {
     if(empty($class)){
       $class = array();
     }
+    // debug_msg($class, "$cf7_id form classes ");
     //check classes required for sub-forms.
     $sub_forms = array();
     $use_grid_js = false;

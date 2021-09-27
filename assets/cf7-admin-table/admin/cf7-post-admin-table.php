@@ -141,6 +141,7 @@ if(!class_exists('CF7SG_WP_Post_Table')){
       if(null === self::$forms_key_ids){
         self::$forms_key_ids = array();
       }
+      // debug_msg(self::$forms_key_ids, "$key -> ? ");
       if(isset(self::$forms_key_ids[$key])) return self::$forms_key_ids[$key];
       else{
         $form_id = 0;
@@ -409,7 +410,7 @@ if(!class_exists('CF7SG_WP_Post_Table')){
     //   }
     //   switch ( $column_name ) {
     //     case 'cf7_key':
-    //   
+    //
     //     break;
     //     default:
     //       echo '';
