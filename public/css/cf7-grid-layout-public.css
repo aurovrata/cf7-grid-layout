@@ -52,21 +52,19 @@
 .hybrid-dropdown.cf7sg-imagehdd .hybriddd-option{
 	height: auto;
 }
-/* hdd image grid with columns */
-.hybrid-dropdown.cf7sg-grid ul.hybriddd-options {
-	display: grid;
-  grid-column-gap: 0px;
-	column-gap: 0px;
-	grid-template-columns: repeat(var(--cf7sg-hdd-col),var(--hdd-item));
-	width: auto;
-}
-#dl-dcb-ig {
-	width: calc(156px * var(--hybriddd-columns));
-}
-.hybrid-dropdown.cf7sg-grid .hybriddd-options > li {
-	display: flex;
-}
 /* image grid */
+.cf7sg-imagehdd .hybriddd-wrapper.hybriddd-grid{
+	--hybriddd-gap:2px;
+  width:calc( calc(var(--hybriddd-item, 50px) + var(--hybriddd-gap)) * var(--hybriddd-col));
+}
+.cf7sg-imagehdd .hybriddd-grid .hybriddd-options {
+	grid-column-gap: var(--hybriddd-gap);
+	column-gap: var(--hybriddd-gap);
+	row-gap: var(--hybriddd-gap);
+}
+.cf7sg-imagehdd .hybriddd-grid .hybriddd-option > label:hover {
+	transform: scale(96%);
+}
 .hybriddd-none .hybriddd-option > label > input {
 	position: absolute;
 }
@@ -80,16 +78,16 @@
 .cf7sg-imagehdd input:checked+.hybridddcb::before {
 	width: 10px;
 	height: 10px;
-	margin: 5px auto;
+	margin: 4px auto;
 	background: white;
 	border-radius: 50%;
 }
-.cf7sg-imagehdd .hybridddcb {
+.cf7sg-imagehdd.show-cb .hybridddcb {
 	display: inline-block;
 	position: absolute;
 	top: 0;
 	right: 0;
-	margin: 3px;
+	margin: 4px;
 }
 .cf7sg-imagehdd input:checked+.hybridddcb {
 	width: 20px;

@@ -559,6 +559,9 @@ class CF7SG_Dynamic_list{
     $other_classes='';
     if(!empty($other_attrs)) $other_classes = ' cf7sg-dl-'.implode(' cf7sg-dl-', array_keys($other_attrs));
     $html = '<span class="wpcf7-form-control-wrap cf7sg-dl-'. $source['source'] .' '. $tag_name . $other_classes . '">' . PHP_EOL;
+    //add other attributes found in tag.
+    $attributes = array_merge($attributes, $data_attrs);
+
     /**
     * Register a [dynamic_display] shortcode with CF7.
     * @since 4.11.0
@@ -568,7 +571,7 @@ class CF7SG_Dynamic_list{
     * @param String $selected default selected value.
     * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
     */
-    $html .= apply_filters("cf7sg_{$this->tag_id}_html_field", '', $attributes, $options, $other_attrs,$selected );
+    $html .= apply_filters("cf7sg_{$this->tag_id}_html_field", '', $attributes, $options, $other_attrs, $selected );
     $html .= PHP_EOL . '</span>' . PHP_EOL;
 
     return $html;
