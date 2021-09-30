@@ -179,11 +179,11 @@
 	position: absolute;
 	top: 50%;
 }
+/* .cf7sg-container .ui-tabs-active .ui-tabs-anchor, */
+/* .cf7sg-container .ui-widget-content .ui-state-active, */
+/* .cf7sg-container .ui-widget-content .ui-state-default, */
  .cf7sg-container .ui-widget-content,
- .cf7sg-container .ui-widget-content .ui-state-active,
  .cf7sg-container .toggle-light .toggle-off,
- .cf7sg-container .ui-widget-content .ui-state-default,
- .cf7sg-container .ui-tabs-active .ui-tabs-anchor,
   .cf7sg-container .ui-widget-header {
      background: transparent;
  }
@@ -194,7 +194,7 @@
 .cf7sg-container .cf7sg-add-tab .ui-state-default {
 	border: solid 1px #aaa;
 }
- .cf7sg-container .ui-tabs-anchor{ background: #aaa5}
+ /* .cf7sg-container .ui-tabs-anchor{ background: #aaa5} */
 .cf7sg-slider-section .glider{overflow-x: hidden;padding-bottom:10px}
  .cf7sg-container .ui-widget{ font: inherit; font-size:inherit}
  .cf7sg-slider-section .slider-control.slider-prev{float:left}
@@ -241,6 +241,35 @@ ul.cf7-sg-tabs-list li[data-cf7sg="error"] {border: #d90000 solid 2px;}
 .cf7sg-collapsible[data-cf7sg="error"] {border-right: double 4px red;}
 .container.cf7sg-collapsible + .container > .row:first-child > .columns.full > .container.cf7-sg-table {
     margin-top: 10px;
+}
+.wpcf7 form .cf7sg-response-output {
+	margin: 2em 0.5em 1em;
+	padding: 0.2em 1em;
+	border: 2px solid #00a0d2; /* Blue */
+}
+
+.wpcf7 form.init .cf7sg-response-output,
+.wpcf7 form.resetting .cf7sg-response-output,
+.wpcf7 form.submitting .cf7sg-response-output {
+	display: none;
+}
+
+.wpcf7 form.sent .cf7sg-response-output {
+	border-color: #46b450; /* Green */
+}
+
+.wpcf7 form.failed .cf7sg-response-output,
+.wpcf7 form.aborted .cf7sg-response-output {
+	border-color: #dc3232; /* Red */
+}
+
+.wpcf7 form.spam .cf7sg-response-output {
+	border-color: #f56e28; /* Orange */
+}
+
+.wpcf7 form.invalid .cf7sg-response-output,
+.wpcf7 form.unaccepted .cf7sg-response-output {
+	border-color: #ffb900; /* Yellow */
 }
 .container.cf7sg-collapsible>.ui-accordion .ui-accordion-content{
   padding: 0.5em 1em;

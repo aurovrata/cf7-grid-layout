@@ -360,6 +360,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * enable slider labelled dots.
 * added dynamic checkbox field with nested lists.
 * force dynamic tag select2 to open above (see select2 [issue](https://github.com/select2/select2/issues/3121#issuecomment-918379458) )
+* re-introduce HTML messages in CF7 submissions.
+* added 'cf7sg_submission_success_message' filter.
+* added 'cf7sg_redirect_on_success'  filter for dynamic redirection on success.
 = 4.10.0 =
 * abstraction of dynamic lists to open the possibility for other tag fields.
 * fix file required PHP fatal error.

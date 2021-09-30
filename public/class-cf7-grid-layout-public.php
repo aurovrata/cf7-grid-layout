@@ -1895,6 +1895,25 @@ class Cf7_Grid_Layout_Public {
       }
     },10,3);
   }
+  /**
+  * Enable HTML messages in cf7 submission messages.
+  * Hooked on 'wpcf7_mail_sent' action fired after the submission response has been set.
+  *@since 4.11.0
+  *@param WPCF7_ContactForm $form cfy form
+  */
+  public function change_submission_msg($form){
+    if(has_filter('cf7sg_submission_success_message') || has_filter('cf7sg_redirect_on_success')){
+      if(is_a($form, 'WPCF7_ContactForm')){
+        $submitted = WPCF7_Submission::get_instance();
+        $data = $submitted->get_posted_data();
+        $cf7key = get_cf7form_key( $form->id() );
+        $message = apply_filters('cf7sg_submission_success_message', $form->message( 'mail_sent_ok' ), $data, $cf7key);
+        $url = apply_filters('cf7sg_redirect_on_success', '', $data, $cf7key);
+        if(wp_http_validate_url($url)) $message = 'cf7sg->redirect:' . $url;
+        $submitted->set_response( $message );
+      }
+    }
+  }
 }
 
 if(!function_exists('cf7sg_extract_submitted_files')){

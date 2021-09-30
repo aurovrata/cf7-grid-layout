@@ -123,3 +123,39 @@ function validate_field_submission( $submission, $cf7_key, $form_id){
   }
 }" href="javascript:void(0);"><?=__('Action','cf7-grid-layout')?></a> <?=__('to access valid submit data.','cf7-grid-layout')?>
 </li>
+<li>
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_submission_success_message','change_submission_response',10,3);
+/*
+* filter the response message for a successfull submission including HTML markup.
+* @param String $message to submit
+* @param Array $data $field_name=>$value pair of submitted data.
+* @param String $cf7key unique form key
+* @return String a message which can include HTML markup.
+*/
+function change_submission_response($message, $data, $cf7key){
+  if('{$form_key}'==$cf7key ){
+    $message = 'thank you, please track your request <a href=[dqt]http://google.com[dqt]>here</a>';
+  }
+  return $message;
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('submission response.','cf7-grid-layout')?>
+</li>
+<li>
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_redirect_on_success','redirect_on_success',10,3);
+/*
+* @param String $url to redirect to
+* @param Array $data $field_name=>$value pair of submitted data.
+* @param String $cf7key unique form key
+* @return String a message which can include HTML markup.
+*/
+function redirect_on_success($url, $data, $cf7key){
+  if('{$form_key}'==$cf7key ){
+    $url = esc_url(home_url('/my-custom-page/'));
+    //if you need to redirect to your localhost url (for debug purpose),
+    //you will also need to force the url validation that follows this filter.
+    add_filter('http_request_host_is_external', function($allow, $host, $filtered_url) use($url){
+      return $filtered_url === $url;
+    });
+  }
+  return $url;
+}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('redirect on submit.','cf7-grid-layout')?>
+</li>

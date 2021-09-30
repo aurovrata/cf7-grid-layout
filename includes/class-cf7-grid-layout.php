@@ -318,6 +318,8 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'cf7sg_dynamic_checkbox_html_field', $plugin_public, 'build_dynamic_checkbox_field',5,5);
     $this->loader->add_action( 'smart_grid_register_styles', $plugin_public,'register_dynamic_list_styles',10,2);
     $this->loader->add_action( 'smart_grid_register_scripts', $plugin_public,'register_dynamic_list_scripts',10,2);
+    /** @since 4.11.0 enable custom submission messages using HTML.*/
+    $this->loader->add_action('wpcf7_mail_sent', $plugin_public, 'change_submission_msg');
 	}
 
 	/**

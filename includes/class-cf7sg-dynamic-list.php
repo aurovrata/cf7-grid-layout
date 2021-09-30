@@ -572,7 +572,7 @@ class CF7SG_Dynamic_list{
     * @return String an html string representing the input field to a=be added to the field wrapper and into the form.
     */
     $html .= apply_filters("cf7sg_{$this->tag_id}_html_field", '', $attributes, $options, $other_attrs, $selected );
-    $html .= PHP_EOL . '</span>' . PHP_EOL;
+    $html .= PHP_EOL . '</span>'. PHP_EOL;
 
     return $html;
   }

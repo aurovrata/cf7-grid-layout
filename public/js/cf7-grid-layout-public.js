@@ -891,6 +891,27 @@
       if('undefined' == typeof max || max == false) return;
       $table.siblings('.cf7-sg-table-button').removeClass('disabled').children('.max-limit').remove();
     });
+    /** @since 4.11 reintroduce html response in CF7.*/
+    $('form.wpcf7-form').each(function(){
+      let cf7 = this;
+      cf7.querySelectorAll( '.wpcf7-response-output' ).forEach(div=> {
+        div.classList.remove('wpcf7-response-output');
+        div.classList.add('cf7sg-response-output');
+      });
+      // ['wpcf7mailsent', 'wpcf7mailfailed', ]
+      this.addEventListener('wpcf7submit', function(e){
+        if(e.detail.apiResponse && e.detail.apiResponse.message){
+          cf7.querySelectorAll( '.cf7sg-response-output' ).forEach( div => {
+            let msg = e.detail.apiResponse.message;
+            if(msg.indexOf('cf7sg->redirect:')==0){
+              location = msg.replace('cf7sg->redirect:', '');
+              return false; //exit forEach.
+      			}else div.innerHTML = msg;
+      		})
+        }
+      })
+
+    });
   }); //end on document ready().
   /*
     jQuery extended functions
