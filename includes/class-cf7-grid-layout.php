@@ -215,9 +215,9 @@ class Cf7_Grid_Layout {
     $this->loader->add_filter('admin_init', $plugin_admin, 'duplicate_cf7_form');
     /** @since 2.6.0*/
     $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'pretty_admin_pointers' );
-    $this->loader->add_action( 'cf7sg_plugin_pointers-edit-wpcf7_contact_form', $plugin_admin, 'edit_pointers' );
+    $this->loader->add_action( 'cf7sg_plugin_pointers-edit-wpcf7_contact_form', $plugin_admin, 'edit_pointers',10,2 );
     /** @since 3.0.0 */
-    $this->loader->add_action( 'cf7sg_plugin_pointers-wpcf7_contact_form', $plugin_admin, 'post_pointers' );
+    $this->loader->add_action( 'cf7sg_plugin_pointers-wpcf7_contact_form', $plugin_admin, 'post_pointers',10,2 );
     /*
     CF7 Hooks
     */

@@ -6,7 +6,8 @@
     $wpcf7Editor = $('textarea#wpcf7-form-hidden'),
     $editorTabs = $('#form-editor-tabs'),
     $optionals= $('#optional-editors'),
-    $topTags =$('#top-tags'), $bottomTags =$('#bottom-tags');
+    $topTags =$('#top-tags').addClass('click-disabled'),
+    $bottomTags =$('#bottom-tags').addClass('click-disabled');
 
   let eh = $formEditor.height(), ew =$formEditor.width();
   $('.loading-screen',$formEditor).css('padding','250px 5px '+(eh-100)+'px 5px');
@@ -196,8 +197,8 @@
           else if('undefined' != typeof ui.newPanel.selector) gridTab = ui.newPanel.selector;
           else console.log('CF7 GRID EDITOR: unknown tab ui panel object');
 
-          $topTags.show();
-          $bottomTags.show();
+          $topTags.show().addClass('click-disabled');
+          $bottomTags.show().addClass('click-disabled');
           $jsTags.hide();
           $optionals.hide();
           $(window).scrollTop($('#form-panel').offset().top);
@@ -222,7 +223,8 @@
               break;
             case '#cf7-codemirror': //HTML editor.
               const cursor = cme.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cme.firstLine(), 0), {caseFold: true, multiline: true});
-
+              $topTags.removeClass('click-disabled');
+              $bottomTags.removeClass('click-disabled');
               $codemirror.beautify(cursor);
               cme.refresh();
               break;
@@ -483,6 +485,8 @@
       /*@since 1.1.1 disable grid editor for existing cf7 forms*/
       if(0==$grid.children('.container').length){
         $editorTabs.tabs('option',{ active:1, disabled:[0]});
+        $topTags.removeClass('click-disabled');
+        $bottomTags.removeClass('click-disabled');
         /** @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.*/
         $('#is-cf7sg-form').val('false');
       }

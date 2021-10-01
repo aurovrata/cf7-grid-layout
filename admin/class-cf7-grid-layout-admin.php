@@ -1388,13 +1388,10 @@ class Cf7_Grid_Layout_Admin {
     * @var array $pointers an array of $pointer_id=>array($content, $arrow, $valign) key/value pairs to filter.  The key is the pointer id to identify which ones the user has dismissed.  The value is an array with the message $content, the position of the $arrow (left|right|top|bottom), the vertical alignment ($valign) of the box (center|top|bottom).
     * @return array an array of pointers, which will be checked agains the current user.
     */
-    $filter_pointers = apply_filters('cf7sg_plugin_pointers-'.$screen->id, array());
+    $filter_pointers = apply_filters('cf7sg_plugin_pointers-'.$screen->id, array(),$dismissed_pointers);
     foreach($filter_pointers as $id=>$pointer){
-    	// Check if our pointer is not among dismissed ones
-    	if( !in_array( $id, $dismissed_pointers ) ) {
-        $enqueue_pointer = true;
-        $pointers[$id] = array($pointer[0], $pointer[1], $pointer[2], $pointer[3]);
-      }
+      $enqueue_pointer = true;
+      $pointers[$id] = array($pointer[0], $pointer[1], $pointer[2], $pointer[3]);
     }
   	// Enqueue pointer CSS and JS files, if needed
   	if( $enqueue_pointer ) {
@@ -1412,83 +1409,122 @@ class Cf7_Grid_Layout_Admin {
   * CF7 Table pointer notices.
   * Hooked on 'cf7sg_plugin_pointers-edit-wpcf7_contact_form'
   *@since 2.6.0
-  *@param array $pointers array of pointers to suplement
-  *@return array array of pointers element-id=>hmtl to display key value pairs.
+  *@param Array $pointers array of pointers to suplement
+  *@param Array $dismissed array of dismissed pointer ids.
+  *@return Array array of pointers element-id=>hmtl to display key value pairs.
   */
-  public function edit_pointers($pointers){
+  public function edit_pointers($pointers, $dismissed){
     ob_start();
-    include_once 'partials/pointers/cf7sg-pointer-update-forms.php';
-    $content =ob_get_contents();
-    $pointers['update_forms_pointer'] = array($content, 'left', 'center','');
+    /* update forms */
+    if( !in_array( 'update_forms_pointer', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-update-forms.php';
+      $content =ob_get_contents();
+      $pointers['update_forms_pointer'] = array($content, 'left', 'center','');
+      ob_clean();
+    }
     /* tutorials */
-    ob_clean();
-    include_once 'partials/pointers/cf7sg-pointer-tutorials.php';
-    $content =ob_get_contents();
-    $pointers['tutorials_pointer'] = array($content, 'left', 'center','a[href="admin.php?page=cf7sg_help"]');
-    /* new tutorials */
-    ob_clean();
-    include_once 'partials/pointers/cf7sg-pointer-tutorial-advance.php';
-    $content =ob_get_contents();
-    $pointers['new_tutorials_pointer'] = array($content, 'left', 'center','a[href="admin.php?page=cf7sg_help"]');
+    if( !in_array( 'tutorials_pointer', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-tutorials.php';
+      $content =ob_get_contents();
+      $pointers['tutorials_pointer'] = array($content, 'left', 'center','a[href="admin.php?page=cf7sg_help"]');
+      ob_clean();
+    }else if( !in_array( 'new_tutorials_pointer', $dismissed ) ) {   /* new tutorials */
+      include_once 'partials/pointers/cf7sg-pointer-tutorial-advance.php';
+      $content =ob_get_contents();
+      $pointers['new_tutorials_pointer'] = array($content, 'left', 'center','a[href="admin.php?page=cf7sg_help"]');
+      ob_clean();
+    }
     /* shortcodes */
-    ob_clean();
-    include_once 'partials/pointers/cf7sg-pointer-shortcodes.php';
-    $content = ob_get_clean();
-    $pointers['cf7sg_shortcodes'] = array($content, 'top', 'top','');
+    if( !in_array( 'cf7sg_shortcodes', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-shortcodes.php';
+      $content = ob_get_contents();
+      $pointers['cf7sg_shortcodes'] = array($content, 'top', 'top','');
+      ob_clean();
+    }
+    ob_end_clean();
     return $pointers;
   }
   /**
   * CF7 Edit pointer notices.
   * Hooked on 'cf7sg_plugin_pointers-wpcf7_contact_form'
   *@since 2.6.0
-  *@param array $pointers array of pointers to suplement
-  *@return array array of pointers element-id=>hmtl to display key value pairs.
+  *@param Array $pointers array of pointers to suplement
+  *@param Array $dismissed array of dismissed pointer ids.
+  *@return Array array of pointers element-id=>hmtl to display key value pairs.
   */
-  public function post_pointers($pointers){
+  public function post_pointers($pointers, $dismissed){
     ob_start();
-    include_once 'partials/pointers/cf7sg-pointer-editor-full-screen.php';
-    $content =ob_get_contents();
-    //content / arrow [top,bottom,left,right] / box align [top,bottom,center] / css selector.
-    $pointers['full_screen'] = array($content, 'left', 'center','#full-screen-cf7');
-    /* shortcodes */
-    ob_clean();
-    include_once 'partials/pointers/cf7sg-pointer-editor-tabs.php';
-    $content =ob_get_contents();
-    $pointers['editor_tabs'] = array($content, 'right', 'center','#form-editor-tabs>ul>li.ui-tabs-active');
-    /* shortcodes */
-    ob_clean();
-    include_once 'partials/pointers/cf7sg-pointer-editor-rows-control.php';
-    $content = ob_get_contents();
-    if(!empty($content)){
-      $pointers['row_controls'] = array($content, 'right', 'center','#grid-form>.container>.row>.row-controls');
+    /* full screen button */
+    if( !in_array( 'full_screen', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-editor-full-screen.php';
+      $content =ob_get_contents();
+      //content / arrow [top,bottom,left,right] / box align [top,bottom,center] / css selector.
+      $pointers['full_screen'] = array($content, 'left', 'center','#full-screen-cf7');
       ob_clean();
+    }
+    /* editor_tabs */
+    if( !in_array( 'editor_tabs', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-editor-tabs.php';
+      $content =ob_get_contents();
+      $pointers['editor_tabs'] = array($content, 'right', 'center','#form-editor-tabs>ul>li.ui-tabs-active');
+      ob_clean();
+    }
+    /* row_controls */
+    if( !in_array( 'row_controls', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-editor-rows-control.php';
+      $content = ob_get_contents();
+      if(!empty($content)){
+        $pointers['row_controls'] = array($content, 'right', 'center','#grid-form>.container>.row>.row-controls');
+        ob_clean();
+      }
     }
     /* preview form */
-    ob_clean();
-    include_once 'partials/pointers/cf7sg-pointer-editor-preview-form.php';
-    $content = ob_get_contents();
-    if(!empty($content)){
-      $pointers['preview_form'] = array($content, 'right', 'center','#preview-form-link');
+    if( !in_array( 'preview_form', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-editor-preview-form.php';
+      $content = ob_get_contents();
+      if(!empty($content)){
+        $pointers['preview_form'] = array($content, 'right', 'center','#preview-form-link');
+        ob_clean();
+      }
+    }
+    /* column controls */
+    if( !in_array( 'column_controls', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-editor-column-control.php';
+      $content = ob_get_contents();
+      if(!empty($content)){
+        $pointers['column_controls'] = array($content, 'left', 'center','#grid-form > .container:first-child > .row > .columns:first-child > .grid-column > span.icon-code');
+        ob_clean();
+      }
+    }
+    /*dynamic-dropdown pointer*/
+    if( !in_array( 'dynamic_dropdown', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php';
+      $content = ob_get_contents();
+      $pointers['dynamic_dropdown'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="dynamic-dropdown"]');
       ob_clean();
     }
-    include_once 'partials/pointers/cf7sg-pointer-editor-column-control.php';
-    $content = ob_get_contents();
-    if(!empty($content)){
-      $pointers['column_controls'] = array($content, 'left', 'center','#grid-form > .container:first-child > .row > .columns:first-child > .grid-column > span.icon-code');
+    /*dynamic-checkbox pointer*/
+    if( !in_array( 'dynamic_checkbox', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-checkbox.php';
+      $content = ob_get_contents();
+      $pointers['dynamic_checkbox'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="dynamic-checkbox"]');
       ob_clean();
     }
-    include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php';
-    $content = ob_get_contents();
-    $pointers['dynamic_dropdown'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="dynamic-dropdown"]');
-    ob_clean();
     /* #optional-editors */
-    include_once 'partials/pointers/cf7sg-pointers-editor-optional-js-css.php';
-    $content = ob_get_contents();
-    $pointers['js_css_editors'] = array($content, 'left', 'center','#optional-editors');
-    ob_clean();
-    include_once 'partials/pointers/cf7sg-pointer-tag-benchmark.php';
-    $content = ob_get_clean();
-    $pointers['benchmark'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="benchmark"]');
+    if( !in_array( 'js_css_editors', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointers-editor-optional-js-css.php';
+      $content = ob_get_contents();
+      $pointers['js_css_editors'] = array($content, 'left', 'center','#optional-editors');
+      ob_clean();
+    }
+    /*benchmark pointer*/
+    if( !in_array( 'benchmark', $dismissed ) ) {
+      include_once 'partials/pointers/cf7sg-pointer-tag-benchmark.php';
+      $content = ob_get_clean();
+      $pointers['benchmark'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="benchmark"]');
+      ob_clean();
+    }
+    ob_end_clean();
     return $pointers;
   }
   /**

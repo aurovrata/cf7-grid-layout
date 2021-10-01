@@ -26,8 +26,15 @@
       cssTemplate += '.'+$template.attr('class').split(' ').join('.');
     }
   }
-  let wpcf7Value = '';
-
+  let wpcf7Value = '',
+    $fieldTags = $('#form-panel .cf7-tag-generators'); //tag buttons
+    /** @since 4.11 notify usage of tags in grid UI. */
+  $fieldTags.click('a',function(e){
+    let $t = $(e.target);
+    if($t.is('.click-disabled a')){
+      //display pointer.
+    }
+  })
 	$(document).ready( function(){
     //change the form id to mimic cf7 plugin custom admin page.
     /** @since 2.11.0 full screen button*/
@@ -792,6 +799,7 @@
     $('.cf7-field-inner :input:visible').each(function(){
       $(this).closeUIfield();
     });
+    // $fieldTags.addClass('click-disabled');
   }
   //close controls row/column
   function closeAllControls(){
@@ -814,6 +822,7 @@
       }else if(finalise){
         $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
       }
+      $fieldTags.addClass('click-disabled');
     }
   }
   function sortableRows( $newRow='' ){
@@ -878,6 +887,8 @@
       $('textarea#wpcf7-form').attr('id','');
       $input.attr('id', 'wpcf7-form');
       wpcf7Value = $input.val();
+      /** @since 4.11 enable tag buttons when a field is being edited */
+      $fieldTags.removeClass('click-disabled');
     }else{
       changeTextarea();
     }

@@ -9,6 +9,12 @@
 	margin-top: 8px;
   z-index:2;
 }
+.tag-generator-panel .insert-box input.tag{max-width: 490px;}
+/** @since 4.11 disable tag buttons on grid with no open textarea */
+.cf7-tag-generators.click-disabled a {
+	pointer-events: none;
+	color: grey;
+}
 *[dir="rtl"] #optional-editors {left: 0}
 .codemirror-theme label:hover {
 	font-weight: bold;

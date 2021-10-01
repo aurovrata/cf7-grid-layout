@@ -3,7 +3,7 @@ global $post, $pagenow;
 $cf7_key = $post->post_name;
  ?>
 <h2><?php echo esc_html( __cf7sg( 'Form' ) ); ?></h2>
-<div id="top-tags">
+<div id="top-tags" class="cf7-tag-generators">
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();
@@ -103,7 +103,7 @@ $cf7_key = $post->post_name;
 <input type="hidden" value="" id="cf7sg-toggle-fields" name="cf7sg-toggle-fields" />
 <input type="hidden" value="" id="cf7sg-tabbed-toggles" name="cf7sg-tabbed-toggles" />
 <input type="hidden" value="" id="cf7sg-grouped-toggles" name="cf7sg-grouped-toggles" />
-<div id="bottom-tags">
+<div id="bottom-tags" class="cf7-tag-generators">
 <?php
   $tag_generator = WPCF7_TagGenerator::get_instance();
   $tag_generator->print_buttons();
