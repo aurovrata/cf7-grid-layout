@@ -1383,6 +1383,7 @@ class Cf7_Grid_Layout_Admin {
     $user_id = get_current_user_id();
     $dismissed_pointers = explode( ',', get_user_meta( $user_id, 'dismissed_wp_pointers', true ) );
     $pointers = array();
+    $helpers = array();
     /**
     * Filter to add custom pointers for user iterface.
     * @var array $pointers an array of $pointer_id=>array($content, $arrow, $valign) key/value pairs to filter.  The key is the pointer id to identify which ones the user has dismissed.  The value is an array with the message $content, the position of the $arrow (left|right|top|bottom), the vertical alignment ($valign) of the box (center|top|bottom).
@@ -1391,7 +1392,9 @@ class Cf7_Grid_Layout_Admin {
     $filter_pointers = apply_filters('cf7sg_plugin_pointers-'.$screen->id, array(),$dismissed_pointers);
     foreach($filter_pointers as $id=>$pointer){
       $enqueue_pointer = true;
-      $pointers[$id] = array($pointer[0], $pointer[1], $pointer[2], $pointer[3]);
+      if(is_array($pointer)){
+        $pointers[$id] = array($pointer[0], $pointer[1], $pointer[2], $pointer[3]);
+      }else $helpers[$id] = $pointer;
     }
   	// Enqueue pointer CSS and JS files, if needed
   	if( $enqueue_pointer ) {
@@ -1399,7 +1402,11 @@ class Cf7_Grid_Layout_Admin {
   		wp_enqueue_script( 'wp-pointer' );
       wp_enqueue_script('cf7sg-pointer-js', plugin_dir_url( __DIR__ ).'admin/js/cf7sg-pointers.js', array('jquery'), $this->version, true);
       wp_localize_script('cf7sg-pointer-js', 'cf7sg_pointers',
-        array('pointers'=>$pointers, 'next'=>__('Next', 'cf7-grid-layout'))
+        array(
+          'pointers'=>$pointers,
+          'helpers'=>$helpers,
+          'next'=>__('Next', 'cf7-grid-layout')
+        )
       );
       // Add footer scripts using callback function
       //add_action( 'admin_print_footer_scripts', array($this, 'pretty_pointer_script') );
@@ -1504,7 +1511,7 @@ class Cf7_Grid_Layout_Admin {
       ob_clean();
     }
     /*dynamic-checkbox pointer*/
-    if( in_array( 'dynamic_checkbox', $dismissed ) ) {
+    if( !in_array( 'dynamic_checkbox', $dismissed ) ) {
       include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-checkbox.php';
       $content = ob_get_contents();
       $pointers['dynamic_checkbox'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="dynamic-checkbox"]');
@@ -1524,6 +1531,12 @@ class Cf7_Grid_Layout_Admin {
       $pointers['benchmark'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="benchmark"]');
       ob_clean();
     }
+    /*UI tags pointer include always*/
+    include_once 'partials/pointers/cf7sg-pointer-tag-ui-editor-tags.php';
+    $content = ob_get_clean();
+    $pointers['ui_editor_tags'] = $content; //controlled within js script
+    ob_clean();
+
     ob_end_clean();
     return $pointers;
   }

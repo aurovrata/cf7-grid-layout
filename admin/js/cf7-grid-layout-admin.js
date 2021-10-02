@@ -31,8 +31,16 @@
     /** @since 4.11 notify usage of tags in grid UI. */
   $fieldTags.click('a',function(e){
     let $t = $(e.target);
-    if($t.is('.click-disabled a')){
-      //display pointer.
+    if($t.is('.click-disabled *') || $t.is('.click-disabled')){
+      if(cf7sg_pointers.helpers.ui_editor_tags){
+        $('#grid-form .cf7-field-type .content').first().pointer({
+          content: cf7sg_pointers.helpers.ui_editor_tags,
+          pointerClass: 'wp-pointer cf7sg-pointer cf7sg-pointer-ui_editor_tags',
+          position:{edge:	'left', align:	'center'},
+          pointerWidth:	500,
+          close:function() {$.post( ajaxurl, {pointer: '', action: 'dismiss-wp-pointer'})}
+        }).pointer('open');
+      }
     }
   })
 	$(document).ready( function(){

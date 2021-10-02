@@ -28,7 +28,21 @@
 .cf7sg-tutorial .img:hover {
 	transform: scale(105%);
 }
-.cf7sg-pointer-dynamic_checkbox{width:490px !important}
+.cf7sg-pointer-dynamic_checkbox,
+.cf7sg-pointer-tutorials_pointer,
+.cf7sg-pointer-dynamic_dropdown,
+.cf7sg-pointer-js_css_editors
+{width:490px !important}
+.cf7sg-pointer .wp-pointer-buttons a.close {
+	float: left;
+}
+.cf7sg-pointer .wp-pointer-content h3::before {
+	content: "\01F30A";
+	font: normal 22px/normal dashicons;
+	top: 10px;
+	width: 34px;
+	height: 32px;
+}
 .tag-generator-panel .insert-box input.tag{max-width: 490px;}
 /** @since 4.11 disable tag buttons on grid with no open textarea */
 .cf7-tag-generators.click-disabled a {

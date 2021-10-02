@@ -19,7 +19,7 @@ jQuery(document).ready( function($) {
     }
     var pointer =  $point.pointer({
       content: content,
-      pointerClass: 'wp-pointer cf7sg-pointer-'+id,
+      pointerClass: 'wp-pointer cf7sg-pointer cf7sg-pointer-'+id,
       position:{edge:	arrow, align:	valign},
       pointerWidth:	350,
       close:function() {$.post( ajaxurl, {pointer: id, action: 'dismiss-wp-pointer'});}
