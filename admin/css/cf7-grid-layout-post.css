@@ -9,6 +9,26 @@
 	margin-top: 8px;
   z-index:2;
 }
+.cf7sg-tutorial {
+	width: 100%;
+	min-height: 200px;
+}
+.cf7sg-tutorial p {
+	width: 220px;
+	vertical-align: top;
+	display: inline-block;
+}
+.cf7sg-tutorial .img {
+	background-image: url('./image/tutorial.png');
+	width: 220px;
+	height: 182px;
+	background-size: contain;
+	display: inline-block;
+}
+.cf7sg-tutorial .img:hover {
+	transform: scale(105%);
+}
+.cf7sg-pointer-dynamic_checkbox{width:490px !important}
 .tag-generator-panel .insert-box input.tag{max-width: 490px;}
 /** @since 4.11 disable tag buttons on grid with no open textarea */
 .cf7-tag-generators.click-disabled a {

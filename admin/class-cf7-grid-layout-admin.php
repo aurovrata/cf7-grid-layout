@@ -1504,7 +1504,7 @@ class Cf7_Grid_Layout_Admin {
       ob_clean();
     }
     /*dynamic-checkbox pointer*/
-    if( !in_array( 'dynamic_checkbox', $dismissed ) ) {
+    if( in_array( 'dynamic_checkbox', $dismissed ) ) {
       include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-checkbox.php';
       $content = ob_get_contents();
       $pointers['dynamic_checkbox'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="dynamic-checkbox"]');
