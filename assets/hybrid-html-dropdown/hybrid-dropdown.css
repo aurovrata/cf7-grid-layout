@@ -8,7 +8,7 @@
   display: inline-block;
   vertical-align: baseline;
   font-size: 1em;
-  border: 1px solid;
+  border: 1px solid #6f6f6f;
   border-radius: 0.25em;
   padding: 0 30px 0 18px;
   cursor: pointer;
@@ -42,11 +42,8 @@ select.hybridddised{
 	left: 0;
 	max-height: 34vh;
 	min-width: max-content;
-	display: none;
+  display: none;
 	background-color: inherit;
-	border: 1px solid;
-	border-bottom-left-radius: 3px;
-	border-bottom-right-radius: 3px;
 }
 .hybrid-dropdown.hybriddd-none .hybriddd-wrapper {
 	display: block;
@@ -55,11 +52,24 @@ select.hybridddised{
 	max-height: none;
 	min-width: auto;
 }
+/* hdd image grid with columns */
+.hybriddd-wrapper.hybriddd-grid {
+	width: calc( max-content * var(--hybriddd-col));
+}
+.hybrid-dropdown .hybriddd-grid ul.hybriddd-options {
+	display: grid;
+	grid-template-columns: repeat(var(--hybriddd-col), 1fr);
+}
 .hybrid-dropdown.hybriddd-none .hybriddd-options > li {
 	display: inline-block;
+}
+.hybrid-dropdown .hybriddd-grid .hybriddd-options > li {
+	display: flex;
 	line-height: 0;
-	vertical-align: top;
-	padding: 3px;
+}
+.hybrid-dropdown .hybriddd-grid .hybridddl {
+	line-height: normal;
+	width: max-content;
 }
 .hybrid-dropdown.hybriddd-top .hybriddd-wrapper{
   bottom:var(--hybriddd-top);
@@ -68,12 +78,9 @@ select.hybridddised{
 	right:0;
 	left:auto;
 }
-.hybrid-dropdown:not() ul.hybriddd-options {
+.hybrid-dropdown ul.hybriddd-options {
 	border: 1px solid #6f6f6f;
 	border-radius: 0.25em;
-	list-style: none !important;
-	margin: 0 !important;
-	padding: 0 !important;
 	overflow-y: auto;
 	scrollbar-width: thin;
 	height: 100%;
@@ -87,8 +94,10 @@ select.hybridddised{
 }
 .hybrid-dropdown.hybriddd-none .hybriddd-options {
 	display: block;
-	margin: 0 auto;
+	width: auto;
+	margin: 0;
 	padding: 0;
+	overflow: unset;
 }
 .hybrid-dropdown.active > .hybriddd-wrapper{
   display: block;
@@ -201,6 +210,7 @@ ul.hybriddd-options::-webkit-scrollbar-track {
 .hybriddd-none .hybriddd-option label {
 	padding: 0;
 	position: relative;
+	width:100%;
 }
 .hybriddd-option label > *{
 	display: inline-block;
@@ -221,7 +231,7 @@ ul.hybriddd-options::-webkit-scrollbar-track {
 }
 .hybriddd-option > label > input {
 	opacity: 0;
-	/* margin-left: -15px; */
+	position: absolute;
 	width: 0;
 	height: 0;
 }

@@ -171,7 +171,7 @@ class CF7SG_Dynamic_list{
   * to be queued up and loaded on the page where the form is being displayed.
   * @param WPCF7_FormTag $tag cf7 tag object for the form field.
   * @param int $form_id cf7 fomr post ID..
-  * @return Array an array of classes to be added to the form to which this tag belonggs to.
+  * @return Array an array of classes to be added to the form to which this tag belongs to.
   */
   public function get_form_classes($tag, $form_id){
      return apply_filters('cf7sg_save_dynamic_list_form_classes', array(), $tag, $form_id);
@@ -739,13 +739,13 @@ if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
     if(false === $dl){
       $dl = new CF7SG_Dynamic_List('dynamic_checkbox',__( 'dynamic-checkbox', 'cf7-grid-layout' ));
       $dl->set_styles(array(
-        'hybriddd'=> '<a href="https://aurovrata.github.io/hybrid-html-dropdown/">Hybrid Dropdown</a>',
-        'treeview'=> sprintf(__('<a href="%s">Treeview dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#hybrid-dropdown-with-treeview-selection'),
-        'imagehdd'=> sprintf(__('<a href="%s">Image dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images'),
-        'imagegrid'=> sprintf(__('<a href="%s">Image grid</a>, no dropdown','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images')
+        'cf7sg-hybriddd'=> '<a href="https://aurovrata.github.io/hybrid-html-dropdown/">Hybrid Dropdown</a>',
+        'cf7sg-treeview'=> sprintf(__('<a href="%s">Treeview dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#hybrid-dropdown-with-treeview-selection'),
+        'cf7sg-imagehdd'=> sprintf(__('<a href="%s">Image dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images'),
+        'cf7sg-imagegrid'=> sprintf(__('<a href="%s">Image grid</a>, no dropdown','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images')
       ),array(
-        'imagehdd'=>sprintf('('.__('<a href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);'),
-        'imagegrid'=>sprintf('('.__('<a href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);')
+        'cf7sg-imagehdd'=>sprintf('('.__('<a href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);'),
+        'cf7sg-imagegrid'=>sprintf('('.__('<a href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);')
       ));
       $dl->set_others_extras_radio(); //default is checkbox.
       $dl->set_others_extras(array(

@@ -1287,6 +1287,7 @@ class Cf7_Grid_Layout_Admin {
   public function save_dynamic_list_form_classes($form_classes, $tag, $form_id){
     /* Bookeeping, set up tagged select2 fields to filter newly added options in case Post My CF7 Form plugin is running */
     $class = $tag->get_class_option('');
+    debug_msg($class, '$class ');
     switch($tag->basetype){
       case 'dynamic_select':
         if(strpos($class, 'select2')){
@@ -1308,18 +1309,13 @@ class Cf7_Grid_Layout_Admin {
         }
         break;
       case 'dynamic_checkbox':
-        //other attrbutes captures in the tag manager.
-        $other_attrs = array();
-        foreach($tag->options as $option){
-          if(false !== stripos($option, ':')) continue; //ignore these.
-          switch($option){
-            case 'hybriddd':
-            case 'imagehdd':
-            case 'imagegrid':
-            case 'treeview':
-              $form_classes[] = 'has-hybriddd';
-              break;
-          }
+        switch(true){
+          case strpos($class, 'hybriddd'):
+          case strpos($class, 'imagehdd'):
+          case strpos($class, 'imagegrid'):
+          case strpos($class, 'treeview'):
+            $form_classes[] = 'has-hybriddd';
+            break;
         }
         break;
     }

@@ -37,8 +37,7 @@
           content: cf7sg_pointers.helpers.ui_editor_tags,
           pointerClass: 'wp-pointer cf7sg-pointer cf7sg-pointer-ui_editor_tags',
           position:{edge:	'left', align:	'center'},
-          pointerWidth:	500,
-          close:function() {$.post( ajaxurl, {pointer: '', action: 'dismiss-wp-pointer'})}
+          pointerWidth:	350,
         }).pointer('open');
       }
     }

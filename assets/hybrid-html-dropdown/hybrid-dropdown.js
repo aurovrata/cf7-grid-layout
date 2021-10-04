@@ -1,6 +1,6 @@
 /*
 Hybrid Dropdown JavaScript plugin insprired from an original idea by Sandrina Pereira (twitter:@a_sandrina_p)
-Version: 2.0.5
+Version: 2.1.0
 Authors: Aurovrata Venet
 Twitter: @aurovrata
 GitHub: https://github.com/aurovrata/hybrid-html-dropdown
@@ -31,6 +31,8 @@ hsProtype.openSelect - open dropdown list.
 hsProtype.closeSelect - close dropdown list.
 hsProtype.colourise - seek document colours to colourise font and background.
 */
+
+
 //custom error.
 class HybridDDError extends Error {
   constructor(message) {
@@ -61,8 +63,12 @@ class HybridDDError extends Error {
       return elm;
     }
 
-    let _ = this, lim=1, cb=true, tabIdx = elm.getAttribute('tabindex');
-    _.isDS = false, cnfg = Object.assign({}, elm.dataset); //get any initial settings.
+    let _ = this, //main hybrid object.
+      lim=1, cb=true, //selection limit / whether to have visible checkboxes on options.
+      tabIdx = elm.getAttribute('tabindex');
+    _.isDS = false; //flag if dropdown built using json dataset
+    _.hasDd = true ; //flag is field has dropdown menu.
+    cnfg = Object.assign({}, elm.dataset); //get any initial settings.
 
     ['class','id','name'].forEach(a=>{
       if(elm.hasAttribute(a)){
@@ -71,6 +77,7 @@ class HybridDDError extends Error {
         switch(a){
           case 'name':
             elm.removeAttribute(a);
+            elm.setAttribute(`data-hdd-${a}`,cnfg[opt]); //retain information on initial element.
         }
       }
     });
@@ -112,6 +119,7 @@ class HybridDDError extends Error {
     Object.keys(cnfg).forEach(k=>{
       switch(k){
         case 'limitSelection':
+        case 'gridColumns':
           cnfg[k] = parseInt(cnfg[k]);
           break;
         case 'treeView':
@@ -131,6 +139,7 @@ class HybridDDError extends Error {
       {},//initial target.
       {
         dropdown: 'vertical',
+        gridColumns: false,
         limitSelection:lim, //default 1, -1 for multiple, or userset.
         optionLabel: function(label){
           return '<span>'+label+'</span>';
@@ -157,6 +166,12 @@ class HybridDDError extends Error {
       settings, //user settings.
       cnfg //element data attribtues, precede over others to allow HTML script overrides.
     );
+    if('none' == _.opt.dropdown){
+      _.hasDd = false;
+      if(!Number.isInteger(_.opt.gridColumns) || _.opt.gridColumns<1) _.opt.gridColumns=1;
+    }
+    //check if gridColumns is a ppositive integer.
+    if(!Number.isInteger(_.opt.gridColumns) || _.opt.gridColumns<1) _.opt.gridColumns = false;
     //make sure selectedValues are strings...
     if(_.opt.selectedValues.length>0) _.opt.selectedValues = _.opt.selectedValues.map(String);
     //nake sure we have proper functions
@@ -244,6 +259,14 @@ class HybridDDError extends Error {
     }
 
     if(init){
+      //insert grid variables.
+      if(_.opt.gridColumns){
+        _.hdd.listwrap.classList.add('hybriddd-grid');
+        _.hdd.listwrap.style.setProperty('--hybriddd-col',_.opt.gridColumns);
+        if(_.hdd.ddlist.children[1] && _.opt.gridColumns >1){
+          _.hdd.listwrap.style.setProperty('--hybriddd-item',_.hdd.ddlist.children[1].offsetWidth + 'px');
+        }
+      }
       //bind some events....
       if(!_.isDS){
         //listen for 'change' on the original select.
@@ -257,11 +280,12 @@ class HybridDDError extends Error {
       _.event(_.hdd.ddlist,'add',{
         change: _.change
       });
-      //listen for click and down arrow events.
-      _.open = _.openSelect.bind(_);
-      _.event(_.hdd, 'add',{
-        click: _.open
-      });
+      if(_.hasDd){//listen for click and down arrow events.
+        _.open = _.openSelect.bind(_);
+        _.event(_.hdd, 'add',{
+          click: _.open
+        });
+      }
       //listen for form reset.
       let f = _.el.closest('form');
       if(f){
@@ -269,8 +293,9 @@ class HybridDDError extends Error {
           reset:_.reset.bind(_)
         })
       }
-      //create a close function.
-      _.close = _.closeSelect.bind(_, true);
+      if(_.hasDd){//create a close function.
+        _.close = _.closeSelect.bind(_, true);
+      }
       //blur function
       _.blur = _.blurField.bind(_);
       //trach hover for multi fields.
@@ -283,7 +308,7 @@ class HybridDDError extends Error {
       });
       //refresh fn.
       _.refresh = _.refreshHybrid.bind(_);
-      //ctril + click event handling.
+      //ctrl + click event handling.
       _.modClick = _.optionModClick.bind(_);
       //fire init event.
       _.emit('hybrid-dd-init');
@@ -597,7 +622,7 @@ class HybridDDError extends Error {
             if(1==_.opt.limitSelection){ //select the next value.
               v = _.nextOption(_.sindex);
               _.toggleValue([v], true);
-            }else{ //open the dropdown.
+            }else if(_.hasDd){ //open the dropdown.
               _.hdd.classList.remove('focus');
               _.open();
             }
@@ -617,7 +642,7 @@ class HybridDDError extends Error {
             if(1==_.opt.limitSelection){ //select the next value.
               let v = _.prevOption(_.sindex);
               _.toggleValue([v], true);
-            }else{ //open the dropdown.
+            }else if(_.hasDd){ //open the dropdown.
               _.hdd.classList.remove('focus');
               _.open();
             }
@@ -625,13 +650,15 @@ class HybridDDError extends Error {
           break;
         case 13==e.keyCode && 'keydown' == e.type: //enter.
         case 32==e.keyCode && 'keydown' == e.type: //spacebar.
-          if(_.hdd.classList.contains('active') === false){//open the list.
+          if(_.hdd.classList.contains('active') === false && _.hasDd){//open the list.
             _.hdd.classList.remove('focus');
             _.open();
           }else{
             if(_.hindex.length>0) _.toggleValue(_.hindex, true);
-            _.closeSelect(false);
-            _.hdd.classList.add('focus');
+            if(_.hasDd){
+              _.closeSelect(false);
+              _.hdd.classList.add('focus');
+            }
           }
           break;
         case 27==e.keyCode && 'keydown' == e.type: //esc
@@ -993,7 +1020,7 @@ class HybridDDError extends Error {
       return;
     }
     //set the height of the wrapper for placing it on top.
-    _.hdd.listwrap.style['--hybriddd-top'] = _.hdd.offsetHeight+'px'
+    _.hdd.listwrap.style.setProperty('--hybriddd-top',_.hdd.offsetHeight+'px');
     _.hdd.classList.add('active');
     //adjust width of dropdown.
     //setup wrapper height and width.
@@ -1001,6 +1028,10 @@ class HybridDDError extends Error {
     if(!_.hdd.listwrap.style['height']){
       _.hdd.listwrap.style['height']=_.hdd.ddlist.offsetHeight+"px";
       _.hdd.listwrap.style['width']="100%";
+      if(_.hdd.ddlist.children[1]){
+        let l = _.hdd.ddlist.children[1].querySelector('label');
+        _.hdd.listwrap.style.setProperty('--hybriddd-item-height',l.offsetHeight+'px');
+      }
     }
 
     //listen for external clicks to close.
