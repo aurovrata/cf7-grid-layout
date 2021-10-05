@@ -55,8 +55,10 @@
 /* image grid */
 .cf7sg-imagehdd .hybriddd-wrapper.hybriddd-grid{
 	--hybriddd-gap:2px;
-  width:calc( calc(var(--hybriddd-item, 50px) + var(--hybriddd-gap)) * var(--hybriddd-col));
+  width:calc( calc(var(--hybriddd-item, max-content) + var(--hybriddd-gap)) * var(--hybriddd-col));
 }
+.cf7sg-imagehdd.hybriddd-none .hybriddd-option label,
+.cf7sg-imagegrid.hybriddd-none .hybriddd-option label{width:auto};
 .cf7sg-imagehdd .hybriddd-grid .hybriddd-options {
 	grid-column-gap: var(--hybriddd-gap);
 	column-gap: var(--hybriddd-gap);
@@ -75,12 +77,15 @@
 	height: 0;
 	margin: 0;
 }
-.cf7sg-imagehdd input:checked+.hybridddcb::before {
+.cf7sg-imagegrid input:checked+.hybridddcb::before {
 	width: 10px;
 	height: 10px;
 	margin: 4px auto;
 	background: white;
 	border-radius: 50%;
+}
+.cf7sg-imagegrid.hybrid-dropdown .hybridddcb{
+	visibility: hidden;
 }
 .cf7sg-imagehdd.show-cb .hybridddcb {
 	display: inline-block;
@@ -89,7 +94,7 @@
 	right: 0;
 	margin: 4px;
 }
-.cf7sg-imagehdd input:checked+.hybridddcb {
+.cf7sg-imagegrid input:checked+.hybridddcb {
 	width: 20px;
 	height: 20px;
 	vertical-align: middle;
@@ -472,8 +477,14 @@ span.cf7sg-validation-warning {
 .cf7-smart-grid.has-grid .field {
     width: 100%;
 }
-.cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
+.cf7-smart-grid.has-grid .wpcf7-form-control:not(img),
+.cf7-smart-grid.has-grid .hybriddd-selected {
     width: 100%;
+}
+.cf7-smart-grid.has-grid .wpcf7-form-control.cf7sg-imagegrid{
+	width:max-content;
+	display: block;
+	margin: 0 auto;
 }
 .cf7-smart-grid.has-grid .select2 {
     width: 100% !important;

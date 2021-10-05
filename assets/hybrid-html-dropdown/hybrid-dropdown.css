@@ -114,7 +114,7 @@ select.hybridddised{
 }
 .hybriddd-selected {
   position: relative;
-  width: max-content;
+  width: auto;
   height: 100%;
   padding: 0.4em 3px;
   cursor: pointer;

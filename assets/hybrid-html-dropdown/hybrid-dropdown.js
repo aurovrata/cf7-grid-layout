@@ -1,6 +1,6 @@
 /*
 Hybrid Dropdown JavaScript plugin insprired from an original idea by Sandrina Pereira (twitter:@a_sandrina_p)
-Version: 2.1.0
+Version: 2.1.1
 Authors: Aurovrata Venet
 Twitter: @aurovrata
 GitHub: https://github.com/aurovrata/hybrid-html-dropdown
@@ -761,6 +761,7 @@ class HybridDDError extends Error {
               'hybrid-ddi-change':_.change
             });
             _.listenModClick = false;
+            _.clearClass('mod-ctrl');
           }
           break;
       }
@@ -768,7 +769,10 @@ class HybridDDError extends Error {
   }
   //listen for ctrl|shift + click on multiple dropdown.
   hsProtype.optionModClick = function(e){
-    let _ = this, o, i;
+    let _ = this,
+      o = e.target.closest('.hybriddd-option'),
+      i;
+    if(o) i = o.querySelector('input');
     if(e && e.target){ //target only label clicks as they both register on webkit + gekho engines.
       if(!e.ctrlKey && !e.shiftKey){ //ctrl keyup  does not fire after a ctrl+click.
         if(_.listenModClick){
@@ -785,14 +789,14 @@ class HybridDDError extends Error {
           });
           _.listenForBulk = false;
         }
+        _.clearClass('mod-ctrl'); //make sure change event will handle this case.
         return;
       }
-      o = e.target.closest('.hybriddd-option');
-      if(o){
-        i = o.querySelector('input');
+      if(i){
         i.checked = (!i.checked);
+        if(!i.checked) i.classList.remove('mod-ctrl');
         i.dispatchEvent(new Event('hybrid-ddi-change', { 'bubbles': true}));
-        i.classList.add('mod-ctrl');
+        if(i.checked) i.classList.add('mod-ctrl');
       }
     }
   }
@@ -886,7 +890,7 @@ class HybridDDError extends Error {
       }
     }
   }
-  //toggle values that are hoghlighted.
+  //toggle values that are highlighted.
   hsProtype.toggleValue = function(varr, emit){
     let _ = this;
     //for now simply add/remove based on first value.

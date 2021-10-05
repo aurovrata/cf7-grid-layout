@@ -1746,27 +1746,24 @@ class Cf7_Grid_Layout_Public {
     if( !isset($attrs['class']) ) $attrs['class'] = '';
     $classes = explode(' ',$attrs['class']);
 
-    $list_type = array_key_first($other_attrs);
-    if(empty($list_type)) $attrs['class'] .=' cf7sg-list';
-    else $attrs['class'] .=' cf7sg-'.$list_type;
-
     $type = 'radio';
     $name_attr='';
     $isImageGrid = isset($other_attrs['imagegrid']);
+    if(isset($other_attrs['nolimit'])) $attrs['data-limit-selection']="-1";
     $attributes = '';
     $hybrid_data = array();
-    switch($list_type){
-      case 'hybriddd':
+    switch(true){
+      case array_search('cf7sg-hybriddd',$classes)!==false:
         break;
-      case 'imagehdd':
+      case array_search('cf7sg-imagehdd',$classes)!==false:
         $attrs['data-checkboxes']='false';
         $attrs['data-dropdown']='landscape';
         break;
-      case 'treeview':
+      case array_search('cf7sg-treeview',$classes)!==false:
         $attrs['class'] .=' cf7sg-hybriddd';
         $attrs['data-tree-view']='true';
         break;
-      case 'imagegrid':
+      case array_search('cf7sg-imagegrid',$classes)!==false:
         $attrs['class'] .=' cf7sg-imagehdd';
         $attrs['data-dropdown']='none';
         break;
