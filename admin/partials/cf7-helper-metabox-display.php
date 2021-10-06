@@ -58,26 +58,3 @@
   });
 })(jQuery)
 </script>
-<style>
-.helper-list li{
-  position: relative;
-}
-.helper-list li .helper::before {
-    content: 'Click to copy!';
-    display: none;
-    position: absolute;
-    top: -22px;
-    left: 10px;
-    background: #323232;
-    color: white;
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-weight: bold;
-}
-.helper-list li .helper:hover::before {
-    display: inline-block;
-}
-.helper-list li.no-post-my-form{
-  display: none;
-}
-</style>

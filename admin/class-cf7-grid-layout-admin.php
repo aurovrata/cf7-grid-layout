@@ -1287,7 +1287,6 @@ class Cf7_Grid_Layout_Admin {
   public function save_dynamic_list_form_classes($form_classes, $tag, $form_id){
     /* Bookeeping, set up tagged select2 fields to filter newly added options in case Post My CF7 Form plugin is running */
     $class = $tag->get_class_option('');
-    debug_msg($class, '$class ');
     switch($tag->basetype){
       case 'dynamic_select':
         if(strpos($class, 'select2')){

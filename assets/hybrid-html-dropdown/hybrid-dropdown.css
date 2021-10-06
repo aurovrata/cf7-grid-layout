@@ -81,11 +81,13 @@ select.hybridddised{
 .hybrid-dropdown ul.hybriddd-options {
 	border: 1px solid #6f6f6f;
 	border-radius: 0.25em;
-	overflow-y: auto;
+	overflow:hidden auto;
 	scrollbar-width: thin;
 	height: 100%;
 	background-color: inherit;
   overscroll-behavior:contain;
+  position: relative;
+  z-index: 18;
 }
 .hybrid-dropdown:not(.hybriddd-none) ul.hybriddd-options {
 	list-style: none !important;

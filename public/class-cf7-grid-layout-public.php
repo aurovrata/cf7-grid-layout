@@ -176,14 +176,20 @@ class Cf7_Grid_Layout_Public {
     global $wp_scripts, $post;
     $cf7id = $cf7key = '';
     if ( is_a( $post, 'WP_Post' )  ) { //&& has_shortcode( , 'cf7form')
+      debug_msg($post->post_content, 'found post '.$post->ID);
       preg_match_all( '/' . get_shortcode_regex() . '/', $post->post_content, $matches, PREG_SET_ORDER );
       foreach($matches as $sc){
-        if('cf7form' === $sc[2]){
-          $attrs = shortcode_parse_atts($sc[3]);
-          if(is_array($attrs) && isset($attrs['cf7key'])){
-            $cf7key = $attrs['cf7key'];
-            $cf7id = get_cf7form_id($cf7key);
-          }
+        switch($sc[2]){
+          case 'contact-form-7':
+            $attrs = shortcode_parse_atts($sc[3]);
+            if(is_array($attrs) && isset($attrs['id'])) $cf7id = $attrs['id'];
+            break;
+          case 'cf7form':
+            $attrs = shortcode_parse_atts($sc[3]);
+            if(is_array($attrs) && isset($attrs['cf7key'])){
+              $cf7key = $attrs['cf7key'];
+              $cf7id = get_cf7form_id($cf7key);
+            }
         }
       }
     }
