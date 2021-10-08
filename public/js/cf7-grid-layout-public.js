@@ -651,7 +651,7 @@
           rowStyle.innerText = "#"+id+" .cf7sg-slider-controls > .cf7sg-submit-controls {max-width: calc(100% - "+($prev.outerWidth()+10)+"px)}"
           document.head.appendChild(rowStyle);
           $submit = $('.cf7sg-submit-controls',$control);
-          if($submit){
+          if($submit.lenth>0){
             isSubmit = true;
             $submit.hide();//shown on the last slide.
           }
@@ -1230,7 +1230,7 @@
       if($lastClose.length > 0) $lastClose.show();
       /** @since 2.4.2 udpate the tracker field*/
       var $tracker = $tab.children('.cf7sg-tracker-field');
-      if($tracker) $tracker.val($tab.children('.cf7-sg-tabs-panel').length);
+      if($tracker.length) $tracker.val($tab.children('.cf7-sg-tabs-panel').length);
     }
     return $tab;
   }
@@ -1374,7 +1374,7 @@
     /** @since 2.4.2 track tabs and their fields.*/
     //increment tab count tacker.
     var $tracker = $tab.children('.cf7sg-tracker-field');
-    if($tracker) $tracker.val($tab.children('.cf7-sg-tabs-panel').length);
+    if($tracker.length>0) $tracker.val($tab.children('.cf7-sg-tabs-panel').length);
     return $tab;
   }
 
