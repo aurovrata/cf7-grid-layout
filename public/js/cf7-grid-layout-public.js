@@ -642,7 +642,7 @@
               prev: '.slider-prev',
               next: '.slider-next'
           }};
-        if($control){
+        if($control.length>0){
           $prev = $('.slider-prev', $control);
           $next = $('.slider-next', $control);
           let rowStyle = document.createElement('style');
