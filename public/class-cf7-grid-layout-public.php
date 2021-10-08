@@ -1483,6 +1483,8 @@ class Cf7_Grid_Layout_Public {
       debug_msg(mail_tag, 'SMART GRID (ERR): unable to retrieve current form while filtering mail tag: ');
       return $replaced; //no form object.
     }
+    if(empty($mail_tag) || !is_a($mail_tag,'WPCF7_MailTag')) return $replaced;
+
     $cf7form_key = get_cf7form_key($cf7form->id());
     $submitted_cf7 = WPCF7_Submission::get_instance();
     $submitted_data = array();
@@ -1497,8 +1499,6 @@ class Cf7_Grid_Layout_Public {
         $replaced ="";
         break;
     }
-
-    if(empty($mail_tag)) return $replaced;
 
     $field_type = self::field_type($mail_tag->field_name(), $cf7form->id());
     $label = '';
