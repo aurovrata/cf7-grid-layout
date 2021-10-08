@@ -176,7 +176,6 @@ class Cf7_Grid_Layout_Public {
     global $wp_scripts, $post;
     $cf7id = $cf7key = '';
     if ( is_a( $post, 'WP_Post' )  ) { //&& has_shortcode( , 'cf7form')
-      debug_msg($post->post_content, 'found post '.$post->ID);
       preg_match_all( '/' . get_shortcode_regex() . '/', $post->post_content, $matches, PREG_SET_ORDER );
       foreach($matches as $sc){
         switch($sc[2]){

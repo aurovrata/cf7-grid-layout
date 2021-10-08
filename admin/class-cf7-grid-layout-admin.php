@@ -424,6 +424,7 @@ class Cf7_Grid_Layout_Admin {
         /** @since 3.3.0 enqueue ui-grid helpers js */
         wp_enqueue_script('ui-grid-helpers-js', $plugin_dir.'admin/js/ui-custom-helper.js', array('jquery'));
         do_action('cf7sg_enqueue_admin_editor_scripts');
+
         break;
       case 'edit':
         //wp_enqueue_script( $this->plugin_name.'-quick-edit', plugin_dir_url( __FILE__ ) . 'js/cf7-grid-layout-quick-edit.js', false, $this->version, true );
@@ -1404,9 +1405,10 @@ class Cf7_Grid_Layout_Admin {
         )
       );
       // Add footer scripts using callback function
-      //add_action( 'admin_print_footer_scripts', array($this, 'pretty_pointer_script') );
+
   	}
   }
+
   /**
   * CF7 Table pointer notices.
   * Hooked on 'cf7sg_plugin_pointers-edit-wpcf7_contact_form'
@@ -1475,28 +1477,22 @@ class Cf7_Grid_Layout_Admin {
     if( !in_array( 'row_controls', $dismissed ) ) {
       include_once 'partials/pointers/cf7sg-pointer-editor-rows-control.php';
       $content = ob_get_contents();
-      if(!empty($content)){
-        $pointers['row_controls'] = array($content, 'right', 'center','#grid-form>.container>.row>.row-controls');
-        ob_clean();
-      }
+      $pointers['row_controls'] = array($content, 'right', 'center','#grid-form>.container>.row>.row-controls');
+      ob_clean();
     }
     /* preview form */
     if( !in_array( 'preview_form', $dismissed ) ) {
       include_once 'partials/pointers/cf7sg-pointer-editor-preview-form.php';
       $content = ob_get_contents();
-      if(!empty($content)){
-        $pointers['preview_form'] = array($content, 'right', 'center','#preview-form-link');
-        ob_clean();
-      }
+      $pointers['preview_form'] = array($content, 'right', 'center','#preview-form-link');
+      ob_clean();
     }
     /* column controls */
     if( !in_array( 'column_controls', $dismissed ) ) {
       include_once 'partials/pointers/cf7sg-pointer-editor-column-control.php';
       $content = ob_get_contents();
-      if(!empty($content)){
-        $pointers['column_controls'] = array($content, 'left', 'center','#grid-form > .container:first-child > .row > .columns:first-child > .grid-column > span.icon-code');
-        ob_clean();
-      }
+      $pointers['column_controls'] = array($content, 'left', 'center','#grid-form > .container:first-child > .row > .columns:first-child > .grid-column > span.icon-code');
+      ob_clean();
     }
     /*dynamic-dropdown pointer*/
     if( !in_array( 'dynamic_dropdown', $dismissed ) ) {
@@ -1522,16 +1518,14 @@ class Cf7_Grid_Layout_Admin {
     /*benchmark pointer*/
     if( !in_array( 'benchmark', $dismissed ) ) {
       include_once 'partials/pointers/cf7sg-pointer-tag-benchmark.php';
-      $content = ob_get_clean();
+      $content = ob_get_contents();
       $pointers['benchmark'] = array($content, 'left', 'center','#top-tags>#tag-generator-list > a[title*="benchmark"]');
       ob_clean();
     }
     /*UI tags pointer include always*/
     include_once 'partials/pointers/cf7sg-pointer-tag-ui-editor-tags.php';
-    $content = ob_get_clean();
+    $content = ob_get_contents();
     $pointers['ui_editor_tags'] = $content; //controlled within js script
-    ob_clean();
-
     ob_end_clean();
     return $pointers;
   }
