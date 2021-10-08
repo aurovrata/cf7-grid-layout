@@ -11,7 +11,7 @@
  * Plugin URI:        https://wordpress.org/plugins/cf7-grid-layout/
  * GitHub Plugin URI: https://github.com/aurovrata/cf7-grid-layout
  * Description:       Enabled responsive grid layout designs for Contact Form 7 forms.
- * Version:           4.11.1
+ * Version:           4.11.2
  * Author:            Aurovrata V.
  * Author URI:        https://profiles.wordpress.org/aurovrata
  * License:           GPL-2.0+
@@ -23,13 +23,13 @@
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
-define( 'CF7_GRID_VERSION', '4.11.1' );
+define( 'CF7_GRID_VERSION', '4.11.2' );
 
 if(! defined('WPCF7_AUTOP') ) define('WPCF7_AUTOP', false);
 
 
 /** @since 2.6.0, NOTIFY USERS of forms requiring udpates */
-define( 'CF7SG_VERSION_FORM_UPDATE', '4.0.0');
+define( 'CF7SG_VERSION_FORM_UPDATE', '4.11.0');
 /** @since 4.4.0, Translated locales */
 define( 'CF7SG_TRANSLATED_VERSION', '4.4.0');
 /**
