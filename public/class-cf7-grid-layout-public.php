@@ -192,13 +192,12 @@ class Cf7_Grid_Layout_Public {
         }
       }
     }
-    if(empty($cf7id)){
-      return; //unknown form, nothing to load here.
+    $resources = array();
+    if(!empty($cf7id)){
+      $resources = get_post_meta($cf7id, '_cf7sg_script_classes', true);
+      if(empty($resources)) $resources = array();
     }
-    $resources = get_post_meta($cf7id, '_cf7sg_script_classes', true);
-    if(empty($resources)){
-      $resources = array();
-    }
+
     $airplane=false;
     if( class_exists( 'Airplane_Mode_Core' ) && Airplane_Mode_Core::getInstance()->enabled()){
       $airplane=true;

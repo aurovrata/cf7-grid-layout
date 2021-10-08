@@ -344,6 +344,8 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
+= 4.11.3 =
+* enable script registration for forms that are not embeded in post contents.
 = 4.11.2 =
 * udpate CF7SG_VERSION_FORM_UPDATE to 4.11
 = 4.11.1 =
