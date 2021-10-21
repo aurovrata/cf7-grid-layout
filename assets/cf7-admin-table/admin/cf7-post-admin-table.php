@@ -434,7 +434,7 @@ if(!class_exists('CF7SG_WP_Post_Table')){
       ), $atts );
 
       if(empty($a['cf7key'])){
-        return '<em>' . __('cf7-form shortcode missing key attribute','cf7-admin-table') . '</em>';
+        return '<em>' . __('cf7-form shortcode missing key attribute','cf7-grid-layout') . '</em>';
       }
       /** @since 4.4.0 enable field values */
       $hidden = apply_filters('cf7sg_include_hidden_form_fields', array(),$a['cf7key']);
