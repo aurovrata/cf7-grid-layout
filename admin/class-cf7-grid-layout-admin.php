@@ -1091,6 +1091,16 @@ class Cf7_Grid_Layout_Admin {
       return $cf7_tags;
     },1001,2);
     $contact_form = wpcf7_save_contact_form( $args );
+    /** @since 4.11.5 cf7 plugin validate form */
+    if(function_exists('wpcf7_validate_configuration') &&
+      method_exists('WPCF7_ConfigValidator','validate') &&
+      method_exists('WPCF7_ConfigValidator','save') ){
+      if ( $contact_form and wpcf7_validate_configuration() ) {
+  			$config_validator = new WPCF7_ConfigValidator( $contact_form );
+  			$config_validator->validate();
+  			$config_validator->save();
+  		}
+    }
     add_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
 
     /** @since 4.9.2 fire form saving action so as to prevent double save_post hook calls on other plugins */
