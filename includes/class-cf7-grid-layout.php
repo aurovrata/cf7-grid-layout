@@ -256,7 +256,7 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'cf7sg_display_dynamic_list_tag_manager', $plugin_admin, 'print_dynamic_list_generator', 5, 4);
     $this->loader->add_action( 'cf7sg_save_dynamic_list_form_classes', $plugin_admin, 'save_dynamic_list_form_classes', 5, 3);
     $this->loader->add_action( 'cf7sg_dynamic_tag_manager_taxonomy_source', $plugin_admin, 'add_taxonomy_imagegrid_hook');
-    // $this->loader->add_action( 'cf7sg_dynamic_tag_manager_custom_source', $plugin_admin, 'add_custom_imagegrid_hook');
+    // $this->loader->add_action( 'wpcf7_config_validator_validate', $plugin_admin, 'cf7_form_validation', 10, 1);
 
 	}
 

@@ -208,6 +208,7 @@ class Cf7_Grid_Layout_Admin {
 
     switch( $screen->base ){
       case 'post':
+      global $post;
         /* register codemirror editor & addons. */
         //codemirror script
         wp_register_script( 'cf7-codemirror-js',
@@ -365,6 +366,8 @@ class Cf7_Grid_Layout_Admin {
           }
         }
         //enqueue the cf7 scripts.
+        /** @since 4.11.5 force loading of current form for cf7 plugin error handling */
+        WPCF7_ContactForm::get_instance($post);
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
         wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs', 'cf7-codemirror-js' ), $this->version, true );
@@ -1082,6 +1085,11 @@ class Cf7_Grid_Layout_Admin {
     //debug_msg($args, 'saving cf7 posts');
     remove_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
     // debug_msg($args['form'],'form ');
+    /** @since 4.11.5 filter wp_kses ffrmo cf7 plugin v5.5 */
+    add_filter('wpcf7_kses_allowed_html', function($cf7_tags, $context) use ($allowed_tags){
+      if('form'==$context) return array_merge($cf7_tags, $allowed_tags);
+      return $cf7_tags;
+    },1001,2);
     $contact_form = wpcf7_save_contact_form( $args );
     add_action('save_post_wpcf7_contact_form', array($this, 'save_post'), 10,3);
 
@@ -1785,6 +1793,7 @@ class Cf7_Grid_Layout_Admin {
     echo $update_msg;
     wp_die();
   }
+
   /**
   * Check if plugin is getting updated.
   * Hooked to 'upgrader_post_install'.

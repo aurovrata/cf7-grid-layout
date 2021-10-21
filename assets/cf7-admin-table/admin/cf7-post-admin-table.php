@@ -330,6 +330,10 @@ if(!class_exists('CF7SG_WP_Post_Table')){
           if( get_post_meta($post_id, '_cf7sg_managed_form', true) ){
             $version = get_post_meta($post_id, '_cf7sg_version', true);
             if(version_compare($version, CF7SG_VERSION_FORM_UPDATE, '<')) $update = 'cf7sg-update';
+            else{
+              $errors = get_post_meta($post_id, '_config_errors', true);
+              if(!empty($errors)) $update = 'cf7-errors';
+            }
           }
           echo '<span class="cf7-form-key" data-update="'.$update.'">'.$form->post_name.'</span>';
           break;
@@ -564,6 +568,7 @@ if(!class_exists('CF7SG_WP_Post_Table')){
       }
       switch( $screen->base ){
         case 'edit':
+        /** @since 4.11.5 enable cf7 form errors to be notified */
         ?>
         <script type="text/javascript">
         (function($){
@@ -571,8 +576,13 @@ if(!class_exists('CF7SG_WP_Post_Table')){
             $('tbody#the-list tr').each(function(){
               var $tr = $(this);
               var update = $tr.find('.cf7-form-key').data('update');
-              if(update){
-                $tr.find('a.row-title').addClass(update).after('<span class="cf7sg-popup display-none">Please udpate this form, simply edit and update.</span>').parent().css('position','relative');
+              switch(update){
+                case 'cf7sg-update':
+                  $tr.find('a.row-title').addClass(update).after('<span class="cf7sg-popup display-none"><?=__('Please udpate this form, simply edit and update.', 'cf7-grid-layout')?></span>').parent().css('position','relative');
+                  break;
+                case 'cf7-errors':
+                  $tr.find('a.row-title').addClass(update).after('<span class="cf7sg-popup display-none"><?=__('CF7 plugin has found misconfiguration errors on this form.', 'cf7-grid-layout')?></span>').parent().css('position','relative');
+                  break;
               }
             });
           });
