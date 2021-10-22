@@ -345,8 +345,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
 = 4.11.5 =
-* filter cf7 5.5 kses to ensure cf7sg htlm markup.
-* improve cf7 form errors in admin.
+* filter cf7 5.5 kses to ensure cf7sg html markup.
+* flag cf7 form errors in admin table.
+* allow for cf7 plugin bulk revalidation.
 = 4.11.4 =
 * check for valid WPCF7_MailTag object in mail tag table filter.
 = 4.11.3 =
