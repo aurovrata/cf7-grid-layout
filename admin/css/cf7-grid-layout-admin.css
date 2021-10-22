@@ -4,6 +4,13 @@
     position: absolute;
     right: 0;
   }
+  .cf7sg-notice .wrap {
+	margin: 0 0 5px 0;
+}
+.cf7sg-notice h1 {
+	font-size: initial;
+	line-height: normal;
+}
 #wpbody-content .inline-edit-row-page fieldset.hide-element,
 #wpbody-content .inline-edit-row-page fieldset.hide-element *{
     height: 0;

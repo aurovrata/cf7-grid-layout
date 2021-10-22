@@ -330,10 +330,10 @@ if(!class_exists('CF7SG_WP_Post_Table')){
           if( get_post_meta($post_id, '_cf7sg_managed_form', true) ){
             $version = get_post_meta($post_id, '_cf7sg_version', true);
             if(version_compare($version, CF7SG_VERSION_FORM_UPDATE, '<')) $update = 'cf7sg-update';
-            else{
-              $errors = get_post_meta($post_id, '_config_errors', true);
-              if(!empty($errors)) $update = 'cf7-errors';
-            }
+          }
+          if(empty($update)){
+            $errors = get_post_meta($post_id, '_config_errors', true);
+            if(!empty($errors)) $update = 'cf7-errors';
           }
           echo '<span class="cf7-form-key" data-update="'.$update.'">'.$form->post_name.'</span>';
           break;
@@ -373,26 +373,26 @@ if(!class_exists('CF7SG_WP_Post_Table')){
         }
         return $actions;
     }
-    /**
-     * Redirect to new table list on form delete
-     * hooks on 'wp_redirect'
-     * @since 1.1.3
-     * @var string $location a fully formed url
-     * @var int $status the html redirect status code
-     */
-     public function filter_cf7_redirect($location, $status){
-       //debug_msg($status, 'redirecting ...'.$location);
-
-       if( self::is_cf7_admin_page() || self::is_cf7_edit_page() ){
-         if( 'delete' == wpcf7_current_action()){
-           global $post_ID;
-           do_action('wpcf7_post_delete',$post_ID);
-
-           return admin_url('edit.php?post_type=wpcf7_contact_form');
-         }
-       }
-       return $location;
-     }
+    // /**
+    //  * Redirect to new table list on form delete
+    //  * hooks on 'wp_redirect'
+    //  * @since 1.1.3
+    //  * @var string $location a fully formed url
+    //  * @var int $status the html redirect status code
+    //  */
+    //  public function filter_cf7_redirect($location, $status){
+    //    //debug_msg($status, 'redirecting ...'.$location);
+    //
+    //    if( self::is_cf7_admin_page() || self::is_cf7_edit_page() ){
+    //      if( 'delete' == wpcf7_current_action()){
+    //        global $post_ID;
+    //        do_action('wpcf7_post_delete',$post_ID);
+    //
+    //        return admin_url('edit.php?post_type=wpcf7_contact_form');
+    //      }
+    //    }
+    //    return $location;
+    //  }
 
     // /**
     //  * Function to populate the quick edit form
