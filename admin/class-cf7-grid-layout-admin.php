@@ -1739,13 +1739,14 @@ class Cf7_Grid_Layout_Admin {
     }
     /** @since 4.11.5 add admin notices for bulk cf7 validation */
     //check if cf7 found issues:
+
     if(method_exists('WPCF7','get_option')){
       $result = WPCF7::get_option( 'bulk_validate' );
       if(!empty($result)){
         $has_errors = ( isset($result['count_invalid']) and $result['count_invalid']>0);
-        $is_old = (property_exists('WPCF7_ConfigValidator','last_important_update') &&
+        $is_old = (defined('WPCF7_ConfigValidator::last_important_update') &&
           isset($result['version']) &&
-          version_compare( WPCF7_ConfigValidator::last_important_update, $result['version'], '<='));
+          version_compare( $result['version'], WPCF7_ConfigValidator::last_important_update, '<'));
         if( $is_old or $has_errors){
            ob_start();
            wpcf7_admin_bulk_validate_page();
@@ -1760,7 +1761,6 @@ class Cf7_Grid_Layout_Admin {
                $result['count_invalid']
              );
            }
-
            $notices['cf7sg_notice-cf7_validate'] = array(
              'type'=>'notice-error',
              'msg' => $msg,
