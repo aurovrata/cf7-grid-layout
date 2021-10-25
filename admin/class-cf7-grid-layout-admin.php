@@ -367,7 +367,7 @@ class Cf7_Grid_Layout_Admin {
         }
         //enqueue the cf7 scripts.
         /** @since 4.11.5 force loading of current form for cf7 plugin error handling */
-        WPCF7_ContactForm::get_instance($post);
+        if('auto-draft'!=$post->post_status) WPCF7_ContactForm::get_instance($post);
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
         wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs', 'cf7-codemirror-js' ), $this->version, true );
@@ -798,10 +798,10 @@ class Cf7_Grid_Layout_Admin {
   * @since 1.0.0
   */
   public function main_editor_metabox_display($post){
+    $post_id = $post->ID;
     if('auto-draft' !== $post->post_status){
       wpcf7_contact_form($post); //set the post
     }
-    $post_id = $post->ID;
     $cf7_form = wpcf7_get_current_contact_form();
   	if ( ! $cf7_form ) {
       $args = apply_filters('cf7sg_new_cf7_form_template_arguments', array());
@@ -840,8 +840,7 @@ class Cf7_Grid_Layout_Admin {
    * Display the editor panels (wpcf7 / codemirror / grid)
    *
    * @since 1.0.0
-   * @param      string    $p1     .
-   * @return     string    $p2     .
+   * @param      WPCF7_Contact_Form    $form_post     .
   **/
   public function grid_editor_panel($form_post){
     require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-grid-layout-admin-display.php';

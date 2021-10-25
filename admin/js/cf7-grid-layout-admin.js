@@ -8,13 +8,13 @@
   const offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'],
     columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
   let $wpcf7Editor,$grid,$rowControl = null;
-  //graphics UI template pattern
-  const $pattern = $('<div>').html(cf7grid.preHTML+'\\s*(\\[.*\\s*\\].*\\s*){0,}\\s*'+cf7grid.postHTML),
+  //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
+  let $pattern = $('<div>').html(cf7grid.preHTML.replace(/class="([\w\s]*)"/,'class="$1[\\s_a-zA-Z0-9-]*"') + '\\s*(\\[.*\\s*\\].*\\s*){0,}\\s*'+cf7grid.postHTML),
     required = cf7grid.requiredHTML.replace('*', '\\*');
   // console.log('r:'+required);
   $pattern.find('label').html('((\\s*.*)('+required+'){1}|(\\s*.*))');
   $pattern.find('.info-tip').text('(.*\\s*)');
-  //console.log('p:'+$pattern.html());
+  // console.log('p:'+$pattern.html().replace('><','>\\s?<'));
   const templateRegex = new RegExp($pattern.html().replace('><','>\\s?<'), 'ig');
   let seekTemplate = false, cssTemplate = 'div.field',
     $template = $('<div id="cf7sg-dummy">').append(cf7grid.preHTML+cf7grid.postHTML);
@@ -986,11 +986,12 @@
       count =0, counth = 0,
       field = '',
       stopSearch = false, isField =true,
-      classes = $('#grid-col div.cf7-field-type').attr('class');
+      classes = $('#grid-col div.cf7-field-type').attr('class'),
+      reqdCl = '';
 
     while (match != null && !stopSearch) {
+      isRequired = false;
       count++;
-      label+='['+match[1]+' '+match[2]+']';
       tag = match[1].replace('*','');
       field = match[2];
       let helpers = ['cf7sg-tag-all'], jsHelpers = ['cf7sg-tag-all'];
@@ -1047,17 +1048,21 @@
               break;
           }
           break;
-        case 'hidden': /** @since 3.2.1 fix hidden field class */
+        case 'hidden'==tag: /** @since 3.2.1 fix hidden field class */
           tag+='-input';
           counth++;
           break;
-        case 'group': /** @since 4.4.3 fix conditional groups within */
+        case 'group'==tag: /** @since 4.4.3 fix conditional groups within */
           isField = false;
           classes += " conditional-group";
+          counth++; //don't count as field.
           break;
-        case '/grou':
+        case '/grou'==tag:
           isField = false;
           stopSearch = true;
+          tag = '/group';
+          field='';
+          counth++; //don't count as field.
           break;
         default:
           break;
@@ -1076,13 +1081,13 @@
       }
       if('*' === match[1][match[1].length -1]){
         isRequired = true;
+        reqdCl = ' required';
       }
+      label+='['+tag+(isRequired?'*':'')+' '+field+']'; //disolay label.
       if(!stopSearch) match = cf7TagRegexp.exec(search); //get the next match.
     }
-    classes += " "+ type.join(' ');
+    classes += " "+ type.join(' ') + reqdCl;
     field = fields.join(' ');
-    // $parent.removeClass('required');
-    if(isRequired) classes += ' required';//$parent.addClass('required').
     let $parentColumn = $parent.closest('.columns');
     if($parentColumn.is('[class*="cf7-tags-"]')){
       $parentColumn.removeClass(function (index, className) {
@@ -1149,12 +1154,13 @@
     if(!$this.is('textarea.grid-input')){
       return $this;
     }
-    //label
-    let $label = $this.siblings('div.cf7-field-label').find(':input');
-    let label = $label.val();
-    //field
-    let field = $this.siblings('div.cf7-field-type').find('textarea.field-entry').val();
-    let idx = 0;
+    //extract field components to contruct html markup.
+    let $label = $this.siblings('div.cf7-field-label').find(':input'),
+      label = $label.val(), //label
+      field = $this.siblings('div.cf7-field-type'),
+      classes = field.attr('class').replace('cf7-field-type','').replace('cf7-field-inner', '').trim(),
+      idx = 0;
+    field = field.find('textarea.field-entry').val(); //field
     if(cf7grid.requiredHTML.length>0) idx=label.indexOf(cf7grid.requiredHTML)
     if($this.siblings('div.cf7-field-type').is('.required')){
       /** @since 2.10.4 fix for custom manual labels, allow replacement with empty span*/
@@ -1176,6 +1182,7 @@
       $cell = $('<div>').append( cf7grid.preHTML + field + cf7grid.postHTML );
     $('label', $cell).html(label);
     $('.info-tip', $cell).html(tip);
+    $('.field',$cell).addClass(classes);
     //update grid input and trigger change to udpate form
     if(cf7grid.ui) $this.html($cell.html()+'\n').trigger('change');
     else $this.val($cell.html()).trigger('change');
