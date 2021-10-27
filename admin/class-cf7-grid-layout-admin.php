@@ -1024,10 +1024,14 @@ class Cf7_Grid_Layout_Admin {
     }
     //save js file if used.
     $path = get_stylesheet_directory();
-    if(!empty($_POST['cf7sg_js_file'])){
+    if(!empty($_POST['cf7sg_js_file']) || !empty($_POST['cf7sg_prev_js_file'])){
       //check if the file name is changed.
       if(!empty($_POST['cf7sg_prev_js_file']) && file_exists(ABSPATH. $_POST['cf7sg_prev_js_file'])){
-        if( !unlink(ABSPATH.$_POST['cf7sg_prev_js_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_js_file']);
+        $path_match = preg_match('/^'.preg_quote("$path/js/",'/').'[^\s!?.\/#*]+\.js$'.'/', untrailingslashit(ABSPATH). $_POST['cf7sg_prev_js_file']);
+
+        if($path_match && !unlink(ABSPATH.$_POST['cf7sg_prev_js_file']) ){
+          debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_js_file']);
+        }
       }
       if( !is_dir("$path/js/") ) mkdir("$path/js/");
       file_put_contents( "$path/js/{$cf7_key}.js", stripslashes($_POST['cf7sg_js_file']) );
@@ -1035,10 +1039,14 @@ class Cf7_Grid_Layout_Admin {
       if( !unlink("$path/js/{$cf7_key}.js") ) debug_msg("CF7SG ADMIN: unable to delete file $path/js/{$cf7_key}.js");
     }
     //save css file.
-    if(!empty($_POST['cf7sg_css_file'])){
+    if(!empty($_POST['cf7sg_css_file']) || !empty($_POST['cf7sg_prev_css_file'])){
       //check if the file is changed.
       if(!empty($_POST['cf7sg_prev_css_file']) && file_exists(ABSPATH.$_POST['cf7sg_prev_css_file'])){
-        if( !unlink(ABSPATH.$_POST['cf7sg_prev_css_file']) ) debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_css_file']);
+        $path_match = preg_match('/^'.preg_quote("$path/css/",'/').'[^\s!?.\/#*]+\.css$'.'/', untrailingslashit(ABSPATH). $_POST['cf7sg_prev_css_file']);
+
+        if($path_match && !unlink(ABSPATH.$_POST['cf7sg_prev_css_file']) ){
+          debug_msg('CF7SG ADMIN: unable to delete file '.$_POST['cf7sg_prev_css_file']);
+        }
       }
       if( !is_dir("$path/css/") ) mkdir("$path/css/");
       file_put_contents( $path."/css/{$cf7_key}.css", stripslashes($_POST['cf7sg_css_file']));
