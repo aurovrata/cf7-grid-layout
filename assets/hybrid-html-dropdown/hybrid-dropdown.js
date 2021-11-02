@@ -1,6 +1,6 @@
 /*
 Hybrid Dropdown JavaScript plugin insprired from an original idea by Sandrina Pereira (twitter:@a_sandrina_p)
-Version: 2.1.1
+Version: 2.2.0
 Authors: Aurovrata Venet
 Twitter: @aurovrata
 GitHub: https://github.com/aurovrata/hybrid-html-dropdown
@@ -52,14 +52,14 @@ class HybridDDError extends Error {
 	let HybridDropdown = (_window.HybridDropdown = function (elm, settings) {
     //verify we have an element and a source
     if(!elm || !(elm instanceof Element)){
-      throw new HybridDDError("HybridDropdown requires a DOM element to intialise.");
+      throw new HybridDDError("HybridDropdown requires a DOM element to initialise.");
     }
     if(elm.classList.contains('hybridddised') && elm._hybriddd){
-      console.log('WARNING: attempting instantiate element already converted to Hybrid Dropdown');
+      console.log('WARNING: attempting to instantiate element already converted to Hybrid Dropdown');
       return elm._hybriddd;
     }
     if(elm.classList.contains('hybrid-dropdown')){
-      console.log('WARNING: attempting instantiate Hybrid Dropdown element.');
+      console.log('WARNING: attempting to instantiate Hybrid Dropdown element.');
       return elm;
     }
 
@@ -170,6 +170,7 @@ class HybridDDError extends Error {
       _.hasDd = false;
       if(!Number.isInteger(_.opt.gridColumns) || _.opt.gridColumns<1) _.opt.gridColumns=1;
     }
+    if(_.opt.placeholder) _.opt.defaultText = _.opt.placeholder;
     //check if gridColumns is a ppositive integer.
     if(!Number.isInteger(_.opt.gridColumns) || _.opt.gridColumns<1) _.opt.gridColumns = false;
     //make sure selectedValues are strings...
@@ -325,7 +326,9 @@ class HybridDDError extends Error {
 
     if(!_window['hdd'] && (!_.opt.backgroundColor || !_.opt.color)){
       let found=false, p=_.hdd, s;
-      _window.hdd={};
+      _window.hdd={},
+      form = p.closest('form');
+      if(form) p = form;
       while(!found && p){
         s = _window.getComputedStyle( p, null);
         if(!_window.hdd['bgColor'] && !_.opt.backgroundColor){

@@ -242,6 +242,26 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'change',':input', function(e){
 //you can set an optional timeout in ms (1000ms = 1sec), after which the message will be automatically removed without user action.
 $field.cf7sgWarning(message, timeout); /* function to display a dismissible field warning/message. */" href="javascript:void(0);"><?=__('display a message','cf7-grid-layout')?></a>
       </li>
+      <li class="display-none select2"><?= __('Select2: ','cf7-grid-layout')?>
+        <a class="helper" data-insert="end" data-cf72post="
+//set custom options on your select2 field at instantiation.
+//for a list of options: https://select2.org/configuration/options-api
+var cf7sgCustomSelect2Templates = (function (ccs2t) {
+  {$select2_fields}
+  return ccs2t;
+}(cf7sgCustomSelect2Templates || {}));
+ /* set custom options for the seect2 fields. */" href="javascript:void(0);"><?=__('custom options','cf7-grid-layout')?></a>
+      </li>
+      <li class="display-none hybriddd"><?= __('HybridDropdown: ','cf7-grid-layout')?>
+        <a class="helper" data-insert="end" data-cf72post="
+//set custom options on your HybridDropdown field at instantiation.
+//for a list of options: https://aurovrata.github.io/hybrid-html-dropdown/options/#options
+var cf7sgCustomHybridddTemplates = (function (cchddt) {
+  {$hybriddd_fields}
+  return cchddt;
+}(cf7sgCustomHybridddTemplates || {}));
+ /* set custom options for the HybridDropdown fields. */" href="javascript:void(0);"><?=__('custom options','cf7-grid-layout')?></a>
+      </li>
     </ul>
   </li>
   <li id="other-events" class="display-none"><?=__('Others','cf7-grid-layout')?><span>&gt;</span>

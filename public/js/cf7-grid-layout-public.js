@@ -1,10 +1,12 @@
+var cf7sgCustomSelect2Templates = (function (ccs2t) {return ccs2t;}(cf7sgCustomSelect2Templates || {}));
+var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCustomHybridddTemplates || {}));
+
 (function( $ ) {
 	'use strict';
 
   var trackTabsFields = []; //to keep track of fields that are converted to arrays.
   var trackTableFields = []; //to keep track of fields that are converted to arrays.
   var cf7sgPanels = {}; //object to store cloned panels
-  var cf7sgCustomSelect2Templates = (function (ccst) {return ccst;}(cf7sgCustomSelect2Templates || {}));
   /*warning messages used for in-form validation*/
   $.fn.cf7sgWarning = function(msg, time){
     var $this = $(this);
@@ -518,48 +520,21 @@
 
     if(cf7Forms.length > 0){
       //check if this is a mapped cf7-2-post form
-      var initHybridDropdowns = function($form){
-        $('.cf7sg-hybriddd',$form).each(function(){ //normal hybriddd dropdown.
-          new HybridDropdown(this,{
-            'optionLabel':function(lbl){ //is a value=>label object.
-              let l ='', a='';
-              if(Array.isArray(lbl)){
-                l = lbl[0];
-                for(let i=1;i<lbl.length;i++) a+=` ${lbl[i]}`;
-              }else{
-                l = lbl;
-              }
-              return `<span${a}>${l}</span>`;
-            }
-          });
-        });
-        $('.cf7sg-imagehdd',$form).each(function(){ //image hybriddd dropdown.
-          new HybridDropdown(this,{
-            'optionLabel':function(lbl){ //is a value=>label object.
-              let l='',a='',img='';
-              if(Array.isArray(lbl)){
-                l=lbl[0];
-                for(let i=1;i<lbl.length;i++){
-                  if(lbl[i].indexOf('data-thumbnail')>-1) img = lbl[i].replace('data-thumbnail', 'src');
-                  else a+=` ${lbl[i]}`;
-                }
-              }
-              return `<div${a}><img ${img} alt="${l}" /><p>${l}</p></div>`;
-            }
-          });
-        });
-      }
       cf7Forms.filter('div.cf7_2_post form.wpcf7-form').each(function(){
         var $form = $(this);
         var nonceID = $form.closest('div.cf7_2_post').attr('id');
         if(nonceID.length>0){
           $form.on(nonceID, function(event){
-            initHybridDropdowns($(this));
+            $('.cf7sg-dynamic_checkbox', $form).each(function(){
+              new HybridDropdown(this, $(this).cf7sgHybridddOptions());
+            })
           });
         }
       });
       cf7Forms.not('div.cf7_2_post form.wpcf7-form').each(function(){
-        initHybridDropdowns($(this));
+        $('.cf7sg-dynamic_checkbox', $form).each(function(){
+          new HybridDropdown(this, $(this).cf7sgHybridddOptions());
+        })
       })
     }
 		//enable datepicker
@@ -959,26 +934,59 @@
     return $field;
   }
   $.fn.cf7sgSelect2Options = function(){
-    var $select2 = $(this), s2options = {tags: $select2.is('.tags')}, field = $select2.attr('name').replace('[]','');
+    var $select2 = $(this),
+      s2options = {tags: $select2.is('.tags')}, //select2 options
+      field = $select2.attr('name').replace('[]',''); //field name
     if($select2.is('.cf7sg-permalinks')){
       s2options['templateSelection'] = linkOption;
       s2options['templateResult'] = linkOption;
     }
-    if('undefined' != typeof cf7sgCustomSelect2Templates.templateSelection){
-      s2options['templateSelection'] = cf7sgCustomSelect2Templates.templateSelection;
+    if(cf7sgCustomSelect2Templates[field]){
+      s2options = Object.assign(
+        s2options, //default
+        cf7sgCustomSelect2Templates[field] //user setttings.
+      )
     }
-    if('undefined' != typeof cf7sgCustomSelect2Templates.templateResult){
-      s2options['templateResult'] = cf7sgCustomSelect2Templates.templateResult;
-    }
-    if('undefined' != typeof cf7sgCustomSelect2Templates[field]){
-      if('undefined' != typeof cf7sgCustomSelect2Templates[field].templateSelection){
-        s2options['templateSelection'] = cf7sgCustomSelect2Templates[field].templateSelection;
-      }
-      if('undefined' != typeof cf7sgCustomSelect2Templates[field].templateResult){
-        s2options['templateResult'] = cf7sgCustomSelect2Templates[field].templateResult;
-      }
-    }
+
     return s2options;
+  }
+  $.fn.cf7sgHybridddOptions = function(){
+    if(!this.is('.cf7sg-dynamic_checkbox')) return false;
+    var hddoptions = {}, //select2 options
+      field = this.data('field-name'); //field name
+
+    if( this.is('.cf7sg-hybriddd') ){ //normal hybriddd dropdown.
+      hddoptions['optionLabel']=function(lbl){ //is a value=>label object.
+        let l ='', a='';
+        if(Array.isArray(lbl)){
+          l = lbl[0];
+          for(let i=1;i<lbl.length;i++) a+=` ${lbl[i]}`;
+        }else{
+          l = lbl;
+        }
+        return `<span${a}>${l}</span>`;
+      }
+    }else if( this.is('.cf7sg-imagehdd') ){ //image hybriddd dropdown.
+      hddoptions['optionLabel']=function(lbl){ //is a value=>label object.
+        let l='',a='',img='';
+        if(Array.isArray(lbl)){
+          l=lbl[0];
+          for(let i=1;i<lbl.length;i++){
+            if(lbl[i].indexOf('data-thumbnail')>-1) img = lbl[i].replace('data-thumbnail', 'src');
+            else a+=` ${lbl[i]}`;
+          }
+        }
+        return `<div${a}><img ${img} alt="${l}" /><p>${l}</p></div>`;
+      }
+    }
+    if(cf7sgCustomHybridddTemplates[field]){
+      hddoptions = Object.assign(
+        hddoptions, //default
+        cf7sgCustomHybridddTemplates[field] //user setttings.
+      )
+    }
+
+    return hddoptions;
   }
   //toggle a collapsible section.
   $.fn.activateCF7sgCollapsibleSection = function(activate){
@@ -1182,6 +1190,10 @@
         $input.trigger('sgSelect2');
       }
     });
+    /** @since 4.12 enable hybrid fields in new rows */
+    $('.cf7sg-dynamic_checkbox', $row).each(function(){
+      new HybridDropdown(this, $(this).cf7sgHybridddOptions());
+    });
     //when the button is clicked, trigger a content increase for accordions to refresh
     $table.trigger('sgContentIncrease');
     $table.trigger({type:'sgRowAdded',row:rowIdx, button:el});
@@ -1288,6 +1300,10 @@
         $this.select2($this.cf7sgSelect2Options());
         $this.trigger('sgSelect2');
       }
+    });
+    /** @since 4.12 enable hybrid fields in new tab */
+    $('.cf7sg-dynamic_checkbox', $newPanel).not('.cf7-sg-cloned-table-row *').each(function(){
+      new HybridDropdown(this, $(this).cf7sgHybridddOptions());
     });
     //append new panel
     $tab.append($newPanel);

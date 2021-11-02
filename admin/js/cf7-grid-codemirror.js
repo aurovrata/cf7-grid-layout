@@ -263,9 +263,15 @@
                       match=null;
                       break;//tags with no fields of interest.
                     default:
-                      formFields[match[2]] = match[2];
-                      if($field.is('.cf7-sg-tabs .field')) formFields[match[2]] += '_tab';
-                      if($field.is('.container.cf7-sg-table .field')) formFields[match[2]] += '_row';
+                      formFields[match[2]] = [match[2],match[0]];
+                      if($field.is('.cf7-sg-tabs .field')) formFields[match[2]][0] += '_tab';
+                      if($field.is('.container.cf7-sg-table .field')) formFields[match[2]][0] += '_row';
+                      if(match[0].indexOf('class:select2')>0){
+                        $('#field-events li.select2', $jsTags).addClass('show-events');
+                      }
+                      if(match[1]==='dynamic_checkbox'){
+                        $('#field-events li.hybriddd', $jsTags).addClass('show-events');
+                      }
                       match = cf7TagRegexp.exec(search); //search next.
                       break;
                   }
@@ -406,15 +412,19 @@
         }
       });
       $('#js-tags').on('click','a.helper',function(e){
-        let helper = $(this).data('cf72post').replace('{$cf7_key}', $cf7key.val() ), enableArrayFields=false;
+        let $this = $(this),
+          helper = $this.data('cf72post').replace('{$cf7_key}', $cf7key.val() ),
+          enableArrayFields = false,
+          line = jscme.getCursor().line;
+
         if(!$('#cf7sg-jstags-comments').is(':checked')){
           helper = helper.replace(/^\n?\s*?\/\/.*\n?/gmi,'');
         }
-        if($(this).is('.all-fields')){
+        if($this.is('.all-fields')){
           let fieldsText = '\n';
-          $.each(formFields, function(field, fidx){
+          $.each(formFields, function(field, ftag){
             fieldsText += "  case '"+field+"': //"+field+" updated";
-            switch(fidx){
+            switch(ftag[0]){
               case field+'_tab':
                 fieldsText +=", tIdx is tab index.\n";
                 enableArrayFields=true;
@@ -461,9 +471,29 @@
           }
           helper = helper.replace('{$array_field_extraction}', arrayFields);
           helper = helper.replace('{$list_of_fields}', fieldsText);
+        }else if($this.is('.select2 > a')){
+          let s='',g='';
+          $.each(formFields, function(field, ftag){
+            if(ftag[1].indexOf('class:select2') > 0){
+              s+= `${g}ccs2t['${ftag[0]}']={\n'placeholder':'',\n'dir':'ltr'\n};`
+              g='\n';
+            }
+          });
+          helper = helper.replace('{$select2_fields}', s);
+        }else if($this.is('.hybriddd > a')){
+          let s='',g='';
+          $.each(formFields, function(field, ftag){
+            if(ftag[1].indexOf('dynamic_checkbox') > 0){
+              s+= `${g}cchddt['${ftag[0]}']={\n'placeholder':'',\n'checkboxes':true\n};`
+              g='\n';
+            }
+          });
+          helper = helper.replace('{$hybriddd_fields}', s);
         }
-        let line = jscme.getCursor().line;
-        // if(!jsInsertAtLine) line = 0;
+        if($this.data('insert')=='end'){
+          line = jscme.lastLine();
+          jscme.setCursor({'line':line,'ch':line.length});
+        }
         switch(line){
           case 0:
             let il = jscme.lastLine();

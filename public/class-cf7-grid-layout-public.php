@@ -274,10 +274,19 @@ class Cf7_Grid_Layout_Public {
     }
     wp_register_style( $this->plugin_name, $plugin_dir . "public/css{$pf}/cf7-grid-layout-public.css", $dep, $this->version, 'all' );
 
-    //script registration
     do_action('smart_grid_register_styles',$airplane, $min, $resources, $cf7key, $cf7id);
 
-		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public.js", array( 'jquery','contact-form-7' ), $this->version, true );
+    //script registration
+    //load custom css/js script from theme css folder.
+    // $themepath = get_stylesheet_directory();
+    // $themeuri = get_stylesheet_directory_uri();
+    $dep = array( 'jquery','contact-form-7' );
+
+    // if( !empty($cf7key) && file_exists($themepath.'/js/'.$cf7key.'.js') ){
+    //   $dep[] = $cf7key.'-js';
+    //   wp_register_script( $cf7key.'-js' , $themeuri.'/js/'.$cf7key.'.js', array('jquery', $this->plugin_name), null, true);
+    // }
+		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public.js", $dep, $this->version, true );
 
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
@@ -458,9 +467,7 @@ class Cf7_Grid_Layout_Public {
       wp_enqueue_style( $cf7_key.'-css' , $themeuri.'/css/'.$cf7_key.'.css', $dep, null, 'all');
     }
     if( file_exists($themepath.'/js/'.$cf7_key.'.js') ){
-      $dep = array();
-      if($use_grid_js) $dep =array($this->plugin_name);
-      wp_enqueue_script( $cf7_key.'-js' , $themeuri.'/js/'.$cf7_key.'.js', $dep , null, true);
+      wp_enqueue_script( $cf7_key.'-js', $themeuri.'/js/'.$cf7_key.'.js', array('jquery', $this->plugin_name), null, true);
       do_action_deprecated('smart_grid_register_custom_script', array($cf7_key), '4.6.0', 'cf7sg_enqueue_custom_script-$form_key', __('deprecated action hook','cf7-grid-layout'));
       do_action("cf7sg_enqueue_custom_script-{$cf7_key}",$cf7_key.'-js');
     }

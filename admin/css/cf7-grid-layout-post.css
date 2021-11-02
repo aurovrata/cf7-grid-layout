@@ -76,6 +76,7 @@
 	padding: 5px 8px;
 	border-radius: 3px;
 }
+#js-tags > li.show-events:not(#last-item) li.show-events {display: inline-block;}
 #last-item {
 	display: inline-block;
 	margin-top: 5px;
