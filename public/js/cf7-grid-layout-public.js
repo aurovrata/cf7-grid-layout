@@ -626,7 +626,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           rowStyle.innerText = "#"+id+" .cf7sg-slider-controls > .cf7sg-submit-controls {max-width: calc(100% - "+($prev.outerWidth()+10)+"px)}"
           document.head.appendChild(rowStyle);
           $submit = $('.cf7sg-submit-controls',$control);
-          if($submit.lenth>0){
+          if($submit.length>0){
             isSubmit = true;
             $submit.hide();//shown on the last slide.
           }
