@@ -532,6 +532,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         }
       });
       cf7Forms.not('div.cf7_2_post form.wpcf7-form').each(function(){
+        var $form = $(this);
         $('.cf7sg-dynamic_checkbox', $form).each(function(){
           new HybridDropdown(this, $(this).cf7sgHybridddOptions());
         })
