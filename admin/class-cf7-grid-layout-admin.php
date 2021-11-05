@@ -1646,12 +1646,13 @@ class Cf7_Grid_Layout_Admin {
   }
   /**
   * Setup mailtags or toggles.
-  *
+  * Hooked to 'wpcf7_collect_mail_tags'
   *@since 4.0.0
   *@param string $param text_description
   *@return string text_description
   */
-  public function setup_cf7_mailtags($mailtags = array()){
+  public function setup_cf7_mailtags($mailtags){
+    // debug_msg($mailtags, 'mail tags ');
     // return $mailtags;
     $contact_form = WPCF7_ContactForm::get_current();
     $fields = get_post_meta($contact_form->id(), '_cf7sg_grid_toggled_names', true);

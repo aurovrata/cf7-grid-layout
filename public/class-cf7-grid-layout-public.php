@@ -775,6 +775,7 @@ class Cf7_Grid_Layout_Public {
           break;
       }
     }
+    // debug_msg($data, 'data consolidated');
     //add toggled sections as submitted values.
     $groups = get_post_meta($this->form_id, '_cf7sg_grid_grouped_toggles', true);
     if(!empty($groups)){
@@ -851,12 +852,7 @@ class Cf7_Grid_Layout_Public {
         $tab_origin = $origins[1];
         $max_tabs = isset($_POST[$tab_origin])?$_POST[$tab_origin]:0;
         $values[''] = array(); //init multi-dimensional array
-        // not required since it is set in the for loop below.
-        // if(!empty($toggle) && !$this->is_submitted($toggle)){ //check if submitted, tab<-toggle<-table.
-        //   $values[''][''] =  null;
-        // }else{
-        //   $values[''][''] = $this->get_field_value($field_name,$field_type,$field_tag);
-        // }
+
         for($idx=0;$idx<$max_tabs;$idx++){ //tables in other tabs.
           $max_fields = 0;
           if(0==$idx && isset($_POST[$table_origin])){
@@ -919,6 +915,10 @@ class Cf7_Grid_Layout_Public {
 
       $value = isset($_POST[$field_name]) ? $_POST[$field_name]:'';
 
+      if(function_exists('wpcf7_form_tag_supports') and wpcf7_form_tag_supports( $field_type, 'selectable-values' )){
+        $value = (array) $value;
+      }
+
       if ( WPCF7_USE_PIPE and $pipes instanceof WPCF7_Pipes and ! $pipes->zero() and !in_array( $field_type, array('map','dynamic_select')) ){
         if(is_array($value)){
           $piped = array();
@@ -927,6 +927,15 @@ class Cf7_Grid_Layout_Public {
           }
           $value = $piped;
         }else $value = $pipes->do_pipe($value);
+      }
+
+      if ( $field_tag->has_option( 'free_text' ) and isset( $_POST[$field_name . '_free_text'] ) ){
+        if(is_array($value)){
+          $v = array_pop($value).' '.sanitize_text_field($_POST[$field_name . '_free_text']);
+          $value[] = $v;
+        }else{
+          $value = $value.' '.sanitize_text_field($_POST[$field_name . '_free_text']);
+        }
       }
     }
     return $value;
