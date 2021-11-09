@@ -435,7 +435,7 @@ ul.cf7-sg-tabs-list {
     display: inherit;
     position: absolute;
     right: 0;
-    bottom: 0;
+    bottom: -16px;
     padding: 3px 10px;
     min-width: 195px;
     line-height: 1.2em;

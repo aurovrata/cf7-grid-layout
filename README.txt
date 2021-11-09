@@ -346,6 +346,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 == Changelog ==
 = 4.12.4 =
 * re-introduce default selected options in dynamic list tags.
+* adjust invalid tip position.
 = 4.12.3 =
 * fix free_text cb/radio fields
 = 4.12.2 =
