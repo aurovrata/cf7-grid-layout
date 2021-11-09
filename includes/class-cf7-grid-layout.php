@@ -257,6 +257,9 @@ class Cf7_Grid_Layout {
     $this->loader->add_action( 'cf7sg_save_dynamic_list_form_classes', $plugin_admin, 'save_dynamic_list_form_classes', 5, 3);
     $this->loader->add_action( 'cf7sg_dynamic_tag_manager_taxonomy_source', $plugin_admin, 'add_taxonomy_imagegrid_hook');
     // $this->loader->add_action( 'wpcf7_config_validator_validate', $plugin_admin, 'cf7_form_validation', 10, 1);
+    /** @since 4.12.5 trash bookeeping */
+    $this->loader->add_action( 'trashed_post', $plugin_admin,'form_trashed');
+    $this->loader->add_action( 'untrashed_post', $plugin_admin,'form_untrashed');
 
 	}
 

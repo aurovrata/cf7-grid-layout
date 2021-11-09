@@ -864,9 +864,50 @@ class Cf7_Grid_Layout_Admin {
   */
   public function delete_post($post_id){
     if(get_post_type($post_id) != WPCF7_ContactForm::post_type) return;
-    //remove viwing post.
+    //remove viewing post.
     $preview_id = get_post_meta($post_id, '_cf7sg_form_page',true);
     if(!empty($preview_id)) wp_delete_post($preview_id);
+    /** @since 4.12.5 delete custom css/js files */
+    $p = get_post($post_id);
+    $path = get_stylesheet_directory();
+    if(realpath("$path/js/{$p->post_name}.js")) unlink( "$path/js/{$p->post_name}.js" );
+    if(realpath("$path/css/{$p->post_name}.css")) unlink( "$path/css/{$p->post_name}.css" );
+  }
+  /**
+  * Bookeeping on trashed posts.
+  * hooked to 'trashed_post'
+  *@since 4.12.5
+  *@param String $post_id
+  */
+  public function form_trashed($post_id){
+    if(get_post_type($post_id) != WPCF7_ContactForm::post_type) return;
+    $p = get_post($post_id);
+    $prev = get_post_meta($post_id, '_wp_desired_post_slug', true);
+    $path = get_stylesheet_directory();
+    if(realpath("$path/js/{$prev}.js")){ //rename file
+      rename( "$path/js/{$prev}.js" ,  "$path/js/{$p->post_name}.js" );
+    }
+    if(realpath("$path/css/{$prev}.css")){
+      rename( "$path/css/{$prev}.css" ,  "$path/css/{$p->post_name}.css" );
+    }
+  }
+  /**
+  * Bookeeping on trashed posts.
+  * hooked to 'trashed_post'
+  *@since 4.12.5
+  *@param String $post_id
+  */
+  public function form_untrashed($post_id){
+    if(get_post_type($post_id) != WPCF7_ContactForm::post_type) return;
+    $p = get_post($post_id);
+
+    $path = get_stylesheet_directory();
+    if(realpath("$path/js/{$p->post_name}__trashed.js")){ //rename file
+      rename( "$path/js/{$p->post_name}__trashed.js" ,  "$path/js/{$p->post_name}.js" );
+    }
+    if(realpath("$path/css/{$p->post_name}__trashed.css")){
+      rename( "$path/css/{$p->post_name}__trashed.css" ,  "$path/css/{$p->post_name}.css" );
+    }
   }
   /**
    * Save cf7 post using ajax
@@ -1141,7 +1182,6 @@ class Cf7_Grid_Layout_Admin {
   * Duplicate form.
   *
   *@since 2.3.0
-  *@param string $param text_description
   *@return string text_description
   */
   public function duplicate_cf7_form(){
@@ -1159,13 +1199,14 @@ class Cf7_Grid_Layout_Admin {
         /** @since 4.11 duplicate js/css files */
         $new_key = get_cf7form_key($new_form->id());
         $key = get_cf7form_key($form->id());
-        $js_file = get_stylesheet_directory()."/js/{$key}.js";
+        $path = get_stylesheet_directory();
+        $js_file = "$path/js/{$key}.js";
         if( file_exists($js_file) ){
-          copy($js_file, get_stylesheet_directory()."/js/{$new_key}.js");
+          copy($js_file, "$path/js/{$new_key}.js");
         }
-        $css_file = get_stylesheet_directory()."/css/{$key}.css";
+        $css_file = "$path/css/{$key}.css";
         if( file_exists($css_file) ){
-          copy($css_file, get_stylesheet_directory()."/css/{$new_key}.css");
+          copy($css_file, "$path/css/{$new_key}.css");
         }
         wp_safe_redirect( admin_url( '/post.php?post='.$new_form->id().'&action=edit' ));
         exit;
