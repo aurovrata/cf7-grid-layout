@@ -361,6 +361,7 @@ class CF7SG_Dynamic_list{
     $class = $tag->get_class_option( $class );
 
     $id = $tag->get_id_option();
+    $selected = $tag->get_default_option();
     //attributes to be added to the dropdown select field
     $select_attributes = '';
     //capture any attributes to be added to individual options in dropdpwn list.
@@ -377,7 +378,6 @@ class CF7SG_Dynamic_list{
     $filter_options = false;
     /** @since 4.11 enable branches in nesting lists */
     $branch = ($this->nesting && isset($source['taxonomy']) && is_taxonomy_hierarchical($source['taxonomy']) && $source['tree']) ? array(0):null;
-    $selected='';
     if(!empty($tag->values)){
       if('taxonomy' == $source['source']){
         $options = $this->get_taxonomy_terms($source, $branch, $tag, $cf7_key);
