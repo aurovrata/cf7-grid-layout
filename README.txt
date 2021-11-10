@@ -347,6 +347,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 = 4.12.5 =
 * improve trashing bookkeeping.
 * clean up custom css/js files on form delete.
+* fix filter values from deprecated hooks.
+* fix admin php filter helper hooks in grid fields.
+* fix default label option filter on dynamic list fields.
 = 4.12.4 =
 * re-introduce default selected options in dynamic list tags.
 * adjust invalid tip position.

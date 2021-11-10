@@ -471,7 +471,7 @@ class CF7SG_Dynamic_list{
              * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
              * @since 4.11.0
             */
-            $filter_attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", array(), $post, $tag, $cf7_key);
+            $filter_attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", $filter_attributes, $post, $tag, $cf7_key);
             if(is_array($filter_attributes)){
               if(isset($filter_attributes['class'])){
                 if(!is_array($filter_attributes['class'])) $filter_attributes['class'] = array($filter_attributes['class']);
@@ -525,7 +525,7 @@ class CF7SG_Dynamic_list{
     $attributes = apply_filters_deprecated('cf7sg_dynamic_dropdown_attributes',
      array(array(), $tag->name, $cf7_key),
      '4.11.0',"cf7sg_{$this->tag_id}_attributes");
-    $attributes = apply_filters("cf7sg_{$this->tag_id}_attributes", array(), $tag, $cf7_key);
+    $attributes = apply_filters("cf7sg_{$this->tag_id}_attributes", $attributes, $tag, $cf7_key);
     if(!empty($id)) $attributes['id']=$id;
     $attributes['name']=$tag->name;
 
@@ -544,16 +544,16 @@ class CF7SG_Dynamic_list{
     * @param String $cf7_key  the form unique key.
     * @return String the label for the default value, returning a non-null value with display this as the first option.
     */
-    $default_value = apply_filters_deprecated('cf7sg_dynamic_dropdown_default_value',
+    $default_label = apply_filters_deprecated('cf7sg_dynamic_dropdown_default_value',
       array(
         null,
         $tag->name,
         $cf7_key
       ),'4.11.0', "cf7sg_{$this->tag_id}_default_value");
-    $default_value = apply_filters("cf7sg_{$this->tag_id}_default_value", null, $tag, $cf7_key);
+    $default_label = apply_filters("cf7sg_{$this->tag_id}_default_value", $default_label, $tag, $cf7_key);
 
-    if(!is_null($default_value)){
-     $options['']=array($default_value, array(), array());
+    if(!is_null($default_label)){
+     $options=array_merge(array(''=>array($default_label, array(), array())), $options);
      $selected='';
     }
     $other_classes='';
@@ -643,7 +643,7 @@ class CF7SG_Dynamic_list{
             $tag->name,
             $cf7_key ), '4.11.0', "cf7sg_{$this->tag_id}_options_attributes" );
         /** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
-        $attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", array(), $term, $tag, $cf7_key);
+        $attributes = apply_filters("cf7sg_{$this->tag_id}_options_attributes", $attributes, $term, $tag, $cf7_key);
         if(is_array($attributes)){
           if(isset($attributes['class'])){
             if(!is_array($attributes['class'])) $attributes['class'] = array($attributes['class']);

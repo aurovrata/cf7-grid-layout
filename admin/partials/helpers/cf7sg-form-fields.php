@@ -145,12 +145,12 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $post, $tag, 
 * @param string $cf7_key  the form unique key.
 * @return string the label for the default value, returning a non-null value with display this as the first option.
 */
-function {$field_name_slug}_dynamic_default_option($default, $tag, $cf7_key){
+function {$field_name_slug}_dynamic_default_option($default_label, $tag, $cf7_key){
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
-    return $default;
+    return $default_label;
   }
-  $default = 'Please select an option...';
-  return $default;
+  $default_label = 'Please select an option...';
+  return $default_label;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the default option label.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_select-post-tags <?=$post_my_form_only?>">

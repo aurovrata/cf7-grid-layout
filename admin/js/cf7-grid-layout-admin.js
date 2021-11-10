@@ -1024,7 +1024,6 @@
             case ( match.length > 4 && 'undefined' !== typeof match[4] ) : //match[4] exists.
               source = match[4].split(':');
               source = source[0];
-              helpers[helpers.length] = 'cf7sg-tag-dynamic_list-'+source;
             case match.length > 3:  //lets deal with match[3]
               if(0=== source.length){
                 source="filter";
@@ -1037,8 +1036,6 @@
                     break;
                 }
               }
-              helpers[helpers.length] = 'cf7sg-tag-dynamic_list-'+source;
-
               if(match[3].indexOf('class:tags')>-1){
                 helpers[helpers.length] = 'cf7sg-tag-dynamic_select-tags';
                 if(source.length>0){
@@ -1047,6 +1044,8 @@
               }
               break;
           }
+          helpers[helpers.length] = 'cf7sg-tag-dynamic_list';
+          helpers[helpers.length] = 'cf7sg-tag-dynamic_list-'+source;
           break;
         case 'hidden'==tag: /** @since 3.2.1 fix hidden field class */
           tag+='-input';
@@ -1067,7 +1066,7 @@
         default:
           break;
       }
-      /** @since 3.3.0 add extension classes */
+      /** @since 3.3.0 add extension classes & include 3rd party plugins helper codes */
       if(undefined !== cf7sgCustomHelperModule[tag]){
         let ch = cf7sgCustomHelperModule[tag](search);
         if(Array.isArray(ch.php) && ch.php.length>0) helpers = helpers.concat(ch.php);
@@ -1105,6 +1104,7 @@
     //for each tag get corresponding set of filters.
     let helperUsed = false, jsHelperUsed=false,len = type.length, jlen=0;
     search = '';
+    // console.log(hooks);
     for (let i = 0; i < len; i++) {
       for (let j=0, jlen = hooks[i].length; j<jlen; j++){
         search += 'li.'+hooks[i][j]+',';
