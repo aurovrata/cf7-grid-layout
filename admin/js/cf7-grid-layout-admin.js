@@ -7,7 +7,9 @@
   */
   const offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'],
     columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
-  let $wpcf7Editor,$grid,$rowControl = null;
+  const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\s]*)?\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
+  let cf7TagRgxp, $wpcf7Editor, $grid, $rowControl = null;
+
   //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
   let $pattern = $('<div>').html(cf7grid.preHTML.replace(/class="([\w\s]*)"/,'class="$1[\\s_a-zA-Z0-9-]*"') + '\\s*(\\[.*\\s*\\].*\\s*){0,}\\s*'+cf7grid.postHTML),
     required = cf7grid.requiredHTML.replace('*', '\\*');
@@ -57,7 +59,13 @@
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     $grid = $('#grid-form');
     $rowControl = $('#top-grid-controls');
-
+    /** @since v4.12.6 improved cf7 tag regex pattern. */
+    cf7TagRgxp = [];
+    $('form.tag-generator-panel').each((i,el)=>{
+      if(el.dataset.id) cf7TagRgxp.push(el.dataset.id);
+    });
+    cf7TagRgxp = cf7TagRgxp.join('|');
+    cf7TagRgxp = '\\[(('+cf7TagRgxp+')\\*?)(?:[\\s](.*?))?(?:[\\s](\\/))?\\]';
     /*
     Build grid from existing form------------------------- BUILD UI FORM
     */
@@ -972,11 +980,11 @@
     });
     //reset jshelper.
     $jshelper = $parent.siblings('.js-icon');
-
-    let cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"source:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"source:)[^\[]*)\]/img,
-      search = $this.val(),
-      match = cf7TagRegexp.exec(search),
+    //
+    //kitchen-facilities limit class:cf7sg-hybriddd "slug:category:tree"
+    let search = $this.val(), fMatch, match,
       label='',
+      tagRegex = new RegExp(cf7TagRgxp, 'igm'),
       isRequired = false,
       type = [],
       fields = [],
@@ -985,15 +993,21 @@
       isSubmit = false, hasHidden = false,
       count =0, counth = 0,
       field = '',
-      stopSearch = false, isField =true,
-      classes = $('#grid-col div.cf7-field-type').attr('class'),
-      reqdCl = '';
+      stopSearch = false, isField = false,
+      classes = $('#grid-col div.cf7-field-type').attr('class');
 
-    while (match != null && !stopSearch) {
-      isRequired = false;
+    while ( (match = tagRegex.exec(search)) !== null) {
+      isRequired = (match[2]+'*' === match[1]);
       count++;
-      tag = match[1].replace('*','');
-      field = match[2];
+      tag = match[2];
+      field='';
+      if(match.length>3){
+        fMatch = (new RegExp(cf7FieldRgxp)).exec(match[3]);
+        if(fMatch && fMatch[1]){
+          field = fMatch[1];
+          isField = true;
+        }
+      }
       let helpers = ['cf7sg-tag-all'], jsHelpers = ['cf7sg-tag-all'];
       helpers[helpers.length] = 'cf7sg-tag-'+tag;
       jsHelpers[jsHelpers.length] = 'cf7sg-tag-'+tag;
@@ -1010,43 +1024,6 @@
             $this.val(cf7sc);
           }
           break;
-        case 'acceptance'==tag: //special case with closing tag.
-          stopSearch = true;
-          break;
-        case 'recaptch'==tag:
-        case 'recaptcha'==tag: //special case with closing tag.
-          label='[recaptcha]';
-          stopSearch = true;
-          break;
-        case cf7grid.dynamicTags.indexOf(tag)>=0:
-          let source ='';
-          switch(true){
-            case ( match.length > 4 && 'undefined' !== typeof match[4] ) : //match[4] exists.
-              source = match[4].split(':');
-              source = source[0];
-            case match.length > 3:  //lets deal with match[3]
-              if(0=== source.length){
-                source="filter";
-                switch(true){
-                  case match[3].indexOf("source:post")>0:
-                    source="post";
-                    break;
-                  case match[3].indexOf("slug:")>0:
-                    source="taxonomy";
-                    break;
-                }
-              }
-              if(match[3].indexOf('class:tags')>-1){
-                helpers[helpers.length] = 'cf7sg-tag-dynamic_select-tags';
-                if(source.length>0){
-                  helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source+'-tags';
-                }
-              }
-              break;
-          }
-          helpers[helpers.length] = 'cf7sg-tag-dynamic_list';
-          helpers[helpers.length] = 'cf7sg-tag-dynamic_list-'+source;
-          break;
         case 'hidden'==tag: /** @since 3.2.1 fix hidden field class */
           tag+='-input';
           counth++;
@@ -1056,14 +1033,31 @@
           classes += " conditional-group";
           counth++; //don't count as field.
           break;
-        case '/grou'==tag:
-          isField = false;
-          stopSearch = true;
-          tag = '/group';
-          field='';
-          counth++; //don't count as field.
+        case cf7grid.dynamicTags.indexOf(tag)>=0:
+/*
+kitchen-facilities limit class:cf7sg-hybriddd "slug:category:tree"
+ddcb limit class:cf7sg-hybriddd "slug:category" "data-maxcheck:1"
+posts-dd multiple permalinks class:select2  "source:post:post" "taxonomy:category:paris"
+
+ddcb-filter limit id:test class:some-class class:cf7sg-imagehdd "source:filter"
+ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree"
+*/
+          let source ='';
+          if(fMatch[4]) source = fMatch[5];
+          else if(fMatch[7]) source = 'taxonomy';
+
+          if(match[3].indexOf('class:tags')>-1){
+            helpers[helpers.length] = 'cf7sg-tag-dynamic_select-tags';
+            if(source.length>0){
+              helpers[helpers.length] = 'cf7sg-tag-dynamic_select-'+source+'-tags';
+            }
+          }
+
+          helpers[helpers.length] = 'cf7sg-tag-dynamic_list';
+          helpers[helpers.length] = 'cf7sg-tag-dynamic_list-'+source;
           break;
-        default:
+        default: //tags with no field names nor irrelevant fields.
+          classes += ` ${tag}`;
           break;
       }
       /** @since 3.3.0 add extension classes & include 3rd party plugins helper codes */
@@ -1073,19 +1067,15 @@
         if(Array.isArray(ch.js) && ch.js.length>0) jsHelpers = jsHelpers.concat(ch.js);
       }
       if(isField){
-        type[type.length] = tag;
-        fields[fields.length] = field;
-        hooks[hooks.length] = helpers;
-        jshooks[jshooks.length] = jsHelpers;
+        type.push(tag);
+        fields.push(field);
+        hooks.push(helpers);
+        jshooks.push(jsHelpers);
       }
-      if('*' === match[1][match[1].length -1]){
-        isRequired = true;
-        reqdCl = ' required';
-      }
-      label+='['+tag+(isRequired?'*':'')+' '+field+']'; //disolay label.
-      if(!stopSearch) match = cf7TagRegexp.exec(search); //get the next match.
+
+      label+='['+tag+ (isRequired?'*':'') + (isField?' '+field:match[3])+']'; //disolay label.
     }
-    classes += " "+ type.join(' ') + reqdCl;
+    classes += " "+ type.join(' ') + (isRequired ? ' required':'');
     field = fields.join(' ');
     let $parentColumn = $parent.closest('.columns');
     if($parentColumn.is('[class*="cf7-tags-"]')){
