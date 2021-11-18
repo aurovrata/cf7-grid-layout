@@ -7,7 +7,7 @@
   */
   const offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'],
     columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
-  const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\s]*)?\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
+  const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
   let cf7TagRgxp, $wpcf7Editor, $grid, $rowControl = null;
 
   //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
@@ -61,8 +61,8 @@
     $rowControl = $('#top-grid-controls');
     /** @since v4.12.6 improved cf7 tag regex pattern. */
     cf7TagRgxp = [];
-    $('form.tag-generator-panel').each((i,el)=>{
-      if(el.dataset.id) cf7TagRgxp.push(el.dataset.id);
+    $('form.tag-generator-panel .insert-box input.tag').each((i,el)=>{
+      cf7TagRgxp.push(el.name);
     });
     cf7TagRgxp = cf7TagRgxp.join('|');
     cf7TagRgxp = '\\[(('+cf7TagRgxp+')\\*?)(?:[\\s](.*?))?(?:[\\s](\\/))?\\]';
