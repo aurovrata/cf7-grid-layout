@@ -59,8 +59,8 @@
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     $grid = $('#grid-form');
     $rowControl = $('#top-grid-controls');
-    /** @since v4.12.6 improved cf7 tag regex pattern. */
-    cf7TagRgxp = [];
+    /** @since v5.0 improved cf7 tag regex pattern. */
+    cf7TagRgxp = ['hidden']; //by default no hidden button.
     $('form.tag-generator-panel .insert-box input.tag').each((i,el)=>{
       cf7TagRgxp.push(el.name);
     });
