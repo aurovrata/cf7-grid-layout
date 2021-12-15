@@ -70,7 +70,7 @@
                     if(isset($field['attrs'])) $attributes = $field['attrs'];
                     if(isset($field['html'])) $html = $field['html'];
                   }else{
-                    $val = $s; 
+                    $val = $s;
                     $html = $field;
                   }
                   $pre='';
@@ -300,7 +300,7 @@
 </div>
 <div class="insert-box cf7sg-dynamic-tag-submit">
   <input type="hidden" name="values" value="" />
-  <input type="text" name="<?=$class?>" class="tag code" readonly="readonly" onfocus="this.select()" />
+  <input type="text" name="<?=$tag_id?>" class="tag code" readonly="readonly" onfocus="this.select()" />
 
   <div class="submitbox ">
       <input type="button" class="button button-primary insert-tag" value="<?= esc_attr( __cf7sg( 'Insert Tag' ) ); ?>" />

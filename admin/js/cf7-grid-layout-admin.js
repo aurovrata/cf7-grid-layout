@@ -1043,7 +1043,7 @@ ddcb-filter limit id:test class:some-class class:cf7sg-imagehdd "source:filter"
 ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree"
 */
           let source ='';
-          if(fMatch[4]) source = fMatch[5];
+          if(fMatch[5]) source = fMatch[6];
           else if(fMatch[7]) source = 'taxonomy';
 
           if(match[3].indexOf('class:tags')>-1){
