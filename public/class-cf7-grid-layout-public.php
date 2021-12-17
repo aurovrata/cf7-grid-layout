@@ -913,20 +913,19 @@ class Cf7_Grid_Layout_Public {
     }else{
       $pipes = $field_tag->pipes;
 
-      $value = isset($_POST[$field_name]) ? $_POST[$field_name]:'';
+      $value = $posted = isset($_POST[$field_name]) ? $_POST[$field_name]:'';
 
       if(function_exists('wpcf7_form_tag_supports') and wpcf7_form_tag_supports( $field_type, 'selectable-values' )){
         $value = (array) $value;
       }
 
       if ( WPCF7_USE_PIPE and $pipes instanceof WPCF7_Pipes and ! $pipes->zero() and !in_array( $field_type, array('map','dynamic_select')) ){
-        if(is_array($value)){
-          $piped = array();
-          foreach($value as $v){
-            $piped[] = $pipes->do_pipe($v);
+        if(is_array($posted)){
+          $value = array();
+          foreach($posted as $v){
+            $value[] = $pipes->do_pipe($v);
           }
-          $value = $piped;
-        }else $value = $pipes->do_pipe($value);
+        }else $value = $pipes->do_pipe($posted);
       }
 
       if ( $field_tag->has_option( 'free_text' ) and isset( $_POST[$field_name . '_free_text'] ) ){

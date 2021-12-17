@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitive fields, form custom JavaScript
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.8.1
+Tested up to: 5.8.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
