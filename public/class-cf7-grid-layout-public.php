@@ -1733,7 +1733,10 @@ class Cf7_Grid_Layout_Public {
   public function build_dynamic_select_field( $html, $attrs, $options, $other_attrs, $selected){
     $attributes ='';
     foreach($attrs as $key=>$value){
-      if('name'==$key && isset($other_attrs['multiple'])) $value.='[]';
+      if('name'==$key && isset($other_attrs['multiple'])){
+        $value.='[]';
+        $attributes .= ' multiple';
+      }
       $attributes .= ' '.$key.'="'.$value.'"';
     }
     $html = '<select value="'.$selected.'"'.$attributes.'>'.PHP_EOL;
