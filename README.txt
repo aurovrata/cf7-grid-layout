@@ -346,6 +346,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 == Changelog ==
 = 4.12.6 =
 * fix multiple select on dynamic dropdown fields.
+* fix pipes and _raw_ fields.
 = 4.12.5 =
 * improve trashing bookkeeping.
 * clean up custom css/js files on form delete.
