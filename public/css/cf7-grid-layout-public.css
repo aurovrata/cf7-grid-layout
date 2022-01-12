@@ -203,13 +203,18 @@
 .cf7sg-slider-section .glider{overflow-x: hidden;padding-bottom:10px}
  .cf7sg-container .ui-widget{ font: inherit; font-size:inherit}
  .cf7sg-slider-section .slider-control.slider-prev{float:left}
+ .cf7sg-slider-section .slider-control.slider-prev:dir(rtl){float:right}
  .cf7sg-slider-section .slider-control.slider-next{float:right}
+ .cf7sg-slider-section .slider-control.dashicons-arrow-left-alt:dir(rtl){transform: rotate(180deg)}
+ .cf7sg-slider-section .slider-control.slider-next:dir(rtl){float:left}
+ .cf7sg-slider-section .slider-control.dashicons-arrow-right-alt:dir(rtl){transform: rotate(180deg)}
  .cf7sg-slide-active{z-index: 100;}
  .cf7sg-slider-section .slider-control:hover{cursor: pointer;}
  .glider-slide > .cf7sg-collapsible-title {margin-bottom: 10px;}
  .cf7sg-container .cf7-smart-grid.has-grid .columns .container.glider-slide{padding:0 25px 0 10px}
  .cf7sg-container .slider-control {margin-top: 10px}
  .cf7-smart-grid.has-grid .cf7sg-slider-section input.wpcf7-submit.slider-control {float: right;width: auto}
+ .cf7-smart-grid.has-grid .cf7sg-slider-section input.wpcf7-submit.slider-control:dir(rtl){float:left}
  .glider-dot[data-cf7sg="error"] {background-color: #df8b8b}
  .glider-dot[data-cf7sg="error"]:focus {background-color: #ffb3b3}
  .glider-dot[data-cf7sg="error"].active {background-color: red}
