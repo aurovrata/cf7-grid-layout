@@ -1057,11 +1057,25 @@ class Cf7_Grid_Layout_Public {
     * this bug was reported in the cf7 support forum:
     * https://wordpress.org/support/topic/bug-javascript-disabled-fields-flagged-as-invalid/
     **/
-    $result = new WPCF7_Validation();
 
     //rebuild the default validation result.
-    $cf7form = WPCF7_ContactForm::get_current();
-    $submitted = WPCF7_Submission::get_instance();
+    $cf7form = $submitted = null;
+    if(method_exists('WPCF7_ContactForm','get_current')){ /** @since 4.12.8 */
+      $cf7form = WPCF7_ContactForm::get_current();
+    }else debug_msg('WPCF7_ContactForm::get_current() method no longer available');
+    if(empty($cf7form)) return $result;
+    //check if we have a submission
+    if(method_exists('WPCF7_Submission','get_instance')){
+      $submitted = WPCF7_Submission::get_instance();
+    }else debug_msg('WPCF7_Submission::get_instance() method no longer available');
+    if(empty($submitted)) return $result;
+    //check if we have a validation object constructor.
+    if(class_exists(WPCF7_Validation)){
+      $result = new WPCF7_Validation();
+    }else{
+      debug_msg('new WPCF7_Validation() constructor no longer available');
+      return $result;
+    }
     $data = $submitted->get_posted_data();
     $tag_types = array(); //store all form tags, including cloned tags for array fields.
 
