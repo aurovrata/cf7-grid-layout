@@ -1070,7 +1070,7 @@ class Cf7_Grid_Layout_Public {
     }else debug_msg('WPCF7_Submission::get_instance() method no longer available');
     if(empty($submitted)) return $result;
     //check if we have a validation object constructor.
-    if(class_exists(WPCF7_Validation)){
+    if(class_exists('WPCF7_Validation')){
       $result = new WPCF7_Validation();
     }else{
       debug_msg('new WPCF7_Validation() constructor no longer available');

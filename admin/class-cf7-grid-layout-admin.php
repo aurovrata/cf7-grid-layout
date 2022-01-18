@@ -1742,12 +1742,11 @@ class Cf7_Grid_Layout_Admin {
         global $wpdb;
         $post_type = $this->cf7_post_type();
         $result = $wpdb->get_col("SELECT pm.meta_value FROM {$wpdb->postmeta} as pm
-          INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id LEFT JOIN {$wpdb->postmeta} as pmf on pmf.post_id = pm.post_id
+          INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id INNER JOIN {$wpdb->postmeta} as pmf on pmf.post_id = pm.post_id
           WHERE pmf.meta_key = '_cf7sg_managed_form'
           AND pmf.meta_value = 1
-          WHERE p.post_type = '{$post_type}'
+          AND p.post_type = '{$post_type}'
           AND pm.meta_key = '_cf7sg_version'
-          ORDER BY pm.meta_key
         ");
         if(!empty($result) and version_compare($result[0], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
       }
