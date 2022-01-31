@@ -15,7 +15,7 @@
 ?>
 <?php do_action( 'wpcf7_admin_warnings', 'wpcf7', wpcf7_current_action(), null ); ?>
 <?php do_action( 'wpcf7_admin_notices' , 'wpcf7', wpcf7_current_action(), null ); ?>
-<?php //do_action( 'wpcf7_admin_menu' ); //is this needed?  Fires bulk validation on cf7 update?> 
+<?php //do_action( 'wpcf7_admin_menu' ); //is this needed?  Fires bulk validation on cf7 update?>
 <?php
 if('add' == $screen->action) do_action( 'load-contact_page_wpcf7-new' );
 else do_action( 'load-toplevel_page_wpcf7' );

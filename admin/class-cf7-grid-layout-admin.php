@@ -560,9 +560,8 @@ class Cf7_Grid_Layout_Admin {
   public function register_dynamic_dropdown_taxonomy(){
     //register the dynamic dropdown taxonomies.
     $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-    //debug_msg($dropdowns);
     $created = array();
-    foreach($dropdowns as $post_lists){
+    foreach($dropdowns as $post_id=>$post_lists){
       foreach($post_lists as $slug=>$taxonomy){
         if(!isset($created[$slug])){
           if(is_array($taxonomy)){
@@ -670,13 +669,14 @@ class Cf7_Grid_Layout_Admin {
         }
         $created_taxonomies[$taxonomy['slug']] = $taxonomy;
       }
-      //debug_msg($created_taxonomies);
+      // debug_msg($created_taxonomies, 'created ');
       $post_lists = $saved_lists = $system_list = array();
 
       $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
       foreach($dropdowns as $id => $lists){
         $saved_lists = array_merge($saved_lists, $lists);
       }
+      // debug_msg($dynamic_fields, 'dynamic ');
       foreach($dynamic_fields as $tag){
         if(isset($tag['values'])){
           $slug='';
@@ -701,12 +701,12 @@ class Cf7_Grid_Layout_Admin {
           //$post_lists[$slug] = null;
         }
       }
+      // debug_msg($post_lists,' post lists ');
       //list of taxonomy to register.
       //unset the old value.
-      unset($dropdowns[$cf7_post_id]);
+      if(isset($dropdowns[$cf7_post_id])) unset($dropdowns[$cf7_post_id]);
       //unshift new value to top of array.
-      $dropdowns = array($cf7_post_id => $post_lists) + $dropdowns ;
-
+      $dropdowns[$cf7_post_id] = $post_lists;
       update_option('_cf7sg_dynamic_dropdown_taxonomy', $dropdowns);
       //list of system taxonomy to register
       $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
