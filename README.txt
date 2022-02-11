@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitive fields, form custom JavaScript
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 5.8.3
+Tested up to: 5.9.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -344,6 +344,8 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
+= 4.12.12 =
+* change jquery ui cdn lib from cloudflare to ajax.googleapis.com.
 = 4.12.11 =
 * fix new taxonomy creation for dynamic fields.
 = 4.12.10 =

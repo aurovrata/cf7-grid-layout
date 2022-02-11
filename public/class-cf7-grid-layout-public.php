@@ -211,7 +211,7 @@ class Cf7_Grid_Layout_Public {
     // tell WordPress to load the Smoothness theme from Google CDN
     if( !$airplane ){
       $protocol = is_ssl() ? 'https' : 'http';
-      $url_path = "$protocol://cdnjs.cloudflare.com/ajax/libs/jqueryui/{$ui_ver}/";
+      $url_path = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui_ver}/";
       wp_register_style('cf7-jquery-ui', $url_path . 'themes/smoothness/jquery-ui.min.css', array(), $ui_ver , 'all');
       wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui_ver, 'all');
       wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui_ver, 'all');
