@@ -594,7 +594,7 @@ class CF7SG_Dynamic_list{
         $tag->name,
         $cf7_key
       ), '4.11.0', "cf7sg_{$this->tag_id}_taxonomy_query" );
-    $taxonomy_query = apply_filters("cf7sg_{$this->tag_id}_taxonomy_query", $taxonomy_query, $branch, $tag, $cf7_key);
+    $taxonomy_query = apply_filters("cf7sg_{$this->tag_id}_taxonomy_query", $taxonomy_query, $branch, $tag, $cf7_key, $branch);
     //check the WP version
     if(empty($taxonomy_query)) return array(); //nothing more to be done here.
     global $wp_version;

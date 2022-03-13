@@ -53,22 +53,25 @@ function {$field_name_slug}_dynamic_option_label($label, $term, $tag, $cf7_key){
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option label.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_list-taxonomy">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_taxonomy_query','{$field_name_slug}_taxonomy_query',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_taxonomy_query','{$field_name_slug}_taxonomy_query',10,4);
 /**
 * Filter dropdown taxonomy query parameter.
 * (see https://developer.wordpress.org/reference/classes/wp_term_query/__construct/)
 * @param array $args array of taxonomy query attributes.
 * @param WPCF7_FormTag $tag the field being populated.
 * @param string $cf7_key  the form unique key.
+* @param array $branch  an array of term IDs representing the current taxonomy branch being queried, the last term is the query parent value.
 * @return array of query attributes.
 */
-function {$field_name_slug}_taxonomy_query($args, $tag, $cf7_key){
+function {$field_name_slug}_taxonomy_query($args, $tag, $cf7_key, $branch){
   //these are the label users will see when the dropdown opens.
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
     return $args;
   }
   //use only the child terms of a parent.
-  $args['parent']=0;
+  if($args['parent']!=0) $args=null;
+  // or if you want to list only the 2nd level of your tree,
+  if(count($args)>2) $args=null;
   return $args;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the taxonomy query.','cf7-grid-layout')?>
 </li>
