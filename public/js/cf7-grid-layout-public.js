@@ -696,7 +696,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
               if(isSubmit) $submit.show();
               break;
           }
-          if(scrollUp && cf7sg.slider_auto_scroll) $(window).scrollTop($slider.offset().top-35);
+          if(scrollUp && cf7sg[id].slider_auto_scroll) $(window).scrollTop($slider.offset().top-35);
 
           $(e.target).find('.glider-slide.active').trigger({
             type:'sgSlideChange',
