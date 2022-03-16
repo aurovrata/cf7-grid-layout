@@ -449,13 +449,13 @@ textarea.grid-input {
     display: none;
     position: absolute;
     top: -22px;
-    left: 20px;
+    /* left: 20px; */
     background: #323232;
     color: white;
     padding: 2px 5px;
     border-radius: 3px;
     font-weight: bold;
-    min-width: 78px;
+    min-width: 95px;
 }
 #grid-form .helper-popup .helper:hover .copy-helper {
     display: inline-block;

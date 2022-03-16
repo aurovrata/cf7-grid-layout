@@ -202,6 +202,8 @@
       $('.cf7sg-accordion-rows.columns, .cf7sg-slider-section.columns', $form).each(function(){
         let $col = $(this),
           $control = $col.children('.grid-column').addClass('enable-grouping'); //enable checkboxes.
+          /** @since 4.13.0 display auto scroll helper code */
+        $('.php-icon',$control).show().attr('data-search', 'li.cf7sg-slider');
         if($col.is('.cf7sg-accordion-rows')){
           $('.accordion-rows:input', $control).prop('checked', true);
         }else{ //is .cf7sg-slider-section
@@ -693,12 +695,16 @@
           $target.fireGridUpdate('add','slider-section');
           //hide toggle checkbox.
           $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).hide().next('span').hide();
+          /** @since 4.13.0 display auto scroll helper code */
+          $target.closest('.grid-controls').siblings('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
         }else{
           $target.closest('.columns').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit data-dots");
           $target.closest('.container').removeClass('cf7sg-slider');
           $target.fireGridUpdate('remove','slider-section');
           //show toggle checkbox.
           $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).show().next('span').show();
+          /** @since 4.13.0 display auto scroll helper code */
+          $target.closest('.grid-controls').siblings('.php-icon').hide().attr('data-search', '');
         }
       }
       /*

@@ -208,7 +208,7 @@ $cf7_key = $post->post_name;
     <span class="dashicons dashicons-edit column-control"></span>
     <span class="dashicons dashicons-no-alt column-control"></span>
     <span class="dashicons dashicons-plus column-control"></span>
-    <span class="dashicons php-icon column-control" style="display:none;"></span>
+    <span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
     <span class="js-icon column-control" style="display:none;"></span>
     <span class="dashicons dashicons-trash column-control"></span>
     <span class="dashicons dashicons-move column-control"></span>

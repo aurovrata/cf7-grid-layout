@@ -288,3 +288,19 @@ function {$field_name_slug}_mail_tag_value($replaced, $name, $cf7_key){
   return $replaced;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the mail tag value.','cf7-grid-layout')?>
 </li>
+<li class="cf7sg-slider">
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_slider_auto_scroll','{$form_key}_slider_auto_scroll',10,2);
+/**
+* Disable the auto scroll back to the top of the slider form.
+* @since 4.13.0
+* @param boolean $scroll boolean flag, default true.
+* @param string $cf7_key unique form key identifier.
+* @return boolean a boolean value.
+*/
+function {$form_key}_slider_auto_scroll($scroll, $cf7_key){
+  //check to make sure you have the right field in the right form.
+  if('{$form_key}'!==$cf7_key) return $scroll;
+  $scroll = false; //disable auto scroll.
+  return $scroll;
+}" href="javascript:void(0);"><?=__('Disable','cf7-grid-layout')?></a> <?=__('the auto scroll on slide change.','cf7-grid-layout')?>
+</li>
