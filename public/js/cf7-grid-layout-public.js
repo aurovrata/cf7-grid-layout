@@ -844,6 +844,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     */
     $('div.cf7-smart-grid.has-grid .wpcf7-submit').each(function(){
       var $submit = $(this), fid=$submit.closest('div.cf7-smart-grid').attr('id');
+      if('undefined' == typeof cf7sg[fid].submit_disabled) return;
       $submit.after('<span class="cf7sg-popup display-none">'+cf7sg[fid].submit_disabled+'</span>').parent().addClass('cf7sg-popup-box');
     });
     /** enable max rows.
