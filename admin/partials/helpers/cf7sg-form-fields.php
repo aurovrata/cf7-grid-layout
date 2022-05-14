@@ -15,7 +15,7 @@ if(is_plugin_active( 'post-my-contact-form-7/cf7-2-post.php' )){
 }
 ?>
 <li class="cf7sg-tag-dynamic_list-post">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_post_query','{$field_name_slug}_dynamic_list',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_list_post_query','{$field_name_slug}_dynamic_list',10,3);
 /**
 * Filter post query for dynamic dropdown options.
 * @param array $args an arra of query terms.
