@@ -37,6 +37,7 @@ class Cf7_Grid_Layout_Admin {
     'plugins.php'=>'',
     //'options-general.php'=>'page=',
   );
+  public const METAKEYS = array('_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form','_cf7sg_script_classes', '_cf7sg_version', '_cf7sg_grid_toggled_names', '_cf7sg_grid_tabbed_toggles', '_cf7sg_grid_grouped_toggles', '_cf7sg_has_toggles', '_cf7sg_disable_jstags_comments', '_cf7sg_page_redirect', '_cf7sg_cache_redirect_data','_cf7sg_form_page');
   /**
   * The ID of this plugin.
   *
@@ -1163,16 +1164,13 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/cf7-default-js.php';
   }
   /**
-  *
-  *
+  * Called by duplicate_cf7_form.
   *@since 2.3.0
   *@param string $new_form_id new form id to duplciate to.
   *@param string $form_id form id to duplciate.
   */
-  public function duplicate_form_properties($new_form_id, $form_id){
-    //these properties will be preceded with an '_' by the cf7 plugin before being duplicated.
-    $properties = array('_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form','_cf7sg_script_classes', '_cf7sg_version', '_cf7sg_grid_toggled_names', '_cf7sg_grid_tabbed_toggles', '_cf7sg_grid_grouped_toggles', '_cf7sg_has_toggles', '_cf7sg_disable_jstags_comments', '_cf7sg_page_redirect', '_cf7sg_cache_redirect_data');
-    $properties = apply_filters('cf7sg_duplicate_form_properties', $properties);
+  public function duplicate_form_properties($form_id, $new_form_id){
+    $properties = apply_filters('cf7sg_duplicate_form_properties', Cf7_Grid_Layout_Admin::METAKEYS);
     foreach($properties as $field){
       $value = get_post_meta($form_id, $field, true);
       if(!empty($value)) update_post_meta($new_form_id,$field, $value);
@@ -1180,7 +1178,7 @@ class Cf7_Grid_Layout_Admin {
   }
   /**
   * Duplicate form.
-  *
+  * Hooked to 'admin_init', looks out for URL action parameter set to cf7copy.
   *@since 2.3.0
   *@return string text_description
   */
@@ -1195,7 +1193,7 @@ class Cf7_Grid_Layout_Admin {
       if ( $form = wpcf7_contact_form( $_GET['post'] ) ) {
   			$new_form = $form->copy();
   			$new_form->save();
-        $this->duplicate_form_properties($new_form->id(), $_GET['post']);
+        self::duplicate_form_properties($_GET['post'],$new_form->id());
         /** @since 4.11 duplicate js/css files */
         $new_key = get_cf7form_key($new_form->id());
         $key = get_cf7form_key($form->id());
