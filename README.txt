@@ -349,6 +349,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * add 'cf7sg_slider_auto_scroll' to disable auto scroll on slides.
 * fix 'cf7sg_dynamic_list_post_query' filter for post query lists.
 * fix submit_disabled in public js.
+* replace wp_localize_script for block-themes.
 = 4.12.13 =
 * fix dynamic list field filters for taxonomy source.
 = 4.12.12 =

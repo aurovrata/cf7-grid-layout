@@ -287,7 +287,6 @@ class Cf7_Grid_Layout_Public {
     //   wp_register_script( $cf7key.'-js' , $themeuri.'/js/'.$cf7key.'.js', array('jquery', $this->plugin_name), null, true);
     // }
 		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public.js", $dep, $this->version, true );
-
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
 
@@ -457,7 +456,11 @@ class Cf7_Grid_Layout_Public {
       ));
       //cf7sg script & style.
       wp_enqueue_script($this->plugin_name);
-      wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
+      //wp_add_inline_script( $this->plugin_name, 'cf7sg', json_encode($this->localise_script()), 'before' );
+      $localise = json_encode($this->localise_script());
+      add_action('wp_footer', function() use ($localise){
+        printf('<script type="text/javascript">var cf7sg = %s</script>', $localise);
+      });
     }
     //load custom css/js script from theme css folder.
     $themepath = get_stylesheet_directory();
