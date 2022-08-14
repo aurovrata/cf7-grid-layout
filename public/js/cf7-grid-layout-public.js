@@ -874,6 +874,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
       cf7.querySelectorAll( '.wpcf7-response-output' ).forEach(div=> {
         div.classList.remove('wpcf7-response-output');
         div.classList.add('cf7sg-response-output');
+        div.innerHTML = '<div class="wpcf7-response-output"></div>'
       });
       // ['wpcf7mailsent', 'wpcf7mailfailed', ]
       this.addEventListener('wpcf7submit', function(e){
@@ -883,7 +884,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
             if(msg.indexOf('cf7sg->redirect:')==0){
               location = msg.replace('cf7sg->redirect:', '');
               return false; //exit forEach.
-      			}else div.innerHTML = msg;
+      			}else div.innerHTML = `${msg}<div class="wpcf7-response-output"></div>`;
       		})
         }
       })

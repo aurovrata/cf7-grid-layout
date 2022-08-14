@@ -55,7 +55,7 @@
 /* image grid */
 .cf7sg-imagehdd .hybriddd-wrapper.hybriddd-grid{
 	--hybriddd-gap:2px;
-  width:calc( calc(var(--hybriddd-item, max-content) + var(--hybriddd-gap)) * var(--hybriddd-col));
+  width:calc( calc( var(--hybriddd-item, max-content) + var(--hybriddd-gap) ) * var(--hybriddd-col) );
 }
 .cf7sg-imagehdd.hybriddd-none .hybriddd-option label,
 .cf7sg-imagegrid.hybriddd-none .hybriddd-option label{width:auto};
@@ -252,6 +252,9 @@ ul.cf7-sg-tabs-list li[data-cf7sg="error"] {border: #d90000 solid 2px;}
 .container.cf7sg-collapsible + .container > .row:first-child > .columns.full > .container.cf7-sg-table {
     margin-top: 10px;
 }
+
+.wpcf7 form .wpcf7-response-output { display: none !important;}
+
 .wpcf7 form .cf7sg-response-output {
 	margin: 2em 0.5em 1em;
 	padding: 0.2em 1em;
