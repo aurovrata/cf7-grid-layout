@@ -316,6 +316,15 @@ In some server configuration, accessing cloudflare resources results in 522 erro
 
 `add_filter('cf7sg_use_local_select2', '___return_true');`
 
+= 21. On mobile screens the form collapses into a single row, can this be change? =
+The current cut-off is 480 screen width in px.  You can filter this value with the `cf7sg_responsive_width` hook,
+
+`
+add_filter('cf7sg_responsive_width', 'change_mobile_cutoff',10,2);
+function change_mobile_cutoff($px, $form_key){
+  return 320;
+}`
+
 == Screenshots ==
 
 1. (1) This plugin replaces the CF7 post table page and post edit pages with WordPress core post edit and post pages.  This means that other plugins that build on WordPress standards for custom admin dashboard functionality should now play nicely with CF7.  One out-of-the-box improvement is the ability to customise the CF7 form table columns being displayed.
