@@ -139,7 +139,7 @@ class WPCF7_SWV_RequiredRule extends WPCF7_SWV_Rule {
 }
 ```
 
-To add a custom schema rule, 
+To add a custom schema rules for repetitive fields, one could clone the original field rule and insert it into the schema validation process as follows,
 
 ```php
 add_action('wpcf7_swv_create_schema', 'add_addtional_swv_schemas', PHP_INT_MAX , 2);
@@ -163,8 +163,18 @@ function add_addtional_swv_schemas($schema, $contact_form){
       $new_rule  = $rule->to_array();
       $new_rule['field'] = $new_tag['name'];
       $new_rule = new $rule_class($new_rule); //cloned rule object for new field
-      $schema->add_rule($new_rules); //add it to the schema to process by cf7 validation.
+      $schema->add_rule($new_rule); //add it to the schema to process by cf7 validation.
     }
   }
 }
 ```
+however, the above **DOES NOT WORK** because when a field is found to be invalid, the CF7 plugin again scans the form to retrieve the field's tag object (why???),
+contact-form-7/includes/validation.php line 32,
+
+```php
+	$tags = wpcf7_scan_form_tags( array( 'name' => trim( $context ) ) );
+	$tag = $tags ? new WPCF7_FormTag( $tags[0] ) : null;
+```
+which results in a `null` tag and therefore the function simply exits without insert the invalid message into the submission results.
+
+The only way to solve this is to hook the `wpcf7_validate` filter and rebuild the submission results object as before, but in addition to also run the entire schema validation process again in order to validate repetitive fields. An inefficient process typical of CF7 plugin extensions due to a lack to of vision from the CF7 author for extensibility and reusability.

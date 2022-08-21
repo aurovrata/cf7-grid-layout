@@ -153,7 +153,7 @@ class Cf7_Grid_Layout_Public {
     return !empty( array_intersect( array_keys(self::$array_toggled_panels[$this->form_id]), $toggle) );
   }
   /**
-  * Check if a toggled section was used and its fields submitted.
+  * Check if a toggled section is within a tabbed section.
   *
   *@since 4.0.0
   *@param string $toggle toogle id
@@ -798,7 +798,7 @@ class Cf7_Grid_Layout_Public {
     return $data;
   }
   /**
-  * new function to consolidate submitted data for improved handling of optional toggled fields as well as special fields such as files and checkboxes in tabbed sectoins.
+  * new function to consolidate submitted data for improved handling of optional toggled fields as well as special fields such as files and checkboxes in tabbed sections.
   *
   *@since 2.5.0
   *@param array $field_tag a cf7 form field tag which is part of tabs or table grid section.
@@ -840,7 +840,7 @@ class Cf7_Grid_Layout_Public {
 
         for($idx=1;$idx<$max_fields;$idx++){
           $fid=$index_suffix.$idx;
-          $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$fid, $toggle) : $toggle;
+          if(isset($toggle)) $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$fid, $toggle) : $toggle;
           if(!empty($toggle) && !$this->is_submitted($toggle_id)){ //check if submitted.
             $values[$fid] = null;
           }else{
@@ -868,7 +868,7 @@ class Cf7_Grid_Layout_Public {
           for($jdx=0;$jdx<$max_fields;$jdx++){
             $row_suffix= ($jdx>0)?'_row-'.$jdx:'';
             $fid = $tab_suffix.$row_suffix;
-            $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$tab_suffix,$toggle) : $toggle;
+            if(isset($toggle)) $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$tab_suffix,$toggle) : $toggle;
 
             if(!empty($toggle) && !$this->is_submitted($toggle_id)){ //check if submitted, tab<-toggle<-table.
               $values[$tab_suffix][$row_suffix] = null;
@@ -1041,7 +1041,106 @@ class Cf7_Grid_Layout_Public {
     }
     return $result;
   }
+  /**
+   * New validation for CF7 5.6 onwards hooked to 'wpcf7_swv_create_schema'
+   * this function will look for repetitive fields that need to be added to the validation schema,
+   * it will also remove any rules in the schema
+   * @param WPCF7_SWV_Schema $schema itself a WPCF7_SWV_Rule
+   * @param WPCF7_ContactForm $form form object.
+  */
+  function add_addtional_swv_schemas($schema, $form){
+    // debug_msg($schema, 'schema...');
+    //setup the form id
+    $this->form_id = $form->id();
+    $submitted = null;
+    //check if we have a submission
+    if(method_exists('WPCF7_Submission','get_instance')){
+      $submitted = WPCF7_Submission::get_instance();
+    }else debug_msg('WPCF7_Submission::get_instance() method no longer available');
+    if(empty($submitted)) return;
+    //get the consolidated submitted data.
+    $data = $submitted->get_posted_data();
+    // 1. run through the tags that are tabbed/tabled or both, 
+    // 2. ignore those that are toggled and unused.
+    // 3. check for hidden WPCF conditional fields in tabs/tables/toggles
+    $tags = $form->scan_form_tags();
+    //cf7 plugin is unable to handle dynamic fields (added or removed).
+    $added_tags = array();
+    $removed_tags = array(); 
+    foreach ( $tags as $tag ) {
+      //verify if data was submitted for this field
+      if(!isset($data[$tag['name']])){ //it was removed by some plugin.
+        $removed_tags[] = $tag['name'];
+        continue; 
+      }
+			// $type = $tag['type'];
+		  //check to see if this field is an array (table or tab or both).
+      // $tag_types[$tag['name']] = $tag['type'];
+      $field_type = self::field_type( $tag['name'], $this->form_id );
+      // the $data array is passed by reference and will be consolidated.
+      $values =  $data[$tag['name']];
+      $added_tags[$tag['name']] = array();
 
+      switch($field_type){
+        case 'tab':
+        case 'table':
+          foreach($values as $index=>$value){
+            if(empty($index)) continue;
+            if(!isset($value)){  //if no value then skip validation.
+              $removed_tags[] = $tag['name'].$index;
+            }else{//additional tag
+              $sg_field_tag = clone $tag;
+              $sg_field_tag['name'] = $tag['name'].$index;
+              $added_tags[$tag['name']][] = $sg_field_tag;
+            }
+          }
+          break;
+        case 'both':
+          foreach($values as $index=>$value){
+            if(empty($index)) continue;
+            foreach($value as $row=>$row_value){
+              if( !isset($row_value) ) {  //if no value then skip validation.
+                $removed_tags[] = $tag['name'].$index.$row;
+              } else { //additional tag
+                $sg_field_tag = clone $tag;
+                $sg_field_tag['name'] = $tag['name'].$index.$row;
+                $added_tags[$tag['name']][] = $sg_field_tag;
+              }
+            }
+          }
+          break;
+      }
+    }
+    $rules = array();
+    foreach($schema->rules() as $r){ //$rule is a WPCF7_SWV_Rule object.
+      $rule = $r->to_array();
+      if( !isset($rules[$rule['field']])) $rules[$rule['field']] = array(); //can have multiple rules.
+      $rules[$rule['field']][] = $r;
+    }
+    if(!class_exists('WPCF7_SWV_Schema') ){
+      debug_msg('CF7SG PUBLIC: Cannot find class WPCF7_SWV_Schema, quitting validation');
+      return;
+    }
+    // $params = $schema->to_array();
+    // unset($params['rules']);
+    // $schema = new WPCF7_SWV_Schema($params);
+    foreach($rules as $field=>$rule_set){
+      //check if field is repeated
+      if(isset($added_tags[$field])){
+        foreach($added_tags[$field] as $tag){
+          foreach($rule_set as $r) {
+            $rule_class = get_class($r);
+            $new_rule  = $r->to_array();
+            $new_rule['field'] = $tag['name'];
+            $new_rule = new $rule_class($new_rule); //cloned rule object for new field
+            $schema->add_rule($new_rule); //add it to the schema to process by cf7 validation.
+          }
+        }
+        }
+    }
+    // debug_msg($schema, 'new schema...');
+
+  }
   /**
    * Final validation with all values submitted for inter dependent validation
    * Hooked to filter 'wpcf7_validate', sets up the final $result object
