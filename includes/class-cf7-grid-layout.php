@@ -297,7 +297,7 @@ class Cf7_Grid_Layout {
     //filter cf7 validation
 		$this->loader->add_action('wpcf7_swv_create_schema', $plugin_public, 'add_addtional_swv_schemas', PHP_INT_MAX , 2);
 
-    // $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 1, 1);
+    $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 1, 1);
     //benchmark validation
     $this->loader->add_filter( 'wpcf7_validate_dynamic_select*', $plugin_public, 'validate_required', 30, 2 );
     $this->loader->add_filter( 'wpcf7_validate_benchmark*', $plugin_public, 'validate_required', 30, 2 );

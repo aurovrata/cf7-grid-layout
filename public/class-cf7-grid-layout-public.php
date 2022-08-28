@@ -1045,14 +1045,16 @@ class Cf7_Grid_Layout_Public {
    * New validation for CF7 5.6 onwards hooked to 'wpcf7_swv_create_schema'
    * this function will look for repetitive fields that need to be added to the validation schema,
    * it will also remove any rules in the schema
+   * @since 4.14.0
    * @param WPCF7_SWV_Schema $schema itself a WPCF7_SWV_Rule
    * @param WPCF7_ContactForm $form form object.
   */
-  function add_addtional_swv_schemas($schema, $form){
+  function validate_swv_schemas($schema, $form){
     // debug_msg($schema, 'schema...');
     //setup the form id
     $this->form_id = $form->id();
     $submitted = null;
+    $cloned_schemas=array();
     //check if we have a submission
     if(method_exists('WPCF7_Submission','get_instance')){
       $submitted = WPCF7_Submission::get_instance();
@@ -1068,11 +1070,7 @@ class Cf7_Grid_Layout_Public {
     $added_tags = array();
     $removed_tags = array(); 
     foreach ( $tags as $tag ) {
-      //verify if data was submitted for this field
-      if(!isset($data[$tag['name']])){ //it was removed by some plugin.
-        $removed_tags[] = $tag['name'];
-        continue; 
-      }
+      
 			// $type = $tag['type'];
 		  //check to see if this field is an array (table or tab or both).
       // $tag_types[$tag['name']] = $tag['type'];
@@ -1080,7 +1078,7 @@ class Cf7_Grid_Layout_Public {
       // the $data array is passed by reference and will be consolidated.
       $values =  $data[$tag['name']];
       $added_tags[$tag['name']] = array();
-
+      // $toggle = $this->get_toggle($tag['name']);
       switch($field_type){
         case 'tab':
         case 'table':
@@ -1109,6 +1107,12 @@ class Cf7_Grid_Layout_Public {
             }
           }
           break;
+        default:
+          //verify if data was submitted for this field
+          if(!isset($data[$tag['name']])){ //it was removed by some plugin.
+            $removed_tags[] = $tag['name'];
+          }
+          break;
       }
     }
     $rules = array();
@@ -1133,13 +1137,19 @@ class Cf7_Grid_Layout_Public {
             $new_rule  = $r->to_array();
             $new_rule['field'] = $tag['name'];
             $new_rule = new $rule_class($new_rule); //cloned rule object for new field
-            $schema->add_rule($new_rule); //add it to the schema to process by cf7 validation.
+            $cloned_schemas[$tag['name']] = $new_rule; //add it to the schema to process by cf7 validation.
           }
         }
-        }
+      }
     }
     // debug_msg($schema, 'new schema...');
-
+    //validate the extra schemas once validation by CF7 is done.
+    add_filter('wpcf7_validate', function($result) use ($cloned_schemas,$added_tags, $removed_tags){
+      //validate the extra schema
+      //for each addtional tag, call apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag); for other plugins to add extra validation.
+      //remove the errors for removed tags
+      //call cf7sg general validation filter
+    },1,1);//call it early.
   }
   /**
    * Final validation with all values submitted for inter dependent validation
@@ -1150,6 +1160,9 @@ class Cf7_Grid_Layout_Public {
    * @return WPCF7_Validation  validation result
   **/
   public function filter_wpcf7_validate($result){
+    /** @since 4.14.0 check cf7 version to maintain backward compatibility */
+    if(defined('WPCF7_VERSION') && version_compare(WPCF7_VERSION,'5.6','>=')) return $result;
+
     /** @since 3.3.3 fix for captch field validation*/
     $invalids = $result->get_invalid_fields();
     /**

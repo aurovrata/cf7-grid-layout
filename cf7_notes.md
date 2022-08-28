@@ -110,7 +110,7 @@ private function validate() {
 **NOTE**: The `WPCF7_Validation $result` object already contains the invalid tags by the time the `wpcf7_validate_{$type}` filter is fired.  In previous versions (<5.5.x), the filter was hooked by field validating functions and validation was taking place at that point.  This no longer works, except for existing plugin extensions  that have yet to implement this new validation procedure.
 
 
-## A Adding extra schemas rules to the validation process
+## Adding extra schemas rules to the validation process
 
 In order to validate additional fields that are dynamically added by a user on the front-end such as repetitive field plugins, additional schema rules need to be added for each additional fields.
 
@@ -178,3 +178,10 @@ contact-form-7/includes/validation.php line 32,
 which results in a `null` tag and therefore the function simply exits without insert the invalid message into the submission results.
 
 The only way to solve this is to hook the `wpcf7_validate` filter and rebuild the submission results object as before, but in addition to also run the entire schema validation process again in order to validate repetitive fields. An inefficient process typical of CF7 plugin extensions due to a lack to of vision from the CF7 author for extensibility and reusability.
+
+# Solution for validating extra fields.
+
+- Hook `wpcf7_swv_create_schema` as late as possible and clone all `WPCF7_SWV_Rule` required to validated the extra fields.
+- Register an anonymous function on `wpcf7_validate` to use these closed rules.
+- add extra field invalid messages to the `$result` object.
+- remove any invalid field message that are in unused toggles.
