@@ -11,13 +11,21 @@
   let cf7TagRgxp, $wpcf7Editor, $grid, $rowControl = null;
 
   //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
-  let $pattern = $('<div>').html(cf7grid.preHTML.replace(/class="([\w\s]*)"/,'class="$1[\\s_a-zA-Z0-9-]*"') + '\\s*(\\[.*\\s*\\].*\\s*){0,}\\s*'+cf7grid.postHTML),
-    required = cf7grid.requiredHTML.replace('*', '\\*');
+  let $pattern = $('<div>').html('' +
+    cf7grid.preHTML + 
+    '\\s*(\\[.*\\s*\\].*\\s*){0,}\\s*' +
+    cf7grid.postHTML),
+    required = cf7grid.requiredHTML.replace('*', '\\*'),
+    fieldPattern='';
   // console.log('r:'+required);
-  $pattern.find('label').html('((\\s*.*)('+required+'){1}|(\\s*.*))');
-  $pattern.find('.info-tip').text('(.*\\s*)');
+  $pattern.find('label').html('((.*)('+required+'){1}|(.*))');
+  $pattern.find('.info-tip').text('(\\s*.*\\s*)');
+
+  fieldPattern = $pattern.html().replace(/class="([\w\s]*)"/,'class="$1[\\s_a-zA-Z0-9-]*"');
+  fieldPattern = fieldPattern.replace(/\sfor="([\w]*)"/,'(?:\\sfor="$1[\\w-]*")?');
+  fieldPattern.replace('><','>\\s?<')
   // console.log('p:'+$pattern.html().replace('><','>\\s?<'));
-  const templateRegex = new RegExp($pattern.html().replace('><','>\\s?<'), 'ig');
+  const templateRegex = new RegExp(fieldPattern, 'ig');
   let seekTemplate = false, cssTemplate = 'div.field',
     $template = $('<div id="cf7sg-dummy">').append(cf7grid.preHTML+cf7grid.postHTML);
   $template = $template.children();
@@ -119,7 +127,7 @@
         if($toggle.length>0){
           $toggle = $toggle.clone();
         }
-        //swap out HTML title element for UI title elemen with input fields.
+        //swap out HTML title element for UI title element with input fields.
         let $title = $this.children('.cf7sg-collapsible-title');
         $title.children().remove();
         $title.prepend( $('.cf7sg-collapsible-title',$('#grid-collapsible')).html());
@@ -261,7 +269,7 @@
       });
       return isGrid;
     } //end buildGridForm()
-    /** @since 3.4.0 enalbe accordion class for containers having multiple collapsible rows */
+    /** @since 3.4.0 enable accordion class for containers having multiple collapsible rows */
     $grid.on('cf7sg-update', function(e, update){
       let $container = $(e.target);
       if(undefined !== update.add){

@@ -1171,8 +1171,12 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     }
     //add input name as class to parent span
     $(':input', $row).each(function(){
-      var $input = $(this),
-        $span = $input.closest('span.wpcf7-form-control-wrap');
+      var $input = $(this), 
+        iid = $input.attr('id'),
+        $span = $input.closest('span.wpcf7-form-control-wrap'),
+        isRadio = $input.is('[type="radio"]') || $input.is('[type="checkbox"]');
+
+      if(!iid && isRadio) iid = $span.attr('id');
       //enable inputs
       $input.prop('disabled', false);
       var name = $input.attr('name').replace('_cf7sgcloned_',''); /** @since 4.4 */
@@ -1185,7 +1189,15 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
       $span.removeClass(name).addClass(name+'_row-'+rowIdx);
       /** @since 4.14 fix SWV validation in CF7 v5.6 */
       if($span.data('name')) $span.attr('data-name', name+'_row-'+rowIdx);
-
+      if(iid){ 
+        if(isRadio){
+          $span.attr('id',iid+'_row-'+rowIdx);
+        }else{
+          $input.attr('id', iid+'_row-'+rowIdx);
+          var $l = $span.siblings('label');
+          if($l.attr('for') === iid) $l.attr('for',iid+'_row-'+rowIdx);
+        }
+      }
       //finally enabled the nice select dropdown.
       if($input.is('select.ui-select') && initSelect){
         $input.niceSelect();
@@ -1280,12 +1292,14 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     $newPanel.attr('id', panelId);
     //add input name as class to parent span
     $(':input', $newPanel).each(function(){
-      var $this = $(this),
-        isCloneRow = $this.is('.cf7-sg-cloned-table-row :input'),
-        name = $this.attr('name'),
+      var $input = $(this),
+        iid = $input.attr('id'),
+        $span = $input.closest('span.wpcf7-form-control-wrap'),
+        isCloneRow = $input.is('.cf7-sg-cloned-table-row :input'),
+        name = $input.attr('name'),
         suffix = '';
       //enable inputs
-      if(!isCloneRow) $this.prop('disabled', false);
+      if(!isCloneRow) $input.prop('disabled', false);
       if(name.endsWith('[]')){
         name = name.replace('[]','');
         suffix = '[]';
@@ -1295,18 +1309,25 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         fields in additional rows in tables will be suffixed with .row-[0-9]+
         fields in additional rows in tables that are in additional tabs will be suffixed with .tab-[0-9]+.row-[0-9]+
       */
-      $this.attr('name', name+'_tab-'+(tabCount-1)+suffix);//.addClass('cf7sg-'+name);
-      $this.closest('span.wpcf7-form-control-wrap').removeClass(name).addClass(name + '_tab-' + (tabCount-1));
+      $input.attr('name', name+'_tab-'+(tabCount-1)+suffix);//.addClass('cf7sg-'+name);
+      $span.removeClass(name).addClass(name + '_tab-' + (tabCount-1));
+      /** @since 4.14 fix SWV validation in CF7 v5.6 */
+      if($span.data('name')) $span.attr('data-name', name+'_tab-'+(tabCount-1));
+      if(iid){ 
+        $input.attr('id', iid+'_tab-'+(tabCount-1));
+        var $l = $span.siblings('label');
+        if($l.attr('for') === iid) $l.attr('for',iid+'_tab-'+(tabCount-1));
+      }
       //enable nice select on the dropdown.
-      if(!isCloneRow && $this.is('select.ui-select') && initSelect){
-        $this.niceSelect();
+      if(!isCloneRow && $input.is('select.ui-select') && initSelect){
+        $input.niceSelect();
       }
-      if(!isCloneRow && $this.is('select.nice-select') && initSelect){
-        $this.niceSelect();
+      if(!isCloneRow && $input.is('select.nice-select') && initSelect){
+        $input.niceSelect();
       }
-      if(!isCloneRow && $this.is('select.select2') && initSelect){
-        $this.select2($this.cf7sgSelect2Options());
-        $this.trigger('sgSelect2');
+      if(!isCloneRow && $input.is('select.select2') && initSelect){
+        $input.select2($input.cf7sgSelect2Options());
+        $input.trigger('sgSelect2');
       }
     });
     /** @since 4.12 enable hybrid fields in new tab */

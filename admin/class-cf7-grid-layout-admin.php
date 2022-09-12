@@ -406,7 +406,7 @@ class Cf7_Grid_Layout_Admin {
           $this->plugin_name,
           'cf7grid',
           array(
-            'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', '<div class="field"><label></label>', $post->post_name),
+            'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', '<div class="field"><label for=""></label>', $post->post_name),
 						'postHTML' => apply_filters('cf7sg_post_cf7_field_html', '<p class="info-tip"></p></div>', $post->post_name),
 						'requiredHTML' => apply_filters('cf7sg_required_cf7_field_html', '<em>*</em>', $post->post_name),
 						'ui' => apply_filters('cf7sg_grid_ui', true, $post->post_name),
