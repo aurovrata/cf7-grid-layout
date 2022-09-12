@@ -192,6 +192,7 @@
   .cf7sg-container .ui-widget-header {
      background: transparent;
  }
+ .ui-state-active {color: inherit;}
  .cf7sg-container {	line-height: 1.2;}
  .cf7sg-container a.ui-button {
 	color: inherit;
@@ -440,14 +441,14 @@ ul.cf7-sg-tabs-list {
     margin-left: -5px;
 }
 .cf7-smart-grid.has-grid div.field span.wpcf7-not-valid-tip {
-    display: inherit;
+    /* display: inherit;
     position: absolute;
     right: 0;
-    bottom: -16px;
+    bottom: -16px; */
     padding: 3px 10px;
     min-width: 195px;
     line-height: 1.2em;
-    z-index: 7777;
+    /* z-index: 7777; */
 }
 .cf7-smart-grid.has-grid .field input:focus + span.wpcf7-not-valid-tip,
 .cf7-smart-grid.has-grid .field select:focus + span.wpcf7-not-valid-tip,

@@ -295,7 +295,7 @@ class Cf7_Grid_Layout {
     //setup individual tag filers
     $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_grid_values', 5, 1 );
     //filter cf7 validation
-		$this->loader->add_action('wpcf7_swv_create_schema', $plugin_public, 'add_addtional_swv_schemas', PHP_INT_MAX , 2);
+		$this->loader->add_action('wpcf7_swv_create_schema', $plugin_public, 'validate_swv_schemas', PHP_INT_MAX , 2);
 
     $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 1, 1);
     //benchmark validation

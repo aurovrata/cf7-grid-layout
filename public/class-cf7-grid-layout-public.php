@@ -1069,6 +1069,7 @@ class Cf7_Grid_Layout_Public {
     //cf7 plugin is unable to handle dynamic fields (added or removed).
     $added_tags = array();
     $removed_tags = array(); 
+    $valid_tags = array();
     foreach ( $tags as $tag ) {
       
 			// $type = $tag['type'];
@@ -1076,12 +1077,17 @@ class Cf7_Grid_Layout_Public {
       // $tag_types[$tag['name']] = $tag['type'];
       $field_type = self::field_type( $tag['name'], $this->form_id );
       // the $data array is passed by reference and will be consolidated.
+      if(!isset($data[$tag['name']])){ /** @todo verify tabbed toggled fields */
+        $removed_tags[] = $tag['name'];
+        continue; //skip this tag.
+      }
+      $valid_tags[$tag['name']] = $tag; //used for recreting WPCF7_Validation object.
       $values =  $data[$tag['name']];
-      $added_tags[$tag['name']] = array();
       // $toggle = $this->get_toggle($tag['name']);
       switch($field_type){
         case 'tab':
         case 'table':
+          $added_tags[$tag['name']] = array();
           foreach($values as $index=>$value){
             if(empty($index)) continue;
             if(!isset($value)){  //if no value then skip validation.
@@ -1094,6 +1100,7 @@ class Cf7_Grid_Layout_Public {
           }
           break;
         case 'both':
+          $added_tags[$tag['name']] = array();
           foreach($values as $index=>$value){
             if(empty($index)) continue;
             foreach($value as $row=>$row_value){
@@ -1128,27 +1135,57 @@ class Cf7_Grid_Layout_Public {
     // $params = $schema->to_array();
     // unset($params['rules']);
     // $schema = new WPCF7_SWV_Schema($params);
-    foreach($rules as $field=>$rule_set){
-      //check if field is repeated
-      if(isset($added_tags[$field])){
-        foreach($added_tags[$field] as $tag){
-          foreach($rule_set as $r) {
-            $rule_class = get_class($r);
-            $new_rule  = $r->to_array();
-            $new_rule['field'] = $tag['name'];
-            $new_rule = new $rule_class($new_rule); //cloned rule object for new field
-            $cloned_schemas[$tag['name']] = $new_rule; //add it to the schema to process by cf7 validation.
+    
+    // debug_msg($schema, 'new schema...');
+    //validate the extra schemas once validation by CF7 is done.
+    add_filter('wpcf7_validate', function($result) use ($rules,$added_tags, $removed_tags){
+      // debug_msg($added_tags, 'added tags ');
+      //remove the errors for removed tags
+      $invalids = $result->get_invalid_fields();
+      $suppress_err = false;
+      foreach($removed_tags as $field){
+        if(isset($invalids[$field])){ 
+          unset($invalids[$field]);
+          $suppress_err=true;
+        }
+      }
+      if($suppress_err){
+        $result = new WPCF7_Validation();
+        foreach($invalids as $field=>$err){
+          if(isset($valid_tags[$field])) $result->invalidate($tag, $err);
+        }
+      }
+      //validate the extra schema.
+      //$field = original field name which has cloned $tags.
+      foreach($added_tags as $field=>$tags){
+        if(!isset($rules[$field])){
+          debug_msg("CF7SG ERROR: Unable to find rule set for field {$field}");
+          continue;
+        }
+        foreach($tags as $tag){
+          foreach($rules[$field] as $rule){
+            $rule_class = get_class($rule);
+            $_rule  = $rule->to_array();
+            $_rule['field'] = $tag['name'];
+            $_rule = new $rule_class($_rule); //cloned rule object for new field.
+            $v = $_rule->validate(
+                array(
+                'text' => true,
+                'file' => false,
+                'field' => array(),
+              )
+            ); //validate 
+            if(is_wp_error($v)){ 
+              $result->invalidate($tag, $v);
+              $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $tag); //for other plugins to add extra validation.
+              debug_msg("found an error {$tag['name']}");
+              continue 2; //move to the next tag.
+            }
           }
         }
       }
-    }
-    // debug_msg($schema, 'new schema...');
-    //validate the extra schemas once validation by CF7 is done.
-    add_filter('wpcf7_validate', function($result) use ($cloned_schemas,$added_tags, $removed_tags){
-      //validate the extra schema
-      //for each addtional tag, call apply_filters("wpcf7_validate_{$tag['type']}", $result, $sg_field_tag); for other plugins to add extra validation.
-      //remove the errors for removed tags
-      //call cf7sg general validation filter
+      debug_msg($result->get_invalid_fields(), 'invalids ');
+      return $result;
     },1,1);//call it early.
   }
   /**

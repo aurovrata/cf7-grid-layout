@@ -879,6 +879,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
       // ['wpcf7mailsent', 'wpcf7mailfailed', ]
       this.addEventListener('wpcf7submit', function(e){
         if(e.detail.apiResponse && e.detail.apiResponse.message){
+          // console.log(e.detail);
           cf7.querySelectorAll( '.cf7sg-response-output' ).forEach( div => {
             let msg = e.detail.apiResponse.message;
             if(msg.indexOf('cf7sg->redirect:')==0){
@@ -1170,7 +1171,8 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     }
     //add input name as class to parent span
     $(':input', $row).each(function(){
-      var $input = $(this);
+      var $input = $(this),
+        $span = $input.closest('span.wpcf7-form-control-wrap');
       //enable inputs
       $input.prop('disabled', false);
       var name = $input.attr('name').replace('_cf7sgcloned_',''); /** @since 4.4 */
@@ -1180,7 +1182,10 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         suffix = '[]';
       }
       $input.attr('name', name+'_row-'+rowIdx+suffix);//.addClass('cf7sg-'+name);
-      $input.closest('span.wpcf7-form-control-wrap').removeClass(name).addClass(name+'_row-'+rowIdx);
+      $span.removeClass(name).addClass(name+'_row-'+rowIdx);
+      /** @since 4.14 fix SWV validation in CF7 v5.6 */
+      if($span.data('name')) $span.attr('data-name', name+'_row-'+rowIdx);
+
       //finally enabled the nice select dropdown.
       if($input.is('select.ui-select') && initSelect){
         $input.niceSelect();
