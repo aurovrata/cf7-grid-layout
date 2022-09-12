@@ -356,6 +356,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 = 4.14.0 =
 * rewrite validation for CF7 v5.6.
 * fix `wpcf7-response-output` console error.
+* enable for attr to labels.
 = 4.13.0 =
 * fix textarea admn js.
 * add 'cf7sg_slider_auto_scroll' to disable auto scroll on slides.
