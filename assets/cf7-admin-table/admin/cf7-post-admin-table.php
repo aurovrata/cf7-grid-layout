@@ -20,15 +20,15 @@
  * @subpackage Cf7_Polylang/admin
  * @author     Aurovrata V. <vrata@syllogic.in>
  */
-if(!class_exists('CF7SG_WP_Post_Table')){
+if(!class_exists('Cf7_WP_Post_Table')){
 
-  class CF7SG_WP_Post_Table {
+  class Cf7_WP_Post_Table {
     /**
   	 * A CF7 list table object.
   	 *
   	 * @since    1.1.0
   	 * @access   private
-  	 * @var      CF7SG_WP_Post_Table    $singleton   cf7 admin list table object.
+  	 * @var      Cf7_WP_Post_Table    $singleton   cf7 admin list table object.
   	 */
   	private static $singleton;
     /**
@@ -595,12 +595,12 @@ if(!class_exists('CF7SG_WP_Post_Table')){
   } //end class
   if(!function_exists('get_cf7form_id')){
     function get_cf7form_id($cf7_key){
-    	return CF7SG_WP_Post_Table::form_id($cf7_key);
+    	return Cf7_WP_Post_Table::form_id($cf7_key);
     }
   }
   if(!function_exists('get_cf7form_key')){
     function get_cf7form_key($cf7_id){
-    	return CF7SG_WP_Post_Table::form_key($cf7_id);
+    	return Cf7_WP_Post_Table::form_key($cf7_id);
     }
   }
 }
