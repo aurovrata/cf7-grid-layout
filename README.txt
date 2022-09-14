@@ -354,9 +354,10 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
 = 4.14.0 =
-* rewrite validation for CF7 v5.6.
+* rewrite validation for CF7 v5.6 SWV validation.
 * fix `wpcf7-response-output` console error.
 * enable for attr to labels.
+* cleanup admin form UI style.
 = 4.13.0 =
 * fix textarea admn js.
 * add 'cf7sg_slider_auto_scroll' to disable auto scroll on slides.

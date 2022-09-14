@@ -480,6 +480,7 @@
           //remove single cell UI content
           $parentColumn.children('.grid-column').children('textarea.grid-input').remove();
           $parentColumn.children('.grid-column').children('div.cf7-field-inner').remove();
+          $parentColumn.children('.grid-column').addClass('cf7sg-container-column');
           //finally insert a new row with the content moved to the new row.
           $parentColumn.insertNewRow($content.remove());
         }

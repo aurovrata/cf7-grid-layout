@@ -1071,45 +1071,52 @@ class Cf7_Grid_Layout_Public {
     $removed_tags = array(); 
     $valid_tags = array();
     foreach ( $tags as $tag ) {
-      
-			// $type = $tag['type'];
 		  //check to see if this field is an array (table or tab or both).
-      // $tag_types[$tag['name']] = $tag['type'];
       $field_type = self::field_type( $tag['name'], $this->form_id );
       // the $data array is passed by reference and will be consolidated.
       if(!isset($data[$tag['name']])){ /** @todo verify tabbed toggled fields */
         $removed_tags[] = $tag['name'];
         continue; //skip this tag.
       }
-      $valid_tags[$tag['name']] = $tag; //used for recreting WPCF7_Validation object.
+
       $values =  $data[$tag['name']];
-      // $toggle = $this->get_toggle($tag['name']);
       switch($field_type){
         case 'tab':
         case 'table':
           $added_tags[$tag['name']] = array();
+          $valid_tags[$tag['name']]=array();
           foreach($values as $index=>$value){
-            if(empty($index)) continue;
             if(!isset($value)){  //if no value then skip validation.
               $removed_tags[] = $tag['name'].$index;
             }else{//additional tag
+              if(empty($index)){ 
+                $valid_tags[$tag['name']][$index] = $tag;
+                continue; //first tab or row will be taken care by cf7 plugin.
+              }
               $sg_field_tag = clone $tag;
               $sg_field_tag['name'] = $tag['name'].$index;
-              $added_tags[$tag['name']][] = $sg_field_tag;
+              $added_tags[$tag['name']][] = array($sg_field_tag,$index);
+              $valid_tags[$tag['name']][$index] = $sg_field_tag; //used for recreating WPCF7_Validation object.
             }
           }
           break;
         case 'both':
           $added_tags[$tag['name']] = array();
+          $valid_tags[$tag['name']] = array();
           foreach($values as $index=>$value){
-            if(empty($index)) continue;
+          $valid_tags[$tag['name']][$index]=array();
             foreach($value as $row=>$row_value){
               if( !isset($row_value) ) {  //if no value then skip validation.
                 $removed_tags[] = $tag['name'].$index.$row;
               } else { //additional tag
+                if(empty($index) && empty($row)){ 
+                  $valid_tags[$tag['name']][$index][$row]=$tag;
+                  continue; //first row will be taken care by cf7 plugin.
+                }
                 $sg_field_tag = clone $tag;
                 $sg_field_tag['name'] = $tag['name'].$index.$row;
-                $added_tags[$tag['name']][] = $sg_field_tag;
+                $added_tags[$tag['name']][] = array($sg_field_tag,$index,$row);
+                $valid_tags[$tag['name']][$index][$row]=$sg_field_tag;
               }
             }
           }
@@ -1119,6 +1126,8 @@ class Cf7_Grid_Layout_Public {
           if(!isset($data[$tag['name']])){ //it was removed by some plugin.
             $removed_tags[] = $tag['name'];
           }
+          $valid_tags[$tag['name']] = $tag; //used for recreating WPCF7_Validation object.
+          
           break;
       }
     }
@@ -1138,55 +1147,92 @@ class Cf7_Grid_Layout_Public {
     
     // debug_msg($schema, 'new schema...');
     //validate the extra schemas once validation by CF7 is done.
-    add_filter('wpcf7_validate', function($result) use ($rules,$added_tags, $removed_tags){
-      // debug_msg($added_tags, 'added tags ');
+    add_filter('wpcf7_validate', function($result) use ($rules,$added_tags, $removed_tags, $valid_tags){
+
       //remove the errors for removed tags
       $invalids = $result->get_invalid_fields();
-      $suppress_err = false;
+      $validation = array();
+      foreach($invalids as $f=>$err){
+        $validation[$f]=$err['reason'];
+      }
       foreach($removed_tags as $field){
-        if(isset($invalids[$field])){ 
-          unset($invalids[$field]);
-          $suppress_err=true;
-        }
+        if(isset($validation[$field])) unset($validation[$field]);
       }
-      if($suppress_err){
-        $result = new WPCF7_Validation();
-        foreach($invalids as $field=>$err){
-          if(isset($valid_tags[$field])) $result->invalidate($tag, $err);
-        }
-      }
+      
       //validate the extra schema.
       //$field = original field name which has cloned $tags.
-      foreach($added_tags as $field=>$tags){
-        if(!isset($rules[$field])){
-          debug_msg("CF7SG ERROR: Unable to find rule set for field {$field}");
-          continue;
-        }
-        foreach($tags as $tag){
-          foreach($rules[$field] as $rule){
-            $rule_class = get_class($rule);
-            $_rule  = $rule->to_array();
-            $_rule['field'] = $tag['name'];
-            $_rule = new $rule_class($_rule); //cloned rule object for new field.
-            $v = $_rule->validate(
-                array(
-                'text' => true,
-                'file' => false,
-                'field' => array(),
-              )
-            ); //validate 
-            if(is_wp_error($v)){ 
-              $result->invalidate($tag, $v);
-              $result = apply_filters("wpcf7_validate_{$tag['type']}", $result, $tag); //for other plugins to add extra validation.
-              debug_msg("found an error {$tag['name']}");
-              continue 2; //move to the next tag.
+      foreach($added_tags as $field=>$tagset){
+        
+        foreach($tagset as $tag_array){
+          $tag = $tag_array[0];
+          $err='';
+          if(!isset($rules[$field])){ //maybe non-swv field, try with a filter
+            $result = apply_filters("wpcf7_validate_{$tag['type']}", new WPCF7_Validation(), $tag); //for other plugins to add extra validation.
+            if(!$result->is_valid()){
+              $invalids = $result->get_invalid_fields();
+              $err = $invalids[$tag['name']]['reason'];
             }
+          }else{
+            foreach($rules[$field] as $rule){
+              $rule_class = get_class($rule);
+              $_rule  = $rule->to_array();
+              $_rule['field'] = $tag['name'];
+              $_rule = new $rule_class($_rule); //cloned rule object for new field.
+              $v = $_rule->validate(
+                  array(
+                  'text' => true,
+                  'file' => false,
+                  'field' => array(),
+                )
+              ); //validate 
+              if(is_wp_error($v)){ 
+                $err = $v->get_error_message();
+                break 1; //move to the next tag.
+              }
+            }
+          }
+          if(!empty($err)){
+            $validation[$tag['name']] = $err;
+            //   $validation[$tag['name']] = array(
+            //   'field'=>$field,
+            //   'tag'=>$tag,
+            //   'err'=>$err,
+            //   '1d'=>$tag_array[1],
+            //   '2d'=>count($tag_array)>2 ? $tag_array[2]:null
+            // );
           }
         }
       }
-      debug_msg($result->get_invalid_fields(), 'invalids ');
-      return $result;
+      //reformat validation for  filter/final WPCF7_Validation object.
+      $f_validation= array();
+      foreach($valid_tags as $field=>$tag){
+        switch(true){
+          case is_object($tag):
+            if(isset($validation[$tag['name']])){
+              $f_validation[$field] = $validation[$tag['name']];
+            }
+            break;
+          case is_array($tag):
+            $f_validation[$field] = $this->repeat_field_err_messages($tag, $validation);
+            break;
+        }
+      }
+      // debug_msg($validation, 'validation ');
+      // debug_msg($f_validation, 'f validation ');
+      // debug_msg($valid_tags, 'valid tags ');
+      return $this->filter_validation($f_validation, $valid_tags, null);
     },1,1);//call it early.
+  }
+  private function repeat_field_err_messages($tags, $validation, $d=1){
+    $f_validation=array();
+    foreach($tags as $idx=>$tag){
+      if(!is_object($tag)){ 
+        $f_validation[$idx] = $this->repeat_field_err_messages($tag, $validation, 2);
+      }else if(isset($validation[$tag['name']])){
+        $f_validation[$idx] = $validation[$tag['name']];
+      }
+    }
+    return $f_validation;
   }
   /**
    * Final validation with all values submitted for inter dependent validation
@@ -1344,59 +1390,83 @@ class Cf7_Grid_Layout_Public {
           break;
       }
     }
+    return $this->filter_validation($validation, $validated, $submission);
+  }
+  /**
+   * Filter validation using entire submitted data set.
+   * @since 1.0.0
+   * @param Array $validation array of field=>error msg 
+   * @param Array $validated array of field=>tags 
+   * @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs) null values are fields which have not been disabled and not submitted such as those in toggled sections.
+   * @return WPCF7_Validation validation object 
+   */
+  private function filter_validation($validation, $validated, $submission){
     $form_key = '';
     if(isset($_POST['_wpcf7_key'])){
       $form_key = $_POST['_wpcf7_key'];
     }
-    // debug_msg($data, 'data ');
+    
     //allow for more complex validation.
     if(has_filter('cf7sg_validate_submission')){
+      if(is_null($submission)){
+        if(method_exists('WPCF7_Submission','get_instance')){
+          $submitted = WPCF7_Submission::get_instance();
+          $submission = $submitted->get_posted_data();
+        }
+      }
       /**
-      * filter to validate the entire submission and check interdependency of fields
+      * filter to validate the entire submission and check interdependency of fields.  The $validation array are error messages coming from the default CF7 validation process.
+      * However, you can unset those messages if your cross-data validation logic demands it, or you can add additional errors to fields that have passed the default validation.
+      * For repeat fields, you need to follow the same array contruct at the $submission data array, namely
+      *  - $field => <error message> for single fields.
+      *  - $field => array( $idx => <error message> ) for tabled or tabbed fields. ($idx for first row/tab is empty string); $idx for subsequent table rows 2,3.. is _row-1, _row-2...; and $idx for tabs 2,3... is _tab-1, _tab-2, ...  
+      *  - $field => array( $tab_idx => array( $row_idx => <error message> ) ) for tabbed tabled fields.
+      * NOTE: failing to follow this structure in your filtered validation array will result in spurious messages on the form fields.
       * @since 1.0.0
-      * @param Array  $validation an array of $field_name=>$validaton_message.
-      * @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs) null values are fields which have not been disabled and not submitted such as those in toggled sections.
+      * @param Array  $validation an array of $field_name=>$msg for single fields, $field_name=>array( $idx=>$msg ) for table or tabbed fields, $field_name=>array( $tab_idx=> array( $row_idx => $msg ) ) for tabbed tabled fields.
+      * @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs using the same array construct at the $validation array) null values are fields which have not been enabled and not submitted such as those in toggled sections.
       * @param String  $form_key  unique form key to identify current form.
       * @param int  $form_id  cf7 form post ID.
-      * @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
+      * @return Array  an array of errors messages, $field_name => $error_msg for single values, $field_name=>array( $idx=>$msg ) for table or tabbed fields, $field_name=>array( $tab_idx=> array( $row_idx => $msg ) ) for tabbed tabled fields.
       */
       $validation = apply_filters('cf7sg_validate_submission', $validation, $submission, $form_key, $_POST['_wpcf7']);
+    }
+    //now that the user has filtered the validatoin, reset the in cf7 inalids.
+    $result = new WPCF7_Validation();
 
-      //now that the user has filtered the validatoin, reset the in cf7 inalids.
-      $result = new WPCF7_Validation();
+    if(!empty($validation)){
+      // debug_msg($validation, 'validation ');
 
-      if(!empty($validation)){
-        foreach($validation as $name=>$msg){
-          switch(true){
-            case is_array($msg):
-              foreach($msg as $idx=>$value){
-                switch(true){
-                  case is_array($value):
-                    foreach($value as $rdx=>$message){
-                      if(empty($message)) continue;
-                      $result->invalidate($validated[$name][$idx][$rdx], $message);
-                    }
-                    break;
-                  case is_array($validated[$name][$idx]): //error, expecting array..
-                    debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
-                    break;
-                  case empty($value): //no message, just continue.
-                    break;
-                  default:
-                    $result->invalidate($validated[$name][$idx], $value);
-                    break;
-                }
+      foreach($validation as $name=>$msg){
+        switch(true){
+          case is_array($msg):
+            foreach($msg as $idx=>$value){
+              switch(true){
+                case is_array($value):
+                  foreach($value as $rdx=>$message){
+                    if(empty($message)) continue;
+                    $result->invalidate($validated[$name][$idx][$rdx], $message);
+                  }
+                  break;
+                case is_array($validated[$name][$idx]): //error, expecting array..
+                  debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
+                  break;
+                case empty($value): //no message, just continue.
+                  break;
+                default:
+                  $result->invalidate($validated[$name][$idx], $value);
+                  break;
               }
-              break;
-            case is_array($validated[$name]): //error, we should have an array.
-              debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
-              break;
-            case empty($msg): //no message, just continue.
-              break;
-            default:
-              $result->invalidate($validated[$name], $msg);
-              break;
-          }
+            }
+            break;
+          case is_array($validated[$name]): //error, we should have an array.
+            debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
+            break;
+          case empty($msg): //no message, just continue.
+            break;
+          default:
+            $result->invalidate($validated[$name], $msg);
+            break;
         }
       }
     }

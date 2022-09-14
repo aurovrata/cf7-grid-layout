@@ -353,11 +353,15 @@ textarea.grid-input {
 	font-weight: lighter;
     vertical-align: inherit;
 }
+.dashicons.column-control:hover::before, .row-controls .dashicons:hover::before {color:#0065aa}
 #grid-form .grid-column {
 	background-color: transparent;
 }
 #grid-form .grid-column:hover {
-    background-color: #ddd;
+    /* background-color: #ededed; */
+}
+#grid-form .columns:hover > .grid-column > .cf7-field-inner {
+	background: #e4e4e4;
 }
 #grid-form .container,
 #grid-form .table-row-button input  {
@@ -382,8 +386,8 @@ textarea.grid-input {
    clear:both;
  }
  #grid-form .columns {
-  border-top: solid 2px #ddd;
-  border-bottom: solid 2px #ddd;
+  /* border-top: solid 2px #ddd; */
+  /* border-bottom: solid 2px #ddd; */
  }
 #grid-form .columns.column-selected {
   border-bottom-color: #0055d4;
@@ -671,7 +675,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 #grid-form  .cf7-field-inner {
   padding: 0px 10px;
-  background: #ededed;
+  background: transparent;
   margin: 0;
   position: relative;
 }
@@ -697,7 +701,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 #grid-form p.content:hover {
     cursor: pointer;
-    color: blue;
+    color: #0065aa;
 }
 #grid-form .cf7-field-inner input,
 #grid-form .cf7-field-inner textarea {
