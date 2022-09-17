@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitive fields, form custom JavaScript
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 6.0
+Tested up to: 6.0.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -354,7 +354,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
 = 4.14.0 =
-* rewrite validation for CF7 v5.6 SWV validation.
+* *Important update* rewrite validation for CF7 v5.6 SWV validation - this impacts field validation, *test your form validation*!
 * fix `wpcf7-response-output` console error.
 * enable for attr to labels.
 * cleanup admin form UI style.

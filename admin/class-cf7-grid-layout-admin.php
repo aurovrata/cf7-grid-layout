@@ -136,16 +136,17 @@ class Cf7_Grid_Layout_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles($page) {
-
-    if( in_array($page, array('toplevel_page_wpcf7', 'contact_page_wpcf7-new')) ) return;
-
-    $screen = get_current_screen();
-    $plugin_dir = plugin_dir_url( __DIR__ );
-    if('plugins'==$screen->base){
+    if('plugins.php'==$page){
       /** @since 4.1.0 */
-      wp_enqueue_style('plugin-update',$plugin_dir . 'admin/css/cf7sg-plugin-update.css', array(), $this->version, 'all');
+      wp_enqueue_style('plugin-update', plugin_dir_url( __DIR__ ) . 'admin/css/cf7sg-plugin-update.css', array(), $this->version, 'all');
       return;
     }
+
+    if( in_array($page, array('toplevel_page_wpcf7', 'contact_page_wpcf7-new')) ) return;
+    
+    $screen = get_current_screen();
+    $plugin_dir = plugin_dir_url( __DIR__ );
+    
     if (empty($screen) || $this->cf7_post_type() != $screen->post_type){
       return;
     }
@@ -191,8 +192,7 @@ class Cf7_Grid_Layout_Admin {
       wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array( 'jquery' ), $this->version, true );
       return;
     }
-    $screen = get_current_screen();
-    if('plugins'==$screen->base){
+    if('plugins.php'==$page){
       /** @since 4.1.0 */
         wp_enqueue_script('cf7sg-plugin-update', $plugin_dir . 'admin/js/cf7sg-plugin-update.js', array('jquery'));
         /* translators: message displayed when succesful update to validate new version */
@@ -203,6 +203,7 @@ class Cf7_Grid_Layout_Admin {
         ));
       return;
     }
+    $screen = get_current_screen();
     if ($this->cf7_post_type() != $screen->post_type){
       return;
     }
@@ -486,6 +487,24 @@ class Cf7_Grid_Layout_Admin {
       $submenu['wpcf7'] = $arr;
       return $menu_ord;
   }
+  /**
+	 * Register plugin.php styling page to warn users on major update.
+   * hooked on 'after_plugin_row_cf7-grid-layout/cf7-grid-layout.php'
+   * @param String $plugin_file the plugin file
+   * @param Array $plugin_data array of plugin attributes
+   * @param String $status status of plugin update.
+	 * @since 4.14.1
+	 */
+	public function enable_warning_on_plugin_update($plugin_file, $plugin_data, $status){
+    //verify that the current version is below the major udpate, and the new version is above or the same as the major udpate 
+    if(!empty($plugin_data['new_version']) && 
+    version_compare($this->version, CF7SG_MAJOR_UPDATE_VERSION, '<=') && 
+    version_compare(CF7SG_MAJOR_UPDATE_VERSION, $plugin_data['new_version'], '<=' )){
+      /* translator: 1. version number */
+      $msg = sprintf( __('WARNING: Read v%1$s update details!', 'cf7-grid-layout'),CF7SG_MAJOR_UPDATE_VERSION);
+      printf('<style>#cf7-grid-layout-update{--rpwc2-update-msg:"%1$s";}#cf7-grid-layout-update .update-link::after {display:ruby;}</style>',$msg);
+    }
+	}
   /**
   * Modify the regsitered cf7 post tppe
   * THis function enables public capability and amind UI visibility for the cf7 post type. Hooked late on `register_post_type_args`

@@ -1141,9 +1141,6 @@ class Cf7_Grid_Layout_Public {
       debug_msg('CF7SG PUBLIC: Cannot find class WPCF7_SWV_Schema, quitting validation');
       return;
     }
-    // $params = $schema->to_array();
-    // unset($params['rules']);
-    // $schema = new WPCF7_SWV_Schema($params);
     
     // debug_msg($schema, 'new schema...');
     //validate the extra schemas once validation by CF7 is done.
@@ -1193,13 +1190,6 @@ class Cf7_Grid_Layout_Public {
           }
           if(!empty($err)){
             $validation[$tag['name']] = $err;
-            //   $validation[$tag['name']] = array(
-            //   'field'=>$field,
-            //   'tag'=>$tag,
-            //   'err'=>$err,
-            //   '1d'=>$tag_array[1],
-            //   '2d'=>count($tag_array)>2 ? $tag_array[2]:null
-            // );
           }
         }
       }

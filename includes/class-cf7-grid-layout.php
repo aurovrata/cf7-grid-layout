@@ -260,7 +260,8 @@ class Cf7_Grid_Layout {
     /** @since 4.12.5 trash bookeeping */
     $this->loader->add_action( 'trashed_post', $plugin_admin,'form_trashed');
     $this->loader->add_action( 'untrashed_post', $plugin_admin,'form_untrashed');
-
+		/** @since 4.14.1 warn before update */
+		$this->loader->add_action( 'after_plugin_row_cf7-grid-layout/cf7-grid-layout.php', $plugin_admin, 'enable_warning_on_plugin_update',9,3 );
 	}
 
 	/**
