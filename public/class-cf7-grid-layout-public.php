@@ -629,10 +629,13 @@ class Cf7_Grid_Layout_Public {
    * @param string  $field  cf7 form field name
    * @param string  $type   field type (number, text, select...)
    * @param string  $json_value  the json value loaded for this field in the form.
-   * @param string  $$js_form  the javascript variable in which the form is loaded.
+   * @param string  $js_form  the javascript variable in which the form is loaded.
+   * @param string  $cf7_key  form unique key slug.
+   * @param string  $js_load_format  a js string formated to load a value into that field, to be printed with printf($$js_load_format, $field, $json_var) .
+   * @param string  $json_var  the javascript field name variable .
    * @return boolean  false to print a custom script from the called function, true for the default script printed by this plugin.
   **/
-  public function load_tabs_table_field($default_script, $post_id,  $field, $type, $json_value, $js_form){
+  public function load_tabs_table_field($default_script, $post_id,  $field, $type, $json_value, $js_form, $cf7_key, $js_load_format, $json_var){
     $grid = self::field_type($field, $post_id);
     switch($grid){
       case 'tab':

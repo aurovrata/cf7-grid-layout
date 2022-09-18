@@ -4,7 +4,7 @@ This file outputs javascript to enable the form loading of grid fields (tabs and
 */
 ?>
 if(<?= $json_value?> !== undefined && <?= $json_value?> instanceof Object){
-  var $input = $('span.wpcf7-form-control-wrap.<?= $field ?> :input:enabled', <?= $js_form ?>);
+  var $input = $('[name="<?= $field ?>"]', <?= $js_form ?>);
   var $field = $input.parent();
 <?php
 $add_string='';
@@ -31,7 +31,7 @@ switch($grid){
   var idx=0;
   var keys = Object.keys(<?= $json_value?>).length;
   for(var key in <?= $json_value?>){
-    if(idx>0) $field = $('span.wpcf7-form-control-wrap.<?= $field ?>'+key, $container);
+    if(idx>0) $field = $('[name="<?= $field ?>'+key+'"]', $container).parent();
     idx++;
     if(<?= $json_value?>[key]) {
       $(':input', $field).val(<?= $json_value?>[key]).trigger('change');
@@ -50,7 +50,7 @@ switch($grid){
   var rIdx, tIdx=0;
   var rows, tabs = Object.keys(<?= $json_value?>).length;
   for(var tab in <?= $json_value?>){
-    if(tIdx>0) $field = $('span.wpcf7-form-control-wrap.<?= $field ?>'+tab, $tabContainer);
+    if(tIdx>0) $field = $('[name="<?= $field ?>'+tab+'"]', $tabContainer).parent();
     $rowContainer = $field.closest('.container.cf7-sg-table');
     eRows = $rowContainer.children( '.row.cf7-sg-table').length - 1;
     rIdx = 0;
@@ -58,7 +58,7 @@ switch($grid){
     var table = <?= $json_value?>[tab];
     rows = Object.keys(table).length;
     for(var row in table){
-      if(rIdx>0) $field = $('span.wpcf7-form-control-wrap.<?= $field ?>'+tab+row, $rowContainer);
+      if(rIdx>0) $field = $('[name="<?= $field ?>'+tab+row+'"]', $rowContainer).parent();
       rIdx++;
       if(table[row]) $(':input', $field).val(table[row]).trigger('change');
       if(eRows < rows && rIdx < rows){
