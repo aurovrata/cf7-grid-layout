@@ -63,7 +63,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           if(name.length>0){
             $this.addClass('cf7sg-'+name+' cf7sgrow-field');
           }
-          /** @since 4.4 prefill */
+          /** @since 4.4 prefill or preview */
           if( !objEmpty(cf7sg[fid],['prefill',name]) ){
             $this.prefillCF7Field(cf7sg[fid].prefill[name], fid);
             delete cf7sg[fid].prefill[name];
@@ -402,32 +402,32 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         }
       });
       $( ".cf7-sg-tabs",  cf7Forms).each(function(){
-        var $this = $(this), fid = $this.closest('div.cf7-smart-grid').attr('id');
+        var $tab = $(this), fid = $tab.closest('div.cf7-smart-grid').attr('id'),
+          $list = $tab.children('.cf7-sg-tabs-list'),
+          oneD = [], //tabbed prefills.
+          twoD = []; //tabbed and tabled prefills.
         //add a button to create more tabs
-        var $list = $this.children('.cf7-sg-tabs-list');
         if( 1 == $list.children('li').length){
           $list.after('<ul class="cf7sg-add-tab ui-tabs-nav"><li class="ui-state-default ui-corner-top"><a class="cf7sg-add-tab ui-tabs-anchor"><span class="cf7sg-add-tab dashicons dashicons-plus"></span></a></li></ul>');
           //clone the tab
-          var $panel = $this.children('.cf7-sg-tabs-panel').first();
+          var $panel = $tab.children('.cf7-sg-tabs-panel').first();
           /** @since 2.4.2 track tab fields */
           var $tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $panel.attr('id'));
-          $this.prepend($tracker);
+          $tab.prepend($tracker);
 
-           //add class to all fields
+          //add class to all fields
           $panel.find(':input').each(function(){
-            var $this = $(this);
-            if($this.is('.cf7-sg-table :input')){
-              $this.addClass('cf7sgtab-field');
-              return;
-            }
-            var name = $this.attr('name').replace('[]','');
-            if(name.length>0){
-              $this.addClass('cf7sg-'+name+' cf7sgtab-field');
-              /** @since 4.4 prefill fields */
-              if( !objEmpty( cf7sg[fid],['prefill',name] ) ){
-                $this.prefillCF7Field(cf7sg[fid][name],fid);
-                delete cf7sg[fid].prefill[name];
-              }
+            var $in = $(this),
+              name = $in.attr('name').replace('[]',''),
+              prefill=false;
+            if( !objEmpty( cf7sg[fid],['prefill',name] ) ) prefill = true;
+
+            if($in.is('.cf7-sg-table :input')){
+              $in.addClass('cf7sgtab-field');
+              if(prefill) twoD[twoD.length] = name;
+            } else if(name.length>0){ 
+              $in.addClass('cf7sg-'+name+' cf7sgtab-field');
+              if(prefill) oneD[oneD.length] = name;
             }
           });
 
@@ -436,9 +436,50 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           //disable all inputs in the cloned panel so they don't get submitted.
           $(':input', $clonedP).prop('disabled', true),
           cf7sgPanels[$panel.attr('id')] = $clonedP.html();
+          /** @since 4.4 prefill fields */
+          
         }
         //create tab.
-        $this.tabs( {create: function(e){$(this).trigger('sgTabsReady')} } );
+        $tab.tabs( {
+          create: function(e){
+            var $tab = $(this);
+            //prefill any fields
+            oneD.forEach(function(name){
+              if(! Array.isArray(cf7sg[fid][name])){
+                if(cf7sg.debug) console.log(`ERROR: Prefill tab field ${name} value should be array`);
+                return;
+              }
+              cf7sg[fid][name].forEach(function(tdx,v){
+                var f = ( tdx>0 ? `${name}_tab-${tdx}`:name );
+                if( $list.children('li').length == (tdx+1) ) $tab.cf7sgCloneTab(true, false);
+                $(`cf7sg-${f}:input`, $tab).prefillCF7Field(v,fid);
+              });
+
+            });
+            twoD.forEach(function(name){
+              if(! Array.isArray(cf7sg[fid][name])){
+                if(cf7sg.debug) console.log(`ERROR: Prefill tabbed table field ${name} value should be 2D array`);
+                return;
+              }
+              var $table = $(`cf7sg-${name}:input`, $tab).closest('.container.cf7-sg-table');
+              cf7sg[fid][name].forEach(function(tdx,av){
+                if(! Array.isArray(av)){
+                  if(cf7sg.debug) console.log(`ERROR: Prefill tabbed table field ${name} value should be 2D array`);
+                  return;
+                }
+                var f = ( tdx>0 ? `${name}_tab-${tdx}`:name );
+                if( $list.children('li').length == (tdx+1) ) $tab.cf7sgCloneTab(true, false);
+                av.forEach(function(rdx,v){
+                  f = (rdx>0 ? `${f}_row-${rdx}` : f);
+                  if( $table.children( '.row.cf7-sg-table').length == (rdx+1) ) $tab.cf7sgCloneRow(true, false);
+                  $(`cf7sg-${f}:input`, $table).prefillCF7Field(v,fid);
+                })
+              });
+
+            });
+            $tab.trigger('sgTabsReady')
+          } 
+        });
       })
     }
     /** @since 4.4 prefill fields */

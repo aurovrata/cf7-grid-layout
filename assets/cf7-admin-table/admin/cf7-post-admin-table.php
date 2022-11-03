@@ -373,54 +373,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
         }
         return $actions;
     }
-    // /**
-    //  * Redirect to new table list on form delete
-    //  * hooks on 'wp_redirect'
-    //  * @since 1.1.3
-    //  * @var string $location a fully formed url
-    //  * @var int $status the html redirect status code
-    //  */
-    //  public function filter_cf7_redirect($location, $status){
-    //    //debug_msg($status, 'redirecting ...'.$location);
-    //
-    //    if( self::is_cf7_admin_page() || self::is_cf7_edit_page() ){
-    //      if( 'delete' == wpcf7_current_action()){
-    //        global $post_ID;
-    //        do_action('wpcf7_post_delete',$post_ID);
-    //
-    //        return admin_url('edit.php?post_type=wpcf7_contact_form');
-    //      }
-    //    }
-    //    return $location;
-    //  }
-
-    // /**
-    //  * Function to populate the quick edit form
-    //  * Hooked on 'quick_edit_custom_box' action
-    //  *
-    //  * @since 1.0.0
-    //  * @param      string    $column_name     column name to add edit field.
-    //  * @param      string    $post_type     post type being displayed.
-    //  * @return     string    echos the html fields.
-    // **/
-    // public function quick_edit_box( $column_name, $post_type ) {
-    //   if(self::cf7_post_type() != $post_type){
-    //     return;
-    //   }
-    //   static $printNonce = TRUE;
-    //   if ( $printNonce ) {
-    //       $printNonce = FALSE;
-    //       wp_nonce_field( plugin_basename( __DIR__ ), 'cf7_key_nonce' );
-    //   }
-    //   switch ( $column_name ) {
-    //     case 'cf7_key':
-    //
-    //     break;
-    //     default:
-    //       echo '';
-    //       break;
-    //   }
-    // }
+    
     /**
      *cf7-form Shortcode handler
      *
@@ -479,7 +432,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
         /** @since 4.4.0 diffrentiate preview forms */
         if( isset($_GET['post_type']) && 'cf7sg_page'==$_GET['post_type'] && isset($_GET['preview']) ){
           $hidden['_cf7sg_preview']=true;
-          if(isset($_COOKIE['_cf7sg_'.$a['cf7key']])){
+          if(isset($_COOKIE['_cf7sg_'.$a['cf7key']]) and apply_filters('cf7sg_preview_prefill', true, $a['cf7key'])){ /** @since 4.15.0 */
             $fields = array_merge( json_decode( stripslashes($_COOKIE['_cf7sg_'.$a['cf7key']]), true),$fields);
           }
         }
@@ -492,9 +445,9 @@ if(!class_exists('Cf7_WP_Post_Table')){
             return array_merge($hide, $hidden);
           },PHP_INT_MAX,1);
         }
-        if(!empty($fields)){
-          add_filter('cf7sg_prefill_form_fields', function($pairs, $key) use ($fields, $a){
-            if($a['cf7key']==$key) return array_merge($pairs, $fields);
+        if(!empty($fields)){ /** @since 4.4.0 */ 
+          add_filter('cf7sg_preview_form_fields', function($pairs, $key) use ($fields, $a){
+            if($a['cf7key']==$key) return array_merge($fields, $pairs);
           },PHP_INT_MAX,2);
         }
         return do_shortcode('[contact-form-7 id="'.$id.'"'.$attributes.']');

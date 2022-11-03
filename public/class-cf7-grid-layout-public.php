@@ -169,7 +169,7 @@ class Cf7_Grid_Layout_Public {
   }
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
-	 *
+	 * Hooked on 'wp_enqueue_scripts'
 	 * @since    1.0.0
 	 */
 	public function register_styles_and_scripts() {
@@ -181,9 +181,13 @@ class Cf7_Grid_Layout_Public {
         switch($sc[2]){
           case 'contact-form-7':
             $attrs = shortcode_parse_atts($sc[3]);
-            if(is_array($attrs) && isset($attrs['id'])) $cf7id = $attrs['id'];
+            if(is_array($attrs) && isset($attrs['id'])){
+              $cf7id = $attrs['id'];
+              $cf7key = get_cf7form_key($cf7id);
+            }
             break;
           case 'cf7form':
+          case 'cf7-form':
             $attrs = shortcode_parse_atts($sc[3]);
             if(is_array($attrs) && isset($attrs['cf7key'])){
               $cf7key = $attrs['cf7key'];
@@ -196,6 +200,19 @@ class Cf7_Grid_Layout_Public {
     if(!empty($cf7id)){
       $resources = get_post_meta($cf7id, '_cf7sg_script_classes', true);
       if(empty($resources)) $resources = array();
+      /** @since 4.15.0 preload the localise data for prefilling */
+      add_filter('cf7_2_post_form_values', function($values, $id) use ($cf7id, $css_id) {
+        if($id != $cf7id) return $values;
+        //get all the repeat and toggled fields
+        $filter_values = array();
+        foreach($values as $f=>$v){
+          if('singular' !== self::field_type($f, $cf7id)){
+            $filter_values[$f] = $v;
+          }
+        }
+        $this->localise_script(array('prefill'=>$filter_values), $css_id);
+        return array_diff_assoc($values, $filter_values);
+      }, 100,2);//hook it late.
     }
 
     $airplane=false;
@@ -439,8 +456,15 @@ class Cf7_Grid_Layout_Public {
       $redirect = get_permalink($redirect).( empty($cache) ? '':"?cf7sg=$cache");
     }else $redirect='';
     /** @since 4.4.0 enable prefilling of form fields*/
-    $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
-    if( !empty($redirect) or !empty($prefill) ) $use_grid_js = true;
+    $prefill = $this->localise_script(array(),$css_id);
+    if(isset($prefill[$css_id]['prefill'] )) $prefill = $prefill[$css_id]['prefill'];
+    //allow other plugins to filter prefill values.
+    $prefill = apply_filters('cf7sg_prefill_form_fields', $prefill, $cf7_key);
+    if(empty($prefill)){ //fallback on preview values if any.
+      $prefill = apply_filters('cf7sg_preview_form_fields', array(), $cf7_key); /** @since 4.15.0 */ 
+    }
+    $use_grid_js = !empty($redirect) or !empty($prefill);
+
     if($use_grid_js){
       $this->localise_script( array(
         'url' => admin_url( 'admin-ajax.php' ),
@@ -593,6 +617,9 @@ class Cf7_Grid_Layout_Public {
     if( empty($css_id) ) $this->localised_data += $params;
     else{
       if( !isset($this->localised_data[$css_id]) ) $this->localised_data[$css_id] = array();
+      if( isset($this->localised_data[$css_id]['prefill']) and isset($params[$css_id]['prefill'])){ /** @since 4.15.0  */
+        $this->localised_data[$css_id]['prefill'] = $params[$css_id]['prefill']; //overwrite previous value as this may have been filtered.
+      }
       $this->localised_data[$css_id] += $params;
     }
     return $this->localised_data;
@@ -631,11 +658,9 @@ class Cf7_Grid_Layout_Public {
    * @param string  $json_value  the json value loaded for this field in the form.
    * @param string  $js_form  the javascript variable in which the form is loaded.
    * @param string  $cf7_key  form unique key slug.
-   * @param string  $js_load_format  a js string formated to load a value into that field, to be printed with printf($$js_load_format, $field, $json_var) .
-   * @param string  $json_var  the javascript field name variable .
    * @return boolean  false to print a custom script from the called function, true for the default script printed by this plugin.
   **/
-  public function load_tabs_table_field($default_script, $post_id,  $field, $type, $json_value, $js_form, $cf7_key, $js_load_format, $json_var){
+  public function load_tabs_table_field($default_script, $post_id,  $field, $type, $json_value, $js_form, $cf7_key){
     $grid = self::field_type($field, $post_id);
     switch($grid){
       case 'tab':
@@ -1938,7 +1963,7 @@ class Cf7_Grid_Layout_Public {
         // debug_msg($data, "setting transient $transient, expiring in ".$cache[0]*$cache[1]);
       }
     }
-    //for preview forms...
+    /** @since 4.4.0 for preview forms...*/
     if( !isset($_POST['_cf7sg_preview']) ) return;
     $prefill = array();
     foreach( $form->scan_form_tags() as $tag){

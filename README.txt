@@ -353,6 +353,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
 == Changelog ==
+= 4.15.0 =
+* add filter `cf7sg_preview_prefill` to override preview prefill.
+* improve prefill mechanism to include tabs and tables.
 = 4.14.1 =
 * add upgrade warning for major updates.
 = 4.14.0 =
