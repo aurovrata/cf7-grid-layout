@@ -38,13 +38,16 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     var cf7Forms = $('div.cf7-smart-grid.has-table form.wpcf7-form');
     if(cf7Forms.length){
       $('.container.cf7-sg-table', cf7Forms).each(function(){
-        var $table = $(this), fid = $table.closest('div.cf7-smart-grid').attr('id');
+        var $table = $(this), fid = $table.closest('div.cf7-smart-grid').attr('id'),
+          oneD = [], //tabbed prefills.
+          $row = $('.row.cf7-sg-table', $table),
+          label = 'Add Row',
+          $footer = $table.next('.container.cf7-sg-table-footer');
+
         if($table[0].hasAttribute('id')){ /** @since 2.4.2 track table fields*/
           var $tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $table.attr('id'));
           $table.prepend($tracker);
         }
-        var $row = $('.row.cf7-sg-table', $table);
-        var label = 'Add Row';
         //get label for button.
         switch(true){
           case $table[0].hasAttribute('data-button'):
@@ -55,23 +58,19 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
             break;
         }
         //change the input and select fields to arrays for storage
-        var trackFields = false;
-        //  if(cf7Forms.is('div.has-update form.wpcf7-form')) trackFields = 'table';
         $row.find(':input').each(function(){
-          var $this = $(this);
-          var name = $this.attr('name').replace('[]','');
-          if(name.length>0){
-            $this.addClass('cf7sg-'+name+' cf7sgrow-field');
-          }
-          /** @since 4.4 prefill or preview */
-          if( !objEmpty(cf7sg[fid],['prefill',name]) ){
-            $this.prefillCF7Field(cf7sg[fid].prefill[name], fid);
-            delete cf7sg[fid].prefill[name];
+          var $in = $(this);
+          var fname = $in.attr('name').replace('[]','');
+          if(fname.length>0){
+            $in.addClass('cf7sg-'+fname+' cf7sgrow-field');
+             /** @since 4.4 prefill or preview */
+            if( !objEmpty(cf7sg[fid],['prefill',fname]) && !$in.is('.cf7-sg-tabs-panel :input')){ 
+              oneD[oneD.length] = fname; //tabbed tables will be handled in tab init.
+            }
           }
         });
 
         //add a button at the end of the $table to add new rows
-        var $footer = $table.next('.container.cf7-sg-table-footer');
         if($footer.length>0){
           $footer.detach();
           $table.after($footer);
@@ -95,6 +94,20 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         //trigger table ready event for custom scripts to change the button text
         cf7Forms.on('cf7SmartGridReady', function(e){
           $table.trigger({type:'sgTableReady', 'table-id':$table.attr('id')});
+        });
+        /** @since 4.15.0 prefill */
+        $row = $table.children( '.row.cf7-sg-table').not('.cf7-sg-cloned-table-row');
+        oneD.forEach(function(fname){
+          if(! Array.isArray(cf7sg[fid][fname])){
+            if(cf7sg.debug) console.log(`ERROR: Prefill table field ${fname} value should be 2D array`);
+            return;
+          }
+          cf7sg[fid][fname].forEach(function(rdx,v){
+            var f = (rdx>0 ? `${fname}_row-${rdx}` : fname);
+            if( $row.length == (rdx+1) ) $table.cf7sgCloneRow(false, null);
+            $(`cf7sg-${f}:input`, $table).prefillCF7Field(v,fid);
+            // delete cf7sg[fid].prefill[name];
+          })
         })
       });
       //event delegation on table buttons
@@ -436,14 +449,13 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           //disable all inputs in the cloned panel so they don't get submitted.
           $(':input', $clonedP).prop('disabled', true),
           cf7sgPanels[$panel.attr('id')] = $clonedP.html();
-          /** @since 4.4 prefill fields */
           
         }
         //create tab.
         $tab.tabs( {
           create: function(e){
             var $tab = $(this);
-            //prefill any fields
+            /** @since 4.4 prefill fields */
             oneD.forEach(function(name){
               if(! Array.isArray(cf7sg[fid][name])){
                 if(cf7sg.debug) console.log(`ERROR: Prefill tab field ${name} value should be array`);
@@ -471,7 +483,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
                 if( $list.children('li').length == (tdx+1) ) $tab.cf7sgCloneTab(true, false);
                 av.forEach(function(rdx,v){
                   f = (rdx>0 ? `${f}_row-${rdx}` : f);
-                  if( $table.children( '.row.cf7-sg-table').length == (rdx+1) ) $tab.cf7sgCloneRow(true, false);
+                  if( $table.children( '.row.cf7-sg-table').length == (rdx+1) ) $table.cf7sgCloneRow(false, null);
                   $(`cf7sg-${f}:input`, $table).prefillCF7Field(v,fid);
                 })
               });
