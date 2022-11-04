@@ -200,6 +200,7 @@ class Cf7_Grid_Layout_Public {
     if(!empty($cf7id)){
       $resources = get_post_meta($cf7id, '_cf7sg_script_classes', true);
       if(empty($resources)) $resources = array();
+      $css_id = $this->form_css_id($cf7key);
       /** @since 4.15.0 preload the localise data for prefilling */
       add_filter('cf7_2_post_form_values', function($values, $id) use ($cf7id, $css_id) {
         if($id != $cf7id) return $values;
@@ -208,10 +209,11 @@ class Cf7_Grid_Layout_Public {
         foreach($values as $f=>$v){
           if('singular' !== self::field_type($f, $cf7id)){
             $filter_values[$f] = $v;
+            unset($values[$f]);
           }
         }
-        $this->localise_script(array('prefill'=>$filter_values), $css_id);
-        return array_diff_assoc($values, $filter_values);
+        $this->localise_script( array('prefill'=>$filter_values), $css_id);
+        return $values;
       }, 100,2);//hook it late.
     }
 
@@ -378,7 +380,7 @@ class Cf7_Grid_Layout_Public {
     */
     $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
     $form_version = get_post_meta($cf7_id, '_cf7sg_version', true);
-    if($is_form and (empty($form_version) or version_compare($form_version, CF7SG_VERSION_FORM_UPDATE, '<')) ){
+    if($is_form and (empty($form_version) || version_compare($form_version, CF7SG_VERSION_FORM_UPDATE, '<')) ){
       return '<p><em>'.__('Form is deprecated, please contact the webmaster to <a href="https://wordpress.org/support/topic/upgrade-your-form-message-instead-of-form-being-displayed/">upgrade</a> this form.', 'cf7-grid-layout').'</em></p>';
     }
     //get the key
@@ -432,7 +434,7 @@ class Cf7_Grid_Layout_Public {
       $use_grid_js=true;
     }
 
-    $use_grid_js = ($use_grid_js or $is_form);
+    $use_grid_js = ($use_grid_js || $is_form);
 
     //cf7 plugin styles.
     wp_enqueue_style('contact-form-7');
@@ -455,29 +457,29 @@ class Cf7_Grid_Layout_Public {
       }
       $redirect = get_permalink($redirect).( empty($cache) ? '':"?cf7sg=$cache");
     }else $redirect='';
-    /** @since 4.4.0 enable prefilling of form fields*/
-    $prefill = $this->localise_script(array(),$css_id);
+    /** @since 4.4.0 enable prefilling of form fields, prefill with c2p filter in enqueue fn*/
+    $prefill = $this->localise_script();
     if(isset($prefill[$css_id]['prefill'] )) $prefill = $prefill[$css_id]['prefill'];
     //allow other plugins to filter prefill values.
     $prefill = apply_filters('cf7sg_prefill_form_fields', $prefill, $cf7_key);
     if(empty($prefill)){ //fallback on preview values if any.
       $prefill = apply_filters('cf7sg_preview_form_fields', array(), $cf7_key); /** @since 4.15.0 */ 
     }
-    $use_grid_js = !empty($redirect) or !empty($prefill);
-
+    $use_grid_js = !empty($redirect) || !empty($prefill);
     if($use_grid_js){
       $this->localise_script( array(
         'url' => admin_url( 'admin-ajax.php' ),
-        'debug'=>( defined('WP_DEBUG') && WP_DEBUG ),
-        $css_id => array(
+        'debug'=>( defined('WP_DEBUG') && WP_DEBUG )
+      ));
+
+      $this->localise_script(array(
           'prefill'=>$prefill,
           'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
           'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
           'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
           'redirect'=>$redirect,
           'slider_auto_scroll' => apply_filters('cf7sg_slider_auto_scroll', true, $cf7_key)
-        )
-      ));
+        ),$css_id);
       //cf7sg script & style.
       wp_enqueue_script($this->plugin_name);
       //wp_add_inline_script( $this->plugin_name, 'cf7sg', json_encode($this->localise_script()), 'before' );
@@ -500,7 +502,7 @@ class Cf7_Grid_Layout_Public {
       do_action("cf7sg_enqueue_custom_script-{$cf7_key}",$cf7_key.'-js');
     }
 
-    if(empty($is_form) or !$is_form){
+    if(empty($is_form) || !$is_form){
       do_action('smart_grid_enqueue_scripts', $cf7_key, $attr, $class);
       $classes = implode(' ', $class) .' key_'.$cf7_key;
       $output = '<div class="cf7sg-container cf7sg-not-grid"><div id="' . $css_id . '" class="'.($use_grid_js?'cf7-smart-grid ':''). $classes . '">' . $output . '</div></div>';
@@ -617,7 +619,7 @@ class Cf7_Grid_Layout_Public {
     if( empty($css_id) ) $this->localised_data += $params;
     else{
       if( !isset($this->localised_data[$css_id]) ) $this->localised_data[$css_id] = array();
-      if( isset($this->localised_data[$css_id]['prefill']) and isset($params[$css_id]['prefill'])){ /** @since 4.15.0  */
+      if( isset($this->localised_data[$css_id]['prefill']) && isset($params[$css_id]['prefill'])){ /** @since 4.15.0  */
         $this->localised_data[$css_id]['prefill'] = $params[$css_id]['prefill']; //overwrite previous value as this may have been filtered.
       }
       $this->localised_data[$css_id] += $params;
@@ -951,7 +953,7 @@ class Cf7_Grid_Layout_Public {
         $value = (array) $value;
       }
 
-      if ( WPCF7_USE_PIPE and $pipes instanceof WPCF7_Pipes and ! $pipes->zero() and !in_array( $field_type, array('map','dynamic_select')) ){
+      if ( WPCF7_USE_PIPE && ($pipes instanceof WPCF7_Pipes) && ! $pipes->zero() && !in_array( $field_type, array('map','dynamic_select')) ){
         if(is_array($posted)){
           $value = array();
           foreach($posted as $v){
@@ -960,7 +962,7 @@ class Cf7_Grid_Layout_Public {
         }else $value = $pipes->do_pipe($posted);
       }
 
-      if ( $field_tag->has_option( 'free_text' ) and isset( $_POST[$field_name . '_free_text'] ) ){
+      if ( $field_tag->has_option( 'free_text' ) && isset( $_POST[$field_name . '_free_text'] ) ){
         if(is_array($value)){
           $v = array_pop($value).' '.sanitize_text_field($_POST[$field_name . '_free_text']);
           $value[] = $v;
