@@ -476,12 +476,13 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
                 tc++;
               }
             }
+            /* Tabbed tables*/
             for(const fname in twoD){
               if(String(twoD[fname]) !== '[object Object]'){
                 if(cf7sg.debug) console.log(`ERROR: Prefill tabbed table field ${fname} value should be 2D array`);
                 return;
               }
-              let $table = $(`.cf7sg-${fname}:input`, $tab).closest('.container.cf7-sg-table');
+              let $table = null;
               tc=0;
               for(const tdx in twoD[fname]){
                 if(String(twoD[fname][tdx]) !== '[object Object]'){
@@ -489,7 +490,9 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
                   return;
                 }
                 f = ( tc>0 ? `${fname}_tab-${tc}`:fname );
-                if( $list.children('li').length < (tc+1) ) $tab.cf7sgCloneTab(true, false);
+                if( $list.children('li').length < (tc+1) ) $tab = $tab.cf7sgCloneTab(true, false);
+                //get the field's table in the current tab.
+                $table = $(`:input[name=${f}]`, $tab).closest('.container.cf7-sg-table');
                 rc=0;
                 for(const rdx in twoD[fname][tdx]){
                   f = (rc>0 ? `${f}_row-${rc}` : f);
@@ -801,7 +804,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     /** If the Post My CF7 Form is mapping this form, lets check if toggled sections are filled and therefore open them.
     *@since 1.1.0
     */
-    $('div.cf7_2_post div.cf7-smart-grid.has-toggles form.wpcf7-form').each(function(){
+    $('div.cf7-smart-grid.has-toggles div.cf7_2_post form.wpcf7-form').each(function(){
       var $form = $(this), fid = $form.closest('div.cf7-smart-grid').attr('id');
       var nonceID = $form.closest('div.cf7_2_post').attr('id');
       if(nonceID.length>0){
@@ -809,7 +812,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           $('.cf7sg-collapsible.with-toggle', $(this)).each(function(){
             var $this = $(this);
             var id = $this.attr('id');
-            if( objEmpty(cf7sg[fid],['toggles_status',id]) ){
+            if( objEmpty(cf7sg[fid],['toggles',id]) ){
               $('.row.ui-accordion-content :input', $this).prop('disabled', true);
             }else{
               $this.children('.cf7sg-collapsible-title').trigger('click');

@@ -306,7 +306,7 @@ class Cf7_Grid_Layout {
     * @since 2.1 filter mail tags for tables and tabs.*/
     $this->loader->add_filter( 'wpcf7_mail_tag_replaced', $plugin_public, 'filter_table_tab_mail_tag', 30, 4 );
     //Post My CF7 Form hooks
-    $this->loader->add_filter('cf7_2_post_echo_field_mapping_script', $plugin_public, 'load_tabs_table_field', 10, 9 );
+    // $this->loader->add_filter('cf7_2_post_echo_field_mapping_script', $plugin_public, 'load_tabs_table_field', 10, 9 );
     $this->loader->add_action('cf7_2_post_form_posted', $plugin_public, 'save_select2_custom_options', 10, 5 );
 		//load the saved toggled status for saved submissions.
 		$this->loader->add_filter( 'cf7_2_post_form_values', $plugin_public, 'load_saved_toggled_status' );

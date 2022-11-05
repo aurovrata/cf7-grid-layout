@@ -204,15 +204,20 @@ class Cf7_Grid_Layout_Public {
       /** @since 4.15.0 preload the localise data for prefilling */
       add_filter('cf7_2_post_form_values', function($values, $id) use ($cf7id, $css_id) {
         if($id != $cf7id) return $values;
+        $this->form_id = $cf7id;
         //get all the repeat and toggled fields
         $filter_values = array();
+        $toggles = array();
         foreach($values as $f=>$v){
-          if('singular' !== self::field_type($f, $cf7id)){
+          if('singular' !== self::field_type($f, $cf7id) ){
             $filter_values[$f] = $v;
             unset($values[$f]);
           }
+          $toggle = $this->get_toggle($f);
+          if( !is_null($toggle)) $toggles += array_fill_keys($toggle, true);
+          
         }
-        $this->localise_script( array('prefill'=>$filter_values), $css_id);
+        $this->localise_script( array('prefill'=>$filter_values, 'toggles'=>$toggles), $css_id);
         return $values;
       }, 100,2);//hook it late.
     }
@@ -482,10 +487,11 @@ class Cf7_Grid_Layout_Public {
         ),$css_id);
       //cf7sg script & style.
       wp_enqueue_script($this->plugin_name);
-      //wp_add_inline_script( $this->plugin_name, 'cf7sg', json_encode($this->localise_script()), 'before' );
-      $localise = json_encode($this->localise_script());
+      
+      $localise = $this->localise_script();
+      // debug_msg($localise, 'local ');
       add_action('wp_footer', function() use ($localise){
-        printf('<script type="text/javascript">var cf7sg = %s</script>', $localise);
+        printf('<script type="text/javascript">var cf7sg = %s</script>', json_encode($localise));
       });
     }
     //load custom css/js script from theme css folder.
@@ -650,32 +656,7 @@ class Cf7_Grid_Layout_Public {
 
     return $dom->outertext;
   }
-  /**
-   * Function to load custom js script for Post My CF7 Form loading of form field values
-   * Hooked to 'cf7_2_post_echo_field_mapping_script'
-   * @since 1.0.0
-   * @param boolean  $default_script  whether to use the default script or not, default is true.
-   * @param string  $field  cf7 form field name
-   * @param string  $type   field type (number, text, select...)
-   * @param string  $json_value  the json value loaded for this field in the form.
-   * @param string  $js_form  the javascript variable in which the form is loaded.
-   * @param string  $cf7_key  form unique key slug.
-   * @return boolean  false to print a custom script from the called function, true for the default script printed by this plugin.
-  **/
-  public function load_tabs_table_field($default_script, $post_id,  $field, $type, $json_value, $js_form, $cf7_key){
-    $grid = self::field_type($field, $post_id);
-    switch($grid){
-      case 'tab':
-      case 'table':
-      case 'both':
-        include( plugin_dir_path( __FILE__ ) . '/partials/cf7sg-field-load-script.php');
-        $default_script = false;
-        break;
-      default:
-        break;
-    }
-    return $default_script;
-  }
+  
   /**
    * Register a [save] shortcode with CF7.
    * Hooked  on 'wpcf7_init'
