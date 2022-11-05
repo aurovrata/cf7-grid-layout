@@ -356,6 +356,7 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 = 4.15.0 =
 * add filter `cf7sg_preview_prefill` to override preview prefill.
 * improve prefill mechanism to include tabs and tables.
+* fix open toggles with pre-filled fields.
 = 4.14.1 =
 * add upgrade warning for major updates.
 = 4.14.0 =
