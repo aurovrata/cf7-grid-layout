@@ -4,7 +4,7 @@ use voku\helper\HtmlDomParser;
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       http://syllogic.in
+ * @link       http://www.we2ours2.in
  * @since      1.0.0
  *
  * @package    Cf7_Grid_Layout
@@ -202,7 +202,7 @@ class Cf7_Grid_Layout_Public {
       if(empty($resources)) $resources = array();
       $css_id = $this->form_css_id($cf7key);
       /** @since 4.15.0 preload the localise data for prefilling */
-      add_filter('cf7_2_post_form_values', function($values, $id) use ($cf7id, $css_id) {
+      add_filter('cf7_2_post_form_values', function($values, $id, $type, $key, $post, $types) use ($cf7id, $css_id) {
         if($id != $cf7id) return $values;
         $this->form_id = $cf7id;
         //get all the repeat and toggled fields
@@ -212,14 +212,21 @@ class Cf7_Grid_Layout_Public {
           if('singular' !== self::field_type($f, $cf7id) ){
             $filter_values[$f] = $v;
             unset($values[$f]);
+          }else if(isset($types[$f])) {
+            switch($types[$f]){
+              case 'dynamic_select':
+              case 'dynamic_checkbox':
+                $filter_values[$f] = $v;
+                unset($values[$f]);
+                break;
+            }
           }
           $toggle = $this->get_toggle($f);
           if( !is_null($toggle)) $toggles += array_fill_keys($toggle, true);
-          
         }
         $this->localise_script( array('prefill'=>$filter_values, 'toggles'=>$toggles), $css_id);
         return $values;
-      }, 100,2);//hook it late.
+      }, 100,6);//hook it late.
     }
 
     $airplane=false;
@@ -470,7 +477,7 @@ class Cf7_Grid_Layout_Public {
     if(empty($prefill)){ //fallback on preview values if any.
       $prefill = apply_filters('cf7sg_preview_form_fields', array(), $cf7_key); /** @since 4.15.0 */ 
     }
-    $use_grid_js = !empty($redirect) || !empty($prefill);
+    $use_grid_js = !empty($redirect) || !empty($prefill) || $use_grid_js;
     if($use_grid_js){
       $this->localise_script( array(
         'url' => admin_url( 'admin-ajax.php' ),
@@ -594,26 +601,7 @@ class Cf7_Grid_Layout_Public {
   public function form_css_id($cf7_key){
     return 'cf7sg-form-'.$cf7_key;
   }
-  /**
-  * Function hooked on 'cf7_2_post_form_values' to load toggle status for saved submissions
-  *
-  *@since 1.1.0
-  *@param string $post_id saved submission post ID
-  */
-  public function load_saved_toggled_status($field_values){
-    if(!isset($field_values['map_post_id']) || empty($field_values['map_post_id'])){
-      return $field_values;
-    }
-    $post_id = $field_values['map_post_id'];
-    $toggles = get_post_meta($post_id, 'cf7sg_toggles_status', true);
-    if(!empty($toggles)){
-      $cf7post = get_post($post_id);
-      $cf7_key = $cf7post->post_name;
-      wp_enqueue_script($this->plugin_name);
-      wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script( array('toggles_status' => $toggles)), $this->form_css_id($cf7_key));
-    }
-    return $field_values;
-  }
+  
   /**
   *  Single source for localised script.
   *

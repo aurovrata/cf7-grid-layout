@@ -1021,9 +1021,10 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
 
     return s2options;
   }
-  $.fn.cf7sgHybridddOptions = function(){
+  $.fn.cf7sgHybridddOptions = function(prefill={}){
     if(!this.is('.cf7sg-dynamic_checkbox')) return false;
-    var hddoptions = {}, //select2 options
+    let fid = this.closest('div.cf7-smart-grid').attr('id'),
+      hddoptions = {}, //select2 options
       field = this.data('field-name'); //field name
 
     if( this.is('.cf7sg-hybriddd') ){ //normal hybriddd dropdown.
@@ -1055,6 +1056,17 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         hddoptions, //default
         cf7sgCustomHybridddTemplates[field] //user setttings.
       )
+    }
+    //prefill is any values loaded
+    if(!objEmpty(cf7sg[fid],['prefill',field])){
+      switch(typeof cf7sg[fid].prefill[field] ){
+        case 'object':
+          hddoptions['selectedValues']=Object.values(cf7sg[fid].prefill[field]);
+          break;
+        default:
+          hddoptions['selectedValues']=[cf7sg[fid].prefill[field]];
+        break;
+      }
     }
 
     return hddoptions;

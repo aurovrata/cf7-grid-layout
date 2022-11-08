@@ -1410,16 +1410,12 @@ class Cf7_Grid_Layout_Admin {
   //public function deactivate_cf7_polylang( $plugin, $network_deactivating ) {
   public function check_plugin_dependency() {
     //if either the polylang for the cf7 plugin is not active anymore, deactive this extension
-    if( !is_plugin_active("contact-form-7/wp-contact-form-7.php") ){
-        deactivate_plugins( "cf7-grid-layout/cf7-grid-layout.php" );
-        debug_msg("Deactivating Smart Grid");
-
+    if( !is_plugin_active('contact-form-7/wp-contact-form-7.php') ){ //&& is_plugin_active("cf7-grid-layout/cf7-grid-layout.php")
+        deactivate_plugins( 'cf7-grid-layout/cf7-grid-layout.php' );
+        // debug_msg("Deactivating Smart Grid");
         $button = '<a href="'.network_admin_url('plugins.php').'">Return to Plugins</a></a>';
         wp_die( '<p><strong>CF7 smart Grid-layout Extension</strong> requires <strong>Contact Form 7</strong> plugin, and has therefore been deactivated!</p>'.$button );
-
-        return false;
     }
-    return true;
   }
   /**
   * Add disabled button message on hover to cf7 messages.
