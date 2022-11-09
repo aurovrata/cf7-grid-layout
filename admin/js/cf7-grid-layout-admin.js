@@ -11,13 +11,21 @@
   let cf7TagRgxp, $wpcf7Editor, $grid, $rowControl = null;
 
   //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
-  let $pattern = $('<div>').html(cf7grid.preHTML.replace(/class="([\w\s]*)"/,'class="$1[\\s_a-zA-Z0-9-]*"') + '\\s*(\\[.*\\s*\\].*\\s*){0,}\\s*'+cf7grid.postHTML),
-    required = cf7grid.requiredHTML.replace('*', '\\*');
+  let $pattern = $('<div>').html('' +
+    cf7grid.preHTML + 
+    '\\s*(\\[.*\\s*\\].*\\s*){0,}\\s*' +
+    cf7grid.postHTML),
+    required = cf7grid.requiredHTML.replace('*', '\\*'),
+    fieldPattern='';
   // console.log('r:'+required);
-  $pattern.find('label').html('((\\s*.*)('+required+'){1}|(\\s*.*))');
-  $pattern.find('.info-tip').text('(.*\\s*)');
+  $pattern.find('label').html('((.*)('+required+'){1}|(.*))');
+  $pattern.find('.info-tip').text('(\\s*.*\\s*)');
+
+  fieldPattern = $pattern.html().replace(/class="([\w\s]*)"/,'class="$1[\\s_a-zA-Z0-9-]*"');
+  fieldPattern = fieldPattern.replace(/\sfor="([\w]*)"/,'(?:\\sfor="$1[\\w-]*")?');
+  fieldPattern.replace('><','>\\s?<')
   // console.log('p:'+$pattern.html().replace('><','>\\s?<'));
-  const templateRegex = new RegExp($pattern.html().replace('><','>\\s?<'), 'ig');
+  const templateRegex = new RegExp(fieldPattern, 'ig');
   let seekTemplate = false, cssTemplate = 'div.field',
     $template = $('<div id="cf7sg-dummy">').append(cf7grid.preHTML+cf7grid.postHTML);
   $template = $template.children();
@@ -119,7 +127,7 @@
         if($toggle.length>0){
           $toggle = $toggle.clone();
         }
-        //swap out HTML title element for UI title elemen with input fields.
+        //swap out HTML title element for UI title element with input fields.
         let $title = $this.children('.cf7sg-collapsible-title');
         $title.children().remove();
         $title.prepend( $('.cf7sg-collapsible-title',$('#grid-collapsible')).html());
@@ -202,6 +210,8 @@
       $('.cf7sg-accordion-rows.columns, .cf7sg-slider-section.columns', $form).each(function(){
         let $col = $(this),
           $control = $col.children('.grid-column').addClass('enable-grouping'); //enable checkboxes.
+          /** @since 4.13.0 display auto scroll helper code */
+        $('.php-icon',$control).show().attr('data-search', 'li.cf7sg-slider');
         if($col.is('.cf7sg-accordion-rows')){
           $('.accordion-rows:input', $control).prop('checked', true);
         }else{ //is .cf7sg-slider-section
@@ -259,7 +269,7 @@
       });
       return isGrid;
     } //end buildGridForm()
-    /** @since 3.4.0 enalbe accordion class for containers having multiple collapsible rows */
+    /** @since 3.4.0 enable accordion class for containers having multiple collapsible rows */
     $grid.on('cf7sg-update', function(e, update){
       let $container = $(e.target);
       if(undefined !== update.add){
@@ -470,6 +480,7 @@
           //remove single cell UI content
           $parentColumn.children('.grid-column').children('textarea.grid-input').remove();
           $parentColumn.children('.grid-column').children('div.cf7-field-inner').remove();
+          $parentColumn.children('.grid-column').addClass('cf7sg-container-column');
           //finally insert a new row with the content moved to the new row.
           $parentColumn.insertNewRow($content.remove());
         }
@@ -693,12 +704,16 @@
           $target.fireGridUpdate('add','slider-section');
           //hide toggle checkbox.
           $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).hide().next('span').hide();
+          /** @since 4.13.0 display auto scroll helper code */
+          $target.closest('.grid-controls').siblings('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
         }else{
           $target.closest('.columns').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit data-dots");
           $target.closest('.container').removeClass('cf7sg-slider');
           $target.fireGridUpdate('remove','slider-section');
           //show toggle checkbox.
           $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).show().next('span').show();
+          /** @since 4.13.0 display auto scroll helper code */
+          $target.closest('.grid-controls').siblings('.php-icon').hide().attr('data-search', '');
         }
       }
       /*
@@ -1019,7 +1034,7 @@
           break;
         case 'textarea'==tag:
           if( match[0].search(/\s[0-9]{0,3}x[0-9]{1,3}\s?/ig) <0){
-            let cf7sc = match[0].replace(match[2],match[2]+' x5'); //textarea prefill.
+            let cf7sc = match[0].replace(match[3],match[3]+' x5'); //textarea prefill.
             cf7sc = search.replace(match[0], cf7sc);
             $this.val(cf7sc);
           }
@@ -1044,7 +1059,7 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
 */
           let source ='';
           if(fMatch[5]) source = fMatch[6];
-          else if(fMatch[7]) source = 'taxonomy';
+          else if(fMatch[8]) source = 'taxonomy';
 
           if(match[3].indexOf('class:tags')>-1){
             helpers[helpers.length] = 'cf7sg-tag-dynamic_select-tags';

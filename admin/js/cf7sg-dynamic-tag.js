@@ -161,8 +161,8 @@
 
   //udpate the new category if created
   $('.cf7sg-dynamic-tag-submit .button').on('click', function(){
-    let tag = $(this).closest('.cf7sg-dynamic-tag-submit').find('input.tag.code').attr('name'),
-      $form = $('#'+tag+'-tag-generator'),
+    let $form = $(this).closest('form'),
+      tag = $form.data('id'),
       $is_cat = $('input[name="is_hierarchical"]', $form),
       $taxonomy = $('input[name="taxonomy_slug"]', $form),
       $plural = $('input[name="plural_name"]', $form),

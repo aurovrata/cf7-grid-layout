@@ -4,7 +4,7 @@ use voku\helper\HtmlDomParser;
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       http://syllogic.in
+ * @link       http://www.we2ours2.in
  * @since      1.0.0
  *
  * @package    Cf7_Grid_Layout
@@ -153,7 +153,7 @@ class Cf7_Grid_Layout_Public {
     return !empty( array_intersect( array_keys(self::$array_toggled_panels[$this->form_id]), $toggle) );
   }
   /**
-  * Check if a toggled section was used and its fields submitted.
+  * Check if a toggled section is within a tabbed section.
   *
   *@since 4.0.0
   *@param string $toggle toogle id
@@ -169,7 +169,7 @@ class Cf7_Grid_Layout_Public {
   }
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
-	 *
+	 * Hooked on 'wp_enqueue_scripts'
 	 * @since    1.0.0
 	 */
 	public function register_styles_and_scripts() {
@@ -181,9 +181,13 @@ class Cf7_Grid_Layout_Public {
         switch($sc[2]){
           case 'contact-form-7':
             $attrs = shortcode_parse_atts($sc[3]);
-            if(is_array($attrs) && isset($attrs['id'])) $cf7id = $attrs['id'];
+            if(is_array($attrs) && isset($attrs['id'])){
+              $cf7id = $attrs['id'];
+              $cf7key = get_cf7form_key($cf7id);
+            }
             break;
           case 'cf7form':
+          case 'cf7-form':
             $attrs = shortcode_parse_atts($sc[3]);
             if(is_array($attrs) && isset($attrs['cf7key'])){
               $cf7key = $attrs['cf7key'];
@@ -196,6 +200,33 @@ class Cf7_Grid_Layout_Public {
     if(!empty($cf7id)){
       $resources = get_post_meta($cf7id, '_cf7sg_script_classes', true);
       if(empty($resources)) $resources = array();
+      $css_id = $this->form_css_id($cf7key);
+      /** @since 4.15.0 preload the localise data for prefilling */
+      add_filter('cf7_2_post_form_values', function($values, $id, $type, $key, $post, $types) use ($cf7id, $css_id) {
+        if($id != $cf7id) return $values;
+        $this->form_id = $cf7id;
+        //get all the repeat and toggled fields
+        $filter_values = array();
+        $toggles = array();
+        foreach($values as $f=>$v){
+          if('singular' !== self::field_type($f, $cf7id) ){
+            $filter_values[$f] = $v;
+            unset($values[$f]);
+          }else if(isset($types[$f])) {
+            switch($types[$f]){
+              case 'dynamic_select':
+              case 'dynamic_checkbox':
+                $filter_values[$f] = $v;
+                unset($values[$f]);
+                break;
+            }
+          }
+          $toggle = $this->get_toggle($f);
+          if( !is_null($toggle)) $toggles += array_fill_keys($toggle, true);
+        }
+        $this->localise_script( array('prefill'=>$filter_values, 'toggles'=>$toggles), $css_id);
+        return $values;
+      }, 100,6);//hook it late.
     }
 
     $airplane=false;
@@ -211,7 +242,7 @@ class Cf7_Grid_Layout_Public {
     // tell WordPress to load the Smoothness theme from Google CDN
     if( !$airplane ){
       $protocol = is_ssl() ? 'https' : 'http';
-      $url_path = "$protocol://cdnjs.cloudflare.com/ajax/libs/jqueryui/{$ui_ver}/";
+      $url_path = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui_ver}/";
       wp_register_style('cf7-jquery-ui', $url_path . 'themes/smoothness/jquery-ui.min.css', array(), $ui_ver , 'all');
       wp_register_style( 'cf7-jquery-ui-theme', $url_path . 'jquery-ui.theme.min.css', array(), $ui_ver, 'all');
       wp_register_style( 'cf7-jquery-ui-structure', $url_path . 'jquery-ui.structure.min.css', array(), $ui_ver, 'all');
@@ -287,7 +318,6 @@ class Cf7_Grid_Layout_Public {
     //   wp_register_script( $cf7key.'-js' , $themeuri.'/js/'.$cf7key.'.js', array('jquery', $this->plugin_name), null, true);
     // }
 		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public.js", $dep, $this->version, true );
-
     wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
 
@@ -362,7 +392,7 @@ class Cf7_Grid_Layout_Public {
     */
     $is_form = get_post_meta($cf7_id, '_cf7sg_managed_form', true);
     $form_version = get_post_meta($cf7_id, '_cf7sg_version', true);
-    if($is_form and (empty($form_version) or version_compare($form_version, CF7SG_VERSION_FORM_UPDATE, '<')) ){
+    if($is_form and (empty($form_version) || version_compare($form_version, CF7SG_VERSION_FORM_UPDATE, '<')) ){
       return '<p><em>'.__('Form is deprecated, please contact the webmaster to <a href="https://wordpress.org/support/topic/upgrade-your-form-message-instead-of-form-being-displayed/">upgrade</a> this form.', 'cf7-grid-layout').'</em></p>';
     }
     //get the key
@@ -416,7 +446,7 @@ class Cf7_Grid_Layout_Public {
       $use_grid_js=true;
     }
 
-    $use_grid_js = ($use_grid_js or $is_form);
+    $use_grid_js = ($use_grid_js || $is_form);
 
     //cf7 plugin styles.
     wp_enqueue_style('contact-form-7');
@@ -439,24 +469,37 @@ class Cf7_Grid_Layout_Public {
       }
       $redirect = get_permalink($redirect).( empty($cache) ? '':"?cf7sg=$cache");
     }else $redirect='';
-    /** @since 4.4.0 enable prefilling of form fields*/
-    $prefill = apply_filters('cf7sg_prefill_form_fields', array(), $cf7_key);
-    if( !empty($redirect) or !empty($prefill) ) $use_grid_js = true;
+    /** @since 4.4.0 enable prefilling of form fields, prefill with c2p filter in enqueue fn*/
+    $prefill = $this->localise_script();
+    if(isset($prefill[$css_id]['prefill'] )) $prefill = $prefill[$css_id]['prefill'];
+    //allow other plugins to filter prefill values.
+    $prefill = apply_filters('cf7sg_prefill_form_fields', $prefill, $cf7_key);
+    if(empty($prefill)){ //fallback on preview values if any.
+      $prefill = apply_filters('cf7sg_preview_form_fields', array(), $cf7_key); /** @since 4.15.0 */ 
+    }
+    $use_grid_js = !empty($redirect) || !empty($prefill) || $use_grid_js;
     if($use_grid_js){
       $this->localise_script( array(
         'url' => admin_url( 'admin-ajax.php' ),
-        'debug'=>( defined('WP_DEBUG') && WP_DEBUG ),
-        $css_id => array(
+        'debug'=>( defined('WP_DEBUG') && WP_DEBUG )
+      ));
+
+      $this->localise_script(array(
           'prefill'=>$prefill,
           'submit_disabled'=> isset($messages['submit_disabled']) ? $messages['submit_disabled']: __( "Disabled!  To enable, check the acceptance field.", 'cf7-grid-layout' ),
           'max_table_rows' => isset($messages['max_table_rows']) ? $messages['max_table_rows']: __( "You have reached the maximum number of rows.", 'cf7-grid-layout' ),
           'table_labels' => apply_filters('cf7sg_remove_table_row_labels',true,$cf7_key),
-          'redirect'=>$redirect
-        )
-      ));
+          'redirect'=>$redirect,
+          'slider_auto_scroll' => apply_filters('cf7sg_slider_auto_scroll', true, $cf7_key)
+        ),$css_id);
       //cf7sg script & style.
       wp_enqueue_script($this->plugin_name);
-      wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script() );
+      
+      $localise = $this->localise_script();
+      // debug_msg($localise, 'local ');
+      add_action('wp_footer', function() use ($localise){
+        printf('<script type="text/javascript">var cf7sg = %s</script>', json_encode($localise));
+      });
     }
     //load custom css/js script from theme css folder.
     $themepath = get_stylesheet_directory();
@@ -472,7 +515,7 @@ class Cf7_Grid_Layout_Public {
       do_action("cf7sg_enqueue_custom_script-{$cf7_key}",$cf7_key.'-js');
     }
 
-    if(empty($is_form) or !$is_form){
+    if(empty($is_form) || !$is_form){
       do_action('smart_grid_enqueue_scripts', $cf7_key, $attr, $class);
       $classes = implode(' ', $class) .' key_'.$cf7_key;
       $output = '<div class="cf7sg-container cf7sg-not-grid"><div id="' . $css_id . '" class="'.($use_grid_js?'cf7-smart-grid ':''). $classes . '">' . $output . '</div></div>';
@@ -558,26 +601,7 @@ class Cf7_Grid_Layout_Public {
   public function form_css_id($cf7_key){
     return 'cf7sg-form-'.$cf7_key;
   }
-  /**
-  * Function hooked on 'cf7_2_post_form_values' to load toggle status for saved submissions
-  *
-  *@since 1.1.0
-  *@param string $post_id saved submission post ID
-  */
-  public function load_saved_toggled_status($field_values){
-    if(!isset($field_values['map_post_id']) || empty($field_values['map_post_id'])){
-      return $field_values;
-    }
-    $post_id = $field_values['map_post_id'];
-    $toggles = get_post_meta($post_id, 'cf7sg_toggles_status', true);
-    if(!empty($toggles)){
-      $cf7post = get_post($post_id);
-      $cf7_key = $cf7post->post_name;
-      wp_enqueue_script($this->plugin_name);
-      wp_localize_script( $this->plugin_name, 'cf7sg', $this->localise_script( array('toggles_status' => $toggles)), $this->form_css_id($cf7_key));
-    }
-    return $field_values;
-  }
+  
   /**
   *  Single source for localised script.
   *
@@ -589,6 +613,9 @@ class Cf7_Grid_Layout_Public {
     if( empty($css_id) ) $this->localised_data += $params;
     else{
       if( !isset($this->localised_data[$css_id]) ) $this->localised_data[$css_id] = array();
+      if( isset($this->localised_data[$css_id]['prefill']) && isset($params[$css_id]['prefill'])){ /** @since 4.15.0  */
+        $this->localised_data[$css_id]['prefill'] = $params[$css_id]['prefill']; //overwrite previous value as this may have been filtered.
+      }
       $this->localised_data[$css_id] += $params;
     }
     return $this->localised_data;
@@ -617,31 +644,7 @@ class Cf7_Grid_Layout_Public {
 
     return $dom->outertext;
   }
-  /**
-   * Function to load custom js script for Post My CF7 Form loading of form field values
-   * Hooked to 'cf7_2_post_echo_field_mapping_script'
-   * @since 1.0.0
-   * @param boolean  $default_script  whether to use the default script or not, default is true.
-   * @param string  $field  cf7 form field name
-   * @param string  $type   field type (number, text, select...)
-   * @param string  $json_value  the json value loaded for this field in the form.
-   * @param string  $$js_form  the javascript variable in which the form is loaded.
-   * @return boolean  false to print a custom script from the called function, true for the default script printed by this plugin.
-  **/
-  public function load_tabs_table_field($default_script, $post_id,  $field, $type, $json_value, $js_form){
-    $grid = self::field_type($field, $post_id);
-    switch($grid){
-      case 'tab':
-      case 'table':
-      case 'both':
-        include( plugin_dir_path( __FILE__ ) . '/partials/cf7sg-field-load-script.php');
-        $default_script = false;
-        break;
-      default:
-        break;
-    }
-    return $default_script;
-  }
+  
   /**
    * Register a [save] shortcode with CF7.
    * Hooked  on 'wpcf7_init'
@@ -794,7 +797,7 @@ class Cf7_Grid_Layout_Public {
     return $data;
   }
   /**
-  * new function to consolidate submitted data for improved handling of optional toggled fields as well as special fields such as files and checkboxes in tabbed sectoins.
+  * new function to consolidate submitted data for improved handling of optional toggled fields as well as special fields such as files and checkboxes in tabbed sections.
   *
   *@since 2.5.0
   *@param array $field_tag a cf7 form field tag which is part of tabs or table grid section.
@@ -836,7 +839,7 @@ class Cf7_Grid_Layout_Public {
 
         for($idx=1;$idx<$max_fields;$idx++){
           $fid=$index_suffix.$idx;
-          $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$fid, $toggle) : $toggle;
+          if(isset($toggle)) $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$fid, $toggle) : $toggle;
           if(!empty($toggle) && !$this->is_submitted($toggle_id)){ //check if submitted.
             $values[$fid] = null;
           }else{
@@ -864,7 +867,7 @@ class Cf7_Grid_Layout_Public {
           for($jdx=0;$jdx<$max_fields;$jdx++){
             $row_suffix= ($jdx>0)?'_row-'.$jdx:'';
             $fid = $tab_suffix.$row_suffix;
-            $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$tab_suffix,$toggle) : $toggle;
+            if(isset($toggle)) $toggle_id = $this->is_tabbed($toggle[0]) ? preg_filter('/$/',$tab_suffix,$toggle) : $toggle;
 
             if(!empty($toggle) && !$this->is_submitted($toggle_id)){ //check if submitted, tab<-toggle<-table.
               $values[$tab_suffix][$row_suffix] = null;
@@ -919,7 +922,7 @@ class Cf7_Grid_Layout_Public {
         $value = (array) $value;
       }
 
-      if ( WPCF7_USE_PIPE and $pipes instanceof WPCF7_Pipes and ! $pipes->zero() and !in_array( $field_type, array('map','dynamic_select')) ){
+      if ( WPCF7_USE_PIPE && ($pipes instanceof WPCF7_Pipes) && ! $pipes->zero() && !in_array( $field_type, array('map','dynamic_select')) ){
         if(is_array($posted)){
           $value = array();
           foreach($posted as $v){
@@ -928,7 +931,7 @@ class Cf7_Grid_Layout_Public {
         }else $value = $pipes->do_pipe($posted);
       }
 
-      if ( $field_tag->has_option( 'free_text' ) and isset( $_POST[$field_name . '_free_text'] ) ){
+      if ( $field_tag->has_option( 'free_text' ) && isset( $_POST[$field_name . '_free_text'] ) ){
         if(is_array($value)){
           $v = array_pop($value).' '.sanitize_text_field($_POST[$field_name . '_free_text']);
           $value[] = $v;
@@ -1037,7 +1040,189 @@ class Cf7_Grid_Layout_Public {
     }
     return $result;
   }
+  /**
+   * New validation for CF7 5.6 onwards hooked to 'wpcf7_swv_create_schema'
+   * this function will look for repetitive fields that need to be added to the validation schema,
+   * it will also remove any rules in the schema
+   * @since 4.14.0
+   * @param WPCF7_SWV_Schema $schema itself a WPCF7_SWV_Rule
+   * @param WPCF7_ContactForm $form form object.
+  */
+  function validate_swv_schemas($schema, $form){
+    // debug_msg($schema, 'schema...');
+    //setup the form id
+    $this->form_id = $form->id();
+    $submitted = null;
+    $cloned_schemas=array();
+    //check if we have a submission
+    if(method_exists('WPCF7_Submission','get_instance')){
+      $submitted = WPCF7_Submission::get_instance();
+    }else debug_msg('WPCF7_Submission::get_instance() method no longer available');
+    if(empty($submitted)) return;
+    //get the consolidated submitted data.
+    $data = $submitted->get_posted_data();
+    // 1. run through the tags that are tabbed/tabled or both, 
+    // 2. ignore those that are toggled and unused.
+    // 3. check for hidden WPCF conditional fields in tabs/tables/toggles
+    $tags = $form->scan_form_tags();
+    //cf7 plugin is unable to handle dynamic fields (added or removed).
+    $added_tags = array();
+    $removed_tags = array(); 
+    $valid_tags = array();
+    foreach ( $tags as $tag ) {
+		  //check to see if this field is an array (table or tab or both).
+      $field_type = self::field_type( $tag['name'], $this->form_id );
+      // the $data array is passed by reference and will be consolidated.
+      if(!isset($data[$tag['name']])){ /** @todo verify tabbed toggled fields */
+        $removed_tags[] = $tag['name'];
+        continue; //skip this tag.
+      }
 
+      $values =  $data[$tag['name']];
+      switch($field_type){
+        case 'tab':
+        case 'table':
+          $added_tags[$tag['name']] = array();
+          $valid_tags[$tag['name']]=array();
+          foreach($values as $index=>$value){
+            if(!isset($value)){  //if no value then skip validation.
+              $removed_tags[] = $tag['name'].$index;
+            }else{//additional tag
+              if(empty($index)){ 
+                $valid_tags[$tag['name']][$index] = $tag;
+                continue; //first tab or row will be taken care by cf7 plugin.
+              }
+              $sg_field_tag = clone $tag;
+              $sg_field_tag['name'] = $tag['name'].$index;
+              $added_tags[$tag['name']][] = array($sg_field_tag,$index);
+              $valid_tags[$tag['name']][$index] = $sg_field_tag; //used for recreating WPCF7_Validation object.
+            }
+          }
+          break;
+        case 'both':
+          $added_tags[$tag['name']] = array();
+          $valid_tags[$tag['name']] = array();
+          foreach($values as $index=>$value){
+          $valid_tags[$tag['name']][$index]=array();
+            foreach($value as $row=>$row_value){
+              if( !isset($row_value) ) {  //if no value then skip validation.
+                $removed_tags[] = $tag['name'].$index.$row;
+              } else { //additional tag
+                if(empty($index) && empty($row)){ 
+                  $valid_tags[$tag['name']][$index][$row]=$tag;
+                  continue; //first row will be taken care by cf7 plugin.
+                }
+                $sg_field_tag = clone $tag;
+                $sg_field_tag['name'] = $tag['name'].$index.$row;
+                $added_tags[$tag['name']][] = array($sg_field_tag,$index,$row);
+                $valid_tags[$tag['name']][$index][$row]=$sg_field_tag;
+              }
+            }
+          }
+          break;
+        default:
+          //verify if data was submitted for this field
+          if(!isset($data[$tag['name']])){ //it was removed by some plugin.
+            $removed_tags[] = $tag['name'];
+          }
+          $valid_tags[$tag['name']] = $tag; //used for recreating WPCF7_Validation object.
+          
+          break;
+      }
+    }
+    $rules = array();
+    foreach($schema->rules() as $r){ //$rule is a WPCF7_SWV_Rule object.
+      $rule = $r->to_array();
+      if( !isset($rules[$rule['field']])) $rules[$rule['field']] = array(); //can have multiple rules.
+      $rules[$rule['field']][] = $r;
+    }
+    if(!class_exists('WPCF7_SWV_Schema') ){
+      debug_msg('CF7SG PUBLIC: Cannot find class WPCF7_SWV_Schema, quitting validation');
+      return;
+    }
+    
+    // debug_msg($schema, 'new schema...');
+    //validate the extra schemas once validation by CF7 is done.
+    add_filter('wpcf7_validate', function($result) use ($rules,$added_tags, $removed_tags, $valid_tags){
+
+      //remove the errors for removed tags
+      $invalids = $result->get_invalid_fields();
+      $validation = array();
+      foreach($invalids as $f=>$err){
+        $validation[$f]=$err['reason'];
+      }
+      foreach($removed_tags as $field){
+        if(isset($validation[$field])) unset($validation[$field]);
+      }
+      
+      //validate the extra schema.
+      //$field = original field name which has cloned $tags.
+      foreach($added_tags as $field=>$tagset){
+        
+        foreach($tagset as $tag_array){
+          $tag = $tag_array[0];
+          $err='';
+          if(!isset($rules[$field])){ //maybe non-swv field, try with a filter
+            $result = apply_filters("wpcf7_validate_{$tag['type']}", new WPCF7_Validation(), $tag); //for other plugins to add extra validation.
+            if(!$result->is_valid()){
+              $invalids = $result->get_invalid_fields();
+              $err = $invalids[$tag['name']]['reason'];
+            }
+          }else{
+            foreach($rules[$field] as $rule){
+              $rule_class = get_class($rule);
+              $_rule  = $rule->to_array();
+              $_rule['field'] = $tag['name'];
+              $_rule = new $rule_class($_rule); //cloned rule object for new field.
+              $v = $_rule->validate(
+                  array(
+                  'text' => true,
+                  'file' => false,
+                  'field' => array(),
+                )
+              ); //validate 
+              if(is_wp_error($v)){ 
+                $err = $v->get_error_message();
+                break 1; //move to the next tag.
+              }
+            }
+          }
+          if(!empty($err)){
+            $validation[$tag['name']] = $err;
+          }
+        }
+      }
+      //reformat validation for  filter/final WPCF7_Validation object.
+      $f_validation= array();
+      foreach($valid_tags as $field=>$tag){
+        switch(true){
+          case is_object($tag):
+            if(isset($validation[$tag['name']])){
+              $f_validation[$field] = $validation[$tag['name']];
+            }
+            break;
+          case is_array($tag):
+            $f_validation[$field] = $this->repeat_field_err_messages($tag, $validation);
+            break;
+        }
+      }
+      // debug_msg($validation, 'validation ');
+      // debug_msg($f_validation, 'f validation ');
+      // debug_msg($valid_tags, 'valid tags ');
+      return $this->filter_validation($f_validation, $valid_tags, null);
+    },1,1);//call it early.
+  }
+  private function repeat_field_err_messages($tags, $validation, $d=1){
+    $f_validation=array();
+    foreach($tags as $idx=>$tag){
+      if(!is_object($tag)){ 
+        $f_validation[$idx] = $this->repeat_field_err_messages($tag, $validation, 2);
+      }else if(isset($validation[$tag['name']])){
+        $f_validation[$idx] = $validation[$tag['name']];
+      }
+    }
+    return $f_validation;
+  }
   /**
    * Final validation with all values submitted for inter dependent validation
    * Hooked to filter 'wpcf7_validate', sets up the final $result object
@@ -1047,6 +1232,9 @@ class Cf7_Grid_Layout_Public {
    * @return WPCF7_Validation  validation result
   **/
   public function filter_wpcf7_validate($result){
+    /** @since 4.14.0 check cf7 version to maintain backward compatibility */
+    if(defined('WPCF7_VERSION') && version_compare(WPCF7_VERSION,'5.6','>=')) return $result;
+
     /** @since 3.3.3 fix for captch field validation*/
     $invalids = $result->get_invalid_fields();
     /**
@@ -1057,11 +1245,25 @@ class Cf7_Grid_Layout_Public {
     * this bug was reported in the cf7 support forum:
     * https://wordpress.org/support/topic/bug-javascript-disabled-fields-flagged-as-invalid/
     **/
-    $result = new WPCF7_Validation();
 
     //rebuild the default validation result.
-    $cf7form = WPCF7_ContactForm::get_current();
-    $submitted = WPCF7_Submission::get_instance();
+    $cf7form = $submitted = null;
+    if(method_exists('WPCF7_ContactForm','get_current')){ /** @since 4.12.8 */
+      $cf7form = WPCF7_ContactForm::get_current();
+    }else debug_msg('WPCF7_ContactForm::get_current() method no longer available');
+    if(empty($cf7form)) return $result;
+    //check if we have a submission
+    if(method_exists('WPCF7_Submission','get_instance')){
+      $submitted = WPCF7_Submission::get_instance();
+    }else debug_msg('WPCF7_Submission::get_instance() method no longer available');
+    if(empty($submitted)) return $result;
+    //check if we have a validation object constructor.
+    if(class_exists('WPCF7_Validation')){
+      $result = new WPCF7_Validation();
+    }else{
+      debug_msg('new WPCF7_Validation() constructor no longer available');
+      return $result;
+    }
     $data = $submitted->get_posted_data();
     $tag_types = array(); //store all form tags, including cloned tags for array fields.
 
@@ -1177,59 +1379,83 @@ class Cf7_Grid_Layout_Public {
           break;
       }
     }
+    return $this->filter_validation($validation, $validated, $submission);
+  }
+  /**
+   * Filter validation using entire submitted data set.
+   * @since 1.0.0
+   * @param Array $validation array of field=>error msg 
+   * @param Array $validated array of field=>tags 
+   * @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs) null values are fields which have not been disabled and not submitted such as those in toggled sections.
+   * @return WPCF7_Validation validation object 
+   */
+  private function filter_validation($validation, $validated, $submission){
     $form_key = '';
     if(isset($_POST['_wpcf7_key'])){
       $form_key = $_POST['_wpcf7_key'];
     }
-    // debug_msg($data, 'data ');
+    
     //allow for more complex validation.
     if(has_filter('cf7sg_validate_submission')){
+      if(is_null($submission)){
+        if(method_exists('WPCF7_Submission','get_instance')){
+          $submitted = WPCF7_Submission::get_instance();
+          $submission = $submitted->get_posted_data();
+        }
+      }
       /**
-      * filter to validate the entire submission and check interdependency of fields
+      * filter to validate the entire submission and check interdependency of fields.  The $validation array are error messages coming from the default CF7 validation process.
+      * However, you can unset those messages if your cross-data validation logic demands it, or you can add additional errors to fields that have passed the default validation.
+      * For repeat fields, you need to follow the same array contruct at the $submission data array, namely
+      *  - $field => <error message> for single fields.
+      *  - $field => array( $idx => <error message> ) for tabled or tabbed fields. ($idx for first row/tab is empty string); $idx for subsequent table rows 2,3.. is _row-1, _row-2...; and $idx for tabs 2,3... is _tab-1, _tab-2, ...  
+      *  - $field => array( $tab_idx => array( $row_idx => <error message> ) ) for tabbed tabled fields.
+      * NOTE: failing to follow this structure in your filtered validation array will result in spurious messages on the form fields.
       * @since 1.0.0
-      * @param Array  $validation an array of $field_name=>$validaton_message.
-      * @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs) null values are fields which have not been disabled and not submitted such as those in toggled sections.
+      * @param Array  $validation an array of $field_name=>$msg for single fields, $field_name=>array( $idx=>$msg ) for table or tabbed fields, $field_name=>array( $tab_idx=> array( $row_idx => $msg ) ) for tabbed tabled fields.
+      * @param Array  $submission   submitted data, $field_name => $value pairs ($value can be an array especially for fields in tables and tabs using the same array construct at the $validation array) null values are fields which have not been enabled and not submitted such as those in toggled sections.
       * @param String  $form_key  unique form key to identify current form.
       * @param int  $form_id  cf7 form post ID.
-      * @return Array  an array of errors messages, $field_name => $error_msg for single values, and $field_name => [0=>$error_msg, 1=>$error_msg,...] for array values
+      * @return Array  an array of errors messages, $field_name => $error_msg for single values, $field_name=>array( $idx=>$msg ) for table or tabbed fields, $field_name=>array( $tab_idx=> array( $row_idx => $msg ) ) for tabbed tabled fields.
       */
       $validation = apply_filters('cf7sg_validate_submission', $validation, $submission, $form_key, $_POST['_wpcf7']);
+    }
+    //now that the user has filtered the validatoin, reset the in cf7 inalids.
+    $result = new WPCF7_Validation();
 
-      //now that the user has filtered the validatoin, reset the in cf7 inalids.
-      $result = new WPCF7_Validation();
+    if(!empty($validation)){
+      // debug_msg($validation, 'validation ');
 
-      if(!empty($validation)){
-        foreach($validation as $name=>$msg){
-          switch(true){
-            case is_array($msg):
-              foreach($msg as $idx=>$value){
-                switch(true){
-                  case is_array($value):
-                    foreach($value as $rdx=>$message){
-                      if(empty($message)) continue;
-                      $result->invalidate($validated[$name][$idx][$rdx], $message);
-                    }
-                    break;
-                  case is_array($validated[$name][$idx]): //error, expecting array..
-                    debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
-                    break;
-                  case empty($value): //no message, just continue.
-                    break;
-                  default:
-                    $result->invalidate($validated[$name][$idx], $value);
-                    break;
-                }
+      foreach($validation as $name=>$msg){
+        switch(true){
+          case is_array($msg):
+            foreach($msg as $idx=>$value){
+              switch(true){
+                case is_array($value):
+                  foreach($value as $rdx=>$message){
+                    if(empty($message)) continue;
+                    $result->invalidate($validated[$name][$idx][$rdx], $message);
+                  }
+                  break;
+                case is_array($validated[$name][$idx]): //error, expecting array..
+                  debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: '.$name.'['.$idx.']');
+                  break;
+                case empty($value): //no message, just continue.
+                  break;
+                default:
+                  $result->invalidate($validated[$name][$idx], $value);
+                  break;
               }
-              break;
-            case is_array($validated[$name]): //error, we should have an array.
-              debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
-              break;
-            case empty($msg): //no message, just continue.
-              break;
-            default:
-              $result->invalidate($validated[$name], $msg);
-              break;
-          }
+            }
+            break;
+          case is_array($validated[$name]): //error, we should have an array.
+            debug_msg('Filtered cf7sg_validate_submission validation ERROR, expecting array for field '.$name);
+            break;
+          case empty($msg): //no message, just continue.
+            break;
+          default:
+            $result->invalidate($validated[$name], $msg);
+            break;
         }
       }
     }
@@ -1708,7 +1934,7 @@ class Cf7_Grid_Layout_Public {
         // debug_msg($data, "setting transient $transient, expiring in ".$cache[0]*$cache[1]);
       }
     }
-    //for preview forms...
+    /** @since 4.4.0 for preview forms...*/
     if( !isset($_POST['_cf7sg_preview']) ) return;
     $prefill = array();
     foreach( $form->scan_form_tags() as $tag){

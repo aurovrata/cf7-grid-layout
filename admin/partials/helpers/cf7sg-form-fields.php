@@ -15,7 +15,7 @@ if(is_plugin_active( 'post-my-contact-form-7/cf7-2-post.php' )){
 }
 ?>
 <li class="cf7sg-tag-dynamic_list-post">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_post_query','{$field_name_slug}_dynamic_list',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_list_post_query','{$field_name_slug}_dynamic_list',10,3);
 /**
 * Filter post query for dynamic dropdown options.
 * @param array $args an arra of query terms.
@@ -53,22 +53,25 @@ function {$field_name_slug}_dynamic_option_label($label, $term, $tag, $cf7_key){
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option label.','cf7-grid-layout')?>
 </li>
 <li class="cf7sg-tag-dynamic_list-taxonomy">
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_taxonomy_query','{$field_name_slug}_taxonomy_query',10,3);
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_taxonomy_query','{$field_name_slug}_taxonomy_query',10,4);
 /**
 * Filter dropdown taxonomy query parameter.
 * (see https://developer.wordpress.org/reference/classes/wp_term_query/__construct/)
 * @param array $args array of taxonomy query attributes.
 * @param WPCF7_FormTag $tag the field being populated.
 * @param string $cf7_key  the form unique key.
+* @param array $branch  an array of term IDs representing the current taxonomy branch being queried, the last term is the query parent value.
 * @return array of query attributes.
 */
-function {$field_name_slug}_taxonomy_query($args, $tag, $cf7_key){
+function {$field_name_slug}_taxonomy_query($args, $tag, $cf7_key, $branch){
   //these are the label users will see when the dropdown opens.
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
     return $args;
   }
   //use only the child terms of a parent.
-  $args['parent']=0;
+  if($args['parent']!=0) $args=null;
+  // or if you want to list only the 2nd level of your tree,
+  if(count($args)>2) $args=null;
   return $args;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the taxonomy query.','cf7-grid-layout')?>
 </li>
@@ -284,4 +287,20 @@ function {$field_name_slug}_mail_tag_value($replaced, $name, $cf7_key){
   $replaced; //this is currently set to the selected value and is a slug, you need to programmatically fetch your value and set it up.
   return $replaced;
 }" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the mail tag value.','cf7-grid-layout')?>
+</li>
+<li class="cf7sg-slider">
+  <a class="helper" data-cf72post="add_filter( 'cf7sg_slider_auto_scroll','{$form_key}_slider_auto_scroll',10,2);
+/**
+* Disable the auto scroll back to the top of the slider form.
+* @since 4.13.0
+* @param boolean $scroll boolean flag, default true.
+* @param string $cf7_key unique form key identifier.
+* @return boolean a boolean value.
+*/
+function {$form_key}_slider_auto_scroll($scroll, $cf7_key){
+  //check to make sure you have the right field in the right form.
+  if('{$form_key}'!==$cf7_key) return $scroll;
+  $scroll = false; //disable auto scroll.
+  return $scroll;
+}" href="javascript:void(0);"><?=__('Disable','cf7-grid-layout')?></a> <?=__('the auto scroll on slide change.','cf7-grid-layout')?>
 </li>

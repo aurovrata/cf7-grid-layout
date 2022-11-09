@@ -1,6 +1,6 @@
 /*
 Hybrid Dropdown JavaScript plugin insprired from an original idea by Sandrina Pereira (twitter:@a_sandrina_p)
-Version: 2.2.0
+Version: 2.2.1
 Authors: Aurovrata Venet
 Twitter: @aurovrata
 GitHub: https://github.com/aurovrata/hybrid-html-dropdown
@@ -444,14 +444,14 @@ class HybridDDError extends Error {
               kids = Object.entries(o[1]);
               kids.splice(Object.keys(o[1]).indexOf('label'),1); //remove label
               hasChildren = (kids.length>0);
-              isSelected = _.opt.selectedValues.indexOf(val) >=0;
+              isSelected = _.opt.selectedValues.indexOf(tree+val) >=0;
             }else kids = Object.entries(o[1]);
             break;
           default:
             icl = 'hybridddis';
             val = o[0];
             lbl = _.opt.optionLabel(o[1]);
-            isSelected = _.opt.selectedValues.indexOf(val) >=0;
+            isSelected = _.opt.selectedValues.indexOf(tree+val) >=0;
         }
       }else{
         switch(o.nodeName){

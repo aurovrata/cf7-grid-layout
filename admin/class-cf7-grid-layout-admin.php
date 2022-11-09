@@ -37,6 +37,7 @@ class Cf7_Grid_Layout_Admin {
     'plugins.php'=>'',
     //'options-general.php'=>'page=',
   );
+  public const METAKEYS = array('_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form','_cf7sg_script_classes', '_cf7sg_version', '_cf7sg_grid_toggled_names', '_cf7sg_grid_tabbed_toggles', '_cf7sg_grid_grouped_toggles', '_cf7sg_has_toggles', '_cf7sg_disable_jstags_comments', '_cf7sg_page_redirect', '_cf7sg_cache_redirect_data','_cf7sg_form_page');
   /**
   * The ID of this plugin.
   *
@@ -135,16 +136,17 @@ class Cf7_Grid_Layout_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles($page) {
-
-    if( in_array($page, array('toplevel_page_wpcf7', 'contact_page_wpcf7-new')) ) return;
-
-    $screen = get_current_screen();
-    $plugin_dir = plugin_dir_url( __DIR__ );
-    if('plugins'==$screen->base){
+    if('plugins.php'==$page){
       /** @since 4.1.0 */
-      wp_enqueue_style('plugin-update',$plugin_dir . 'admin/css/cf7sg-plugin-update.css', array(), $this->version, 'all');
+      wp_enqueue_style('plugin-update', plugin_dir_url( __DIR__ ) . 'admin/css/cf7sg-plugin-update.css', array(), $this->version, 'all');
       return;
     }
+
+    if( in_array($page, array('toplevel_page_wpcf7', 'contact_page_wpcf7-new')) ) return;
+    
+    $screen = get_current_screen();
+    $plugin_dir = plugin_dir_url( __DIR__ );
+    
     if (empty($screen) || $this->cf7_post_type() != $screen->post_type){
       return;
     }
@@ -190,8 +192,7 @@ class Cf7_Grid_Layout_Admin {
       wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array( 'jquery' ), $this->version, true );
       return;
     }
-    $screen = get_current_screen();
-    if('plugins'==$screen->base){
+    if('plugins.php'==$page){
       /** @since 4.1.0 */
         wp_enqueue_script('cf7sg-plugin-update', $plugin_dir . 'admin/js/cf7sg-plugin-update.js', array('jquery'));
         /* translators: message displayed when succesful update to validate new version */
@@ -202,6 +203,7 @@ class Cf7_Grid_Layout_Admin {
         ));
       return;
     }
+    $screen = get_current_screen();
     if ($this->cf7_post_type() != $screen->post_type){
       return;
     }
@@ -405,7 +407,7 @@ class Cf7_Grid_Layout_Admin {
           $this->plugin_name,
           'cf7grid',
           array(
-            'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', '<div class="field"><label></label>', $post->post_name),
+            'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', '<div class="field"><label for=""></label>', $post->post_name),
 						'postHTML' => apply_filters('cf7sg_post_cf7_field_html', '<p class="info-tip"></p></div>', $post->post_name),
 						'requiredHTML' => apply_filters('cf7sg_required_cf7_field_html', '<em>*</em>', $post->post_name),
 						'ui' => apply_filters('cf7sg_grid_ui', true, $post->post_name),
@@ -486,6 +488,24 @@ class Cf7_Grid_Layout_Admin {
       return $menu_ord;
   }
   /**
+	 * Register plugin.php styling page to warn users on major update.
+   * hooked on 'after_plugin_row_cf7-grid-layout/cf7-grid-layout.php'
+   * @param String $plugin_file the plugin file
+   * @param Array $plugin_data array of plugin attributes
+   * @param String $status status of plugin update.
+	 * @since 4.14.1
+	 */
+	public function enable_warning_on_plugin_update($plugin_file, $plugin_data, $status){
+    //verify that the current version is below the major udpate, and the new version is above or the same as the major udpate 
+    if(!empty($plugin_data['new_version']) && 
+    version_compare($this->version, CF7SG_MAJOR_UPDATE_VERSION, '<=') && 
+    version_compare(CF7SG_MAJOR_UPDATE_VERSION, $plugin_data['new_version'], '<=' )){
+      /* translator: 1. version number */
+      $msg = sprintf( __('WARNING: Read v%1$s update details!', 'cf7-grid-layout'),CF7SG_MAJOR_UPDATE_VERSION);
+      printf('<style>#cf7-grid-layout-update{--rpwc2-update-msg:"%1$s";}#cf7-grid-layout-update .update-link::after {display:ruby;}</style>',$msg);
+    }
+	}
+  /**
   * Modify the regsitered cf7 post tppe
   * THis function enables public capability and amind UI visibility for the cf7 post type. Hooked late on `register_post_type_args`
   * @since 1.0.0
@@ -560,9 +580,8 @@ class Cf7_Grid_Layout_Admin {
   public function register_dynamic_dropdown_taxonomy(){
     //register the dynamic dropdown taxonomies.
     $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-    //debug_msg($dropdowns);
     $created = array();
-    foreach($dropdowns as $post_lists){
+    foreach($dropdowns as $post_id=>$post_lists){
       foreach($post_lists as $slug=>$taxonomy){
         if(!isset($created[$slug])){
           if(is_array($taxonomy)){
@@ -670,13 +689,14 @@ class Cf7_Grid_Layout_Admin {
         }
         $created_taxonomies[$taxonomy['slug']] = $taxonomy;
       }
-      //debug_msg($created_taxonomies);
+      // debug_msg($created_taxonomies, 'created ');
       $post_lists = $saved_lists = $system_list = array();
 
       $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
       foreach($dropdowns as $id => $lists){
         $saved_lists = array_merge($saved_lists, $lists);
       }
+      // debug_msg($dynamic_fields, 'dynamic ');
       foreach($dynamic_fields as $tag){
         if(isset($tag['values'])){
           $slug='';
@@ -701,12 +721,12 @@ class Cf7_Grid_Layout_Admin {
           //$post_lists[$slug] = null;
         }
       }
+      // debug_msg($post_lists,' post lists ');
       //list of taxonomy to register.
       //unset the old value.
-      unset($dropdowns[$cf7_post_id]);
+      if(isset($dropdowns[$cf7_post_id])) unset($dropdowns[$cf7_post_id]);
       //unshift new value to top of array.
-      $dropdowns = array($cf7_post_id => $post_lists) + $dropdowns ;
-
+      $dropdowns[$cf7_post_id] = $post_lists;
       update_option('_cf7sg_dynamic_dropdown_taxonomy', $dropdowns);
       //list of system taxonomy to register
       $system_dropdowns = get_option('_cf7sg_dynamic_dropdown_system_taxonomy',array());
@@ -1163,16 +1183,13 @@ class Cf7_Grid_Layout_Admin {
     include_once 'partials/cf7-default-js.php';
   }
   /**
-  *
-  *
+  * Called by duplicate_cf7_form.
   *@since 2.3.0
   *@param string $new_form_id new form id to duplciate to.
   *@param string $form_id form id to duplciate.
   */
-  public function duplicate_form_properties($new_form_id, $form_id){
-    //these properties will be preceded with an '_' by the cf7 plugin before being duplicated.
-    $properties = array('_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form','_cf7sg_script_classes', '_cf7sg_version', '_cf7sg_grid_toggled_names', '_cf7sg_grid_tabbed_toggles', '_cf7sg_grid_grouped_toggles', '_cf7sg_has_toggles', '_cf7sg_disable_jstags_comments', '_cf7sg_page_redirect', '_cf7sg_cache_redirect_data');
-    $properties = apply_filters('cf7sg_duplicate_form_properties', $properties);
+  public function duplicate_form_properties($form_id, $new_form_id){
+    $properties = apply_filters('cf7sg_duplicate_form_properties', Cf7_Grid_Layout_Admin::METAKEYS);
     foreach($properties as $field){
       $value = get_post_meta($form_id, $field, true);
       if(!empty($value)) update_post_meta($new_form_id,$field, $value);
@@ -1180,7 +1197,7 @@ class Cf7_Grid_Layout_Admin {
   }
   /**
   * Duplicate form.
-  *
+  * Hooked to 'admin_init', looks out for URL action parameter set to cf7copy.
   *@since 2.3.0
   *@return string text_description
   */
@@ -1195,7 +1212,7 @@ class Cf7_Grid_Layout_Admin {
       if ( $form = wpcf7_contact_form( $_GET['post'] ) ) {
   			$new_form = $form->copy();
   			$new_form->save();
-        $this->duplicate_form_properties($new_form->id(), $_GET['post']);
+        self::duplicate_form_properties($_GET['post'],$new_form->id());
         /** @since 4.11 duplicate js/css files */
         $new_key = get_cf7form_key($new_form->id());
         $key = get_cf7form_key($form->id());
@@ -1393,16 +1410,12 @@ class Cf7_Grid_Layout_Admin {
   //public function deactivate_cf7_polylang( $plugin, $network_deactivating ) {
   public function check_plugin_dependency() {
     //if either the polylang for the cf7 plugin is not active anymore, deactive this extension
-    if( !is_plugin_active("contact-form-7/wp-contact-form-7.php") ){
-        deactivate_plugins( "cf7-grid-layout/cf7-grid-layout.php" );
-        debug_msg("Deactivating Smart Grid");
-
+    if( !is_plugin_active('contact-form-7/wp-contact-form-7.php') ){ //&& is_plugin_active("cf7-grid-layout/cf7-grid-layout.php")
+        deactivate_plugins( 'cf7-grid-layout/cf7-grid-layout.php' );
+        // debug_msg("Deactivating Smart Grid");
         $button = '<a href="'.network_admin_url('plugins.php').'">Return to Plugins</a></a>';
         wp_die( '<p><strong>CF7 smart Grid-layout Extension</strong> requires <strong>Contact Form 7</strong> plugin, and has therefore been deactivated!</p>'.$button );
-
-        return false;
     }
-    return true;
   }
   /**
   * Add disabled button message on hover to cf7 messages.
@@ -1742,12 +1755,11 @@ class Cf7_Grid_Layout_Admin {
         global $wpdb;
         $post_type = $this->cf7_post_type();
         $result = $wpdb->get_col("SELECT pm.meta_value FROM {$wpdb->postmeta} as pm
-          INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id LEFT JOIN {$wpdb->postmeta} as pmf on pmf.post_id = pm.post_id
+          INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id INNER JOIN {$wpdb->postmeta} as pmf on pmf.post_id = pm.post_id
           WHERE pmf.meta_key = '_cf7sg_managed_form'
           AND pmf.meta_value = 1
-          WHERE p.post_type = '{$post_type}'
+          AND p.post_type = '{$post_type}'
           AND pm.meta_key = '_cf7sg_version'
-          ORDER BY pm.meta_key
         ");
         if(!empty($result) and version_compare($result[0], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
       }

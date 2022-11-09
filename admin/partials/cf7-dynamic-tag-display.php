@@ -164,7 +164,7 @@
           $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
           $slugs = array();
 
-          foreach($dropdowns as $all_lists){
+          foreach($dropdowns as $post_id=>$all_lists){
             foreach($all_lists as $slug => $taxonomy){
               if(isset($slugs[$slug]) ){
                 continue;

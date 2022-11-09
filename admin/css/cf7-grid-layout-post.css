@@ -300,6 +300,9 @@ grid layout
 #grid-form .table-row-button {
     display: none;
 }
+#grid-form {
+	padding: 10px 0 10px 0;
+}
 /* footer table special styling */
 #grid-form .row.cf7-sg-table .row-controls label.table-row-button {
     display: block;
@@ -344,6 +347,22 @@ textarea.grid-input {
     width: 144px;
     z-index:1008;
 }
+.dashicons.column-control::before, .row-controls .dashicons::before {
+	color: #bababa;
+	font-size: 14px;
+	font-weight: lighter;
+    vertical-align: inherit;
+}
+.dashicons.column-control:hover::before, .row-controls .dashicons:hover::before {color:#0065aa}
+#grid-form .grid-column {
+	background-color: transparent;
+}
+#grid-form .grid-column:hover {
+    /* background-color: #ededed; */
+}
+#grid-form .columns:hover > .grid-column > .cf7-field-inner {
+	background: #e4e4e4;
+}
 #grid-form .container,
 #grid-form .table-row-button input  {
     max-width: 100%;
@@ -359,9 +378,6 @@ textarea.grid-input {
 #grid-form .row.cf7-sg-table {
     box-shadow: 0px 0px 4px #920a03;
 }
-#grid-form .grid-column {
-    background-color: #ddd;
-}
  #grid-form .dashicons:hover{
    cursor:pointer;
    color: blue;
@@ -370,8 +386,8 @@ textarea.grid-input {
    clear:both;
  }
  #grid-form .columns {
-  border-top: solid 2px #ddd;
-  border-bottom: solid 2px #ddd;
+  /* border-top: solid 2px #ddd; */
+  /* border-bottom: solid 2px #ddd; */
  }
 #grid-form .columns.column-selected {
   border-bottom-color: #0055d4;
@@ -388,6 +404,7 @@ textarea.grid-input {
     position: relative;
     min-height: 90px;
 }
+#grid-form .row-controls:hover{ background: #ddd;}
 #grid-form .row-controls{
     position: absolute;
     top:0;
@@ -395,7 +412,7 @@ textarea.grid-input {
     width: 20px;
     display: inline-block;
     height: 100%;
-    background: #606060;
+    background: transparent;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
 }
@@ -449,13 +466,13 @@ textarea.grid-input {
     display: none;
     position: absolute;
     top: -22px;
-    left: 20px;
+    /* left: 20px; */
     background: #323232;
     color: white;
     padding: 2px 5px;
     border-radius: 3px;
     font-weight: bold;
-    min-width: 78px;
+    min-width: 95px;
 }
 #grid-form .helper-popup .helper:hover .copy-helper {
     display: inline-block;
@@ -658,7 +675,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 #grid-form  .cf7-field-inner {
   padding: 0px 10px;
-  background: #ededed;
+  background: transparent;
   margin: 0;
   position: relative;
 }
@@ -684,7 +701,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 #grid-form p.content:hover {
     cursor: pointer;
-    color: blue;
+    color: #0065aa;
 }
 #grid-form .cf7-field-inner input,
 #grid-form .cf7-field-inner textarea {

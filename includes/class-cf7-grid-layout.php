@@ -260,7 +260,8 @@ class Cf7_Grid_Layout {
     /** @since 4.12.5 trash bookeeping */
     $this->loader->add_action( 'trashed_post', $plugin_admin,'form_trashed');
     $this->loader->add_action( 'untrashed_post', $plugin_admin,'form_untrashed');
-
+		/** @since 4.14.1 warn before update */
+		$this->loader->add_action( 'after_plugin_row_cf7-grid-layout/cf7-grid-layout.php', $plugin_admin, 'enable_warning_on_plugin_update',9,3 );
 	}
 
 	/**
@@ -295,6 +296,8 @@ class Cf7_Grid_Layout {
     //setup individual tag filers
     $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_grid_values', 5, 1 );
     //filter cf7 validation
+		$this->loader->add_action('wpcf7_swv_create_schema', $plugin_public, 'validate_swv_schemas', PHP_INT_MAX , 2);
+
     $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 1, 1);
     //benchmark validation
     $this->loader->add_filter( 'wpcf7_validate_dynamic_select*', $plugin_public, 'validate_required', 30, 2 );
@@ -303,10 +306,10 @@ class Cf7_Grid_Layout {
     * @since 2.1 filter mail tags for tables and tabs.*/
     $this->loader->add_filter( 'wpcf7_mail_tag_replaced', $plugin_public, 'filter_table_tab_mail_tag', 30, 4 );
     //Post My CF7 Form hooks
-    $this->loader->add_filter('cf7_2_post_echo_field_mapping_script', $plugin_public, 'load_tabs_table_field', 10, 6 );
+    // $this->loader->add_filter('cf7_2_post_echo_field_mapping_script', $plugin_public, 'load_tabs_table_field', 10, 9 );
     $this->loader->add_action('cf7_2_post_form_posted', $plugin_public, 'save_select2_custom_options', 10, 5 );
 		//load the saved toggled status for saved submissions.
-		$this->loader->add_filter( 'cf7_2_post_form_values', $plugin_public, 'load_saved_toggled_status' );
+		// $this->loader->add_filter( 'cf7_2_post_form_values', $plugin_public, 'load_saved_toggled_status' );
 		/** track toggles
 		*@since 1.1.0  */
 		$this->loader->add_action('cf7_2_post_form_posted', $plugin_public, 'save_toggle_status', 10, 5 );
