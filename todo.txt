@@ -14,3 +14,5 @@ v5.0
 - compress all js and all css into single files for each form at admin form save time, store the compressed resource file in the child theme.
 
 - add table mail tag
+
+- move navigation slider to tophttps://wordpress.org/support/topic/slider-control-on-top-of-the-page/#post-16180037
