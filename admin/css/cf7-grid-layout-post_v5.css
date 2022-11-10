@@ -1,0 +1,769 @@
+#cf7sg-cache-limit + p {margin: 0;font-style: italic;}
+#cf7sg-cache-limit + p > code {font-style:normal;}
+#cf7sg-cache-limit {display: inline-block;}
+#cf7sg-cached-time {max-width: 63px;}
+#editors, #contact-form-editor {position: relative;}
+#optional-editors {
+	display: inline-block;
+	position: absolute;
+	margin-top: 8px;
+  z-index:2;
+}
+.cf7sg-tutorial {
+	width: 100%;
+	min-height: 200px;
+}
+.cf7sg-tutorial p {
+	width: 220px;
+	vertical-align: top;
+	display: inline-block;
+}
+.cf7sg-tutorial .img {
+	background-image: url('./image/tutorial.png');
+	width: 220px;
+	height: 182px;
+	background-size: contain;
+	display: inline-block;
+}
+.cf7sg-tutorial .img:hover {
+	transform: scale(105%);
+}
+.cf7sg-pointer-dynamic_checkbox,
+.cf7sg-pointer-tutorials_pointer,
+.cf7sg-pointer-dynamic_dropdown,
+.cf7sg-pointer-js_css_editors
+{width:490px !important}
+.cf7sg-pointer .wp-pointer-buttons a.close {
+	float: left;
+}
+.cf7sg-pointer .wp-pointer-content h3::before {
+	content: "\01F30A";
+	font: normal 22px/normal dashicons;
+	top: 10px;
+	width: 34px;
+	height: 32px;
+}
+.tag-generator-panel .insert-box input.tag{max-width: 490px;}
+/** @since 4.11 disable tag buttons on grid with no open textarea */
+.cf7-tag-generators.click-disabled a {
+	pointer-events: none;
+	color: grey;
+}
+*[dir="rtl"] #optional-editors {left: 0}
+.codemirror-theme label:hover {
+	font-weight: bold;
+}
+.codemirror-theme label {
+	z-index: 10;
+	position: relative;
+}
+.codemirror-theme input {
+	display: inline-block;
+	margin: 0 2px;
+	border-radius: 30%;
+}
+#contact-form-editor .loading-screen{position:absolute;z-index: 100; padding: 100px 5px 850px 5px; width: calc(100% - 10px); background-color: white; text-align: center}
+#contact-form-editor .loading-screen h2{font-size: 20px}
+#contact-form-editor .loading-screen .spinner{visibility: visible; float:none}
+#contact-form-editor .loading-screen .js-error p {text-align: left;font-size: 15px}
+#contact-form-editor .loading-screen .error {color: #b90101}
+#optional-editors a.button {font-weight: bold;}
+#js-tags > li.show-events:not(#last-item) {
+	display: inline-block;
+	vertical-align: top;
+	border: solid 2px #007cba;
+	background: white;
+	padding: 5px 8px;
+	border-radius: 3px;
+}
+#js-tags > li.show-events:not(#last-item) li.show-events {display: inline-block;}
+#last-item {
+	display: inline-block;
+	margin-top: 5px;
+	margin-left: 3px;
+}
+#js-tags > li:hover > span {
+  transform: rotate(90deg);
+  display: inline-block;
+}
+#js-tags > li > span {
+  font-weight:bold;
+  transition: 0.2s ease-out;
+  padding: 0 5px;
+}
+#js-tags > li > ul {display: none;}
+#js-tags > li > ul>li {margin:0;}
+#js-tags > li:hover > ul {
+	display: block;
+	position: absolute;
+	background: white;
+	padding: 5px 8px;
+	border: solid 1px;
+  border-radius: 3px;
+	z-index: 100;
+}
+#js-tags > li:hover > ul > li:hover{position: relative}
+#js-tags > li:hover > ul > li:hover > span > span{
+  display:block;
+  position: absolute;
+	background: white;
+	padding: 5px 8px;
+	border: solid 1px;
+  border-radius: 3px;
+	z-index: 20;
+	width: 225px;
+	left: 4px;
+	top: -3px;
+	font-style: italic;
+}
+/* @since 4.4 .cf7sg-slider-section .cf7sg-collapsible .collapsible-row-label,
+.cf7sg-accordion-rows .cf7sg-collapsible .collapsible-row-label, */
+.columns.cf7sg-slider-section, .columns.cf7sg-accordion-rows {box-shadow: 0 0 6px #6a0080;}
+.columns:not(.full) + .row-controls .grid-controls .make-grid{display:inline-block;}
+.columns.full > .container:not(.cf7sg-collapsible) > .row:not(.cf7-sg-table) > .columns:not(.full) + .row-controls .grid-controls .make-grid,
+.button.make-grid.display-none,
+.display-none, #js-tags > li.display-none:not(.show-events) {display: none;}
+.enable-grouping.grid-column > .grid-controls .grouping-option {
+    display: inline-block;
+}
+.codemirror-theme {
+  position: absolute;
+  top: -26px;
+  padding: 2px 0 2px 5px;
+  background: #eae9e9;
+	width: calc( 100% - 313px);
+}
+.codemirror-theme span.file {
+	margin-left: 10px;
+	vertical-align: middle;
+	background: #f7ecb1;
+	padding: 4px 8px;
+	color: black;
+  max-width: calc( 100% - 216px );
+  display: inline-block;
+  overflow-x: hidden;
+  height: 15px;
+}
+.codemirror-theme span.file:hover {
+	max-width: none;
+	overflow-x: visible;
+	position: absolute;
+	right: 0;
+	z-index: 10;
+	height: auto;
+	width: auto;
+}
+#cf7-codemirror,#cf7-js-codemirror,#cf7-css-codemirror {position: relative;}
+label.grouping-option:hover + span.popup{
+	display: inline;
+	position: absolute;
+	background: white;
+	margin-left: 6px;
+	width: 200px;
+	border: solid 1px gray;
+	border-radius: 3px;
+	padding: 1px 5px;
+	color: inherit;
+	top: auto;
+	left: auto;
+	font-weight: normal;
+}
+#grid-form .js-help + .cf7sg-helper-list{margin-top:39px;}
+span.js-icon.column-control{
+  background-image: url('./image/js-sprite.png');
+width: 13px;
+display: inline-block;
+height: 10px;
+background-size: 200%;
+margin-top: 4px;}
+.js-icon.column-control:hover {background-position-x: 13px;}
+span.php-icon.column-control{
+  background-image: url('./image/php-sprite.png');
+width: 26px;
+display: inline-block;
+height: 13px;
+background-size: 200%;
+margin-top: 2px;}
+.php-icon.column-control:hover {background-position-x: 26px;}
+a.helper {text-decoration: none;cursor: pointer;}
+a.helper + span.helper {
+  display: none;
+  position: absolute;
+  background: white;
+  border: solid 1px;
+  padding: 2px;
+  margin-top: -25px;
+  color: black;
+}
+.helper .tag-colour { font-weight: bold;}
+a.helper:hover + span.helper {display: inline;}
+.wp-pointer-buttons a.close {
+    margin: 5px 0 0 20px;
+}
+#ajax-response.error-msg{
+  color:red;
+}
+#full-screen-cf7 {
+    position: absolute;
+    top: -2.4rem;
+    left: 160px;
+		z-index: 100;
+}
+#full-screen-cf7.full-screen {
+  position: absolute;
+  top: auto;
+  left: auto;
+  right: 0;
+  bottom: -58px;
+}
+*[dir="rtl"] #full-screen-cf7.full-screen {
+	right: auto;
+	left: 0;
+}
+#cf7sg-editor.full-screen {
+  top: 5px;
+  z-index: 10;
+  position: fixed;
+  overflow: auto;
+  height: 100%;
+  margin-left: -15px;
+  right:0;
+  width: calc( 100% - 170px);
+}
+.folded #cf7sg-editor.full-screen{
+	width: calc( 100% - 46px);
+}
+#form-editor-tabs ul.ui-tabs-nav {
+    border-bottom: 1px solid #ddd;
+    padding: 7px 0px 0 3px;
+    margin: 0;
+    min-width: 100%;
+    text-align: right;
+    z-index: 1;
+    position: relative;
+}
+#form-editor-tabs ul li.ui-state-disabled:first-child {
+    display: none;
+}
+#form-editor-tabs ul.ui-tabs-nav > li {
+    display: inline-block;
+    border: solid 1px #ddd;
+    padding: 3px 7px;
+    background-color: #d1d1d1;
+    margin: 0 0px -1px;
+    border-top-left-radius: 3px;
+}
+#form-editor-tabs ul.ui-tabs-nav > li.ui-tabs-active {
+    background: #f5f5f5;
+    border-bottom: none;
+}
+.tagsdiv .tagchecklist > span {
+    display: block;
+    margin: 0;
+    clear: both;
+    line-height: 15px;
+}
+.tagsdiv .tagchecklist button.ntdelbutton{
+  display:none;
+}
+.cf7sg-dynamic-list p.the-tagcloud a {
+    display: block;
+    line-height: 15px;
+    font-size: 13px !important;
+    text-decoration: none;
+    color: #669;
+    cursor:default;
+}
+#poststuff .cf7sg-dynamic-list  p.the-tagcloud {
+  border: none;
+  padding: 0;
+  margin-left: 14px;
+  margin-top:0;
+}
+.cf7sg-dynamic-list button.tagcloud-link {
+    display: none;
+}
+.cf7sg-dynamic-list .hide-if-no-js {
+    margin-top: 0;
+}
+/*
+grid layout
+*/
+#html-script, #grid-col, #grid-helper,#grid-js-helper,
+#grid-form .grid-controls,
+#grid-form .row-controls .dashicons-no-alt,
+#grid-form .grid-column > .dashicons-no-alt,
+#grid-row, #grid-collapsible, #grid-tabs, .cf7-sg-hidden,
+#grid-collapsible-with-toggle,
+#grid-cf7-forms,
+#grid-form .cf7sg-external-form-content,
+#grid-form .table-row-button {
+    display: none;
+}
+#grid-form {
+	padding: 10px 0 10px 0;
+}
+/* footer table special styling */
+#grid-form .row.cf7-sg-table .row-controls label.table-row-button {
+    display: block;
+    text-align: center;
+}
+#grid-form .cf7-sg-table-footer .row {
+	min-height: 66px;
+}
+.cf7-sg-table-footer .cf7-field-label.cf7-field-inner,
+.cf7-sg-table-footer .cf7-field-type.cf7-field-inner,
+.cf7-sg-table-footer .dashicons-move.row-control,
+.cf7-sg-table-footer .button.make-grid.column-control,
+.cf7-sg-table-footer .button.external-form  {
+	display: none;
+}
+.cf7-sg-table-footer .cf7-field-tip.cf7-field-inner {
+	height: 42px;
+}
+#grid-form .form-select {
+    display: block;
+    margin: 0 auto;
+}
+#grid-form .form-controls {
+    position: relative;
+    padding: 22px;
+}
+#grid-form .cf7sg-external-form {
+    border: solid 1px #777;
+    background-color: #ddd;
+    margin: 3px 0;
+    border-radius: 3px;
+}
+textarea.grid-input {
+    width: 100%;
+    min-height: 65px;
+}
+#grid-form .grid-controls {
+    position: absolute;
+    background: #f1f1f1;
+    padding: 5px;
+    border: solid 1px grey;
+    width: 144px;
+    z-index:1008;
+}
+.dashicons.column-control::before, .row-controls .dashicons::before {
+	color: #bababa;
+	font-size: 14px;
+	font-weight: lighter;
+    vertical-align: inherit;
+}
+.dashicons.column-control:hover::before, .row-controls .dashicons:hover::before {color:#0065aa}
+#grid-form .grid-column {
+	background-color: transparent;
+}
+#grid-form .grid-column:hover {
+    /* background-color: #ededed; */
+}
+#grid-form .columns:hover > .grid-column > .cf7-field-inner {
+	background: #e4e4e4;
+}
+#grid-form .container,
+#grid-form .table-row-button input  {
+    max-width: 100%;
+}
+#grid-form  .cf7sg-slider-controls .button.slider-control {
+	display: none;
+}
+#cf7-codemirror .CodeMirror,
+#cf7-js-codemirror .CodeMirror,
+#cf7-css-codemirror .CodeMirror {
+    height: calc( 100vh - 180px);
+}
+#grid-form .row.cf7-sg-table {
+    box-shadow: 0px 0px 4px #920a03;
+}
+ #grid-form .dashicons:hover{
+   cursor:pointer;
+   color: blue;
+ }
+ #grid-form .dashicons{
+   clear:both;
+ }
+ #grid-form .columns {
+  /* border-top: solid 2px #ddd; */
+  /* border-bottom: solid 2px #ddd; */
+ }
+#grid-form .columns.column-selected {
+  border-bottom-color: #0055d4;
+  border-top-color: #0055d4;
+}
+#grid-form .container {
+   padding: 0;
+   border: solid 1px #d7d7d7;
+   margin-top: 5px;
+   border-radius: 3px;
+}
+ #grid-form .row {
+    padding: 4px 20px 4px 4px;
+    position: relative;
+    min-height: 90px;
+}
+#grid-form .row-controls:hover{ background: #ddd;}
+#grid-form .row-controls{
+    position: absolute;
+    top:0;
+    right: 0;
+    width: 20px;
+    display: inline-block;
+    height: 100%;
+    background: transparent;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+#grid-form .row-controls .grid-controls {
+    position: absolute;
+    top: 20px;
+    right: 0px;
+    text-align: right;
+}
+#grid-form .cf7sg-tag-dynamic_select:last-child {
+    margin: 0;
+}
+#grid-form .cf7sg-helper-list {
+    margin: 0;
+    margin-top: 44px;
+    padding: 2px 5px 8px 5px;
+    background: white;
+}
+#grid-form .php-icon {
+    position: relative;
+}
+#grid-form .php-icon + div.helper-popup,
+#grid-form .js-icon + div.helper-popup {
+    position: absolute;
+    z-index: 9;
+    background: #d8d8d8;
+    border: solid 1px #787878;
+    width: max-content;
+}
+#grid-form .helper-popup p {
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    line-height: normal;
+}
+#grid-form .helper-popup .dashicons.dashicons-no-alt {
+    position: absolute;
+    right: -9px;
+    top: -8px;
+    background: white;
+    border-radius: 50%;
+    z-index: 9;
+}
+#grid-form .helper-popup .helper{
+  position: relative;
+}
+#grid-form .helper-popup .copy-helper {
+    display: none;
+    position: absolute;
+    top: -22px;
+    /* left: 20px; */
+    background: #323232;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: bold;
+    min-width: 95px;
+}
+#grid-form .helper-popup .helper:hover .copy-helper {
+    display: inline-block;
+}
+.helper-list li, .cf7sg-se-option {
+  position: relative;
+}
+.helper-list li .helper::before{
+    content: 'Click to copy!';
+    display: none;
+    position: absolute;
+    top: -22px;
+    left: 10px;
+    background: #323232;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+.helper-list li .helper:hover::before,
+.cf7sg-se-option .helper:hover::before  {
+    display: inline-block;
+}
+.cf7sg-se-option .helper:hover::before {
+	bottom: 17px;
+	left: 28px;
+}
+.helper-list li.no-post-my-form{
+  display: none;
+}
+#grid-form .helper-popup .no-post-my-form{
+  display: none;
+}
+#grid-form .cf7sg-collapsible-title label {
+    padding-left: 4px;
+}
+#grid-form .row-selected .row-controls{
+    background-color: #0055d4;
+}
+#grid-form  .row-controls .dashicons{
+  color: #ddd;
+}
+.dashicons.dashicons-plus.row-control::before, .dashicons.dashicons-plus.form-control::before {
+    position: relative;
+    top: 1px;
+}
+#grid-form .grid-column .dashicons-move {
+    margin-left: calc(50% - 65px);
+}
+#grid-form .columns.one .grid-column .dashicons-move {
+    margin-left: 0;
+}
+#grid-form .grid-column .icon-code.column-control {
+    float: right;
+    margin-right: 5px;
+}
+.icon-code{
+  background: url('image/code-sprite.png') 0px 0px;
+  width: 20px;
+  height: 15px;
+  background-repeat: no-repeat;
+  background-size: auto 20px;
+  display:inline-block;
+}
+#grid-form .grid-column .icon-code.column-control:hover {
+    background-position: -20px 0px;
+    cursor: pointer;
+}
+/*limit inner tables/tabs within tables/tabs */
+#grid-form .container.cf7-sg-table .container .row-controls span.dashicons-edit,
+#grid-form .container.cf7-sg-tabs-panel .row .row label.tabs-row-label {
+    display: none !important;
+}
+#grid-form .row-controls .dashicons {
+    margin-top: 3px;
+}
+#grid-form .row > div:nth-last-child(2) > .grid-column .dashicons-trash.column-control,
+.container.cf7-sg-tabs-panel > .row > .row-controls .dashicons-plus,
+.container.cf7-sg-tabs-panel > .row > .row-controls .dashicons-trash {display: none;}
+
+#grid-form .row .columns + .columns > .grid-column .dashicons-trash.column-control {
+    display: inline-block;
+}
+#grid-form > .container > .row:first-child > .columns:first-child .dashicons-move.column-control {
+    margin-left: calc(50% - 45px);
+}
+#grid-form > .container:first-child >.row:first-child > .row-controls  .dashicons-trash,
+#grid-form > .cf7sg-external-form:first-child > .form-controls  .dashicons-trash {
+  visibility:hidden;
+}
+
+.CodeMirror-wrap.cm-s-material-ocean .cm-shortcode {color: #4496ff;}
+.CodeMirror-wrap.cm-s-paraiso-light .cm-shortcode {color: blue;}
+.CodeMirror-wrap.cm-s-paraiso-light span.cm-string {color: #937c01;}
+.CodeMirror-wrap.cm-s-paraiso-light span.cm-tag {color: #b70b0b;}
+.CodeMirror-wrap.cm-s-material-ocean .cm-cf7sg-attr {color: #d300ff;}
+.CodeMirror-wrap.cm-s-material-ocean .cm-cf7sg-attr + .cm-string {color: #00f900;}
+.CodeMirror-wrap.cm-s-paraiso-light .cm-cf7sg-attr {color: #228f85;}
+.CodeMirror-wrap.cm-s-paraiso-light .cm-cf7sg-attr + .cm-string {color: #f124ee;}
+
+.disable-button{
+  text-decoration: none;
+  padding: 0 10px 1px;
+  color: #9b9b9b;
+  border: solid 1px #ccc;
+  background-color: #ccc;
+  height: 28px;
+  line-height: 26px;
+  vertical-align: top;
+  display: inline-block;
+  border-radius: 3px;
+  font-size: 13px;
+  margin: 0;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+.disable-button:hover {
+    color: #939393;
+    cursor: unset;
+}
+.disable-button.button:hover {
+    cursor: pointer;
+    color:inherit;
+}
+#top-grid-controls {
+    padding-top: 2px;
+}
+#grid-form > .container {
+    max-width: 100%;
+}
+.button.make-grid, .button.external-form {
+    width: 100%;
+    text-align: center;
+    margin-top: 5px;
+}
+#form-editor-tabs > ul li.ui-tabs-active > a {
+  color:inherit;
+  background-color: inherit;
+}
+#form-editor-tabs > ul li > a {
+	padding: 1px 8px;
+	display: block;
+	text-decoration: none;
+	min-width: 75px;
+	text-align: center;
+	background-color: #818a99;
+	color: white;
+	min-height: 25px;
+}
+div#form-editor-tabs > ul.ui-tabs-nav li {
+    padding: 0;
+}
+#form-editor-tabs ul.ui-tabs-nav > li.ui-tabs-active a:hover {
+    cursor: default;
+}
+.columns .row-controls .table-row-label,
+.columns .row-controls .tabs-row-label,
+.container.cf7-sg-table + .container  > .row .row-controls .footer-row-label,
+.container.cf7sg-slider + .container  > .row .row-controls .slider-control-label{
+    display: inline-block;
+}
+#grid-form ul.cf7-sg-tabs-list{
+    margin: 0;
+}
+#grid-form ul.cf7-sg-tabs-list li{
+    display: inline-block;
+    background-color: #d7d7d7;
+    padding: 2px 2px 0 5px;
+    margin-bottom: -5px;
+    border-top-right-radius: 3px;
+    margin-top: 2px;
+    border-bottom-right-radius: 0px;
+}
+#grid-form input:disabled:hover, #grid-form .grid-controls label:hover {
+    cursor: default;
+}
+#grid-form .container.cf7-sg-tabs-panel, #grid-form .container.cf7sg-collapsible {
+    border: solid 2px #009cff;
+}
+#grid-form ul.cf7-sg-tabs-list li {
+    border-top: solid 2px #009cff;
+    border-left: solid 2px #009cff;
+    border-right: solid 2px #009cff;
+}
+#grid-form .two .grid-column .dashicons-move {
+    margin-left: -2px;
+}
+#grid-form  .cf7-field-inner input,
+#grid-form  .cf7-field-inner textarea,
+#grid-form  .cf7-field-inner span.dashicons {
+    display: none;
+}
+#grid-form  .cf7-field-inner span.dashicons {
+  position:absolute;
+  margin-top: 2px;
+  background: #a5a5a5;
+  padding: 3px 0 0px 0;
+  top: 0;
+  right: 0;
+}
+#grid-form  .cf7-field-inner {
+  padding: 0px 10px;
+  background: transparent;
+  margin: 0;
+  position: relative;
+}
+#grid-form  .cf7-field-tip .content {
+    font-size: 90%;
+    color: #727272;
+    font-style: italic;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#grid-form .cf7-field-type .content {
+    border: solid 1px;
+    width: 100%;
+    display: block;
+    padding: 3px 0px 3px 3px;
+    border-radius: 2px;
+    text-align: center;
+    color: #999;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#grid-form p.content:hover {
+    cursor: pointer;
+    color: #0065aa;
+}
+#grid-form .cf7-field-inner input,
+#grid-form .cf7-field-inner textarea {
+    width: calc(100% - 10px);
+}
+#grid-form .cf7-field-type.textarea p.content {
+    padding: 35px 0;
+}
+#grid-form  .cf7-field-inner p {
+    margin: 0;
+    min-height: 20px;
+}
+#grid-form  .grid-column.submit-field .cf7-field-label,
+#grid-form  .grid-column.submit-field .cf7-field-tip {
+    display: none;
+}
+#grid-form  .cf7-field-type.select .content::after,
+#grid-form  .cf7-field-type.dynamic-select .content::after {
+    content: '\25BC';
+    position: absolute;
+    right: 13px;
+    font-size: 1.1em;
+    line-height: 1px;
+    top: 12px;
+}
+#grid-form  .cf7-field-type.radio .content::after {
+  content: '\25c9';
+  position: absolute;
+  left: 23px;
+  font-size: 1.3em;
+  line-height: 1px;
+  top: 12px;
+}
+#grid-form  .cf7-field-type.checkbox .content::after {
+  content: '\25a1';
+  position: absolute;
+  left: 23px;
+  font-size: 1.3em;
+  line-height: 1px;
+  top: 12px;
+}
+.row-controls .dashicons-move.row-control,  .row-controls .dashicons-move.form-control{
+    visibility: hidden;
+}
+.container + .container > .row > .row-controls .dashicons-move,
+.container + .cf7sg-external-form > .form-controls .dashicons-move,
+.cf7sg-external-form + .container > .row > .row-controls .dashicons-move {
+    visibility: visible;
+}
+.cf7sg-warning {
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 50px;
+    background: white;
+    padding: 10px 20px;
+    border: 2px solid grey;
+    border-radius: 3px;
+    font-size: 1.2em;
+    margin-top: 50px;
+}
+[data-search="li.cf7sg-tag-all,li.cf7sg-tag-dynamic_select,li.cf7sg-tag-dynamic_select-filter"] + .helper-popup {
+    min-width: 300px;
+}
+body.disable-scroll{overflow:hidden;}

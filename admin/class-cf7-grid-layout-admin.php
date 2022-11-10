@@ -150,9 +150,10 @@ class Cf7_Grid_Layout_Admin {
     if (empty($screen) || $this->cf7_post_type() != $screen->post_type){
       return;
     }
+    $ver = version_compare($this->version, '5.0dev', '>=') ? '_v5':'';
     switch( $screen->base ){
       case 'post':
-        wp_enqueue_style( "cf7-grid-post-css", $plugin_dir . 'admin/css/cf7-grid-layout-post.css', array(), $this->version, 'all' );
+        wp_enqueue_style( "cf7-grid-post-css", $plugin_dir . "admin/css/cf7-grid-layout-post{$ver}.css", array(), $this->version, 'all' );
         //dynamic tag
         wp_enqueue_style('cf7sg-dynamic-tag-css', $plugin_dir . 'admin/css/cf7sg-dynamic-tag.css', array(), $this->version, 'all' );
         //benchmark tag
@@ -398,8 +399,8 @@ class Cf7_Grid_Layout_Admin {
           )
         );
         global $post;
-
-        wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7-grid-layout-admin.js', array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
+        $ver = version_compare($this->version, '5.0dev', '>=') ? '_v5':'';
+        wp_enqueue_script( $this->plugin_name, $plugin_dir . "admin/js/cf7-grid-layout-admin{$ver}.js", array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
         /** @since 4.11.0 abstract out dynamic lists */
         do_action('cf7sg_register_dynamic_lists');
         $lists = cf7sg_get_dynamic_lists();
@@ -860,10 +861,12 @@ class Cf7_Grid_Layout_Admin {
    * Display the editor panels (wpcf7 / codemirror / grid)
    *
    * @since 1.0.0
-   * @param      WPCF7_Contact_Form    $form_post     .
+   * @param      WPCF7_Contact_Form    $form_obj     .
   **/
-  public function grid_editor_panel($form_post){
-    require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-grid-layout-admin-display.php';
+  public function grid_editor_panel($form_obj){
+    $ver = get_post_meta($form_obj->id(), '_cf7sg_version', true);
+    $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
+    require_once plugin_dir_path( __FILE__ )  . "/partials/cf7-grid-layout-admin-display{$ver}.php";
   }
   /**
   *
