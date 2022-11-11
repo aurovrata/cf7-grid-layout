@@ -106,7 +106,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           for(const rdx in oneD[fname]) {
             f = (rc>0 ? `${fname}_row-${rc}` : fname);
             if( $table.children( '.row.cf7-sg-table').not('.cf7-sg-cloned-table-row').length < (rc+1) ) $table.cf7sgCloneRow(false, null);
-            $(`:input[name=${f}]`, $table).prefillCF7Field(oneD[fname][rdx],fid);
+            $(`:input[name=${f}]`, $table).prefillCF7Field(fname, oneD[fname][rdx],fid);
             rc++;
           }
         }
@@ -138,7 +138,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           fid = $this.closest('div.cf7-smart-grid').attr('id'),
           val = $this.attr('value');
         if(!objEmpty( cf7sg[fid],['prefill',fname]) ){
-          $this.prefillCF7Field(cf7sg[fid].prefill[fname], fid);
+          $this.prefillCF7Field(fname, cf7sg[fid].prefill[fname], fid);
           val = cf7sg[fid].prefill[fname];
           delete cf7sg[fid].prefill[fname];
         }
@@ -302,7 +302,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           $(':input', $section.children('.row')).each(function(){
             var $field = $(this), fname = $field.attr('name').replace('[]','');
             if( !objEmpty(cf7sg[fid], ['prefill','_cf7sg_toggles',cssId]) ){
-              $field.prefillCF7Field(cf7sg[fid].prefill[fname], fid);
+              $field.prefillCF7Field(fname, cf7sg[fid].prefill[fname], fid);
               state = 0;
               toggled = true;
               delete cf7sg[fid].prefill[fname];
@@ -472,7 +472,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
               for(const tdx in oneD[fname]){
                 f = ( tc>0 ? `${fname}_tab-${tc}`:fname );
                 if( $list.children('li').length < (tc+1) ) $tab.cf7sgCloneTab(true, false);
-                $(`:input[name=${f}]`).prefillCF7Field(oneD[fname][tdx],fid);
+                $(`:input[name=${f}]`).prefillCF7Field(fname, oneD[fname][tdx],fid);
                 tc++;
               }
             }
@@ -497,7 +497,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
                 for(const rdx in twoD[fname][tdx]){
                   f = (rc>0 ? `${f}_row-${rc}` : f);
                   if( $table.children( '.row.cf7-sg-table').not('.cf7-sg-cloned-table-row').length < (rc+1) ) $table.cf7sgCloneRow(false, null);
-                  $(`:input[name=${f}]`, $table).prefillCF7Field(twoD[fname][tdx][rdx],fid);
+                  $(`:input[name=${f}]`, $table).prefillCF7Field(fname, twoD[fname][tdx][rdx],fid);
                   rc++;
                 }
                 tc++;
@@ -513,9 +513,8 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
       var $form= $(this), fid = $form.attr('id');
       if( !objEmpty( cf7sg[fid],['prefill'] ) ){
         Object.keys(cf7sg[fid].prefill).forEach(function(f){
-          var $f = $('.'+f+' :input', $form);
-          if(0==$f.length) $f = $(':input[name="'+f+'"]', $form); /* hidden field fix */
-          $f.prefillCF7Field(cf7sg[fid].prefill[f], fid);
+          let $f = $(':input[name="'+f+'"]', $form); /* hidden field fix */
+          $f.prefillCF7Field(f, cf7sg[fid].prefill[f], fid);
         })
       }
     });
@@ -969,15 +968,15 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     return $('<a href="' + $option.data('permalink') + '">' + state.text + '</a>');
   }
   /** @since 4.4 prefill fields */
-  $.fn.prefillCF7Field = function(val, formID){
+  $.fn.prefillCF7Field = function(fname, val, formID){
     var $field = $(this);
     if(! $field.is(':input') ) return false;
 
-    var $form = $(this), fname = $field.attr('name'),
+    var $form = $(this), 
       field = $field[0], ftype = field.type;
     // for(fname of Object.keys(values)){
     if(isEmpty(field)){
-      if(cf7sg.debug) console.log('CF7SG ERROR: Unable to retrieve form element '+fname);
+      if(cf7sg.debug) console.log('CF7SG ERROR: Unable to retrieve form element '+ $field.attr('name'));
       return $field;
     }
 
@@ -998,10 +997,12 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           field.querySelector('input[value="'+v+'"]').checked=true;
         });
         break;
-      default:
+      default: /*else let's try with an event */
         field.value = val;
         break;
     }
+    let pe = new CustomEvent(`c2p-prefill-field`, { name: fname,value: val });
+    field.dispatchEvent(pe);
     return $field;
   }
   $.fn.cf7sgSelect2Options = function(){
