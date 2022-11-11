@@ -176,7 +176,7 @@ class Cf7_Grid_Layout_Public {
     global $wp_scripts, $post;
     $cf7id = $cf7key = '';
     if ( is_a( $post, 'WP_Post' )  ) { //&& has_shortcode( , 'cf7form')
-      preg_match_all( '/' . get_shortcode_regex() . '/', $post->post_content, $matches, PREG_SET_ORDER );
+      preg_match_all( '/' . get_shortcode_regex(array('cf7form','cf7-form', 'contact-form-7')) . '/', $post->post_content, $matches, PREG_SET_ORDER );
       foreach($matches as $sc){
         switch($sc[2]){
           case 'contact-form-7':
@@ -613,8 +613,8 @@ class Cf7_Grid_Layout_Public {
     if( empty($css_id) ) $this->localised_data += $params;
     else{
       if( !isset($this->localised_data[$css_id]) ) $this->localised_data[$css_id] = array();
-      if( isset($this->localised_data[$css_id]['prefill']) && isset($params[$css_id]['prefill'])){ /** @since 4.15.0  */
-        $this->localised_data[$css_id]['prefill'] = $params[$css_id]['prefill']; //overwrite previous value as this may have been filtered.
+      if( isset($this->localised_data[$css_id]['prefill']) && isset($params['prefill'])){ /** @since 4.15.0  */
+        $this->localised_data[$css_id]['prefill'] = $params['prefill']; //overwrite previous value as this may have been filtered.
       }
       $this->localised_data[$css_id] += $params;
     }
