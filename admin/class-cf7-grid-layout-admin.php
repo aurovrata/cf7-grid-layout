@@ -154,6 +154,11 @@ class Cf7_Grid_Layout_Admin {
     switch( $screen->base ){
       case 'post':
         wp_enqueue_style( "cf7-grid-post-css", $plugin_dir . "admin/css/cf7-grid-layout-post{$ver}.css", array(), $this->version, 'all' );
+        wp_enqueue_style( "cf7-grid-colours-css", $plugin_dir . 'admin/css/cf7sg-admin-colours-fresh.css', array(), $this->version, 'all' );
+        $colour = get_user_meta( get_current_user_id(), 'admin_color', true );
+        if(!empty($colour) && $colour != 'fresh'){
+          wp_enqueue_style( "cf7-grid-colours-user-css", $plugin_dir . "admin/css/cf7sg-admin-colours-{$colour}.css", array(), $this->version, 'all' );
+        }
         //dynamic tag
         wp_enqueue_style('cf7sg-dynamic-tag-css', $plugin_dir . 'admin/css/cf7sg-dynamic-tag.css', array(), $this->version, 'all' );
         //benchmark tag
@@ -1995,5 +2000,26 @@ class Cf7_Grid_Layout_Admin {
   public function load_translation_files($trans){
     $trans[$this->plugin_name]=CF7SG_TRANSLATED_VERSION;
     return $trans;
+  }
+  /**
+   * WP Core admin colour scheme parser.
+   * Hooked on 'admin_init'
+   * @since 5.0
+   */
+  public function parse_admin_colours(){
+    //get the user colour scheme
+    $colour = get_user_meta( get_current_user_id(), 'admin_color', true );
+    if(empty($colour)) $colour = 'fresh';
+    if($colour != 'fresh' && !file_exists(__DIR__."/css/cf7sg-admin-colours-{$colour}.css")){
+      if($file = file_get_contents(ABSPATH."/wp-admin/css/colors/{$colour}/colors.scss")){
+        $file = substr($file, 0, strpos($file, '@import'));
+        $file =  preg_replace('/\: \$([a-z,\-]+)/',': var(--cf7sg-$1)',$file);
+        $file = str_replace('$','--cf7sg-',$file);
+        // $fresh = file_get_contents(__DIR__.'/css/cf7sg-admin-colours-fresh.css');
+        // $file = str_replace(':root{', $file, $fresh);
+        $file = '#cf7sg-editor{' . PHP_EOL . $file. PHP_EOL.'}';
+        file_put_contents(__DIR__."/css/cf7sg-admin-colours-{$colour}.css", $file);
+  }
+    }
   }
 }

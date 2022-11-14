@@ -113,11 +113,11 @@ $cf7_key = $post->post_name;
   <div class="container">
     <div class="row">
     <div class="row-controls">
+        <span class="dashicons dashicons-move row-control"></span>
+        <span class="control-label">Row</span>
+        <span class="dashicons dashicons-trash row-control"></span>
         <span class="dashicons dashicons-edit row-control"></span>
         <span class="dashicons dashicons-no-alt row-control"></span>
-        <span class="dashicons dashicons-move row-control"></span>
-        <span class="dashicons dashicons-plus row-control"></span>
-        <span class="dashicons dashicons-trash row-control"></span>
         <div class="grid-controls">
           <label class="collapsible-row-label unique-mod">
             <?=__('Row collapsible','cf7-grid-layout')?>
@@ -148,6 +148,7 @@ $cf7_key = $post->post_name;
       </div>
       <div class="columns full"></div>
     </div>
+    <div class="add-row-button"><span class="dashicons dashicons-plus row-control"></span></div>
   </div>
 </div>
 <div id="grid-cf7-forms">

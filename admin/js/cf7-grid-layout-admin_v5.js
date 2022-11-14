@@ -109,7 +109,7 @@
         $this.prepend($area);
       });
       $('div.row', $form).each(function(){
-        $(this).append( $('#grid-row .row-controls').clone() );
+        $(this).prepend( $('#grid-row .row-controls').clone() );
       });
       /*--------------------------------------------------- convert collapsible sections  */
       $('div.container.cf7sg-collapsible', $form).each(function(){
@@ -269,6 +269,7 @@
       });
       return isGrid;
     } //end buildGridForm()
+
     /** @since 3.4.0 enable accordion class for containers having multiple collapsible rows */
     $grid.on('cf7sg-update', function(e, update){
       let $container = $(e.target);
