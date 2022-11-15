@@ -150,9 +150,11 @@ class Cf7_Grid_Layout_Admin {
     if (empty($screen) || $this->cf7_post_type() != $screen->post_type){
       return;
     }
-    $ver = version_compare($this->version, '5.0dev', '>=') ? '_v5':'';
     switch( $screen->base ){
       case 'post':
+        global $post;
+        $ver = get_post_meta($post->ID, '_cf7sg_version', true);
+        $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
         wp_enqueue_style( "cf7-grid-post-css", $plugin_dir . "admin/css/cf7-grid-layout-post{$ver}.css", array(), $this->version, 'all' );
         wp_enqueue_style( "cf7-grid-colours-css", $plugin_dir . 'admin/css/cf7sg-admin-colours-fresh.css', array(), $this->version, 'all' );
         $colour = get_user_meta( get_current_user_id(), 'admin_color', true );
@@ -216,7 +218,9 @@ class Cf7_Grid_Layout_Admin {
 
     switch( $screen->base ){
       case 'post':
-      global $post;
+        global $post;
+        $ver = get_post_meta($post->ID, '_cf7sg_version', true);
+        $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
         /* register codemirror editor & addons. */
         //codemirror script
         wp_register_script( 'cf7-codemirror-js',
@@ -376,9 +380,10 @@ class Cf7_Grid_Layout_Admin {
         //enqueue the cf7 scripts.
         /** @since 4.11.5 force loading of current form for cf7 plugin error handling */
         if('auto-draft'!=$post->post_status) WPCF7_ContactForm::get_instance($post);
+
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
-        wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs', 'cf7-codemirror-js' ), $this->version, true );
+        wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . "admin/js/cf7-grid-codemirror{$ver}.js", array( 'jquery', 'jquery-ui-tabs', 'cf7-codemirror-js' ), $this->version, true );
         wp_localize_script(
           'cf7-grid-codemirror-js',
           'cf7sgeditor',
@@ -403,8 +408,6 @@ class Cf7_Grid_Layout_Admin {
             'fixhtmlform'=>__('The editor failed to load.  You may recover your form by copying it into a new form editor, do you wish to continue?', 'cf7-grid-layout'),
           )
         );
-        global $post;
-        $ver = version_compare($this->version, '5.0dev', '>=') ? '_v5':'';
         wp_enqueue_script( $this->plugin_name, $plugin_dir . "admin/js/cf7-grid-layout-admin{$ver}.js", array('cf7-grid-codemirror-js', 'jquery-ui-sortable' ), $this->version, true );
         /** @since 4.11.0 abstract out dynamic lists */
         do_action('cf7sg_register_dynamic_lists');

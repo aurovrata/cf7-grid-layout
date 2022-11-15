@@ -89,13 +89,13 @@ $cf7_key = $post->post_name;
         </label>
       </div>
       <textarea id="wpcf7-form" class="cf7-sg-hidden codemirror-cf7-update">
-        <?= esc_textarea( $form_post->prop( 'form' ) );
+        <?= esc_textarea( $form_obj->prop( 'form' ) );
         /** @since 2.8.3 rename codemirror textarea##wpcf7-form adn initially popullate with form.  */?>
       </textarea>
     </div>
   </div>
 </div>
-<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?= esc_textarea( $form_post->prop( 'form' ) );?></textarea>
+<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?= esc_textarea( $form_obj->prop( 'form' ) );?></textarea>
 <!-- cf7sg - track embeded sub-forms -->
 <input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms" />
 <input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />
@@ -160,7 +160,7 @@ $cf7_key = $post->post_name;
             'post_type' => 'wpcf7_contact_form',
             'post_status'=> 'publish',
             'posts_per_page' => -1,
-            'post__not_in' => array($form_post->id())
+            'post__not_in' => array($form_obj->id())
           ));
           if(!empty($cf7_forms)):
             foreach($cf7_forms as $cf7_form):

@@ -248,7 +248,10 @@
           let $this = $(this);
           if($this.children().is('.container')) return true;
           $this.html2gui();
-        });
+          $this.append($('#grid-row .columns > .add-row-button').clone());
+      });
+        /** @since 5.0  add row button after last container*/
+        $grid.append($('#grid-row > .add-row-button').clone());
       }else{
         //set the first textarea as our default tag consumer
         $('textarea#wpcf7-form').attr('id','');
@@ -381,8 +384,10 @@
       let $parentRow,$parentContainer, $parentColumn;
       if($target.is('.dashicons-trash.form-control')){ //--------TRASH included form
         $target.closest('.cf7sg-external-form').remove();
+        return true;
       }else if($target.is('.dashicons-plus.form-control') ){ //---ADD external form
         $target.closest('.cf7sg-external-form').insertNewRow();
+        return true;
       }else if($target.is('.dashicons-trash.row-control')){ //--------TRASH
          $parentContainer = $target.closest('.container');
         let $parent = $parentContainer.parent();
@@ -393,8 +398,10 @@
             $parent.children('.grid-column').append('<textarea class="grid-input"></textarea>');
           }
         }
-      }else if($target.is('.dashicons-plus.row-control')){ //-----------ADD Row
-        $target.closest('.container').insertNewRow();
+        return true;
+      }else if($target.is('.add-row-button .button')){ //-----------ADD Row
+        $grid.children('.container').last().insertNewRow();
+        return true;
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
         //hide any other controls that might be open
         //taken care by closeAllControls
@@ -406,8 +413,10 @@
         TODO: use $('.grid-controls')filterColumnControls() to make sure columns sizes/offsets are correct.
         possibly introduce a boolean to check if filter has been run already on this row
         */
+        return true;
       }else if( $target.is('.dashicons-no-alt.row-control') ) { //----------------hide controls
         //take care by closeAllControls
+        return true;
       }else if($target.is('input.collapsible-row')){ //-------------checkbox collapsible row
         let $container = $target.closest('.container');
         if($target.is(':checked')){
@@ -425,6 +434,7 @@
         }
         //toggle disable the sibling input
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
+        return true;
       }else if($target.is('input.table-row')){ //-------------checkbox table row
         if($target.is(':checked')){
           let id = 'cf7-sg-table-'+(new Date).getTime();
@@ -436,6 +446,7 @@
         }
         //toggle disable the sibling input
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
+        return true;
       }else if($target.is('input.tabs-row')){ //-------------checkbox tabbed row
         let $panel = $target.closest('.container');
         if($target.is(':checked')){
@@ -453,6 +464,7 @@
         }
         //toggle disable the sibling input
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
+        return true;
       }else if($target.is('input.footer-row')){ //-------------checkbox footer row
         let $table = $target.closest('.container').prev();
         if($table.is('.container.cf7-sg-table')){
@@ -464,6 +476,7 @@
           //toggle disable the sibling input
           $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
         }
+        return true;
       }else if( $target.is('.make-grid.row-control') ){ /** @since 3.4.0--wrap row into column ->make grid*/
         //close the grid-control box
         $target.parent().hide();
@@ -485,6 +498,7 @@
           //finally insert a new row with the content moved to the new row.
           $parentColumn.insertNewRow($content.remove());
         }
+        return true;
       }else if($target.is('input.slider-control')){
         $parentContainer = $target.closest('.container');
         $parentRow = $target.closest('.row');
@@ -498,6 +512,7 @@
           $('.button.slider-control',$parentContainer).remove();
           $parentRow.removeClass('cf7sg-submit-controls');
         }
+        return true;
       }
 
 
@@ -1266,13 +1281,12 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
   $.fn.insertNewRow = function(areaCode){
     let $this = $(this);
     if(typeof areaCode === 'undefined') areaCode ='';
-    let $newRow = $( $('#grid-row').html() );
+    let $newRow = $('#grid-row .container').clone();
     //append the column controls and textarea
-    $('.columns', $newRow).append( $($('#grid-col').html()) );
+    $('.columns', $newRow).prepend( $($('#grid-col').html()) );
 
     switch(true){
       case $this.is('.columns'):
-      case $this.is($grid):
       case $this.is('.row'):
         $this.append($newRow);
         break;

@@ -347,12 +347,6 @@ textarea.grid-input {
     width: 144px;
     z-index:1008;
 }
-.dashicons.column-control::before, .row-controls .dashicons::before {
-	/* color: #bababa; */
-	font-size: 14px;
-	font-weight: lighter;
-    line-height: 1rem;
-}
 /* .dashicons.column-control:hover::before, .row-controls .dashicons:hover::before {color:#0065aa} */
 #grid-form .grid-column {
 	background-color: transparent;
@@ -379,9 +373,9 @@ textarea.grid-input {
     box-shadow: 0px 0px 4px #920a03;
 }
  
- #grid-form .dashicons{
+ /* #grid-form .dashicons{
    clear:both;
- }
+ } */
  #grid-form .columns {
   /* border-top: solid 2px #ddd; */
   /* border-bottom: solid 2px #ddd; */
@@ -394,12 +388,14 @@ textarea.grid-input {
    border-radius: 3px;
 }
  #grid-form .row {
-    padding: 4px 20px 4px 4px;
+    padding: 4px 0px;
     position: relative;
     min-height: 90px;
 }
-#grid-form .row-controls + .columns {
-	margin-top: 30px;
+#grid-form > .container > .row > .columns {
+	margin-top: 20px;
+}
+#grid-form  .row-controls+.columns {
 	margin-left: 0px;
 }
 /* #grid-form .row-controls:hover{ background: #ddd;} */
@@ -501,6 +497,32 @@ textarea.grid-input {
 .helper-list li.no-post-my-form{
   display: none;
 }
+#grid-form .add-row-button {
+	width: 100%;
+	text-align: center;
+}
+#grid-form > .add-row-button {
+	margin-top: 15px;
+    border: var(--cf7sg-highlight-color) dotted 1px;
+    border-radius: 3px;
+}
+#grid-form .add-row-button a {
+	color: inherit;
+	text-decoration: none;
+}
+#grid-form .add-row-button .dashicons {
+	vertical-align: middle;
+	/* line-height: 1.35rem; */
+}
+#grid-form .dashicons.column-control::before, 
+#grid-form .row-controls .dashicons::before {
+	font-size: 14px;
+	font-weight: lighter;
+    vertical-align: text-bottom;
+}
+#grid-form .row-controls span {
+	line-height: 1.35rem;
+}
 #grid-form .helper-popup .no-post-my-form{
   display: none;
 }
@@ -513,13 +535,9 @@ textarea.grid-input {
 #grid-form  .row-controls .dashicons, #grid-form  .row-controls .control-label{
   color: var(--cf7sg-menu-submenu-text);
 }
-#grid-form .row .dashicons:hover{
+#grid-form .row-controls .dashicons:hover{
   cursor:pointer;
   color: var(--cf7sg-menu-submenu-focus-text);
-}
-.dashicons.dashicons-plus.row-control::before, .dashicons.dashicons-plus.form-control::before {
-    position: relative;
-    top: 1px;
 }
 #grid-form .grid-column .dashicons-move {
     margin-left: calc(50% - 65px);
@@ -549,14 +567,25 @@ textarea.grid-input {
     display: none !important;
 }
 
-#grid-form .row-controls .dashicons-edit {
+#grid-form .row-controls .dashicons-edit,
+#grid-form .row-controls .dashicons-trash {
 	margin-right: 3px;
     float: right;
+}
+#grid-form .add-row-button .button {
+	border: none;
 }
 #grid-form .row > div:nth-last-child(2) > .grid-column .dashicons-trash.column-control,
 .container.cf7-sg-tabs-panel > .row > .row-controls .dashicons-plus,
 .container.cf7-sg-tabs-panel > .row > .row-controls .dashicons-trash {display: none;}
-
+.row-controls .dashicons-move, .row-controls .dashicons-move.form-control{
+    cursor: unset;
+}
+.container + .container > .row > .row-controls .dashicons-move,
+.container + .cf7sg-external-form > .form-controls .dashicons-move,
+.cf7sg-external-form + .container > .row > .row-controls .dashicons-move {
+    cursor: grab;
+}
 #grid-form .row .columns + .columns > .grid-column .dashicons-trash.column-control {
     display: inline-block;
 }
@@ -746,14 +775,6 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   font-size: 1.3em;
   line-height: 1px;
   top: 12px;
-}
-.row-controls .dashicons-move.row-control,  .row-controls .dashicons-move.form-control{
-    visibility: hidden;
-}
-.container + .container > .row > .row-controls .dashicons-move,
-.container + .cf7sg-external-form > .form-controls .dashicons-move,
-.cf7sg-external-form + .container > .row > .row-controls .dashicons-move {
-    visibility: visible;
 }
 .cf7sg-warning {
     position: absolute;
