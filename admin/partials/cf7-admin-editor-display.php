@@ -19,8 +19,10 @@
 <?php
 if('add' == $screen->action) do_action( 'load-contact_page_wpcf7-new' );
 else do_action( 'load-toplevel_page_wpcf7' );
+$colour = get_user_meta( get_current_user_id(), 'admin_color', true );
+if(empty($colour)) $colour = 'default';
 ?>
-<div id="cf7sg-editor">
+<div id="cf7sg-editor" class="<?=$colour?>">
     <div style="position:relative">
       <a id="full-screen-cf7" class="button" href="javascript:void(0)"><span><?= __('toggle full screen','cf7-grid-layout')?></span></a>
     </div>

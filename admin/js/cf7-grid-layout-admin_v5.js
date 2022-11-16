@@ -385,9 +385,6 @@
       if($target.is('.dashicons-trash.form-control')){ //--------TRASH included form
         $target.closest('.cf7sg-external-form').remove();
         return true;
-      }else if($target.is('.dashicons-plus.form-control') ){ //---ADD external form
-        $target.closest('.cf7sg-external-form').insertNewRow();
-        return true;
       }else if($target.is('.dashicons-trash.row-control')){ //--------TRASH
          $parentContainer = $target.closest('.container');
         let $parent = $parentContainer.parent();
@@ -435,14 +432,14 @@
         //toggle disable the sibling input
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
         return true;
-      }else if($target.is('input.table-row')){ //-------------checkbox table row
-        if($target.is(':checked')){
+      }else if($target.is('.row-control.dashicons-editor-table')){ //-------------checkbox table row
+        if($target.is('.cf7-sg-table *')){
+          $target.closest('.row').removeClass('cf7-sg-table');
+          $target.closest('.container').removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
+        }else{
           let id = 'cf7-sg-table-'+(new Date).getTime();
           $target.closest('.row').addClass('cf7-sg-table');
           $target.closest('.container').addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
-        }else{
-          $target.closest('.row').removeClass('cf7-sg-table');
-          $target.closest('.container').removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
         }
         //toggle disable the sibling input
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
@@ -642,8 +639,8 @@
         //replace container with form selector
         $target.closest('.container').after($('#grid-cf7-forms').html());
         $target.closest('.container').remove();
-      }else if( $target.is('.dashicons-plus.column-control') ){ //--------------------add column
-        $parentColumn = $target.closest('.columns');
+      }else if( $target.is('.dashicons-menu-alt.row-control') ){ //--------------------add column
+        $parentColumn = $target.parent().siblings('.columns').last();
         $parentRow = $parentColumn.closest('.row');
         let classList, idx , columns, row, newSize=0, createColumn = true, total = 0;
         let sizes = [], $newColumn = $('<div class="columns"></div>');

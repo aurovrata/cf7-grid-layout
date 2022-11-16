@@ -2004,25 +2004,4 @@ class Cf7_Grid_Layout_Admin {
     $trans[$this->plugin_name]=CF7SG_TRANSLATED_VERSION;
     return $trans;
   }
-  /**
-   * WP Core admin colour scheme parser.
-   * Hooked on 'admin_init'
-   * @since 5.0
-   */
-  public function parse_admin_colours(){
-    //get the user colour scheme
-    $colour = get_user_meta( get_current_user_id(), 'admin_color', true );
-    if(empty($colour)) $colour = 'fresh';
-    if($colour != 'fresh' && !file_exists(__DIR__."/css/cf7sg-admin-colours-{$colour}.css")){
-      if($file = file_get_contents(ABSPATH."/wp-admin/css/colors/{$colour}/colors.scss")){
-        $file = substr($file, 0, strpos($file, '@import'));
-        $file =  preg_replace('/\: \$([a-z,\-]+)/',': var(--cf7sg-$1)',$file);
-        $file = str_replace('$','--cf7sg-',$file);
-        // $fresh = file_get_contents(__DIR__.'/css/cf7sg-admin-colours-fresh.css');
-        // $file = str_replace(':root{', $file, $fresh);
-        $file = '#cf7sg-editor{' . PHP_EOL . $file. PHP_EOL.'}';
-        file_put_contents(__DIR__."/css/cf7sg-admin-colours-{$colour}.css", $file);
-  }
-    }
-  }
 }

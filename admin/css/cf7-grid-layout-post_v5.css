@@ -1,3 +1,23 @@
+#cf7sg-editor{
+    --cf7sg-scheme-name: "default" ;
+    --cf7sg-text-color: #fff ;
+    --cf7sg-base-color: #23282d ;
+    --cf7sg-icon-color: #f0f0f1 ;
+    --cf7sg-icon-color-enabled: #ffb402;
+    --cf7sg-highlight-color: #808080 ;
+    --cf7sg-menu-submenu-text: #bcbcbc;
+    --cf7sg-menu-submenu-focus-text: #72aee6;
+    --cf7sg-menu-submenu-background: #2c3338;
+}
+#cf7sg-editor.blue{
+    --cf7sg-scheme-name: "blue";
+    --cf7sg-base-color: #52accc;
+    --cf7sg-icon-color: #e5f8ff;
+    --cf7sg-highlight-color: #096484;
+    --cf7sg-menu-submenu-text: #e2ecf1;
+    --cf7sg-menu-submenu-focus-text: #fff;
+    --cf7sg-menu-submenu-background: #4796b3;
+}
 #cf7sg-cache-limit + p {margin: 0;font-style: italic;}
 #cf7sg-cache-limit + p > code {font-style:normal;}
 #cf7sg-cache-limit {display: inline-block;}
@@ -313,7 +333,7 @@ grid layout
 }
 .cf7-sg-table-footer .cf7-field-label.cf7-field-inner,
 .cf7-sg-table-footer .cf7-field-type.cf7-field-inner,
-.cf7-sg-table-footer .dashicons-move.row-control,
+.cf7-sg-table-footer .dashicons-move,
 .cf7-sg-table-footer .button.make-grid.column-control,
 .cf7-sg-table-footer .button.external-form  {
 	display: none;
@@ -341,19 +361,11 @@ textarea.grid-input {
 }
 #grid-form .grid-controls {
     position: absolute;
-    background: #f1f1f1;
     padding: 5px;
-    border: solid 1px grey;
     width: 144px;
     z-index:1008;
 }
 /* .dashicons.column-control:hover::before, .row-controls .dashicons:hover::before {color:#0065aa} */
-#grid-form .grid-column {
-	background-color: transparent;
-}
-#grid-form .grid-column:hover {
-    /* background-color: #ededed; */
-}
 #grid-form .columns:hover > .grid-column > .cf7-field-inner {
 	background: #e4e4e4;
 }
@@ -369,18 +381,6 @@ textarea.grid-input {
 #cf7-css-codemirror .CodeMirror {
     height: calc( 100vh - 180px);
 }
-#grid-form .row.cf7-sg-table {
-    box-shadow: 0px 0px 4px #920a03;
-}
- 
- /* #grid-form .dashicons{
-   clear:both;
- } */
- #grid-form .columns {
-  /* border-top: solid 2px #ddd; */
-  /* border-bottom: solid 2px #ddd; */
- }
-
 #grid-form .container {
    padding: 0;
    border: solid 1px #d7d7d7;
@@ -408,7 +408,6 @@ textarea.grid-input {
     /* height: 100%; */
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
-    background-color: var(--cf7sg-highlight-color);
 }
 #grid-form .row-controls .grid-controls {
     position: absolute;
@@ -503,7 +502,6 @@ textarea.grid-input {
 }
 #grid-form > .add-row-button {
 	margin-top: 15px;
-    border: var(--cf7sg-highlight-color) dotted 1px;
     border-radius: 3px;
 }
 #grid-form .add-row-button a {
@@ -512,7 +510,9 @@ textarea.grid-input {
 }
 #grid-form .add-row-button .dashicons {
 	vertical-align: middle;
-	/* line-height: 1.35rem; */
+}
+.container.cf7-sg-table .add-row-button {
+	display: none;
 }
 #grid-form .dashicons.column-control::before, 
 #grid-form .row-controls .dashicons::before {
@@ -520,7 +520,11 @@ textarea.grid-input {
 	font-weight: lighter;
     vertical-align: text-bottom;
 }
-#grid-form .row-controls span {
+#grid-form .dashicons-editor-code.column-control::before {
+	font-size: 16px;
+}
+#grid-form .row-controls span,
+#grid-form .grid-column .dashicons {
 	line-height: 1.35rem;
 }
 #grid-form .helper-popup .no-post-my-form{
@@ -530,47 +534,53 @@ textarea.grid-input {
     padding-left: 4px;
 }
 #grid-form .row-selected .row-controls{
-    background-color: #0055d4;
+    background-color: var(--cf7sg-highlight-color);
 }
-#grid-form  .row-controls .dashicons, #grid-form  .row-controls .control-label{
-  color: var(--cf7sg-menu-submenu-text);
+#grid-form  .row-controls .dashicons, 
+#grid-form  .row-controls .control-label{
+    color: var(--cf7sg-menu-submenu-text);
+}
+#grid-form .row.cf7-sg-table {
+    box-shadow: 0px 0px 4px var(--cf7sg-icon-color-enabled);
+}
+#grid-form  .grid-column .column-control {
+  color: #fff;
+}
+#grid-form .row-controls{
+    background-color: var(--cf7sg-base-color);
+}
+#grid-form .row-controls .grid-controls{
+    background-color: var(--cf7sg-menu-submenu-background);
+    color: var(--cf7sg-menu-submenu-text);
 }
 #grid-form .row-controls .dashicons:hover{
   cursor:pointer;
   color: var(--cf7sg-menu-submenu-focus-text);
 }
-#grid-form .grid-column .dashicons-move {
-    margin-left: calc(50% - 65px);
+#grid-form .grid-column {
+	background-color: var(--cf7sg-highlight-color);
+    margin: 5px 5px 0 5px;
+}
+#grid-form .cf7-sg-table .row-controls .dashicons-editor-table{
+    color:var(--cf7sg-icon-color-enabled);
+}
+#grid-form .grid-column .cf7-field-inner {
+	background-color: #fff;
 }
 #grid-form .columns.one .grid-column .dashicons-move {
     margin-left: 0;
-}
-#grid-form .grid-column .icon-code.column-control {
-    float: right;
-    margin-right: 5px;
-}
-.icon-code{
-  background: url('image/code-sprite.png') 0px 0px;
-  width: 20px;
-  height: 15px;
-  background-repeat: no-repeat;
-  background-size: auto 20px;
-  display:inline-block;
-}
-#grid-form .grid-column .icon-code.column-control:hover {
-    background-position: -20px 0px;
-    cursor: pointer;
 }
 /*limit inner tables/tabs within tables/tabs */
 #grid-form .container.cf7-sg-table .container .row-controls span.dashicons-edit,
 #grid-form .container.cf7-sg-tabs-panel .row .row label.tabs-row-label {
     display: none !important;
 }
-
-#grid-form .row-controls .dashicons-edit,
-#grid-form .row-controls .dashicons-trash {
-	margin-right: 3px;
+#grid-form  .dashicons-edit, #grid-form  .dashicons-no-alt{margin-right: 3px;}
+#grid-form  .grid-control:not(.dashicons-move){
     float: right;
+}
+#grid-form .row-controls .dashicons-menu-alt{
+    transform: rotate(90deg);
 }
 #grid-form .add-row-button .button {
 	border: none;
@@ -695,7 +705,9 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 #grid-form  .cf7-field-inner input,
 #grid-form  .cf7-field-inner textarea,
-#grid-form  .cf7-field-inner span.dashicons {
+#grid-form  .cf7-field-inner span.dashicons,
+#grid-form .row:not(.cf7-sg-table) .row-controls .control-label.table-row,
+#grid-form .cf7-sg-table .row-controls .control-label:not(.table-row) {
     display: none;
 }
 #grid-form  .cf7-field-inner span.dashicons {

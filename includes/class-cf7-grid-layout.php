@@ -213,8 +213,6 @@ class Cf7_Grid_Layout {
     /**
     *@since 2.3.0 redirect post.php for form duplicate*/
     $this->loader->add_filter('admin_init', $plugin_admin, 'duplicate_cf7_form');
-		/** @since 5.0 parse admin css colours */
-    $this->loader->add_filter('admin_init', $plugin_admin, 'parse_admin_colours');
 
     /** @since 2.6.0*/
     $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'pretty_admin_pointers' );

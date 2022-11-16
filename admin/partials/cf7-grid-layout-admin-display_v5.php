@@ -113,11 +113,13 @@ $cf7_key = $post->post_name;
   <div class="container">
     <div class="row">
     <div class="row-controls">
-        <span class="dashicons dashicons-move row-control"></span>
-        <span class="control-label">Row</span>
-        <span class="dashicons dashicons-edit row-control"></span>
-        <span class="dashicons dashicons-no-alt row-control"></span>
-        <span class="dashicons dashicons-trash row-control"></span>
+        <span class="dashicons dashicons-move row-control grid-control"></span>
+        <span class="control-label">Row</span><span class="control-label table-row">Table</span>
+        <span class="dashicons dashicons-edit row-control grid-control"></span>
+        <span class="dashicons dashicons-no-alt row-control grid-control"></span>
+        <span class="dashicons dashicons-trash row-control grid-control"></span>
+        <span class="dashicons dashicons-menu-alt row-control grid-control"></span>
+        <span class="dashicons dashicons-editor-table row-control grid-control"></span>
         <div class="grid-controls">
           <label class="collapsible-row-label unique-mod">
             <?=__('Row collapsible','cf7-grid-layout')?>
@@ -150,7 +152,7 @@ $cf7_key = $post->post_name;
     </div>
   </div>
   <div class="add-row-button">
-    <span class=button><span class="dashicons dashicons-plus row-control"></span>Add Row</span>
+    <span class=button><span class="dashicons dashicons-plus"></span>Add Row</span>
   </div>
 </div>
 <div id="grid-cf7-forms">
@@ -158,7 +160,6 @@ $cf7_key = $post->post_name;
     <div class="form-controls">
     <div class="row-controls">
         <span class="dashicons dashicons-move form-control"></span>
-        <span class="dashicons dashicons-plus form-control"></span>
         <span class="dashicons dashicons-trash form-control"></span>
       </div>
       <select class="form-select">
@@ -208,14 +209,13 @@ $cf7_key = $post->post_name;
 </div>
 <div id="grid-col">
   <div class="grid-column">
-    <span class="dashicons dashicons-edit column-control"></span>
-    <span class="dashicons dashicons-no-alt column-control"></span>
-    <span class="dashicons dashicons-plus column-control"></span>
+    <span class="dashicons dashicons-move column-control grid-control"></span>
+    <span class="dashicons dashicons-edit column-control grid-control"></span>
+    <span class="dashicons dashicons-no-alt column-control grid-control"></span>
+    <span class="dashicons dashicons-trash column-control grid-control"></span>
     <span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
-    <span class="js-icon column-control" style="display:none;"></span>
-    <span class="dashicons dashicons-trash column-control"></span>
-    <span class="dashicons dashicons-move column-control"></span>
-    <span class="icon-code column-control"></span>
+    <span class="js-icon column-control grid-control" style="display:none;"></span>
+    <span class="dashicons dashicons-editor-code column-control grid-control"></span>
     <div class="grid-controls">
       <?=__('Column offset:','cf7-grid-layout')?><br />
       <select class="column-offset select2 column-setting">
@@ -270,7 +270,7 @@ $cf7_key = $post->post_name;
     <textarea class="grid-input"></textarea>
   </div>
   <div class="add-row-button">
-    <span class=button><span class="dashicons dashicons-plus row-control"></span>Add Field</span>
+    <span class=button><span class="dashicons dashicons-plus"></span>Add Field</span>
   </div>
 </div>
 <?php
