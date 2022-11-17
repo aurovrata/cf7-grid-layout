@@ -6,7 +6,8 @@
   * Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
   */
   const offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'],
-    columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'];
+    columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'],
+    columnLabels={'one':'1/12','two':'1/6', 'one-fourth':'1/4', 'one-third':'1/3', 'five':'5/12', 'one-half':'1/2', 'seven':'7/12', 'two-thirds':'2/3', 'nine':'3/4', 'ten':'5/6', 'eleven':'11/12', 'full':'Full'};
   const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
   let cf7TagRgxp, $wpcf7Editor, $grid, $rowControl = null;
 
@@ -96,19 +97,32 @@
       /*--------------------------------------------------- convert columns */
       $('div.columns', $form).each(function(){
         let $this = $(this), $area =  $($('#grid-col').html());
-        if($this.children().is('.container')){
-          $('textarea.grid-input', $area).remove();
-          $('div.cf7-field-inner', $area).remove();
-        }else{
+        switch(true){
+          case $this.children().is('.container'):
+            $('textarea.grid-input', $area).remove();
+            $('div.cf7-field-inner', $area).remove();
+          break;
+        case $this.is('.cf7-sg-table-footer-row > *'): //table footer.
+          $area = $('grid-table-footer-row .columns').children();
+          $('textarea.grid-input', $area).html($('p.info-tip',$this).html().trim());
+          break;
+        default: //move the cf7 tags to UI fields.
           if(cf7grid.ui) $('textarea.grid-input', $area).html($this.html().trim());
           else $('textarea.grid-input', $area).val($this.html().trim());
-
-          $this.children().remove();
-          $this.text('');
+          break;
         }
+        $this.children().remove();
+        $this.text('');
         $this.prepend($area);
+        //add col labels
+        let c = $this.get(0).classList.forEach(cl => {
+          if('columns'==cl) return true;
+          if(typeof columnLabels[cl] != 'undefined'){ 
+            $this.children('.grid-column').find('.column-label').text(columnLabels[cl]+' Col');
+          }
+        });
       });
-      $('div.row', $form).each(function(){
+      $('div.row:not(.cf7-sg-table-footer-row)', $form).each(function(){
         $(this).prepend( $('#grid-row .row-controls').clone() );
       });
       /*--------------------------------------------------- convert collapsible sections  */
@@ -149,8 +163,8 @@
           id = 'cf7-sg-table-'+(new Date).getTime();
           $this.attr('id', id);
         }
-        let $ctrl = $this.find('.row.cf7-sg-table > .row-controls' ).first().find('.table-row-label');
-        $('input', $ctrl).prop('checked', true);
+        let $ctrl = $this.find('.row.cf7-sg-table > .row-controls' );
+        // $('input', $ctrl).prop('checked', true);
         //set button label
         let text = $this.data('button');
         if(typeof text  == 'undefined'){
@@ -161,9 +175,8 @@
         //toggle disable the sibling input
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
         //toggle footer row
-        let $footer = $this.next();
-        if($footer.is('.cf7-sg-table-footer')){
-          $ctrl = $footer.children('.row').first().find('.row-controls .footer-row-label');
+        let $footer = $this.find('.cf7-sg-table-footer');
+        if($footer){
           $('input.footer-row', $ctrl).prop('checked', true);
           $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
         }
@@ -241,10 +254,10 @@
         let $this = $(this);
         $this.html($this.val());
       });
-      /*--------------------------------------------------- if ui mode, then convert to gui template */
+      /*--------------------------------------------- if ui mode, then convert to gui template */
       let $textareaSelected='';
       if(cf7grid.ui){
-        $('div.columns', $grid).each(function(){
+        $('.container > .row:first-child > .columns', $grid).each(function(){
           let $this = $(this);
           if($this.children().is('.container')) return true;
           $this.html2gui();
@@ -271,7 +284,7 @@
         }
       });
       return isGrid;
-    } //end buildGridForm()
+    } //---------------------------------------------------------------end buildGridForm().
 
     /** @since 3.4.0 enable accordion class for containers having multiple collapsible rows */
     $grid.on('cf7sg-update', function(e, update){
@@ -463,12 +476,13 @@
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
         return true;
       }else if($target.is('input.footer-row')){ //-------------checkbox footer row
-        let $table = $target.closest('.container').prev();
+        let $table = $target.closest('.container');
         if($table.is('.container.cf7-sg-table')){
           if($target.is(':checked')){
-            $target.closest('.container').addClass('cf7-sg-table-footer').fireGridUpdate('add','footer-row');
+            $table.addClass('cf7-sg-table-footer').append($('#grid-table-footer-row').html()).fireGridUpdate('add','footer-row');
           }else{
-            $target.closest('.container').removeClass('cf7-sg-table-footer').fireGridUpdate('remove','footer-row');
+            $table.find('.cf7-sg-table-footer-row').remove();
+            $table.removeClass('cf7-sg-table-footer').fireGridUpdate('remove','footer-row');
           }
           //toggle disable the sibling input
           $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
@@ -588,7 +602,7 @@
         $helper.click('a.helper, .dashicons-no-alt', function(e){
           $(this).remove();
         });
-      }else if($target.is('.icon-code.column-control') ){
+      }else if($target.is('.dashicons-editor-code.column-control') ){
         let $focus = $target.closest('.columns');
         //toggle cf7sgfocus class on inner field to focus on.
         if($focus.is('.cf7sgfocus')){
@@ -1173,6 +1187,11 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
       return $this;
     }
     //extract field components to contruct html markup.
+    let tip = $this.siblings('div.cf7-field-tip').find(':input').val();
+    if($this.is('.table-footer-tip')){
+      $this.html(`<p class="info-tip">${tip}</p>`);
+      return $this;
+    }
     let $label = $this.siblings('div.cf7-field-label').find(':input'),
       label = $label.val(), //label
       field = $this.siblings('div.cf7-field-type'),
@@ -1196,8 +1215,7 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
       }
     }
     //tip
-    let tip = $this.siblings('div.cf7-field-tip').find(':input').val(),
-      $cell = $('<div>').append( cf7grid.preHTML + field + cf7grid.postHTML );
+    let $cell = $('<div>').append( cf7grid.preHTML + field + cf7grid.postHTML );
     $('label', $cell).html(label);
     $('.info-tip', $cell).html(tip);
     $('.field',$cell).addClass(classes);
@@ -1321,6 +1339,7 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
     let $this = $(this);
     if(oldSize.length > 0) $this.removeClass(oldSize);
     $this.addClass(newSize);
+    $this.children('.grid-column').find('.column-label').text(columnLabels[newSize]+' Col');
     $('.column-size option[value="'+newSize+'"]', $this ).prop('selected', true);
   }
   //$target.closest('.grid-controls').filterColumnControls();

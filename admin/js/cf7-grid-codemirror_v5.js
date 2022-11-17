@@ -721,57 +721,65 @@
         cf7sgToggleRegex = /class:cf7sg-toggle-(.[^\s]+)/i;
       //remove textarea and embed its content
       $('.columns', $form).each(function(){
-        const $this = $(this), $gridCol = $this.children('.grid-column'),
-          $text = $('textarea.grid-input', $gridCol);
+        let $this = $(this), 
+          $gridCol = $this.children('.grid-column'),
+          $text;
         $this.removeClass('ui-sortable');
-        if($text.length>0){
-          let text = $text.text();
-          //verify if this column is within a toggled section.
-          const $toggle = $this.closest('.container.cf7sg-collapsible.with-toggle');
-          if($toggle.length>0){
-            const cid = $toggle.attr('id');
-            /**
-            * track toggled checkbox/radio fields, because they are not submitted when not filled.
-            *@since 2.1.5
-            */
-            const $field = $text.siblings('div.cf7-field-type');
-            let isToggled = false;
+        if($gridCol.length>0){
+          $text = $('textarea.grid-input', $gridCol);
+          if($text.length>0){
+            let text = $text.text();
+            //verify if this column is within a toggled section.
+            let $toggle = $this.closest('.container.cf7sg-collapsible.with-toggle');
+            if($toggle.length>0){
+              let cid = $toggle.attr('id');
+              /**
+              * track toggled checkbox/radio fields, because they are not submitted when not filled.
+              *@since 2.1.5
+              */
+              let $field = $text.siblings('div.cf7-field-type');
+              let isToggled = false;
 
-            if($field.length>0){
-              if($field.is('.checkbox.required') || $field.is('.radio') || $field.is('.file.required')) isToggled = true;
-            }else isToggled = true; //custom column, needs checking.
+              if($field.length>0){
+                isToggled = ($field.is('.checkbox.required') || $field.is('.radio') || $field.is('.file.required'))  ;
+              }else isToggled = true; //custom column, needs checking.
 
-            if(isToggled){
-              let search = text, match = cf7TagRegexp.exec(search);
-              while (match != null) {
-                switch(match[1]){
-                  case 'checkbox*':
-                  case 'radio':
-                  case 'file*':
-                    let options = '';
-                    if(match.length>4){
-                      const tglmatch = cf7sgToggleRegex.exec(match[4]);
-                      if(tglmatch != null){
-                        if(tglmatch[1] == cid) break;
-                        options =match[4].replace(tglmatch[0],'class:cf7sg-toggle-'+cid);
+              if(isToggled){
+                let search = text, match = cf7TagRegexp.exec(search);
+                while (match != null) {
+                  switch(match[1]){
+                    case 'checkbox*':
+                    case 'radio':
+                    case 'file*':
+                      let options = '';
+                      if(match.length>4){
+                        const tglmatch = cf7sgToggleRegex.exec(match[4]);
+                        if(tglmatch != null){
+                          if(tglmatch[1] == cid) break;
+                          options =match[4].replace(tglmatch[0],'class:cf7sg-toggle-'+cid);
+                        }else{
+                          options = 'class:cf7sg-toggle-'+cid+' '+match[4];
+                        }
                       }else{
-                        options = 'class:cf7sg-toggle-'+cid+' '+match[4];
+                        options = 'class:cf7sg-toggle-'+cid;
                       }
-                    }else{
-                      options = 'class:cf7sg-toggle-'+cid;
-                    }
-                    text = text.replace(match[0], '['+match[1]+' '+match[2]+' '+options+']');
-                    //hasRadios = true;
-                    break;
+                      text = text.replace(match[0], '['+match[1]+' '+match[2]+' '+options+']');
+                      //hasRadios = true;
+                      break;
+                  }
+                  //console.log('match'+match[2]);
+                  match = cf7TagRegexp.exec(search); //get the next match.
                 }
-                //console.log('match'+match[2]);
-                match = cf7TagRegexp.exec(search); //get the next match.
-              }
-            }//end isToggled.
-          }
-          $this.html('\n'+text);
-        }//else this column is a grid.
-        $gridCol.remove();
+              }//end isToggled.
+            }
+            $this.html('\n'+text);
+          }//else this column is a grid.
+          $gridCol.remove();
+        }else if($this.is('.cf7-sg-table-footer-row .columns')){ //no grid-column
+          $text = $('textarea.grid-input', $this).remove();
+          $('.cf7-field-tip', $this).remove();
+          $this.html($text.text());
+        }
       });
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){

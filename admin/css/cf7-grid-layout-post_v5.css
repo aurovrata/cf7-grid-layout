@@ -317,29 +317,28 @@ grid layout
 #grid-collapsible-with-toggle,
 #grid-cf7-forms,
 #grid-form .cf7sg-external-form-content,
-#grid-form .table-row-button {
+#grid-form .row.cf7-sg-table .grid-controls > *:not(.table-control){
     display: none;
+}
+#grid-form .row.cf7-sg-table .grid-controls > *:not(:last-child){
+    margin-bottom: 3px;
+}
+#grid-form .row.cf7-sg-table .grid-controls input[type=checkbox] {
+	margin-right: 0;
 }
 #grid-form {
 	padding: 10px 0 10px 0;
 }
 /* footer table special styling */
-#grid-form .row.cf7-sg-table .row-controls label.table-row-button {
+#grid-form .row.cf7-sg-table .row-controls .table-control {
     display: block;
-    text-align: center;
+    /* text-align: right; */
 }
-#grid-form .cf7-sg-table-footer .row {
+#grid-form .cf7-sg-table-footer .row:not(.cf7-sg-table-footer-row) {
 	min-height: 66px;
 }
-.cf7-sg-table-footer .cf7-field-label.cf7-field-inner,
-.cf7-sg-table-footer .cf7-field-type.cf7-field-inner,
-.cf7-sg-table-footer .dashicons-move,
-.cf7-sg-table-footer .button.make-grid.column-control,
-.cf7-sg-table-footer .button.external-form  {
-	display: none;
-}
-.cf7-sg-table-footer .cf7-field-tip.cf7-field-inner {
-	height: 42px;
+#grid-form .row.cf7-sg-table-footer-row .content {
+	text-align: center;
 }
 #grid-form .form-select {
     display: block;
@@ -387,12 +386,15 @@ textarea.grid-input {
    margin-top: 5px;
    border-radius: 3px;
 }
- #grid-form .row {
+ #grid-form .row:not(.cf7-sg-table-footer-row) {
     padding: 4px 0px;
     position: relative;
     min-height: 90px;
 }
-#grid-form > .container > .row > .columns {
+#grid-form .cf7-sg-table-footer-row {
+	border: solid 1px var(--cf7sg-text-color);
+}
+#grid-form > .container > .row:not(.cf7-sg-table-footer-row) > .columns {
 	margin-top: 20px;
 }
 #grid-form  .row-controls+.columns {
@@ -540,7 +542,7 @@ textarea.grid-input {
 #grid-form  .row-controls .control-label{
     color: var(--cf7sg-menu-submenu-text);
 }
-#grid-form .row.cf7-sg-table {
+#grid-form .container.cf7-sg-table {
     box-shadow: 0px 0px 4px var(--cf7sg-icon-color-enabled);
 }
 #grid-form  .grid-column .column-control {
@@ -564,7 +566,8 @@ textarea.grid-input {
 #grid-form .cf7-sg-table .row-controls .dashicons-editor-table{
     color:var(--cf7sg-icon-color-enabled);
 }
-#grid-form .grid-column .cf7-field-inner {
+#grid-form .grid-column .cf7-field-inner,
+#grid-form .row.cf7-sg-table-footer-row {
 	background-color: #fff;
 }
 #grid-form .columns.one .grid-column .dashicons-move {

@@ -125,27 +125,18 @@ $cf7_key = $post->post_name;
             <?=__('Row collapsible','cf7-grid-layout')?>
             <input type="checkbox" class="collapsible-row" />
           </label>
-          <label class="cf7-sg-hidden table-row-label unique-mod">
-            <?=__('Row table input','cf7-grid-layout')?>
-            <input type="checkbox" class="table-row" />
-          </label>
-          <label class="table-row-button">
-            <?=__('Button label','cf7-grid-layout')?>
-            <input type="text" value="<?= __('Add Row','cf7-grid-layout')?>"/>
-          </label>
-          <label class="cf7-sg-hidden footer-row-label unique-mod">
-            <?=__('Row table footer','cf7-grid-layout')?>
-            <input type="checkbox" class="footer-row" />
-          </label>
-          <label class="cf7-sg-hidden tabs-row-label unique-mod">
+          <label class="tabs-row-label unique-mod">
             <?=__('Tabbed section','cf7-grid-layout')?>
             <input type="checkbox" class="tabs-row" />
           </label>
-          <label class="cf7-sg-hidden slider-control-label unique-mod">
-            <?=__('Slider control','cf7-grid-layout')?>
-            <input type="checkbox" class="slider-control" />
+          <label class="cf7-sg-hidden table-row-button table-control">
+            <?=__('Button label','cf7-grid-layout')?>
+            <input type="text" value="<?= __('Add Row','cf7-grid-layout')?>"/>
           </label>
-          <a class="display-none button make-grid row-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
+          <label class="cf7-sg-hidden footer-row-label table-control unique-mod">
+            <?=__('Row table footer','cf7-grid-layout')?>
+            <input type="checkbox" class="footer-row" />
+          </label>
         </div>
       </div>
       <div class="columns full"></div>
@@ -195,6 +186,18 @@ $cf7_key = $post->post_name;
     <li><a href="" class="cf7-sg-hidden"></a><label><?=__('Tab label','cf7-grid-layout')?><input type="text" /></label></li>
   </ul>
 </div>
+<div id="grid-table-footer-row">
+  <div class="row cf7-sg-table-footer-row">
+    <div class="columns full">
+      <div class="cf7-field-tip cf7-field-inner">
+        <p class="content" style=""><?= __('describe your table here','cf7-grid-layout')?></p>
+        <input type="text" placeholder="<?= __('describe your table here','cf7-grid-layout')?>" style="display: none;" id="">
+        <span class="dashicons dashicons-no-alt field-control" style="display: none;"></span>
+      </div>
+      <textarea class="grid-input cf7-sg-hidden table-footer-tip"></textarea>
+    </div>
+  </div>
+</div>
 <div id="grid-helper">
   <span class="dashicons dashicons-no-alt"></span>
   <span class="copy-helper"><?=__('Click to copy!','cf7-grid-layout')?></span>
@@ -210,6 +213,7 @@ $cf7_key = $post->post_name;
 <div id="grid-col">
   <div class="grid-column">
     <span class="dashicons dashicons-move column-control grid-control"></span>
+    <span class="column-label column-control">Full Col</span>
     <span class="dashicons dashicons-edit column-control grid-control"></span>
     <span class="dashicons dashicons-no-alt column-control grid-control"></span>
     <span class="dashicons dashicons-trash column-control grid-control"></span>
