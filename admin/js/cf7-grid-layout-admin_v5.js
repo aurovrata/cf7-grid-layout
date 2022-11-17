@@ -103,17 +103,27 @@
             $('div.cf7-field-inner', $area).remove();
           break;
         case $this.is('.cf7-sg-table-footer-row > *'): //table footer.
-          $area = $('grid-table-footer-row .columns').children();
-          $('textarea.grid-input', $area).html($('p.info-tip',$this).html().trim());
+          $area = $('#grid-table-footer-row .columns').children();
+          let $text = $('p.info-tip',$this);
+          if($text.length>0){ 
+            $text = $text.html().trim();
+            $this.children().remove();
+            $this.text('');
+            $this.prepend($area);
+            $('textarea.grid-input', $this).html($text);
+            $('.cf7-field-tip input', $this).val($text);
+            $('p.content', $this).html($text)
+          }
           break;
         default: //move the cf7 tags to UI fields.
           if(cf7grid.ui) $('textarea.grid-input', $area).html($this.html().trim());
           else $('textarea.grid-input', $area).val($this.html().trim());
+          $this.children().remove();
+          $this.text('');
+          $this.prepend($area);
           break;
         }
-        $this.children().remove();
-        $this.text('');
-        $this.prepend($area);
+        
         //add col labels
         let c = $this.get(0).classList.forEach(cl => {
           if('columns'==cl) return true;
