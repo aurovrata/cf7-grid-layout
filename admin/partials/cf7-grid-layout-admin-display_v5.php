@@ -142,7 +142,7 @@ $cf7_key = $post->post_name;
       <div class="columns full"></div>
     </div>
   </div>
-  <div class="add-row-button">
+  <div class="add-item-button add-row-button">
     <span class=button><span class="dashicons dashicons-plus"></span>Add Row</span>
   </div>
 </div>
@@ -189,12 +189,14 @@ $cf7_key = $post->post_name;
 <div id="grid-table-footer-row">
   <div class="row cf7-sg-table-footer-row">
     <div class="columns full">
-      <div class="cf7-field-tip cf7-field-inner">
-        <p class="content" style=""><?= __('describe your table here','cf7-grid-layout')?></p>
-        <input type="text" placeholder="<?= __('describe your table here','cf7-grid-layout')?>" style="display: none;" id="">
-        <span class="dashicons dashicons-no-alt field-control" style="display: none;"></span>
+      <div class="grid-column-tip">
+        <div class="cf7-field-tip cf7-field-inner">
+          <p class="content" style=""><?= __('describe your table here','cf7-grid-layout')?></p>
+          <input type="text" placeholder="<?= __('describe your table here','cf7-grid-layout')?>" style="display: none;" id="">
+          <span class="dashicons dashicons-no-alt field-control" style="display: none;"></span>
+        </div>
+        <textarea class="grid-input cf7-sg-hidden table-footer-tip"></textarea>
       </div>
-      <textarea class="grid-input cf7-sg-hidden table-footer-tip"></textarea>
     </div>
   </div>
 </div>
@@ -273,7 +275,7 @@ $cf7_key = $post->post_name;
     </div>
     <textarea class="grid-input"></textarea>
   </div>
-  <div class="add-row-button">
+  <div class="add-item-button add-field-button">
     <span class=button><span class="dashicons dashicons-plus"></span>Add Field</span>
   </div>
 </div>

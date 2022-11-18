@@ -776,9 +776,9 @@
           }//else this column is a grid.
           $gridCol.remove();
         }else if($this.is('.cf7-sg-table-footer-row .columns')){ //no grid-column
-          $text = $('textarea.grid-input', $this).remove();
-          $('.cf7-field-tip', $this).remove();
-          $this.html($text.text());
+          $text = $('textarea.grid-input', $this).html();
+          $('.grid-column-tip', $this).remove();
+          $this.html($text);
         }
       });
       //reinsert the external forms

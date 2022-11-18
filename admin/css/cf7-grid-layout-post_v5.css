@@ -387,15 +387,18 @@ textarea.grid-input {
    border-radius: 3px;
 }
  #grid-form .row:not(.cf7-sg-table-footer-row) {
-    padding: 4px 0px;
+    /* padding: 4px 0px; */
     position: relative;
-    min-height: 90px;
+    /* min-height: 90px; */
 }
 #grid-form .cf7-sg-table-footer-row {
 	border: solid 1px var(--cf7sg-text-color);
 }
 #grid-form > .container > .row:not(.cf7-sg-table-footer-row) > .columns {
-	margin-top: 20px;
+	margin-top: 25px;
+}
+#grid-form .container > .row {
+	padding: 0 5px;
 }
 #grid-form  .row-controls+.columns {
 	margin-left: 0px;
@@ -495,26 +498,20 @@ textarea.grid-input {
 	bottom: 17px;
 	left: 28px;
 }
-.helper-list li.no-post-my-form{
-  display: none;
-}
-#grid-form .add-row-button {
+#grid-form .add-item-button {
 	width: 100%;
 	text-align: center;
 }
-#grid-form > .add-row-button {
+#grid-form > .add-item-button {
 	margin-top: 15px;
     border-radius: 3px;
 }
-#grid-form .add-row-button a {
+#grid-form .add-item-button a {
 	color: inherit;
 	text-decoration: none;
 }
-#grid-form .add-row-button .dashicons {
+#grid-form .add-item-button .dashicons {
 	vertical-align: middle;
-}
-.container.cf7-sg-table .add-row-button {
-	display: none;
 }
 #grid-form .dashicons.column-control::before, 
 #grid-form .row-controls .dashicons::before {
@@ -528,9 +525,6 @@ textarea.grid-input {
 #grid-form .row-controls span,
 #grid-form .grid-column .dashicons {
 	line-height: 1.35rem;
-}
-#grid-form .helper-popup .no-post-my-form{
-  display: none;
 }
 #grid-form .cf7sg-collapsible-title label {
     padding-left: 4px;
@@ -561,12 +555,11 @@ textarea.grid-input {
 }
 #grid-form .grid-column {
 	background-color: var(--cf7sg-highlight-color);
-    margin: 5px 5px 0 5px;
 }
 #grid-form .cf7-sg-table .row-controls .dashicons-editor-table{
     color:var(--cf7sg-icon-color-enabled);
 }
-#grid-form .grid-column .cf7-field-inner,
+#grid-form .cf7-field-inner,
 #grid-form .row.cf7-sg-table-footer-row {
 	background-color: #fff;
 }
@@ -585,12 +578,19 @@ textarea.grid-input {
 #grid-form .row-controls .dashicons-menu-alt{
     transform: rotate(90deg);
 }
-#grid-form .add-row-button .button {
+#grid-form .add-item-button .button{
 	border: none;
 }
 #grid-form .row > div:nth-last-child(2) > .grid-column .dashicons-trash.column-control,
 .container.cf7-sg-tabs-panel > .row > .row-controls .dashicons-plus,
-.container.cf7-sg-tabs-panel > .row > .row-controls .dashicons-trash {display: none;}
+.container.cf7-sg-tabs-panel > .row > .row-controls .dashicons-trash,
+#grid-form .helper-popup .no-post-my-form,
+.container.cf7-sg-table .add-item-button,
+.helper-list li.no-post-my-form,
+#grid-form .container > .row > .columns > .row .row-controls,
+#grid-form .container > .row > .columns > .row .grid-column > span  {
+  display: none;
+}
 .row-controls .dashicons-move, .row-controls .dashicons-move.form-control{
     cursor: unset;
 }
@@ -723,7 +723,6 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 #grid-form  .cf7-field-inner {
   padding: 0px 10px;
-  background: transparent;
   margin: 0;
   position: relative;
 }

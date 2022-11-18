@@ -102,27 +102,26 @@
             $('textarea.grid-input', $area).remove();
             $('div.cf7-field-inner', $area).remove();
           break;
-        case $this.is('.cf7-sg-table-footer-row > *'): //table footer.
-          $area = $('#grid-table-footer-row .columns').children();
-          let $text = $('p.info-tip',$this);
-          if($text.length>0){ 
-            $text = $text.html().trim();
+          case $this.is('.cf7-sg-table-footer-row > .columns'): //table footer.
+            $area = $($('#grid-table-footer-row .columns').html()); //clone as jquery object.
+            let $text = $('p.info-tip',$this);
+            if($text.length>0){ 
+              $text = $text.html().trim();
+              $this.children().remove();
+              $this.text('');
+              $('textarea.grid-input', $area).html($text);
+            }else{
+              $('textarea.grid-input', $area).html($this.html().trim());
+            }
+            break;
+          default: //move the cf7 tags to UI fields.
+            if(cf7grid.ui) $('textarea.grid-input', $area).html($this.html().trim());
+            else $('textarea.grid-input', $area).val($this.html().trim());
             $this.children().remove();
             $this.text('');
-            $this.prepend($area);
-            $('textarea.grid-input', $this).html($text);
-            $('.cf7-field-tip input', $this).val($text);
-            $('p.content', $this).html($text)
-          }
-          break;
-        default: //move the cf7 tags to UI fields.
-          if(cf7grid.ui) $('textarea.grid-input', $area).html($this.html().trim());
-          else $('textarea.grid-input', $area).val($this.html().trim());
-          $this.children().remove();
-          $this.text('');
-          $this.prepend($area);
-          break;
+            break;
         }
+        $this.prepend($area);
         
         //add col labels
         let c = $this.get(0).classList.forEach(cl => {
@@ -267,11 +266,13 @@
       /*--------------------------------------------- if ui mode, then convert to gui template */
       let $textareaSelected='';
       if(cf7grid.ui){
-        $('.container > .row:first-child > .columns', $grid).each(function(){
+        $('.columns', $grid).each(function(){
           let $this = $(this);
           if($this.children().is('.container')) return true;
           $this.html2gui();
-          $this.append($('#grid-row .columns > .add-row-button').clone());
+          if($this.is('.container > .row:first-child > .columns')){
+            $this.append($('#grid-row .columns > .add-field-button').clone());
+          }
       });
         /** @since 5.0  add row button after last container*/
         $grid.append($('#grid-row > .add-row-button').clone());
@@ -419,7 +420,7 @@
           }
         }
         return true;
-      }else if($target.is('.add-row-button .button')){ //-----------ADD Row
+      }else if($target.is('.add-row-button *')){ //-----------ADD Row
         $grid.children('.container').last().insertNewRow();
         return true;
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
@@ -457,8 +458,13 @@
         return true;
       }else if($target.is('.row-control.dashicons-editor-table')){ //-------------checkbox table row
         if($target.is('.cf7-sg-table *')){
-          $target.closest('.row').removeClass('cf7-sg-table');
-          $target.closest('.container').removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
+          let $table = $target.closest('.container');
+          $table.find('.row.cf7-sg-table').removeClass('cf7-sg-table');
+          $table.removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
+          if($table.is('.cf7-sg-table-footer')){
+            $table.find('.cf7-sg-table-footer-row').remove(); 
+            $table.removeClass('cf7-sg-table-footer');
+          }
         }else{
           let id = 'cf7-sg-table-'+(new Date).getTime();
           $target.closest('.row').addClass('cf7-sg-table');
@@ -547,7 +553,18 @@
         $parentColumn = $target.closest('.columns');
       }
       //verify which target was clicked
-      if( $target.is('.dashicons-edit.column-control') ){ //------------------show controls
+      if($target.is('.add-field-button *')){
+        //check if the button has row sibblings.
+        $target = $target.closest('.add-field-button');
+        if($target.siblings('.row').length == 0){ //convert column to grid.
+          let $parentColumn = $target.parent('.columns'),
+            $field = $('div.cf7-field-inner', $parentColumn).remove();
+            $field = $('<div class="columns full"></div>').append($field);
+          $target.insertNewRow($field, false, 'before'); //insert row without container before button.
+        }
+        $target.siblings('.row').last().insertNewRow('', false, 'after'); //insert a new row after the last one.
+        
+      }else if( $target.is('.dashicons-edit.column-control') ){ //------------------show controls
         //now show this control
         $target.siblings('.grid-controls').show().filterColumnControls();
         $target.hide();
@@ -974,8 +991,10 @@
     }
     let singleField = true;
     let search = $('<div>').append(html);
-
-    if(seekTemplate && 1==search.children(cssTemplate).length){
+    if($this.is('.cf7-sg-table-footer-row > .columns')){ //footer row.
+      $('.cf7-field-tip input', $this).val(html);
+      $('p.content', $this).html(html);
+    }else if(seekTemplate && 1==search.children(cssTemplate).length){
       let lines = html.split(/\r\n|\r|\n/g);
       search = '';
       for(let i=0; i<lines.length; i++){
@@ -1303,33 +1322,30 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
     return {'length':total, 'size':size};
   }
   //add new rows
-  $.fn.insertNewRow = function(areaCode){
+  $.fn.insertNewRow = function(areaCode, wContainer, action){
     let $this = $(this);
     if(typeof areaCode === 'undefined') areaCode ='';
-    let $newRow = $('#grid-row .container').clone();
-    //append the column controls and textarea
-    $('.columns', $newRow).prepend( $($('#grid-col').html()) );
-
-    switch(true){
-      case $this.is('.columns'):
-      case $this.is('.row'):
-        $this.append($newRow);
-        break;
-      //   $this.prepend($newRow);
-      //   break;
-      case $this.is('.container'):
-      case $this.is('.cf7sg-external-form'):
-        $this.after($newRow);
-        break;
-      default: //unknown element, maybe an error.
-        return $this;
+    if(typeof wContainer === 'undefined') wContainer = true;
+    if(typeof action === 'undefined'){ 
+      action = 'after';
+      if($this.is('.columns') || $this.is('.row')) action = 'append';
     }
-
+    let $newRow = $('#grid-row .container').clone();
+    if(!wContainer) $newRow = $newRow.children('.row');
+     
+    //append the column controls and textarea
+    if($.fn[action]) $this[action]($newRow);
+    else{
+      //unknown action, maybe an error.
+      return $this;
+    }
     //is areaCode text or jQuery object?
-    if(areaCode instanceof jQuery){
+    if(areaCode instanceof jQuery && areaCode.is('.columns')){
       $('.columns', $newRow).remove();
-      $('.row', $newRow).prepend(areaCode);
+      if(wContainer) $('.row', $newRow).append(areaCode);
+      else $newRow.append(areaCode);
     }else{
+      $('.columns', $newRow).prepend( $($('#grid-col').html()) ); //format grid column.
       //add the code to the textarea
       if(cf7grid.ui){
         $('textarea.grid-input',$newRow).html(areaCode).hide();//.trigger('change');
@@ -1339,6 +1355,9 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
         $('div.cf7-field-inner', $newRow).hide();
       }
     }
+    //remove add buttons
+    if(!wContainer) $('.add-item-button', $newRow).remove();
+    
     //make new row's columns sortable.
     sortableRows($newRow);
     $newRow.fireGridUpdate('add','row');
