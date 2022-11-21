@@ -71,7 +71,7 @@
   }else $(':input',$themeRadio).prop('disabled',true);
 
   $(document).ready( function(){
-    let codemirrorUpdated = false, formFields={},
+    let codemirrorUpdated = false, initCF7sgPage = true, formFields={},
       $grid = $('#grid-form'),
       $jsTags = $('#js-tags'),
       gridTab = '#cf7-editor-grid', //default at load time.
@@ -163,8 +163,10 @@
           else console.log('CF7 GRID EDITOR: unknown tab ui panel object');
 
           if('#cf7-codemirror' == panel){
-						//finalise any changes in the grid form editor
-            $grid.on('cf7grid-form-ready', function(){
+	    //finalise any changes in the grid form editor
+	    if(initCF7sgPage){ //initialises the event listener 'cf7grid-form-ready'.
+		initCF7sgPage = false;
+              $grid.on('cf7grid-form-ready', function(){
                 let code = $grid.CF7FormHTML();
                 if($grid.children('.container').length > 0){ //beautify.
 	              code = html_beautify(code ,
@@ -184,6 +186,7 @@
 	            //setup the form code in the hidden textarea
 	            $wpcf7Editor.html(code);
 						});
+	    }
             /** @since 2.8.3 clear the codemirror textarea##wpcf7-form */
             $('textarea.codemirror-cf7-update', $codemirror).val('');
 						$grid.trigger('cf7grid-form-finalise');
