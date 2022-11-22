@@ -555,6 +555,7 @@ textarea.grid-input {
 }
 #grid-form .grid-column {
 	background-color: var(--cf7sg-highlight-color);
+  position: relative;
 }
 #grid-form .cf7-sg-table .row-controls .dashicons-editor-table{
     color:var(--cf7sg-icon-color-enabled);
@@ -590,6 +591,14 @@ textarea.grid-input {
 #grid-form .container > .row > .columns > .row .row-controls,
 #grid-form .container > .row > .columns > .row .grid-column > span  {
   display: none;
+}
+#grid-form .container > .row > .columns > .row .grid-column:hover > .dashicons-trash {
+	display: inline-block;
+	position: absolute;
+	/* top: 0; */
+	z-index: 2;
+	right: 0;
+	color: var(--cf7sg-menu-submenu-background);
 }
 .row-controls .dashicons-move, .row-controls .dashicons-move.form-control{
     cursor: unset;

@@ -71,7 +71,7 @@
   }else $(':input',$themeRadio).prop('disabled',true);
 
   $(document).ready( function(){
-    let codemirrorUpdated = false, formFields={},
+    let codemirrorUpdated = false, initCF7sgPage= true, formFields={},
       $grid = $('#grid-form'),
       $jsTags = $('#js-tags'),
       gridTab = '#cf7-editor-grid', //default at load time.
@@ -164,27 +164,30 @@
 
           if('#cf7-codemirror' == panel){
 						//finalise any changes in the grid form editor
-            $grid.on('cf7grid-form-ready', function(){
-                let code = $grid.CF7FormHTML();
-                if($grid.children('.container').length > 0){ //beautify.
-	              code = html_beautify(code ,
-    	              {
-    	                'indent_size': 2,
-    	                'wrap_line_length': 0
-    	              });
-                }
-	            cme.setValue(code);
-              // cme.refresh();
-	            //reset the codemirror change flag
-	            codemirrorUpdated = false;
-	            //remove id from textarea
-	            $('textarea#wpcf7-form').attr('id', '');
-	            //change the wpcf7 textarea
-	            $('textarea.codemirror-cf7-update', $codemirror).attr('id', 'wpcf7-form');
-	            //setup the form code in the hidden textarea
-	            $wpcf7Editor.html(code);
-						});
-            /** @since 2.8.3 clear the codemirror textarea##wpcf7-form */
+            if(initCF7sgPage){ //initialises the event listener 'cf7grid-form-ready'.
+              initCF7sgPage = false;  
+              $grid.on('cf7grid-form-ready', function(){
+                  let code = $grid.CF7FormHTML();
+                  if($grid.children('.container').length > 0){ //beautify.
+                  code = html_beautify(code ,
+                      {
+                        'indent_size': 2,
+                        'wrap_line_length': 0
+                      });
+                  }
+                cme.setValue(code);
+                // cme.refresh();
+                //reset the codemirror change flag
+                codemirrorUpdated = false;
+                //remove id from textarea
+                $('textarea#wpcf7-form').attr('id', '');
+                //change the wpcf7 textarea
+                $('textarea.codemirror-cf7-update', $codemirror).attr('id', 'wpcf7-form');
+                //setup the form code in the hidden textarea
+                $wpcf7Editor.html(code);
+              });
+            }
+            /** @since 2.8.3 clear the codemirror textarea#wpcf7-form */
             $('textarea.codemirror-cf7-update', $codemirror).val('');
 						$grid.trigger('cf7grid-form-finalise');
           }else{
@@ -691,7 +694,7 @@
       const $form = $('<div>').append(  $this.html() );
       let text='';
       //remove the add row button
-      $('.add-row-button', $form).remove();
+      $('.add-item-button', $form).remove();
       //remove the external forms
       const external = {};
       $('.cf7sg-external-form', $form).each(function(){
@@ -778,7 +781,8 @@
         }else if($this.is('.cf7-sg-table-footer-row .columns')){ //no grid-column
           $text = $('textarea.grid-input', $this).html();
           $('.grid-column-tip', $this).remove();
-          $this.html($text);
+          $this.html($('<p class="info-tip">').html($text));
+          // $this.html($text);
         }
       });
       //reinsert the external forms
