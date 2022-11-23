@@ -125,10 +125,10 @@ $cf7_key = $post->post_name;
             <?=__('Row collapsible','cf7-grid-layout')?>
             <input type="checkbox" class="collapsible-row" />
           </label>
-          <label class="tabs-row-label unique-mod">
+          <!-- <label class="tabs-row-label unique-mod">
             <?=__('Tabbed section','cf7-grid-layout')?>
             <input type="checkbox" class="tabs-row" />
-          </label>
+          </label> -->
           <label class="cf7-sg-hidden table-row-button table-control">
             <?=__('Button label','cf7-grid-layout')?>
             <input type="text" value="<?= __('Add Row','cf7-grid-layout')?>"/>
@@ -253,10 +253,10 @@ $cf7_key = $post->post_name;
         <option value="eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
         <option value="full" selected><?=__('full width','cf7-grid-layout')?></option>
       </select>
-      <a id="new-row" class="button make-grid column-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
+      <!-- <a id="new-row" class="button make-grid column-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
       <a class="button external-form" href="javascript:void(0);"><?= __('Insert form', 'cf7-grid-layout');?></a>
       <label class="display-none accordion-label grouping-option"><input type="checkbox" name="grouping-option" class="accordion-rows column-control" /><?=__('Enable accordion','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Group collapsible rows as jQuery accordion','cf7-smart-grid')?></span>
-      <label class="display-none slider-label grouping-option"><input type="checkbox" name="grouping-option" class="slider-rows column-control" /><?=__('Enable slider','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Convert collapsible rows into sides','cf7-smart-grid')?></span>
+      <label class="display-none slider-label grouping-option"><input type="checkbox" name="grouping-option" class="slider-rows column-control" /><?=__('Enable slider','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Convert collapsible rows into sides','cf7-smart-grid')?></span> -->
     </div>
     <div class="cf7-field-label cf7-field-inner">
       <p class="content"><?=__('Field label','cf7-grid-layout')?></p>

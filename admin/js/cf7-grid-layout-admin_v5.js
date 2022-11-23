@@ -569,12 +569,14 @@
           $target.insertNewRow($field, false, 'before'); //insert row without container before button.
         }
         $target.siblings('.row').last().insertNewRow('', false, 'after'); //insert a new row after the last one.
+        return true;
         
       }else if( $target.is('.dashicons-edit.column-control') ){ //------------------show controls
         //now show this control
         $target.siblings('.grid-controls').show().filterColumnControls();
         $target.hide();
         $target.siblings('.dashicons-no-alt').show();
+        return true;
       }else if( $target.is('.php-icon.column-control') ) { //--------show hooks
         let $helper =$('<div class="helper-popup">').html( $('#grid-helper').html()),
           $copy = $('.copy-helper', $helper),
@@ -605,6 +607,7 @@
         $helper.click('a.helper, .dashicons-no-alt', function(e){
           $(this).remove();
         });
+        return true;
       }else if( $target.is('.js-icon.column-control') ) { //--------show js hooks
         let $helper =$('<div class="helper-popup">').html( $('#grid-js-helper').html()),
           $copy = $('.copy-helper', $helper),
@@ -635,6 +638,7 @@
         $helper.click('a.helper, .dashicons-no-alt', function(e){
           $(this).remove();
         });
+        return true;
       }else if($target.is('.dashicons-editor-code.column-control') ){
         let $focus = $target.closest('.columns');
         //toggle cf7sgfocus class on inner field to focus on.
@@ -647,11 +651,17 @@
         //move to text editor.
         $('#form-editor-tabs').tabs('option',{ active:1});
         $('body').addClass('disable-scroll');
+        return true;
       }else if($target.is('.dashicons-trash.column-control') ){ //-------------------delete column
-        $parentColumn.closest('.row').fireGridUpdate('remove','column');
-        $parentColumn.remove();
-        //refilter
-        //$target.siblings('.grid-controls').filterColumnControls();
+        let $row = $parentColumn.closest('.row');
+        if($row.is('.container > .row > .columns > .row') && $parentColumn.is('.full')){
+          $row.parent().fireGridUpdate('remove','column');
+          $row.remove();
+        }else{
+          $parentColumn.remove();
+          $row.fireGridUpdate('remove','column');
+        }
+        return true;
       }else if( $target.is('.make-grid.column-control') ){ //--------------------add row/convert column to grid
 
         //close the grid-control box
