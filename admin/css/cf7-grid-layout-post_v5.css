@@ -309,13 +309,10 @@ a.helper:hover + span.helper {display: inline;}
 /*
 grid layout
 */
-#html-script, #grid-col, #grid-helper,#grid-js-helper,
+#html-script,
 #grid-form .grid-controls,
 #grid-form .row-controls .dashicons-no-alt,
-#grid-form .grid-column > .dashicons-no-alt,
-#grid-row, #grid-collapsible, #grid-tabs, .cf7-sg-hidden,
-#grid-collapsible-with-toggle,
-#grid-cf7-forms,
+#grid-form .grid-column > .dashicons-no-alt, .cf7-sg-hidden,
 #grid-form .cf7sg-external-form-content,
 #grid-form .row.cf7-sg-table .grid-controls > *:not(.table-control){
     display: none;
@@ -499,19 +496,16 @@ textarea.grid-input {
 	bottom: 17px;
 	left: 28px;
 }
-#grid-form .add-item-button {
+#cf7-editor-grid .add-item-button {
 	width: 100%;
 	text-align: center;
+  border-radius: 3px;
 }
-#grid-form > .add-item-button {
-	margin-top: 15px;
-    border-radius: 3px;
-}
-#grid-form .add-item-button a {
+#cf7-editor-grid .add-item-button a {
 	color: inherit;
 	text-decoration: none;
 }
-#grid-form .add-item-button .dashicons {
+#cf7-editor-grid .add-item-button .dashicons {
 	vertical-align: middle;
 }
 #grid-form .dashicons.column-control::before, 
@@ -582,7 +576,7 @@ textarea.grid-input {
 #grid-form .row-controls .dashicons-menu-alt{
     transform: rotate(90deg);
 }
-#grid-form .add-item-button .button{
+#cf7-editor-grid .add-item-button .button{
 	border: none;
 }
 #grid-form .row > div:nth-last-child(2) > .grid-column .dashicons-trash.column-control,

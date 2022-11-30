@@ -280,7 +280,7 @@
           }
       });
         /** @since 5.0  add row button after last container*/
-        $grid.append($('#grid-row > .add-row-button').clone());
+        $grid.after($('#grid-row > .add-row-button').clone());
       }else{
         //set the first textarea as our default tag consumer
         $('textarea#wpcf7-form').attr('id','');
