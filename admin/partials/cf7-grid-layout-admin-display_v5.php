@@ -77,16 +77,17 @@ $cf7_key = $post->post_name;
     </ul>
     <div id="cf7-editor-grid">
       <div class="form-controls">
-        <span class="control-label">Form settings</span>
+        <span class="multistep control-label display-none"><?= __('Multistep form', 'cf7-grid-layout');?></span>
+        <span class="grid control-label"><?= __('Grid form', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-edit form-control grid-control"></span>
-        <span class="dashicons dashicons-no-alt form-control grid-control"></span>
-        <span class="dashicons dashicons-trash form-control grid-control"></span>
+        <span class="dashicons dashicons-no-alt form-control grid-control display-none"></span>
         <div class="grid-controls display-none">
           <label class="slider-form-label unique-mod">
             <?=__('Multistep slider form','cf7-grid-layout')?>
-            <input type="checkbox" class="slider-form" />
+            <input type="checkbox" class="slider-form wrap-control" />
           </label>
           <a class="button template-form" href="javascript:void(0);"><?= __('Load form template', 'cf7-grid-layout');?></a>
+          <a class="button clear-form" href="javascript:void(0);"><?= __('Clear the form', 'cf7-grid-layout');?></a>
         </div>
       </div>
       <div id="grid-form"></div>
@@ -122,25 +123,31 @@ $cf7_key = $post->post_name;
   $tag_generator->print_buttons();
 ?>
 </div>
-<div id="grid-row">
+<div id="grid-row" class="display-none">
   <div class="container">
     <div class="row">
-    <div class="row-controls">
+      <div class="row-controls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
-        <span class="control-label">Row</span><span class="control-label table-row">Table</span>
+        <span class="control-label">
+          <span class="row-label display-none"><?= __('Row', 'cf7-grid-layout');?></span>
+          <span class="table-label display-none"><?= __('Table', 'cf7-grid-layout');?></span>
+          <span class="slide-label display-none"><?= __('Slide', 'cf7-grid-layout');?></span>
+          <span class="collapsible-label display-none"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
+        </span>
         <span class="dashicons dashicons-edit row-control grid-control"></span>
         <span class="dashicons dashicons-no-alt row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
         <span class="dashicons dashicons-menu-alt row-control grid-control"></span>
         <span class="dashicons dashicons-editor-table row-control grid-control"></span>
+        <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
         <div class="grid-controls">
           <label class="collapsible-row-label unique-mod">
             <?=__('Row collapsible','cf7-grid-layout')?>
-            <input type="checkbox" class="collapsible-row" />
+            <input type="checkbox" class="collapsible-row wrap-control" />
           </label>
           <label class="tabs-row-label unique-mod">
             <?=__('Tabbed section','cf7-grid-layout')?>
-            <input type="checkbox" class="tabs-row" />
+            <input type="checkbox" class="tabs-row wrap-control" />
           </label>
           <label class="cf7-sg-hidden table-row-button table-control">
             <?=__('Button label','cf7-grid-layout')?>
@@ -156,15 +163,19 @@ $cf7_key = $post->post_name;
     </div>
   </div>
   <div class="add-item-button add-row-button">
-    <span class=button><span class="dashicons dashicons-plus"></span>Add Row</span>
+  <span class=button>
+      <span class="dashicons dashicons-plus"></span>
+      <span class="slide-label display-none"><?= __('Add Slide', 'cf7-grid-layout');?></span>
+      <span class="row-label display-none"><?= __('Add Row', 'cf7-grid-layout');?></span>
+    </span>
   </div>
 </div>
 <div id="grid-cf7-forms" class="display-none">
   <div class="cf7sg-external-form" data-form="">
-    <div class="form-controls">
-    <div class="row-controls">
-        <span class="dashicons dashicons-move form-control"></span>
-        <span class="dashicons dashicons-trash form-control"></span>
+    <div class="ext-form-controls">
+      <div class="row-controls">
+        <span class="dashicons dashicons-move ext-form-control"></span>
+        <span class="dashicons dashicons-trash ext-form-control"></span>
       </div>
       <select class="form-select">
         <option value=""><?=__('Select contact form 7','cf7-grid-layout')?></option>
@@ -179,7 +190,7 @@ $cf7_key = $post->post_name;
             foreach($cf7_forms as $cf7_form):
         ?>
         <option value="<?php echo $cf7_form->post_name ?>"><?php echo $cf7_form->post_title ?></option>
-    <?php   endforeach;
+      <?php   endforeach;
             wp_reset_postdata();
           endif;
       ?>
@@ -289,7 +300,12 @@ $cf7_key = $post->post_name;
     <textarea class="grid-input"></textarea>
   </div>
   <div class="add-item-button add-field-button">
-    <span class=button><span class="dashicons dashicons-plus"></span>Add Field</span>
+    <span class=button>
+      <span class="dashicons dashicons-plus"></span>
+      <span class="field-label display-none"><?= __('Add Field', 'cf7-grid-layout');?></span>
+      <span class="slide-label display-none"><?= __('Add Slide', 'cf7-grid-layout');?></span>
+      <span class="row-label display-none"><?= __('Add Row', 'cf7-grid-layout');?></span>
+    </span>
   </div>
 </div>
 <?php
