@@ -77,8 +77,11 @@ $cf7_key = $post->post_name;
     </ul>
     <div id="cf7-editor-grid">
       <div class="form-controls">
-        <span class="multistep control-label display-none"><?= __('Multistep form', 'cf7-grid-layout');?></span>
-        <span class="grid control-label"><?= __('Grid form', 'cf7-grid-layout');?></span>
+        <span class="form-switch">
+          <span class="grid control-label active"><?= __('Single form', 'cf7-grid-layout');?></span>
+          <div class="toggle toggle-light" style="width:45px; display:inline-block"></div>
+          <span class="multistep control-label"><?= __('Multistep form', 'cf7-grid-layout');?></span>
+        </span>
         <span class="dashicons dashicons-edit form-control grid-control"></span>
         <span class="dashicons dashicons-no-alt form-control grid-control display-none"></span>
         <div class="grid-controls display-none">
@@ -123,7 +126,7 @@ $cf7_key = $post->post_name;
   $tag_generator->print_buttons();
 ?>
 </div>
-<div id="grid-row" class="display-none">
+<template id="grid-row">
   <div class="container">
     <div class="row">
       <div class="row-controls">
@@ -131,7 +134,6 @@ $cf7_key = $post->post_name;
         <span class="control-label">
           <span class="row-label display-none"><?= __('Row', 'cf7-grid-layout');?></span>
           <span class="table-label display-none"><?= __('Table', 'cf7-grid-layout');?></span>
-          <span class="slide-label display-none"><?= __('Slide', 'cf7-grid-layout');?></span>
           <span class="collapsible-label display-none"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
         </span>
         <span class="dashicons dashicons-edit row-control grid-control"></span>
@@ -159,18 +161,20 @@ $cf7_key = $post->post_name;
           </label>
         </div>
       </div>
-      <div class="columns full"></div>
+      <div class="columns full">
+        <template class="inner-template">#grid-col</template>
+      </div>
     </div>
   </div>
   <div class="add-item-button add-row-button">
-  <span class=button>
+    <span class=button>
       <span class="dashicons dashicons-plus"></span>
       <span class="slide-label display-none"><?= __('Add Slide', 'cf7-grid-layout');?></span>
       <span class="row-label display-none"><?= __('Add Row', 'cf7-grid-layout');?></span>
     </span>
   </div>
-</div>
-<div id="grid-cf7-forms" class="display-none">
+</template>
+<template id="grid-cf7-forms">
   <div class="cf7sg-external-form" data-form="">
     <div class="ext-form-controls">
       <div class="row-controls">
@@ -198,19 +202,19 @@ $cf7_key = $post->post_name;
     </div>
     <div class="cf7sg-external-form-content"></div>
   </div>
-</div>
-<div id="grid-collapsible" class="display-none">
+</template>
+<template id="grid-collapsible">
   <div class="cf7sg-collapsible-title"><label><?=__('Section title','cf7-grid-layout')?> <input type="text" /><input type="hidden" /><input type="checkbox" /><span><?=__('toggled','cf7-grid-layout')?></span></label></div>
-</div>
-<div id="grid-collapsible-with-toggle" class="display-none">
+</template>
+<template id="grid-collapsible-with-toggle">
   <div class="toggle toggle-light" data-on="<?=_x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?=_x('No','toggle label','cf7-grid-layout')?>"></div>
-</div>
-<div id="grid-tabs" class="display-none">
+</template>
+<template id="grid-tabs">
   <ul class="cf7-sg-tabs-list">
     <li><a href="" class="cf7-sg-hidden"></a><label><?=__('Tab label','cf7-grid-layout')?><input type="text" /></label></li>
   </ul>
-</div>
-<div id="grid-table-footer-row" class="display-none">
+</template>
+<template id="grid-table-footer-row">
   <div class="row cf7-sg-table-footer-row">
     <div class="columns full">
       <div class="grid-column-tip">
@@ -223,20 +227,52 @@ $cf7_key = $post->post_name;
       </div>
     </div>
   </div>
-</div>
-<div id="grid-helper" class="display-none">
+</template>
+<template id="grid-multistep-container">
+  <div class="container cf7sg-slider">
+    <div class="row">
+      <div class="columns full cf7sg-slider-section" data-next="" data-prev="" data-submit="<?= __('Submit','cf7-grid-layout');?>" data-dots="false">
+        <div class="container cf7sg-collapsible cf7sg-slide" id="">
+          <div class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></div>
+          <div class="row">
+            <div class="row-controls">
+              <span class="dashicons dashicons-move row-control grid-control"></span>
+              <span class="control-label">
+                <span class="slide-label"><?= __('Slide', 'cf7-grid-layout');?></span>
+              </span>
+              <span class="dashicons dashicons-edit row-control grid-control"></span>
+              <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
+              <span class="dashicons dashicons-no-alt row-control grid-control"></span>
+              <span class="dashicons dashicons-trash row-control grid-control"></span>
+              <div class="grid-controls">
+                <label class="cf7-sg-hidden table-row-button table-control">
+                  <?=__('Slide title','cf7-grid-layout')?>
+                  <input type="text" value=""/>
+                </label>
+              </div>
+            </div>
+            <div class="columns full">
+              <template class="inner-template">#grid-row</template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<template id="grid-helper">
   <span class="dashicons dashicons-no-alt"></span>
   <span class="copy-helper"><?=__('Click to copy!','cf7-grid-layout')?></span>
   <p><?=__('Click-to-copy &amp; paste in your <em>functions.php</em> file.','cf7-grid-layout')?></p>
   <ul class="cf7sg-helper-list"></ul>
-</div>
-<div id="grid-js-helper" class="display-none">
+</template>
+<template id="grid-js-helper">
   <span class="dashicons dashicons-no-alt"></span>
   <span class="copy-helper"><?=__('Click to copy!','cf7-grid-layout')?></span>
   <p class="js-help"><?= sprintf(__('Click-to-copy &amp; paste in<br/><em>&lt;theme folder&gt;/js/%s.js</em> file.','cf7-grid-layout'), $cf7_key);?></p>
   <ul class="cf7sg-helper-list"></ul>
-</div>
-<div id="grid-col" class="display-none">
+</template>
+<template id="grid-col">
   <div class="grid-column">
     <span class="dashicons dashicons-move column-control grid-control"></span>
     <span class="column-label column-control">Full Col</span>
@@ -297,7 +333,7 @@ $cf7_key = $post->post_name;
       <input type="text" placeholder="<?=__('describe your field here','cf7-grid-layout')?>" />
       <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
-    <textarea class="grid-input"></textarea>
+    <textarea class="grid-input display-none"></textarea>
   </div>
   <div class="add-item-button add-field-button">
     <span class=button>
@@ -307,5 +343,5 @@ $cf7_key = $post->post_name;
       <span class="row-label display-none"><?= __('Add Row', 'cf7-grid-layout');?></span>
     </span>
   </div>
-</div>
+</template>
 <?php

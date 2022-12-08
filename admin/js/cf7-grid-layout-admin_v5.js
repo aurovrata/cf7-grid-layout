@@ -9,8 +9,7 @@
     columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'],
     columnLabels={'one':'1/12','two':'1/6', 'one-fourth':'1/4', 'one-third':'1/3', 'five':'5/12', 'one-half':'1/2', 'seven':'7/12', 'two-thirds':'2/3', 'nine':'3/4', 'ten':'5/6', 'eleven':'11/12', 'full':'Full'};
   const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
-  let cf7TagRgxp, $wpcf7Editor, $grid, $gridEditor, $rowControl = null;
-
+  let cf7TagRgxp, $wpcf7Editor, $grid, $gridEditor, $colTemplt, $rowTemplt; 
   //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
   let $pattern = $('<div>').html('' +
     cf7grid.preHTML + 
@@ -54,9 +53,12 @@
     }
   })
 	$(document).ready( function(){
+    
     //change the form id to mimic cf7 plugin custom admin page.
     /** @since 2.11.0 full screen button*/
-    let $editor = $('#cf7sg-editor') ;
+    let $editor = $('#cf7sg-editor');
+    $colTemplt = $('<div>').html($('#grid-col').html());
+    $rowTemplt = $('<div>').html($('#grid-row').html());
     $editor.css('background-color',$('body').css('background-color'));
     $('#full-screen-cf7').on('click', function(){
       $editor.toggleClass('full-screen');
@@ -68,7 +70,38 @@
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     $grid = $('#grid-form');
     $gridEditor = $('#cf7-editor-grid');
-    $rowControl = $('#top-grid-controls');
+    /** @since 5.0 enable toggle switch for slider forms*/
+    $('.form-switch .toggle', $gridEditor).toggles( { 
+      drag:false, 
+      text:{ on:'', off:'' }, 
+      on: false, 
+      clicker:$('.form-switch .control-label',$gridEditor)
+    }).on('toggle',(e, active)=>{
+      let $$ctrl = $(e.target).closest('.form-switch');
+      $('.control-label',$$ctrl).toggleClass('active');
+      if(active){ //convert to slider
+        //change the label on grid form menu
+        // $target.closest('label').siblings('.control-label').toggleClass('display-none');
+        //wrap existing form into a new slider container without any buttons.
+        $grid.insertNewRow($grid.children().remove(), '#grid-multistep-container .cf7sg-slider', 'append', true);
+        //change the add row button to add slide.
+        $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
+        //add row button to first slide.
+        $('.cf7sg-slide.container > .row > .columns',$grid).append($rowTemplt.find('.add-row-button').clone());
+        let $s = $grid.find('.cf7sg-slider');
+        $s.fireGridUpdate('add','slider-section');
+        $s = $('.cf7sg-slide',$s).children('.row');
+        /** @since 4.13.0 display auto scroll helper code */
+        $s.children('.row-controls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
+        $s = $s.children('.columns');
+        $s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
+      }else{ //single slide, revert to form.
+        $grid.prepend($('.cf7sg-slide >.row > .columns > .container', $grid).remove());
+        $('.cf7sg-slider.container', $grid).remove();
+        $grid.fireGridUpdate('remove','slider-section');
+        $grid.siblings('.add-item-button').removeClass('add-slide-button').addClass('add-row-button');
+      }
+    });
     /** @since v5.0 improved cf7 tag regex pattern. */
     cf7TagRgxp = ['hidden']; //by default no hidden button.
     $('form.tag-generator-panel .insert-box input.tag').each((i,el)=>{
@@ -97,7 +130,7 @@
       //replace columns content with textareas
       /*--------------------------------------------------- convert columns */
       $('div.columns', $form).each(function(){
-        let $this = $(this), $area =  $('<div>').append($('#grid-col').html());
+        let $this = $(this), $area = $colTemplt.clone();
 
         switch(true){
           case $this.children().is('.container'):
@@ -105,7 +138,7 @@
             $('div.cf7-field-inner', $area).remove();
           break;
           case $this.is('.cf7-sg-table-footer-row > .columns'): //table footer.
-            $area = $($('#grid-table-footer-row .columns').html()); //clone as jquery object.
+            $area = $($('#grid-table-footer-row').html()).find('.columns'); //clone as jquery object.
             let $text = $('p.info-tip',$this);
             if($text.length>0){ 
               $text = $text.html().trim();
@@ -138,7 +171,7 @@
         });
       });
       $('div.row:not(.cf7-sg-table-footer-row)', $form).each(function(){
-        $(this).prepend( $('#grid-row .row-controls').clone() );
+        $(this).prepend( $rowTemplt.find('.row-controls').clone() );
       });
       /*--------------------------------------------------- convert collapsible sections  */
       $('div.container.cf7sg-collapsible', $form).each(function(){
@@ -201,7 +234,7 @@
       $('ul.cf7-sg-tabs-list li', $form).each(function(){
         let $this = $(this);
         let text = $this.children('a').text();
-        $this.append($('#grid-tabs ul li label').clone());
+        $this.append($('#grid-tabs').html().find('ul li label'));
         $('label input', $this).val(text);
         //setup checkbox
         let $ctrl = $this.parent().siblings('.cf7-sg-tabs-panel');
@@ -212,9 +245,9 @@
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
         let $extform = $(this);
-        $extform.append($( $('#grid-cf7-forms .cf7sg-external-form').html() ) );
+        $extform.append($( $('#grid-cf7-forms').html()).find('.cf7sg-external-form') );
         let id = $extform.data('form');
-        if($('#grid-cf7-forms .form-select option[value="'+id+'"]' ).length > 0 ){
+        if($($('#grid-cf7-forms').html()).find('.form-select option[value="'+id+'"]').length > 0 ){
           //add controls
           //$extform.append($('#grid-cf7-forms .ext-form-controls').clone());
           $('.ext-form-controls .form-select', $extform).val(id);
@@ -277,11 +310,11 @@
           if($this.children().is('.container')) return true;
           $this.html2gui();
           if($this.is('.container > .row:first-child > .columns')){
-            $this.append($('#grid-col .add-field-button').clone());
+            $this.append($colTemplt.find('.add-field-button').clone());
           }
       });
         /** @since 5.0  add row button after last container*/
-        $grid.after($('#grid-row > .add-row-button').clone());
+        $grid.after($rowTemplt.find('.add-row-button').clone());
       }else{
         //set the first textarea as our default tag consumer
         $('textarea#wpcf7-form').attr('id','');
@@ -420,20 +453,7 @@
         switch(true){
           case $target.is('.slider-form'):
             if($target.is(':checked')){
-              //change the label on grid form menu
-              $target.closest('label').siblings('.control-label').toggleClass('display-none');
-              $grid.insertNewRow($grid.children().remove(), true, 'append');
-              //change the add row button to add slide.
-              $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
-              let $s = $grid.children('.container').addClass('cf7sg-slider'),
-                attrs = { "data-next":"", "data-prev":"", "data-submit":"", "data-dots":"false"};
-              $s.fireGridUpdate('add','slider-section');
-              $s = $s.children('.row');
-              /** @since 4.13.0 display auto scroll helper code */
-              $s.children('.row-controls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
-              $s = $s.children('.columns');
-              $s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
-              $s.addClass('cf7sg-slider-section').attr(attrs)
+              
               
             }else{
               // $target.closest('.columns').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit data-dots");
@@ -452,23 +472,11 @@
             break;
         }
         return true;
-        //convert to grid if multiple columns
-        $parentRow = $target.closest('.row');
-        if($parentRow && $parentRow.children('.columns').length>1){
-          //is row table/tab
-          $parentContainer = $parentRow.closest('.container');
-          let $content = $parentRow.children('.columns');
-          $content.wrapAll('<div class="columns full"></div>');
-          $parentColumn = $content.parent('.columns');
-          $parentColumn.prepend( $( $('#grid-col').html() ) );
-          //remove single cell UI content
-          $parentColumn.children('.grid-column').children('textarea.grid-input').remove();
-          $parentColumn.children('.grid-column').children('div.cf7-field-inner').remove();
-          $parentColumn.children('.grid-column').addClass('cf7sg-container-column');
-          //finally insert a new row with the content moved to the new row.
-          $parentColumn.insertNewRow($content.remove());
-        }
-        return true;
+      }
+      /* --------------------------------SLIDER controls ------------------*/
+      if($target.is('.add-slide-button *')){ //add slide
+        //add a new empty slide with a new row after the last one, without a button.
+        $('.cf7sg-slide.container', $grid).last().insertNewRow('', '#grid-multistep-container .cf7sg-slide', 'after', true);
       }
       /*
         Row controls
@@ -490,7 +498,9 @@
         }
         return true;
       }else if($target.is('.add-row-button *')){ //-----------ADD Row
-        $grid.children('.container').last().insertNewRow();
+        let $row = $target.closest('.add-row-button').prev('.container');
+        if($row.length === 0) $row = $grid.children('.container').last();
+        $row.insertNewRow();
         return true;
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
         toggleControl($target.siblings('.grid-controls'));
@@ -603,9 +613,9 @@
           let $parentColumn = $target.parent('.columns'),
             $field = $('.cf7-field-inner, .grid-input', $parentColumn).remove();
             $field = $('<div class="columns full"></div>').append($field);
-          $target.insertNewRow($field, false, 'before'); //insert row without container before button.
+          $target.insertNewRow($field, '#grid-row .row', 'before', false); //insert row without container before button, without an extra button.
         }
-        $target.siblings('.row').last().insertNewRow('', false, 'after'); //insert a new row after the last one.
+        $target.siblings('.row').last().insertNewRow('', '#grid-row .row', 'after', false); //insert a new row after the last one without an extra button.
         return true;
         
       }else if( $target.is('.dashicons-edit.column-control') ){ //------------------show controls
@@ -699,33 +709,6 @@
           $row.fireGridUpdate('remove','column');
         }
         return true;
-      }else if( $target.is('.make-grid.column-control') ){ //--------------------add row/convert column to grid
-
-        //close the grid-control box
-        $target.parent().hide();
-        $target.parent().siblings('.dashicons-no-alt').hide();
-        $target.parent().siblings('.dashicons-edit').show();
-        //convert to grid
-        $parentColumn = $target.closest('.columns');
-        if($parentColumn.length > 0){
-          //column already has a row?
-          let text = '';
-          if(0 == $parentColumn.children('.container').length){
-            //keep the textarea and remove from the column
-            if(cf7grid.ui){
-              text = $('textarea.grid-input', $parentColumn).remove().text();
-              $('div.cf7-field-inner', $parentColumn).remove();
-            }else{
-              text = $('textarea.grid-input', $parentColumn).remove().val();
-            }
-          }else{
-            text = $parentColumn.children('.container').remove();
-          }
-          $parentColumn.insertNewRow(text);
-        }else{ //add to the main container
-          $grid.insertNewRow();
-        }
-        return true;
       }else if($target.is('.external-form')){ //---------------- insert cf7 form
         //close the grid-control box
         $target.parent().hide();
@@ -780,7 +763,7 @@
           return false;
         }
         //add the new column
-        $newColumn.append( $( $('#grid-col').html() ) );
+        $newColumn.append( $colTemplt.html() );
         if(cf7grid.ui){
           $('textarea.grid-input' ,$newColumn).hide();
         }else{
@@ -1107,7 +1090,7 @@
       count =0, counth = 0,
       field = '',
       stopSearch = false, isField = false,
-      classes = $('#grid-col div.cf7-field-type').attr('class');
+      classes = $colTemplt.find('div.cf7-field-type').attr('class');
 
     while ( (match = tagRegex.exec(search)) !== null) {
       isRequired = (match[2]+'*' === match[1]);
@@ -1364,46 +1347,70 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
     return {'length':total, 'size':size};
   }
   //add new rows
-  $.fn.insertNewRow = function(areaCode, wContainer, action){
-    let $this = $(this);
+  $.fn.insertNewRow = function(areaCode, type, action, wButton){
+    let $this = $(this), $newRow = $rowTemplt.clone().find('.container');
     if(typeof areaCode === 'undefined') areaCode ='';
-    if(typeof wContainer === 'undefined') wContainer = true;
+    if(typeof type === 'string' && type.trim().length > 0){ //redefine new row object.
+      let selectors = type.split(' ');
+      $newRow = $($(selectors[0]).html());
+      if(selectors.length>1){ 
+        selectors.shift();// remove first element.
+        selectors = selectors.join(' ');
+        if(!$newRow.is(selectors)) $newRow = $newRow.find(selectors); 
+      }
+    }
     if(typeof action === 'undefined'){ 
       action = 'after';
       if($this.is('.columns') || $this.is('.row')) action = 'append';
     }
-    let $newRow = $('#grid-row .container').clone();
-    if(!wContainer) $newRow = $newRow.children('.row');
-     
+    
     //append the column controls and textarea
     if($.fn[action]) $this[action]($newRow);
     else{
       //unknown action, maybe an error.
       return $this;
     }
-    $('.columns', $newRow).prepend( $($('#grid-col').html()) ); //format grid column.
-    //is areaCode text or jQuery object?
-    if(areaCode instanceof jQuery){
-      $('.cf7-field-inner, .grid-input', $newRow).remove();
-      if(areaCode.is('.columns')) areaCode = areaCode.children();
-      $('.grid-column', $newRow).append(areaCode);
-    }else{
-      //add the code to the textarea
-      if(cf7grid.ui){
-        $('textarea.grid-input',$newRow).html(areaCode).hide();//.trigger('change');
-        $newRow.html2gui(areaCode);
-      }else{
-        $('textarea.grid-input',$newRow).val(areaCode);//.trigger('change');
-        $('div.cf7-field-inner', $newRow).hide();
-      }
-    }
-    //remove add buttons
-    if(!wContainer) $('.add-item-button', $newRow).remove();
-    
+    //fill in any template requirements.
+    $newRow = $newRow.fillCF7SGTemplate(areaCode);
+    //remove buttons?
+    if(typeof wButton === 'undefined' || !wButton) $('.add-item-button', $newRow).remove();
     //make new row's columns sortable.
     sortableRows($newRow);
     $newRow.fireGridUpdate('add','row');
     return $this;
+  }
+  /** @since 5.0 function to fill inner templates if any */ 
+  $.fn.fillCF7SGTemplate = function(inner){
+    let $row = $(this),
+      $tplt = $row.find('.inner-template');
+    //either fill with template for with inner content.
+    if(typeof inner === 'undefined' || inner.length===0){ 
+      if($tplt.length >0 ){ //fill template is any.
+        $tplt.before($($tplt.html()).html());
+        $tplt.remove();
+        //check for additional templates in newly inserted content.
+        $row = $row.fillCF7SGTemplate();
+      }
+      return $row;
+    }
+    $tplt.remove(); //if any
+    // $('.columns', $row).last().prepend( $($('#grid-col').html()) ); //format grid column.
+    //is areaCode text or jQuery object?
+    if(inner instanceof jQuery){
+      // $('.cf7-field-inner, .grid-input', $row).remove();
+      if(inner.is('.columns')) inner = inner.children();
+      $('.columns', $row).last().append(inner);
+    }else{
+      //add the code to the textarea
+      if(cf7grid.ui){
+        $('textarea.grid-input',$row).html(inner);//.trigger('change');
+        $row.html2gui(inner);
+      }else{
+        $('textarea.grid-input',$row).val(inner);//.trigger('change');
+        $('div.cf7-field-inner', $row).hide();
+      }
+    }
+    return $row;
   }
   //refresh controls select
   $.fn.changeColumnSize = function(oldSize, newSize){
