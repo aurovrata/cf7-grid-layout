@@ -40,11 +40,15 @@ if(empty($colour)) $colour = 'default';
   	$editor = new WPCF7_Editor( $cf7_form );
   	$panels = array();
 
+    $ver = '';
+    $ver = get_post_meta($post_id, '_cf7sg_version', true);
+    $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
+
   	if ( current_user_can( 'wpcf7_edit_contact_form', $post_id ) ) {
   		$panels = array(
   			'form-panel' => array(
   				'title' => __cf7sg( 'Form' ),
-  				'callback' => array($this, 'grid_editor_panel') ),
+  				'callback' => array($this, "grid_editor_panel{$ver}") ),
   			'mail-panel' => array(
   				'title' => __cf7sg( 'Mail' ),
   				'callback' => 'wpcf7_editor_panel_mail' ),
@@ -82,12 +86,48 @@ if(empty($colour)) $colour = 'default';
   <form action="" class="dummy-form" data-id="dummy">
     <!-- DUMMY FORM to prevent some wp-core scripts from tempering with cf7 tags forms printed below-->
   </form>
+  <?php  
+  $tag_generator = WPCF7_TagGenerator::get_instance(); 
+  if('_v5' === $ver):?>
+    <div id="cf7sg-modal-tags" class="cf7-tag-generators display-none">
+      <form id="cf7sg-field-edit">
+        <div class="cf7sg-modal-input row">
+          <div class="columns three">
+            <span><?=__('Field label','cf7-grid-layout')?></span>
+          </div>
+          <div class="columns nine">
+            <input type="text" name="_cf7sg_modal_label"/>
+            <p><?=__('The label field is displayed before the field, but is optional','cf7-grid-layout')?></p>
+          </div>
+        </div>
+        <div class="cf7sg-modal-input row">
+          <div class="columns three">
+            <span><?=__('Field description','cf7-grid-layout')?></span>
+          </div>
+          <div class="columns nine">
+            <input type="text" name="_cf7sg_modal_desc"/>
+            <p><?=__('The field description is displayed after the field, but is optional','cf7-grid-layout')?></p>
+          </div>
+        </div>
+        <div class="cf7sg-modal-input row">
+          <div class="columns nine">
+            <input type="text" name="_cf7sg_modal_tag"/>
+          </div>
+          <div class="columns three">
+            <a class="button" href="javascript:void(0);"><?=__('Edit shortcode','cf7-grid-layout')?></a>
+          </div>
+        </div>
+        <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
+      </form>  
+      <h3><?= __('Select a field', 'cf7-grid-layout');?></h3>
+      <?php $tag_generator->print_buttons(); ?>
+    </div>
+  <?php endif; ?>
+
+  <div id="cf7-taggenerator-forms">
+    <?php $tag_generator->print_panels( $cf7_form );?>
+  </div>
   <?php
-
-  	$tag_generator = WPCF7_TagGenerator::get_instance();
-
-  	$tag_generator->print_panels( $cf7_form );
-
   	do_action( 'wpcf7_admin_footer', $cf7_form );
 
     $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());

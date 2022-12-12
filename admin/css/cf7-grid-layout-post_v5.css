@@ -404,8 +404,8 @@ textarea.grid-input {
 #cf7-css-codemirror .CodeMirror {
     height: calc( 100vh - 180px);
 }
-#grid-form .container:not(.cf7sg-slide) {
-   padding: 0;
+#grid-form .container:not(.cf7sg-slide) > .row{
+   /* padding: 0; */
    border: solid 1px #d7d7d7;
    margin-top: 5px;
    border-radius: 3px;
@@ -549,9 +549,6 @@ textarea.grid-input {
 }
 #cf7-editor-grid .cf7sg-slide > .row > .columns > .grid-column > span {
 	display: none;
-}
-#cf7-editor-grid .cf7sg-slide > .row > .columns > * {
-	padding: 0 5px;
 }
 #cf7-editor-grid .form-controls {
 	padding: 0;
@@ -870,3 +867,17 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     min-width: 300px;
 }
 body.disable-scroll{overflow:hidden;}
+#cf7sg-editor #contact-form-editor .contact-form-editor-panel > div.config-error {
+	margin-bottom: 5px ;
+}
+#cf7sg-editor #contact-form-editor .contact-form-editor-panel{ padding: 0 10px;}
+.post-type-wpcf7_contact_form .postbox .inside{ padding: 0;}
+#cf7sg-editor  #contact-form-editor-tabs {padding: 0;}
+#cf7sg-editor #contact-form-editor-tabs li {margin: 0;}
+.post-type-wpcf7_contact_form  .jquery-modal.blocker{ z-index: 101;}
+.cf7sg-modal-input.row p {
+	margin: 0;
+}
+.cf7sg-modal-input.row input {
+	width: 100%;
+}

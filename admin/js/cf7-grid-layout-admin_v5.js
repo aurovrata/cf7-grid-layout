@@ -792,8 +792,9 @@
       if(cf7grid.ui){
         //close any open ui fields
         closeAlluiFields();
-        if($target.is('.cf7-field-inner p.content')){
-          $target.parent().showUIfield();
+        if($target.is('.cf7-field-inner p.content')){ //show modal
+          // $target.parent().showUIfield();
+          $('#cf7sg-field-edit').modal();
         }else if($target.is('.cf7-field-inner span.dashicons')){
           //field will be closed by closeAlluiFields
         }else if('none'!==$('#wpcf7-form').css('display') && !$target.is('#wpcf7-form')){

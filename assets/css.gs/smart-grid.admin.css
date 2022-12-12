@@ -1,21 +1,28 @@
 /*! css-smart-grid 5.1.4 | MIT License | http://css.gd */
-#grid-form .row {
+#grid-form .row, #cf7sg-field-edit .row {
     zoom: 1;
     margin:0;
 }
 #grid-form .row:after,
-#grid-form .row:before {
+#grid-form .row:before,
+#cf7sg-field-edit .row:after,
+#cf7sg-field-edit .row:before {
     content: "";
     display: table
 }
-#grid-form .row:after {
+#grid-form .row:after,
+#cf7sg-field-edit .row:after {
     clear: both
 }
 @media (min-width:481px) {
-    #grid-form .columns {
+    #grid-form .columns,
+    #cf7sg-field-edit .columns {
         float: left;
         margin: 0 0 0 2.12766%;
         width: 6.38298%
+    }
+    #cf7sg-field-edit .columns {
+      margin: 0 0 0 1%;
     }
     #grid-form .columns.point-five {
         width: 3.19149%
@@ -33,14 +40,16 @@
         width: 18.08511%
     }
     #grid-form .columns.one-fourth,
-    #grid-form .columns.three {
+    #grid-form .columns.three,
+    #cf7sg-field-edit .columns.three {
         width: 23.40426%
     }
     #grid-form .columns.three.point-five {
         width: 26.59575%
     }
     #grid-form .columns.four,
-    #grid-form .columns.one-third {
+    #grid-form .columns.one-third,
+    #cf7sg-field-edit .columns.one-third{
         width: 31.91489%
     }
     #grid-form .columns.four.point-five {
@@ -57,11 +66,13 @@
         width: 57.44681%
     }
     #grid-form .columns.eight,
-    #grid-form .columns.two-thirds {
+    #grid-form .columns.two-thirds,
+    #cf7sg-field-edit .columns.two-thirds {
         width: 65.95745%
     }
     #grid-form .columns.nine,
-    #grid-form .columns.three-fourths {
+    #grid-form .columns.three-fourths,
+    #cf7sg-field-edit .columns.nine {
         width: 74.46808%
     }
     #grid-form .columns.ten {

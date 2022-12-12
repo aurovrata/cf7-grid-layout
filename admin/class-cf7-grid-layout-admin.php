@@ -159,6 +159,9 @@ class Cf7_Grid_Layout_Admin {
           $ver = get_post_meta($post->ID, '_cf7sg_version', true);
           $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
         }
+        if('_v5' === $ver){ //user of jqeury modal.
+          wp_enqueue_style('jquery-modal', $plugin_dir . 'assets/modal/jquery.modal.min.css', array(), '0.9.2', 'all' );
+        }
         wp_enqueue_style( "cf7-grid-post-css", $plugin_dir . "admin/css/cf7-grid-layout-post{$ver}.css", array(), $this->version, 'all' );
         wp_enqueue_style( "cf7-grid-colours-css", $plugin_dir . 'admin/css/cf7sg-admin-colours-fresh.css', array(), $this->version, 'all' );
         $colour = get_user_meta( get_current_user_id(), 'admin_color', true );
@@ -228,6 +231,9 @@ class Cf7_Grid_Layout_Admin {
         else{
           $ver = get_post_meta($post->ID, '_cf7sg_version', true);
           $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
+        }
+        if('_v5' === $ver){ //user of jqeury modal.
+          wp_enqueue_script('jquery-modal', $plugin_dir . 'assets/modal/jquery.modal.min.js', array('jquery'), '0.9.2', 'all' );
         }
         /* register codemirror editor & addons. */
         //codemirror script
@@ -880,14 +886,16 @@ class Cf7_Grid_Layout_Admin {
    * @param      WPCF7_Contact_Form    $form_obj     .
   **/
   public function grid_editor_panel($form_obj){
-    $screen = get_current_screen();
-    $ver = '';
-    if('add' == $screen->action) $ver = '_v5';
-    else{
-      $ver = get_post_meta($form_obj->id(), '_cf7sg_version', true);
-      $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
-    }
-    require_once plugin_dir_path( __FILE__ )  . "/partials/cf7-grid-layout-admin-display{$ver}.php";
+    require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-grid-layout-admin-display.php';
+  }
+  /**
+   * Display the editor panels (wpcf7 / codemirror / grid) for v5.x forms
+   * called by panel registration in file admin/partials/cf7-admin-editor-diplsay.php
+   * @since 5.0.0
+   * @param      WPCF7_Contact_Form    $form_obj     .
+  **/
+  public function grid_editor_panel_v5($form_obj){
+    require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-grid-layout-admin-display_v5.php';
   }
   /**
   *
