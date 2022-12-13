@@ -96,7 +96,7 @@ if(empty($colour)) $colour = 'default';
             <span><?=__('Field label','cf7-grid-layout')?></span>
           </div>
           <div class="columns nine">
-            <input type="text" name="_cf7sg_modal_label"/>
+            <input type="text" id="cf7sg-modal-label"/>
             <p><?=__('The label field is displayed before the field, but is optional','cf7-grid-layout')?></p>
           </div>
         </div>
@@ -105,22 +105,26 @@ if(empty($colour)) $colour = 'default';
             <span><?=__('Field description','cf7-grid-layout')?></span>
           </div>
           <div class="columns nine">
-            <input type="text" name="_cf7sg_modal_desc"/>
+            <input type="text" id="cf7sg-modal-desc"/>
             <p><?=__('The field description is displayed after the field, but is optional','cf7-grid-layout')?></p>
           </div>
         </div>
         <div class="cf7sg-modal-input row">
           <div class="columns nine">
-            <input type="text" name="_cf7sg_modal_tag"/>
+            <textarea name="_cf7sg_modal_tag" rows="3"></textarea>
           </div>
           <div class="columns three">
-            <a class="button" href="javascript:void(0);"><?=__('Edit shortcode','cf7-grid-layout')?></a>
+            <a class="button cf7sg-edit-shortcode" href="javascript:void(0);"><?=__('Edit shortcode','cf7-grid-layout')?></a>
+            <div class="cf7sg-tag-update">
+            <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
+          </div>
           </div>
         </div>
-        <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
       </form>  
-      <h3><?= __('Select a field', 'cf7-grid-layout');?></h3>
-      <?php $tag_generator->print_buttons(); ?>
+      <div id="cf7sg-tag-list">
+        <h3><?= __('Select a field', 'cf7-grid-layout');?></h3>
+        <?php $tag_generator->print_buttons(); ?>
+      </div>
     </div>
   <?php endif; ?>
 

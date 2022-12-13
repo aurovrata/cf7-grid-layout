@@ -878,6 +878,16 @@ body.disable-scroll{overflow:hidden;}
 .cf7sg-modal-input.row p {
 	margin: 0;
 }
-.cf7sg-modal-input.row input {
+.cf7sg-modal-input.row input, .cf7sg-modal-input.row textarea {
 	width: 100%;
+}
+#cf7sg-field-edit .button {
+	width: 100%;
+	text-align: center;
+}
+#cf7sg-field-edit .cf7sg-modal-input.row {
+	margin: 5px 0;
+}
+#cf7sg-field-edit .cf7sg-tag-update{
+  margin-top: 6px;
 }

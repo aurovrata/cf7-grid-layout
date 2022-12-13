@@ -1,6 +1,5 @@
 /*! css-smart-grid 5.1.4 | MIT License | http://css.gd */
-#grid-form .row, #cf7sg-field-edit .row {
-    zoom: 1;
+#grid-form .row, #cf7sg-field-edit .row,  #grid-form .columns:first-child, #cf7sg-field-edit .columns:first-child{
     margin:0;
 }
 #grid-form .row:after,
@@ -15,14 +14,13 @@
     clear: both
 }
 @media (min-width:481px) {
-    #grid-form .columns,
-    #cf7sg-field-edit .columns {
+    #grid-form .columns, #cf7sg-field-edit .columns {
         float: left;
         margin: 0 0 0 2.12766%;
         width: 6.38298%
     }
     #cf7sg-field-edit .columns {
-      margin: 0 0 0 1%;
+      /* margin: 0 0 0 1%; */
     }
     #grid-form .columns.point-five {
         width: 3.19149%
@@ -133,10 +131,10 @@
     #grid-form .columns.offset-eight:first-child {
         margin-left: 68.08511%
     }
-    #grid-form .columns.offset-nine {
+    #grid-form .columns.offset-nine  {
         margin-left: 78.7234%
     }
-    #grid-form .columns.offset-nine:first-child {
+    #grid-form .columns.offset-nine:first-child, #cf7sg-field-edit .columns.offset-nine:first-child {
         margin-left: 76.59574%
     }
     #grid-form .columns.offset-ten {

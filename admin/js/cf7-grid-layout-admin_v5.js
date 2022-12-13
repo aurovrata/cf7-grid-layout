@@ -36,22 +36,9 @@
       cssTemplate += '.'+$template.attr('class').split(' ').join('.');
     }
   }
-  let wpcf7Value = '',
-    $fieldTags = $('#form-panel .cf7-tag-generators'); //tag buttons
-    /** @since 4.11 notify usage of tags in grid UI. */
-  $fieldTags.click('a',function(e){
-    let $t = $(e.target);
-    if($t.is('.click-disabled *') || $t.is('.click-disabled')){
-      if(cf7sg_pointers.helpers.ui_editor_tags){
-        $('#grid-form .cf7-field-type .content').first().pointer({
-          content: cf7sg_pointers.helpers.ui_editor_tags,
-          pointerClass: 'wp-pointer cf7sg-pointer cf7sg-pointer-ui_editor_tags',
-          position:{edge:	'left', align:	'center'},
-          pointerWidth:	350,
-        }).pointer('open');
-      }
-    }
-  })
+  let wpcf7Value = '';
+  let $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list');
+  
 	$(document).ready( function(){
     
     //change the form id to mimic cf7 plugin custom admin page.
@@ -360,6 +347,47 @@
         }
       }
     });
+    /** @since 5.0.0 modal management */    
+    $modal.on('click', (e)=>{
+      let $target = $(e.target);
+      switch(true){
+        case $target.is('.cf7sg-edit-shortcode'):
+          $tagModal.modal({
+            closeExisting: false
+          });
+          break;
+        case $target.is('.button-primary'):
+          //udpate field.
+          let $txaf = $('#cf7sg-ui-field', $grid),
+            $uif = $txaf.closest('.grid-column'),
+            $txam = $('#wpcf7-form', $modal),
+            lbl = $('#cf7sg-modal-label', $modal).val(),
+            desc = $('#cf7sg-modal-desc', $modal).val();
+
+          $txaf.val($txam.val()).text($txam.val());
+
+          $('.cf7-field-tip input', $uif).val(desc);
+          $('.cf7-field-tip p.content', $uif).html(desc);
+          $('.cf7-field-label input', $uif).val(lbl);
+          $('.cf7-field-label p.content', $uif).html(lbl);
+          lbl = $txaf.scanCF7Tag();
+          $('.cf7-field-type p.content', $uif).html(lbl);
+          //reset textarea#wpcf7-form, nad modal
+          $txam.attr('id','').val('').text('');
+          $txaf.attr('id','');
+          $('input', $modal).val('');
+          $.modal.close();
+          $('textarea.grid-input', $uif).updateGridForm();
+          $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
+          break;
+      }
+    });
+    $tagModal.on('click',(e)=>{
+      if($(e.target).is(('.button'))){ 
+        $.modal.close();
+      }
+    })
+
     //offset/size change using event delegation
     /*---------------------------------------------------------------------------- ui menus */
     $grid.on('change', function(event){
@@ -382,6 +410,7 @@
         $column.addClass($target.val());
         //filter the options
         $target.closest('.grid-controls').filterColumnControls();
+        return true;
       }else if($target.is('.form-select')){ //-------------- external form selection
         let $container = $target.closest('.cf7sg-external-form');
         $container.attr('data-form', $target.val());
@@ -394,12 +423,14 @@
         $.post(ajaxurl, data, function(response) {
     			$('.cf7sg-external-form-content', $container).attr('id','cf7sg-form-'+$target.val()).html(response);
     		});
+        return true;
       }
       /*
         Collapsible / tabs rows input changes
       */
       if($target.is('.cf7sg-collapsible-title label input[type="text"]')){ //------- Collapsible title
         $target.siblings('input[type="hidden"]').val($target.val());
+        return true;
       }else if( $target.is('.cf7sg-collapsible-title label input[type="checkbox"]')){ //------- Collapsible title toggled
         let $title = $target.closest('.cf7sg-collapsible-title');
         if($target.is(':checked')){
@@ -409,22 +440,15 @@
           $('.toggle', $title).remove();
           $title.closest('.container.cf7sg-collapsible').removeClass('with-toggle').removeAttr( 'data-group').removeAttr( 'data-open');
         }
+        return true;
       }else if($target.is('ul.cf7-sg-tabs-list li label input[type="text"]')){ //------- Tabs title
         $target.parent().siblings('a').text($target.val());
+        return true;
       }else if($target.is('label.table-row-button input')){
         $target.closest('.container.cf7-sg-table').attr('data-button',$target.val());
+        return true;
       }
-      if(cf7grid.ui){
-        if($target.is('.cf7-field-inner textarea')){
-          let label = $target.scanCF7Tag();
-          $grid.trigger('cf7sg-cf7tag-update');
-          $target.siblings('p.content').html(label);//.show();
-          $target.parent().siblings('textarea.grid-input').updateGridForm();
-        }else if($target.is('.cf7-field-inner input')){
-          $target.siblings('p.content').html($target.val());
-          $target.parent().siblings('textarea.grid-input').updateGridForm();
-        }
-      }
+      
     }); //end $grid.on('change');
 
     //grid click event delegation
@@ -793,8 +817,7 @@
         //close any open ui fields
         closeAlluiFields();
         if($target.is('.cf7-field-inner p.content')){ //show modal
-          // $target.parent().showUIfield();
-          $('#cf7sg-field-edit').modal();
+          $target.parent().showUIfield();
         }else if($target.is('.cf7-field-inner span.dashicons')){
           //field will be closed by closeAlluiFields
         }else if('none'!==$('#wpcf7-form').css('display') && !$target.is('#wpcf7-form')){
@@ -900,7 +923,6 @@
     $('.cf7-field-inner :input:visible').each(function(){
       $(this).closeUIfield();
     });
-    // $fieldTags.addClass('click-disabled');
   }
   //close controls row/column
   function toggleControl($ctrl){
@@ -930,7 +952,6 @@
       }else if(finalise){
         $grid.trigger('cf7grid-form-ready'); //codemirror initialisation
       }
-      $fieldTags.addClass('click-disabled');
     }
   }
   function sortableRows( $newRow='' ){
@@ -987,16 +1008,17 @@
     if(!$this.is('.cf7-field-inner')){
       return $this;
     }
-    $this.find('p.content').hide();
-    $this.find('span.dashicons').show();
-    let $input = $(':input', $this).show();
-    $input.focus();
+    /** @since 5.0.0 use a modal */
+    $modal.modal();
+    $('textarea#wpcf7-form').attr('id','');
+    $('textarea',$modal).attr('id','wpcf7-form'); 
+    // $this.find('p.content').hide();
+    // $this.find('span.dashicons').show();
+    let $input = $(':input', $this);//.show();
+    // $input.focus();
     if($input.is('textarea')){
-      $('textarea#wpcf7-form').attr('id','');
-      $input.attr('id', 'wpcf7-form');
+      $input.attr('id', 'cf7sg-ui-field');
       wpcf7Value = $input.val();
-      /** @since 4.11 enable tag buttons when a field is being edited */
-      $fieldTags.removeClass('click-disabled');
     }else{
       changeTextarea();
     }

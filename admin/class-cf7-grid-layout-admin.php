@@ -396,6 +396,9 @@ class Cf7_Grid_Layout_Admin {
         if('auto-draft'!=$post->post_status) WPCF7_ContactForm::get_instance($post);
 
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
+        if('_v5' === $ver){ //v5 handles tag generator differently.
+          // wp_dequeue_script('wpcf7-admin-taggenerator');
+        }
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
         wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . "admin/js/cf7-grid-codemirror{$ver}.js", array( 'jquery', 'jquery-ui-tabs', 'cf7-codemirror-js' ), $this->version, true );
         wp_localize_script(
