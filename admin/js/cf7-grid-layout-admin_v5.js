@@ -1004,15 +1004,18 @@
     return true;
   }
   $.fn.showUIfield = function(){
-    let $this = $(this);
+    let $this = $(this), $field;
     if(!$this.is('.cf7-field-inner')){
       return $this;
     }
+    $field = $this.closest('.grid-column');
     /** @since 5.0.0 use a modal */
     $modal.modal();
     $('textarea#wpcf7-form').attr('id','');
-    $('textarea',$modal).attr('id','wpcf7-form'); 
-    // $this.find('p.content').hide();
+    $('textarea',$modal).attr('id','wpcf7-form').val($('.cf7-field-type textarea', $field).val()); 
+    //check if the field has values.
+    $('#cf7sg-modal-label', $modal).val($('.cf7-field-label input', $field).val());
+    $('#cf7sg-modal-desc', $modal).val($('.cf7-field-tip input', $field).val());
     // $this.find('span.dashicons').show();
     let $input = $(':input', $this);//.show();
     // $input.focus();
