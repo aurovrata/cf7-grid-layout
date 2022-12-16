@@ -388,6 +388,9 @@ textarea.grid-input {
   width: 144px;
   right: 0;
 }
+#grid-form .grid-controls > *:not(.cf7-sg-hidden) {
+	display: block;
+}
 /* .dashicons.column-control:hover::before, .row-controls .dashicons:hover::before {color:#0065aa} */
 #grid-form .columns:hover > .grid-column > .cf7-field-inner {
 	background: #e4e4e4;
@@ -743,28 +746,11 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 .row.cf7-sg-table > .row-controls .table-label {
 	display: inline;
 }
-#grid-form ul.cf7-sg-tabs-list{
-    margin: 0;
-}
-#grid-form ul.cf7-sg-tabs-list li{
-    display: inline-block;
-    background-color: #d7d7d7;
-    padding: 2px 2px 0 5px;
-    margin-bottom: -5px;
-    border-top-right-radius: 3px;
-    margin-top: 2px;
-    border-bottom-right-radius: 0px;
-}
 #grid-form input:disabled:hover, #grid-form .grid-controls label:hover {
     cursor: default;
 }
 #grid-form .container.cf7-sg-tabs-panel, #grid-form .container.cf7sg-collapsible {
     border: solid 2px #009cff;
-}
-#grid-form ul.cf7-sg-tabs-list li {
-    border-top: solid 2px #009cff;
-    border-left: solid 2px #009cff;
-    border-right: solid 2px #009cff;
 }
 #grid-form .two .grid-column .dashicons-move {
     margin-left: -2px;
@@ -890,4 +876,100 @@ body.disable-scroll{overflow:hidden;}
 }
 #cf7sg-field-edit .cf7sg-tag-update{
   margin-top: 6px;
+}
+/* ---- collapsible section ------ */
+#grid-form .cf7sg-collapsible-title {
+	display: none;
+}
+#grid-form .collapsible.grid-controls {
+	width: 215px;
+	right: 0;
+}
+/* ---- css toggle -------------- */
+#cf7sg-editor .cf7sg-toggle-button .knobs::before {
+	color: var(--cf7sg-text-color);
+	background-color: var(--cf7sg-menu-submenu-background);
+  content: '';
+}
+#cf7sg-editor .cf7sg-toggle-button .checkbox:checked + .knobs::before {
+	background-color: var(--cf7sg-menu-submenu-background);
+  content: '';
+}
+#cf7sg-editor .cf7sg-toggle-button .layer {
+  background-color: inherit;
+}
+.cf7sg-toggle-button {
+	position: relative;
+	width: 45px;
+	height: 19px;
+	overflow: hidden;
+	border: 1px solid grey;
+	display: inline-block;
+	vertical-align: middle;
+}
+.cf7sg-toggle-button .checkbox {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	opacity: 0;
+	cursor: pointer;
+	z-index: 3;
+}
+.cf7sg-toggle-button .checkbox:checked + .knobs::before {
+	content: "o";
+	left: 28px;
+}
+.cf7sg-toggle-button .knobs::before {
+	content: '\00D7';
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 11px;
+	height: 5px;
+	font-size: 15px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 0.1;
+	padding: 6px 2px 4px 2px;
+	transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+}
+.cf7sg-toggle-button  .knobs, .cf7sg-toggle-button  .knobs::before, .cf7sg-toggle-button  .layer {
+	transition: 0.3s ease all;
+}
+.cf7sg-toggle-button  .knobs {
+	z-index: 2;
+}
+.cf7sg-toggle-button .layer {
+	width: 100%;
+	transition: 0.3s ease all;
+	z-index: 1;
+}
+.cf7sg-toggle-button .knobs, .cf7sg-toggle-button  .layer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+/* toggle style-r round button, grey/green */
+.style-r .layer{
+	background-color: #f3f3f3;
+}
+.style-r .checkbox:checked ~ .layer {
+	background-color: #f0fceb;
+}
+.style-r .knobs::before {
+  color: #fff;
+  background-color: #9a9a9a;
+}
+.style-r .checkbox:checked + .knobs::before {
+	background-color: green;
+}
+.style-r,.style-r .layer {
+	border-radius: 100px;
+}
+.style-r .knobs::before {
+	border-radius: 50%;
 }

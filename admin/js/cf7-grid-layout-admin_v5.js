@@ -57,38 +57,7 @@
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     $grid = $('#grid-form');
     $gridEditor = $('#cf7-editor-grid');
-    /** @since 5.0 enable toggle switch for slider forms*/
-    $('.form-switch .toggle', $gridEditor).toggles( { 
-      drag:false, 
-      text:{ on:'', off:'' }, 
-      on: false, 
-      clicker:$('.form-switch .control-label',$gridEditor)
-    }).on('toggle',(e, active)=>{
-      let $$ctrl = $(e.target).closest('.form-switch');
-      $('.control-label',$$ctrl).toggleClass('active');
-      if(active){ //convert to slider
-        //change the label on grid form menu
-        // $target.closest('label').siblings('.control-label').toggleClass('display-none');
-        //wrap existing form into a new slider container without any buttons.
-        $grid.insertNewRow($grid.children().remove(), '#grid-multistep-container .cf7sg-slider', 'append', true);
-        //change the add row button to add slide.
-        $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
-        //add row button to first slide.
-        $('.cf7sg-slide.container > .row > .columns',$grid).append($rowTemplt.find('.add-row-button').clone());
-        let $s = $grid.find('.cf7sg-slider');
-        $s.fireGridUpdate('add','slider-section');
-        $s = $('.cf7sg-slide',$s).children('.row');
-        /** @since 4.13.0 display auto scroll helper code */
-        $s.children('.row-controls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
-        $s = $s.children('.columns');
-        $s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
-      }else{ //single slide, revert to form.
-        $grid.prepend($('.cf7sg-slide >.row > .columns > .container', $grid).remove());
-        $('.cf7sg-slider.container', $grid).remove();
-        $grid.fireGridUpdate('remove','slider-section');
-        $grid.siblings('.add-item-button').removeClass('add-slide-button').addClass('add-row-button');
-      }
-    });
+    
     /** @since v5.0 improved cf7 tag regex pattern. */
     cf7TagRgxp = ['hidden']; //by default no hidden button.
     $('form.tag-generator-panel .insert-box input.tag').each((i,el)=>{
@@ -301,7 +270,7 @@
           }
       });
         /** @since 5.0  add row button after last container*/
-        $grid.after($rowTemplt.find('.add-row-button').clone());
+        if($gridEditor.children('.add-row-button').length==0) $grid.after($rowTemplt.find('.add-row-button').clone());
       }else{
         //set the first textarea as our default tag consumer
         $('textarea#wpcf7-form').attr('id','');
@@ -390,8 +359,42 @@
 
     //offset/size change using event delegation
     /*---------------------------------------------------------------------------- ui menus */
-    $grid.on('change', function(event){
+    $gridEditor.keypress((e)=>{
+      let keycode = (e.keyCode ? e.keyCode : e.which);
+      if(keycode == '13'){
+        e.preventDefault();
+        e.stopPropagation();
+        toggleControl(); //close menu.
+      }
+    });
+    $gridEditor.on('change', function(event){
       let $target = $(event.target);
+      if($target.is('.form-switch-checkbox')){ //switch form
+        $target.parent().siblings('.control-label').toggleClass('active');
+        if($target.is(':checked')){ //convert to slider
+          //change the label on grid form menu
+          // $target.closest('label').siblings('.control-label').toggleClass('display-none');
+          //wrap existing form into a new slider container without any buttons.
+          $grid.insertNewRow($grid.children().remove(), '#grid-multistep-container .cf7sg-slider', 'append', true);
+          //change the add row button to add slide.
+          $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
+          //add row button to first slide.
+          $('.cf7sg-slide.container > .row > .columns',$grid).append($rowTemplt.find('.add-row-button').clone());
+          let $s = $grid.find('.cf7sg-slider');
+          $s.fireGridUpdate('add','slider-section');
+          $s = $('.cf7sg-slide',$s).children('.row');
+          /** @since 4.13.0 display auto scroll helper code */
+          $s.children('.row-controls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
+          $s = $s.children('.columns');
+          $s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
+        }else{ //single slide, revert to form.
+          $grid.prepend($('.cf7sg-slide >.row > .columns > .container', $grid).remove());
+          $('.cf7sg-slider.container', $grid).remove();
+          $grid.fireGridUpdate('remove','slider-section');
+          $grid.siblings('.add-item-button').removeClass('add-slide-button').addClass('add-row-button');
+        }
+        return true;
+      }
       if($target.is('.column-setting')){ //----------- column size/offset settings
         let validation = ['dummy'];
         if( $target.is('.column-offset') ){
@@ -428,8 +431,9 @@
       /*
         Collapsible / tabs rows input changes
       */
-      if($target.is('.cf7sg-collapsible-title label input[type="text"]')){ //------- Collapsible title
-        $target.siblings('input[type="hidden"]').val($target.val());
+      if($target.is('.collapsible-row-title input')){ //------- Collapsible title
+        $target.closest('.cf7sg-collapsible.container').find('.cf7sg-collapsible-title .cf7sg-title').html($target.val());
+        $target.closest('.grid-controls').siblings('.control-label').html($target.val());
         return true;
       }else if( $target.is('.cf7sg-collapsible-title label input[type="checkbox"]')){ //------- Collapsible title toggled
         let $title = $target.closest('.cf7sg-collapsible-title');
@@ -471,32 +475,7 @@
         //closed by toggleControl
         return true;
       }
-      /* ------------------------------------------------------------------------- Wrapper controls*/
-      if( $target.is('input.wrap-control') ){ /** @since 3.4.0--wrap row into column ->make grid*/
-        //close the grid-control box, handled by toggleControl
-        switch(true){
-          case $target.is('.slider-form'):
-            if($target.is(':checked')){
-              
-              
-            }else{
-              // $target.closest('.columns').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit data-dots");
-              // $target.closest('.container').removeClass('cf7sg-slider');
-              // $target.fireGridUpdate('remove','slider-section');
-              // //show toggle checkbox.
-              // $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).show().next('span').show();
-              // /** @since 4.13.0 display auto scroll helper code */
-              // $target.closest('.grid-controls').siblings('.php-icon').hide().attr('data-search', '');
-            }
-            break;
-          default: //wrap the closest container
-            //tabs-row-label
-            //collapsible-row-label
-
-            break;
-        }
-        return true;
-      }
+      
       /* --------------------------------SLIDER controls ------------------*/
       if($target.is('.add-slide-button *')){ //add slide
         //add a new empty slide with a new row after the last one, without a button.
@@ -523,6 +502,7 @@
         return true;
       }else if($target.is('.add-row-button *')){ //-----------ADD Row
         let $row = $target.closest('.add-row-button').prev('.container');
+        //default, last button
         if($row.length === 0) $row = $grid.children('.container').last();
         $row.insertNewRow();
         return true;
@@ -537,19 +517,32 @@
         //take care by toggleControl
         return true;
       }else if($target.is('input.collapsible-row')){ //-------------checkbox collapsible row
-        let $container = $target.closest('.container');
+        let $container = $target.closest('.container'), 
+          $anchor = $container.prev(), action;
+        
         if($target.is(':checked')){
-          $container.addClass('cf7sg-collapsible');
-          let id = $container.attr('id');
-          if(typeof id == 'undefined'){
-            id = randString(6);
-            $container.attr('id', id); //assign a random id
+          $target.prop('checked', false); //wrapper container will be checked instead.
+          
+          action = 'after';
+          if($anchor.length===0){ 
+            $anchor = $container.parent();
+            action = 'prepend';
           }
-          $container.prepend($('#grid-collapsible').html()).fireGridUpdate('add','collapsible-row');
+          // $container.prepend($('#grid-collapsible').html()).fireGridUpdate('add','collapsible-row');
+          //wrap its content into a new row.
+          $anchor.insertNewRow($container.remove(), '#grid-collapsible', action, true);
+          $container.after($rowTemplt.find('.add-row-button').clone());
+          $container = (action=='after' ? $anchor.next():$anchor.children('.cf7sg-collapsible') );
+          $container.attr('id',randString(6));
+          //change the add row button to add slide.
+          // $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
+          //add row button to first slide.
         }else{
-          $container.removeClass('cf7sg-collapsible');
-          $container.children('.cf7sg-collapsible-title').remove();
           $container.fireGridUpdate('remove','collapsible-row');
+          // $container.removeClass('cf7sg-collapsible');
+          // $container.children('.cf7sg-collapsible-title').remove();
+          $container.after($row.children().remove());
+          $container.remove();
         }
         //toggle disable the sibling input
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
@@ -1156,14 +1149,6 @@
           counth++; //don't count as field.
           break;
         case cf7grid.dynamicTags.indexOf(tag)>=0:
-/*
-kitchen-facilities limit class:cf7sg-hybriddd "slug:category:tree"
-ddcb limit class:cf7sg-hybriddd "slug:category" "data-maxcheck:1"
-posts-dd multiple permalinks class:select2  "source:post:post" "taxonomy:category:paris"
-
-ddcb-filter limit id:test class:some-class class:cf7sg-imagehdd "source:filter"
-ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree"
-*/
           let source ='';
           if(fMatch[5]) source = fMatch[6];
           else if(fMatch[8]) source = 'taxonomy';
@@ -1195,7 +1180,7 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
         jshooks.push(jsHelpers);
       }
 
-      label+='['+tag+ (isRequired?'*':'') + (isField?' '+field:match[3])+']'; //disolay label.
+      label+='['+tag+ (isRequired?'*':'') + (isField?' '+field:'')+']'; //disolay label.
     }
     classes += " "+ type.join(' ') + (isRequired ? ' required':'');
     field = fields.join(' ');

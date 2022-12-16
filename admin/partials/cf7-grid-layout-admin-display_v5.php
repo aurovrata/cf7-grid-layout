@@ -72,7 +72,9 @@ $cf7_key = $post->post_name;
       <div class="form-controls">
         <span class="form-switch">
           <span class="grid control-label active"><?= __('Single form', 'cf7-grid-layout');?></span>
-          <div class="toggle toggle-light" style="width:45px; display:inline-block"></div>
+          <div class="cf7sg-toggle-button style-r">
+            <input type="checkbox" class="form-switch-checkbox checkbox"><div class="knobs"></div><div class="layer"></div>
+          </div>
           <span class="multistep control-label"><?= __('Multistep form', 'cf7-grid-layout');?></span>
         </span>
         <span class="dashicons dashicons-edit form-control grid-control"></span>
@@ -192,15 +194,45 @@ $cf7_key = $post->post_name;
   </div>
 </template>
 <template id="grid-collapsible">
-  <div class="cf7sg-collapsible-title"><label><?=__('Section title','cf7-grid-layout')?> <input type="text" /><input type="hidden" /><input type="checkbox" /><span><?=__('toggled','cf7-grid-layout')?></span></label></div>
+  <div class="container cf7sg-collapsible">
+    <div class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></div>
+    <div class="row">
+      <div class="row-controls">
+        <span class="dashicons dashicons-move row-control grid-control"></span>
+        <span class="control-label"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
+        <span class="dashicons dashicons-edit row-control grid-control"></span>
+        <span class="dashicons dashicons-no-alt row-control grid-control"></span>
+        <span class="dashicons dashicons-trash row-control grid-control"></span>
+        <div class="grid-controls collapsible">
+          <label class="collapsible-row-label unique-mod">
+            <?=__('Row collapsible','cf7-grid-layout')?>
+            <input type="checkbox" checked="checked" class="collapsible-row wrap-control" />
+          </label>
+          <label class="collapsible-row-title unique-mod">
+            <?=__('Section title','cf7-grid-layout')?>
+            <input type="text" value=""/>
+          </label>
+        </div>
+      </div>
+      <div class="columns full">
+        <template class="inner-template">#grid-col</template>
+      </div>
+    </div>
+  </div>
 </template>
 <template id="grid-collapsible-with-toggle">
-  <div class="toggle toggle-light" data-on="<?=_x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?=_x('No','toggle label','cf7-grid-layout')?>"></div>
+  <div class="cf7sg-toggle-button style-r" data-on="<?=_x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?=_x('No','toggle label','cf7-grid-layout')?>">
+    <input type="checkbox" class="checkbox"><div class="knobs"></div><div class="layer"></div>
+  </div>
 </template>
 <template id="grid-tabs">
-  <ul class="cf7-sg-tabs-list">
-    <li><a href="" class="cf7-sg-hidden"></a><label><?=__('Tab label','cf7-grid-layout')?><input type="text" /></label></li>
-  </ul>
+  <div class="cf7-sg-tabs" id="">
+    <input type="radio" id=""/>
+    <div class="cf7-sg-tab">
+      <label for=""><?=__('Tab label','cf7-grid-layout')?><input type="text"/></label>
+      <template>#grid-row</template>
+    </div>
+  </div>
 </template>
 <template id="grid-table-footer-row">
   <div class="row cf7-sg-table-footer-row">

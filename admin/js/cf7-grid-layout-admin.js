@@ -1049,14 +1049,6 @@
           counth++; //don't count as field.
           break;
         case cf7grid.dynamicTags.indexOf(tag)>=0:
-/*
-kitchen-facilities limit class:cf7sg-hybriddd "slug:category:tree"
-ddcb limit class:cf7sg-hybriddd "slug:category" "data-maxcheck:1"
-posts-dd multiple permalinks class:select2  "source:post:post" "taxonomy:category:paris"
-
-ddcb-filter limit id:test class:some-class class:cf7sg-imagehdd "source:filter"
-ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree"
-*/
           let source ='';
           if(fMatch[5]) source = fMatch[6];
           else if(fMatch[8]) source = 'taxonomy';
@@ -1088,7 +1080,7 @@ ddcb-tax limit id:test class:some-class class:cf7sg-imagehdd "slug:category:tree
         jshooks.push(jsHelpers);
       }
 
-      label+='['+tag+ (isRequired?'*':'') + (isField?' '+field:match[3])+']'; //disolay label.
+      label+='['+tag+ (isRequired?'*':'') + (isField?' '+field:'')+']'; //disolay label.
     }
     classes += " "+ type.join(' ') + (isRequired ? ' required':'');
     field = fields.join(' ');
