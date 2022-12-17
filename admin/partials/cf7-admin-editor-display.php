@@ -91,29 +91,29 @@ if(empty($colour)) $colour = 'default';
   if('_v5' === $ver):?>
     <div id="cf7sg-modal-tags" class="cf7-tag-generators display-none">
       <form id="cf7sg-field-edit">
-        <div class="cf7sg-modal-input row">
-          <div class="columns three">
+        <div class="cf7sg-modal-input .cf7sg-row">
+          <div class="cf7sg-col three">
             <span><?=__('Field label','cf7-grid-layout')?></span>
           </div>
-          <div class="columns nine">
+          <div class="cf7sg-col nine">
             <input type="text" id="cf7sg-modal-label"/>
             <p><?=__('The label field is displayed before the field, but is optional','cf7-grid-layout')?></p>
           </div>
         </div>
-        <div class="cf7sg-modal-input row">
-          <div class="columns three">
+        <div class="cf7sg-modal-input .cf7sg-row">
+          <div class="cf7sg-col three">
             <span><?=__('Field description','cf7-grid-layout')?></span>
           </div>
-          <div class="columns nine">
+          <div class="cf7sg-col nine">
             <input type="text" id="cf7sg-modal-desc"/>
             <p><?=__('The field description is displayed after the field, but is optional','cf7-grid-layout')?></p>
           </div>
         </div>
-        <div class="cf7sg-modal-input row">
-          <div class="columns nine">
+        <div class="cf7sg-modal-input .cf7sg-row">
+          <div class="cf7sg-col nine">
             <textarea name="_cf7sg_modal_tag" rows="3"></textarea>
           </div>
-          <div class="columns three">
+          <div class="cf7sg-col three">
             <a class="button cf7sg-edit-shortcode" href="javascript:void(0);"><?=__('Edit shortcode','cf7-grid-layout')?></a>
             <div class="cf7sg-tag-update">
             <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>

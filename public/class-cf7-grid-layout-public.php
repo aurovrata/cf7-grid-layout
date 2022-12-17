@@ -197,7 +197,12 @@ class Cf7_Grid_Layout_Public {
       }
     }
     $resources = array();
+    $ver='';
     if(!empty($cf7id)){
+      /** @since 5.0 check form version */
+      $ver = get_post_meta($cf7id, '_cf7sg_version', true);
+      $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
+
       $resources = get_post_meta($cf7id, '_cf7sg_script_classes', true);
       if(empty($resources)) $resources = array();
       $css_id = $this->form_css_id($cf7key);
@@ -258,10 +263,11 @@ class Cf7_Grid_Layout_Public {
     }
     wp_register_style( 'cf7-benchmark-css', $plugin_dir . "public/css{$pf}/cf7-benchmark.css", array(), $this->version, 'all' );
 
-    wp_register_style( 'smart-grid', $plugin_dir . "assets/css.gs/smart-grid{$ff}.css", array(), $this->version, 'all' );
-    wp_register_style('jquery-toggles-css', $plugin_dir . "assets/jquery-toggles/css/toggles{$ff}.css", array(), $this->version, 'all' );
-    wp_register_style('jquery-toggles-light-css', $plugin_dir . "assets/jquery-toggles/css/themes/toggles-light{$ff}.css", array('jquery-toggles-css'), $this->version, 'all' );
-
+    wp_register_style( 'smart-grid', $plugin_dir . "assets/css.gs/smart-grid{$ff}{$ver}.css", array(), $this->version, 'all' );
+    if(''==$ver){ 
+      wp_register_style('jquery-toggles-css', $plugin_dir . "assets/jquery-toggles/css/toggles{$ff}.css", array(), $this->version, 'all' );
+      wp_register_style('jquery-toggles-light-css', $plugin_dir . "assets/jquery-toggles/css/themes/toggles-light{$ff}.css", array('jquery-toggles-css'), $this->version, 'all' );
+    }
     /** @since 4.2.0 enable Gliderliders for slider sections */
     $min = '';
     if(!defined('WP_GURUS_DEBUG') || !WP_GURUS_DEBUG) $min = '.min';
@@ -303,7 +309,7 @@ class Cf7_Grid_Layout_Public {
 
       }
     }
-    wp_register_style( $this->plugin_name, $plugin_dir . "public/css{$pf}/cf7-grid-layout-public.css", $dep, $this->version, 'all' );
+    wp_register_style( $this->plugin_name, $plugin_dir . "public/css{$pf}/cf7-grid-layout-public{$ver}.css", $dep, $this->version, 'all' );
 
     do_action('smart_grid_register_styles',$airplane, $min, $resources, $cf7key, $cf7id);
 
@@ -317,8 +323,8 @@ class Cf7_Grid_Layout_Public {
     //   $dep[] = $cf7key.'-js';
     //   wp_register_script( $cf7key.'-js' , $themeuri.'/js/'.$cf7key.'.js', array('jquery', $this->plugin_name), null, true);
     // }
-		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public.js", $dep, $this->version, true );
-    wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
+		wp_register_script( $this->plugin_name, $plugin_dir . "public/js{$pf}/cf7-grid-layout-public{$ver}.js", $dep, $this->version, true );
+    if(''==$ver) wp_register_script('jquery-toggles', $plugin_dir . 'assets/jquery-toggles/toggles.min.js', array( 'jquery' ), $this->version, true );
     wp_register_script('js-cf7sg-benchmarking', $plugin_dir . "public/js{$pf}/cf7-benchmark.js", array( 'jquery' ), $this->version, true );
 
     wp_register_script('glider-js', $plugin_dir . "assets/glider-js/glider{$min}.js", null, '1.7.4',true);

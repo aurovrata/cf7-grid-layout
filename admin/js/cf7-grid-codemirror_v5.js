@@ -131,7 +131,7 @@
 
         if(true===disabled){
           const changes = $('<div>').append(cme.getValue());
-          if(0===changes.children().length || changes.children('.container').length>0){
+          if(0===changes.children().length || changes.children('.cf7sg-container').length>0){
             $editorTabs.tabs('option',{disabled:false});
             /**
             * @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.
@@ -168,7 +168,7 @@
               initCF7sgPage = false;  
               $grid.on('cf7grid-form-ready', function(){
                   let code = $grid.CF7FormHTML();
-                  if($grid.children('.container').length > 0){ //beautify.
+                  if($grid.children('.cf7sg-container').length > 0){ //beautify.
                   code = html_beautify(code ,
                       {
                         'indent_size': 2,
@@ -237,13 +237,13 @@
               $jsTags.show();
               let $form = $('<div>').html($grid.CF7FormHTML());
               $('.display-none', $jsTags).removeClass('show-events');
-              if( $('div.container.cf7-sg-table', $form).length > 0){
+              if( $('div.cf7sg-container.cf7-sg-table', $form).length > 0){
                 $('#table-events', $jsTags).addClass('show-events');
               }
-              if( $('.container.cf7sg-collapsible', $form).not('.cf7sg-slider-section > .cf7sg-collapsible').length > 0){
+              if( $('.cf7sg-container.cf7sg-collapsible', $form).not('.cf7sg-slider-section > .cf7sg-collapsible').length > 0){
                 $('#collapsible-events', $jsTags).addClass('show-events');
               }
-              if( $('div.container.cf7-sg-tabs-panel', $form).length > 0){
+              if( $('div.cf7sg-container.cf7-sg-tabs-panel', $form).length > 0){
                 $('#tab-events', $jsTags).addClass('show-events');
               }
               if( $('.cf7sg-slider-section', $form).length > 0){
@@ -268,7 +268,7 @@
                     default:
                       formFields[match[2]] = [match[2],match[0]];
                       if($field.is('.cf7-sg-tabs .field')) formFields[match[2]][0] += '_tab';
-                      if($field.is('.container.cf7-sg-table .field')) formFields[match[2]][0] += '_row';
+                      if($field.is('.cf7sg-container.cf7-sg-table .field')) formFields[match[2]][0] += '_row';
                       if(match[0].indexOf('class:select2')>0){
                         $('#field-events li.select2', $jsTags).addClass('show-events');
                       }
@@ -516,7 +516,7 @@
         jscme.setCursor({'line':line,'ch':line.length});
       });
       /*@since 1.1.1 disable grid editor for existing cf7 forms*/
-      if(0==$grid.children('.container').length){
+      if(0==$grid.children('.cf7sg-container').length){
         $editorTabs.tabs('option',{ active:1, disabled:[0]});
         $topTags.removeClass('click-disabled');
         $bottomTags.removeClass('click-disabled');
@@ -590,9 +590,9 @@
 
       //scan and submit tabs & tables fields.
       const tableFields = [];
-      $('.row.cf7-sg-table', $formNoEmbeds).each(function(){
+      $('.cf7sg-row.cf7-sg-table', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        const unique = $(this).closest('.container.cf7-sg-table').attr('id'),
+        const unique = $(this).closest('.cf7sg-container.cf7-sg-table').attr('id'),
           fields = {}, search = $(this).html();
         fields[unique]=[];
         let match = cf7TagRegexp.exec(search);
@@ -608,7 +608,7 @@
       });
 
       const tabFields = [];
-      $('.container.cf7-sg-tabs-panel', $formNoEmbeds).each(function(){
+      $('.cf7sg-container.cf7-sg-tabs-panel', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
         const unique = $(this).attr('id'),fields = {}, search = $(this).html();
         fields[unique]=[];
@@ -628,7 +628,7 @@
       * @since 2.5 */
 
       const toggledFields = [], tabbedToggles=[], groupedToggles={};
-      $('.container.cf7sg-collapsible.with-toggle', $formNoEmbeds).each(function(){
+      $('.cf7sg-container.cf7sg-collapsible.with-toggle', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
         const $toggle = $(this), unique = $toggle.attr('id'), group = $toggle.data('group'),
           fields = {}, search = $toggle.html();
@@ -703,10 +703,10 @@
         $exform.children('.form-controls').remove();
       });
       //remove the row controls
-      $('.row', $form).removeClass('ui-sortable').children('.row-controls').remove();
+      $('.cf7sg-row', $form).removeClass('ui-sortable').children('.row-controls').remove();
 
       //remove the collapsible input
-      $('.container.cf7sg-collapsible', $form).each(function(){
+      $('.cf7sg-container.cf7sg-collapsible', $form).each(function(){
         const $this = $(this),cid = $this.attr('id'), $title = $this.children('.cf7sg-collapsible-title');
         let text = $title.children('label').children('input[type="hidden"]').val();
         $title.children('label').remove();
@@ -723,7 +723,7 @@
       const cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img,
         cf7sgToggleRegex = /class:cf7sg-toggle-(.[^\s]+)/i;
       //remove textarea and embed its content
-      $('.columns', $form).each(function(){
+      $('.cf7sg-col', $form).each(function(){
         let $this = $(this), 
           $gridCol = $this.children('.grid-column'),
           $text;
@@ -733,7 +733,7 @@
           if($text.length>0){
             let text = $text.text();
             //verify if this column is within a toggled section.
-            let $toggle = $this.closest('.container.cf7sg-collapsible.with-toggle');
+            let $toggle = $this.closest('.cf7sg-container.cf7sg-collapsible.with-toggle');
             if($toggle.length>0){
               let cid = $toggle.attr('id');
               /**
@@ -778,7 +778,7 @@
             $this.html('\n'+text);
           }//else this column is a grid.
           $gridCol.remove();
-        }else if($this.is('.cf7-sg-table-footer-row .columns')){ //no grid-column
+        }else if($this.is('.cf7-sg-table-footer-row .cf7sg-col')){ //no grid-column
           $text = $('textarea.grid-input', $this).html();
           $('.grid-column-tip', $this).remove();
           $this.html($('<p class="info-tip">').html($text));
@@ -792,7 +792,7 @@
         $this.append( external[id] );
       });
       text = $form.html();
-      if($grid.children('.container').length > 0){ //strip tabs/newlines
+      if($grid.children('.cf7sg-container').length > 0){ //strip tabs/newlines
           text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gm, "");
       }
       return text;

@@ -117,8 +117,8 @@ $cf7_key = $post->post_name;
 <input type="hidden" value="" id="cf7sg-grouped-toggles" name="cf7sg-grouped-toggles" />
 <!-- CF7 SG UI editor templates -->
 <template id="grid-row">
-  <div class="container">
-    <div class="row">
+  <div class="cf7sg-container">
+    <div class="cf7sg-row">
       <div class="row-controls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label">
@@ -151,7 +151,7 @@ $cf7_key = $post->post_name;
           </label>
         </div>
       </div>
-      <div class="columns full">
+      <div class="cf7sg-col full">
         <template class="inner-template">#grid-col</template>
       </div>
     </div>
@@ -194,9 +194,9 @@ $cf7_key = $post->post_name;
   </div>
 </template>
 <template id="grid-collapsible">
-  <div class="container cf7sg-collapsible">
+  <div class="cf7sg-container cf7sg-collapsible">
     <div class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></div>
-    <div class="row">
+    <div class="cf7sg-row">
       <div class="row-controls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
@@ -218,7 +218,7 @@ $cf7_key = $post->post_name;
           </label>
         </div>
       </div>
-      <div class="columns full">
+      <div class="cf7sg-col full">
         <template class="inner-template">#grid-col</template>
       </div>
     </div>
@@ -240,7 +240,7 @@ $cf7_key = $post->post_name;
 </template>
 <template id="grid-table-footer-row">
   <div class="row cf7-sg-table-footer-row">
-    <div class="columns full">
+    <div class="cf7sg-col full">
       <div class="grid-column-tip">
         <div class="cf7-field-tip cf7-field-inner">
           <p class="content" style=""><?= __('describe your table here','cf7-grid-layout')?></p>
@@ -253,12 +253,12 @@ $cf7_key = $post->post_name;
   </div>
 </template>
 <template id="grid-multistep-container">
-  <div class="container cf7sg-slider">
-    <div class="row">
-      <div class="columns full cf7sg-slider-section" data-next="" data-prev="" data-submit="<?= __('Submit','cf7-grid-layout');?>" data-dots="false">
-        <div class="container cf7sg-collapsible cf7sg-slide" id="">
+  <div class="cf7sg-container cf7sg-slider">
+    <div class="cf7sg-row">
+      <div class="cf7sg-col full cf7sg-slider-section" data-next="" data-prev="" data-submit="<?= __('Submit','cf7-grid-layout');?>" data-dots="false">
+        <div class="cf7sg-container cf7sg-collapsible cf7sg-slide" id="">
           <div class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></div>
-          <div class="row">
+          <div class="cf7sg-row">
             <div class="row-controls">
               <span class="dashicons dashicons-move row-control grid-control"></span>
               <span class="control-label">
@@ -275,7 +275,7 @@ $cf7_key = $post->post_name;
                 </label>
               </div>
             </div>
-            <div class="columns full">
+            <div class="cf7sg-col full">
               <template class="inner-template">#grid-row</template>
             </div>
           </div>
