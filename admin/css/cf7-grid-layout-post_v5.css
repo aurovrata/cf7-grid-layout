@@ -141,7 +141,8 @@
 .columns.cf7sg-slider-section, .columns.cf7sg-accordion-rows {box-shadow: 0 0 6px #6a0080;}
 .columns:not(.full) + .row-controls .grid-controls .make-grid{display:inline-block;}
 .columns.full > .container:not(.cf7sg-collapsible) > .row:not(.cf7-sg-table) > .columns:not(.full) + .row-controls .grid-controls .make-grid,
-.button.make-grid.display-none, .row.cf7-sg-table .collapsible-row-label, .row.cf7-sg-table .tabs-row-label,
+.button.make-grid.display-none, .row.cf7-sg-table .collapsible-row-label, .row.cf7-sg-table .tabs-row-label, 
+.container.cf7sg-collapsible > .row .row:not(.cf7-sg-table) .row-controls > .dashicons-edit,
 .display-none, #js-tags > li.display-none:not(.show-events) {display: none;}
 .enable-grouping.grid-column > .grid-controls .grouping-option {
     display: inline-block;
@@ -326,9 +327,11 @@ grid layout
 	padding: 0 0 10px 0;
 }
 /* footer table special styling */
+#grid-form .row.cf7-sg-table .row-controls label {
+	display: none;
+}
 #grid-form .row.cf7-sg-table .row-controls .table-control {
     display: block;
-    /* text-align: right; */
 }
 #grid-form .cf7-sg-table-footer .row:not(.cf7-sg-table-footer-row) {
 	min-height: 66px;

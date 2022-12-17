@@ -212,6 +212,10 @@ $cf7_key = $post->post_name;
             <?=__('Section title','cf7-grid-layout')?>
             <input type="text" value=""/>
           </label>
+          <label class="collapsible-row-toggle unique-mod">
+            <?=__('Toggled section','cf7-grid-layout')?>
+            <input type="checkbox" class="collapsible-toggle wrap-control" />
+          </label>
         </div>
       </div>
       <div class="columns full">
