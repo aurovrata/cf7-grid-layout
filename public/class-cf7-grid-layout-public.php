@@ -1725,13 +1725,17 @@ class Cf7_Grid_Layout_Public {
   *@return string replacement string.
   */
   public function filter_table_tab_mail_tag($replaced, $submitted, $html=false, $mail_tag=null ){
+    if(empty($mail_tag) || !is_a($mail_tag,'WPCF7_MailTag')) return $replaced;
+    
     $cf7form = WPCF7_ContactForm::get_current();
     if(empty($cf7form)){
       debug_msg(mail_tag, 'SMART GRID (ERR): unable to retrieve current form while filtering mail tag: ');
       return $replaced; //no form object.
     }
-    if(empty($mail_tag) || !is_a($mail_tag,'WPCF7_MailTag')) return $replaced;
-
+    /** @since 5.0 include title of form */
+    if('cf7sg-form-title' === $mail_tag){
+      return $cf7form->title();
+    }
     $cf7form_key = get_cf7form_key($cf7form->id());
     $submitted_cf7 = WPCF7_Submission::get_instance();
     $submitted_data = array();

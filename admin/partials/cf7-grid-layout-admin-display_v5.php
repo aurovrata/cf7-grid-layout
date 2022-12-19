@@ -345,17 +345,14 @@ $cf7_key = $post->post_name;
     <div class="cf7-field-label cf7-field-inner">
       <p class="content"><?=__('Field label','cf7-grid-layout')?></p>
       <input type="text" placeholder="<?=__('Field label','cf7-grid-layout')?>"/>
-      <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
     <div class="cf7-field-type cf7-field-inner">
       <p class="content"><?=__('[select a field]','cf7-grid-layout')?></p>
       <textarea class="field-entry" placeholder="<?=__('select a field','cf7-grid-layout')?>"></textarea>
-      <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
     <div class="cf7-field-tip cf7-field-inner">
       <p class="content"><?=__('describe your field','cf7-grid-layout')?></p>
       <input type="text" placeholder="<?=__('describe your field here','cf7-grid-layout')?>" />
-      <span class="dashicons dashicons-no-alt field-control"></span>
     </div>
     <textarea class="grid-input display-none"></textarea>
   </div>

@@ -71,7 +71,7 @@
     function buildGridForm(){
       let formhtml = $wpcf7Editor.text();
       if(0===formhtml.length){
-        formhtml = '<div class="container"><div class="row"><div class="columns full"></div></div></div>';
+        formhtml = '<div class="cf7sg-container"><div class="cf7sg-row"><div class="cf7sg-col full"></div></div></div>';
       }
       let $form = $('<div>').append( formhtml );
       let isGrid = true; //return value.
@@ -120,7 +120,7 @@
         
         //add col labels
         let c = $this.get(0).classList.forEach(cl => {
-          if('columns'==cl) return true;
+          if('cf7sg-col'==cl) return true;
           if(typeof columnLabels[cl] != 'undefined'){ 
             $this.children('.grid-column').find('.column-label').text(columnLabels[cl]+' Col');
           }
@@ -620,13 +620,17 @@
       }
       //verify which target was clicked
       if($target.is('.add-field-button *')){
-        //check if the button has row sibblings.
+        //check if the button has row siblings.
         $target = $target.closest('.add-field-button');
         if($target.siblings('.cf7sg-row').length == 0){ //convert column to grid.
           let $parentColumn = $target.parent('.cf7sg-col'),
-            $field = $('.cf7-field-inner, .grid-input', $parentColumn).remove();
-            $field = $('<div class="columns full"></div>').append($field);
-          $target.insertNewRow($field, '#grid-row .cf7sg-row', 'before', false); //insert row without container before button, without an extra button.
+            $field = $('.cf7-field-inner, .grid-input', $parentColumn).remove(),
+            $col = $('.grid-column',$colTemplt).clone();
+          //cleanup new col controls.
+          $('.cf7-field-inner, .grid-input',$col).remove();
+          $col = $('<div class="cf7sg-col full"></div>').append($col);
+          $col.children('.grid-column').append($field);
+          $target.insertNewRow($col, '#grid-row .cf7sg-row', 'before', false); //insert row without container before button, without an extra button.
         }
         $target.siblings('.cf7sg-row').last().insertNewRow('', '#grid-row .cf7sg-row', 'after', false); //insert a new row after the last one without an extra button.
         return true;
@@ -715,8 +719,15 @@
       }else if($target.is('.dashicons-trash.column-control') ){ //-------------------delete column
         let $row = $parentColumn.closest('.cf7sg-row');
         if($row.is('.cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row') && $parentColumn.is('.full')){
+          let $sibs = $row.siblings('.cf7sg-row');
           $row.parent().fireGridUpdate('remove','column');
           $row.remove();
+          //check if single siblings row.
+          if(1===$sibs.length){//convert back to simple column
+            $parentColumn = $sibs.parent();
+            $('.grid-column',$parentColumn).append($sibs.children('.cf7sg-col').children('.grid-column').children('.cf7-field-inner'));
+            $sibs.remove();
+          }
         }else{
           $parentColumn.remove();
           $row.fireGridUpdate('remove','column');
@@ -734,7 +745,7 @@
         $parentColumn = $target.parent().siblings('.cf7sg-col').last();
         $parentRow = $parentColumn.closest('.cf7sg-row');
         let classList, idx , columns, row, newSize=0, createColumn = true, total = 0;
-        let sizes = [], $newColumn = $('<div class="columns"></div>');
+        let sizes = [], $newColumn = $('<div class="cf7sg-col"></div>');
         //is the row filled up?
         //first check if the current column fills the entire row
         if( $parentColumn.is('.full') ){
@@ -944,7 +955,7 @@
     }
   }
   function sortableRows( $newRow='' ){
-    if($newRow.lenght>0){
+    if($newRow.length>0){
       $('.cf7sg-row', $grid).not($newRow).sortable('destroy');
     }
     $('.cf7sg-row', $grid).sortable({

@@ -40,10 +40,6 @@ if(empty($colour)) $colour = 'default';
   	$editor = new WPCF7_Editor( $cf7_form );
   	$panels = array();
 
-    $ver = '';
-    $ver = get_post_meta($post_id, '_cf7sg_version', true);
-    $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
-
   	if ( current_user_can( 'wpcf7_edit_contact_form', $post_id ) ) {
   		$panels = array(
   			'form-panel' => array(
@@ -91,7 +87,7 @@ if(empty($colour)) $colour = 'default';
   if('_v5' === $ver):?>
     <div id="cf7sg-modal-tags" class="cf7-tag-generators display-none">
       <form id="cf7sg-field-edit">
-        <div class="cf7sg-modal-input .cf7sg-row">
+        <div class="cf7sg-modal-input cf7sg-row">
           <div class="cf7sg-col three">
             <span><?=__('Field label','cf7-grid-layout')?></span>
           </div>
@@ -100,7 +96,7 @@ if(empty($colour)) $colour = 'default';
             <p><?=__('The label field is displayed before the field, but is optional','cf7-grid-layout')?></p>
           </div>
         </div>
-        <div class="cf7sg-modal-input .cf7sg-row">
+        <div class="cf7sg-modal-input cf7sg-row">
           <div class="cf7sg-col three">
             <span><?=__('Field description','cf7-grid-layout')?></span>
           </div>
@@ -109,7 +105,7 @@ if(empty($colour)) $colour = 'default';
             <p><?=__('The field description is displayed after the field, but is optional','cf7-grid-layout')?></p>
           </div>
         </div>
-        <div class="cf7sg-modal-input .cf7sg-row">
+        <div class="cf7sg-modal-input cf7sg-row">
           <div class="cf7sg-col nine">
             <textarea name="_cf7sg_modal_tag" rows="3"></textarea>
           </div>
@@ -126,7 +122,7 @@ if(empty($colour)) $colour = 'default';
         <?php $tag_generator->print_buttons(); ?>
       </div>
     </div>
-  <?php endif; ?>
+  <?php endif; //_v5 ?>
 
   <div id="cf7-taggenerator-forms">
     <?php $tag_generator->print_panels( $cf7_form );?>

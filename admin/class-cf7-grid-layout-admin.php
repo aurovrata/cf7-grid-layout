@@ -849,10 +849,15 @@ class Cf7_Grid_Layout_Admin {
       wpcf7_contact_form($post); //set the post
     }
     $cf7_form = wpcf7_get_current_contact_form();
+    $ver='';
   	if ( ! $cf7_form ) {
       $args = apply_filters('cf7sg_new_cf7_form_template_arguments', array());
   		$cf7_form = WPCF7_ContactForm::get_template($args);
-  	}
+      $ver = '_v5'; //new forms are by default v5
+  	}else{
+      $ver = get_post_meta($post_id, '_cf7sg_version', true);
+      $ver = version_compare($ver, '5.0dev', '>=') ? '_v5':'';
+    }
   	require_once WPCF7_PLUGIN_DIR . '/admin/includes/editor.php';
   	require_once plugin_dir_path( __FILE__ )  . 'partials/cf7-admin-editor-display.php';
   }
@@ -1290,14 +1295,34 @@ class Cf7_Grid_Layout_Admin {
   }
   /**
   * Filters the default form loaded when a new CF7 form is created
-  * Hooked on 'wpcf7_default_template'
-  * @since 1.0
+  * Hooked on 'wpcf7_default_template'.  New templates for v5 forms.
+  * @since 5.0
   * @param string $template  the html string for the form tempalte
   * @param string $prop  the template property required.
   */
   public function default_cf7_form($template, $prop){
-	  if($prop !== 'form') return $template;
-    include( plugin_dir_path( __FILE__ ) . '/partials/cf7-default-form.php');
+    switch($prop){
+      case 'form': 
+        $template = '<div class="cf7sg-container"><div class="cf7sg-row"><div class="cf7sg-col full"></div></div></div>';
+        break;
+      case 'mail':
+      case 'mail_2':
+        $email = '';
+        if(class_exists('WPCF7_ContactFormTemplate')) $email = WPCF7_ContactFormTemplate::from_email();
+        else $email = get_option( 'admin_email' );
+
+        $template = array(
+          'subject' => '[_site_title] Form',
+          'sender' => '[_site_title] <'.$email.'>',
+          'body' => 'Form "[cf7sg-form-title]" submitted',
+          'recipient' => '[_site_admin_email]',
+          'additional_headers' => '',
+          'attachments' => '',
+          'use_html' => 0,
+          'exclude_blank' => 0,
+        );
+        break;
+    }
     return $template;
   }
   /**
@@ -1759,6 +1784,8 @@ class Cf7_Grid_Layout_Admin {
     }
     //add a general form tag.
     $mailtags[]= 'cf7sg-form-'.get_cf7form_key($contact_form->id());
+    /** @since 5.0 include form title */
+    $mailtags[]= 'cf7sg-form-title';
     return $mailtags;
   }
   /**
