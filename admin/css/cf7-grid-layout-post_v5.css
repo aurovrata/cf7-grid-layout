@@ -851,6 +851,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     border-radius: 3px;
     font-size: 1.2em;
     margin-top: 50px;
+    z-index: 100;
 }
 [data-search="li.cf7sg-tag-all,li.cf7sg-tag-dynamic_select,li.cf7sg-tag-dynamic_select-filter"] + .helper-popup {
     min-width: 300px;

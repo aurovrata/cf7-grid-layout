@@ -894,7 +894,7 @@
     //make columns sortable
     sortableRows();
     //make rows sortable
-    $('.cf7sg-col, #grid-form').sortable({
+    $('.cf7sg-col', $grid).sortable({
       //placeholder: "ui-state-highlight",
       handle:'.row-controls > .dashicons-move',
       axis: 'y',
@@ -955,8 +955,8 @@
     }
   }
   function sortableRows( $newRow='' ){
-    if($newRow.length>0){
-      $('.cf7sg-row', $grid).not($newRow).sortable('destroy');
+    if($newRow.length>0 && !$newRow.is('.cf7sg-slider')){
+      $('.cf7sg-row', $grid).not($('.cf7sg-row',$newRow)).sortable('destroy');
     }
     $('.cf7sg-row', $grid).sortable({
       //placeholder: "ui-state-highlight",
