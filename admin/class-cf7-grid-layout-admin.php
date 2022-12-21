@@ -163,7 +163,7 @@ class Cf7_Grid_Layout_Admin {
           wp_enqueue_style('jquery-modal', $plugin_dir . 'assets/modal/jquery.modal.min.css', array(), '0.9.2', 'all' );
         }
         wp_enqueue_style( "cf7-grid-post-css", $plugin_dir . "admin/css/cf7-grid-layout-post{$ver}.css", array(), $this->version, 'all' );
-        wp_enqueue_style( "cf7-grid-colours-css", $plugin_dir . 'admin/css/cf7sg-admin-colours-fresh.css', array(), $this->version, 'all' );
+        wp_enqueue_style( "cf7-grid-post-edit", $plugin_dir . 'admin/css/cf7-grid-post-edit.css', array(), $this->version, 'all' );
         $colour = get_user_meta( get_current_user_id(), 'admin_color', true );
         if(!empty($colour) && $colour != 'fresh'){
           wp_enqueue_style( "cf7-grid-colours-user-css", $plugin_dir . "admin/css/cf7sg-admin-colours-{$colour}.css", array(), $this->version, 'all' );
@@ -1107,7 +1107,9 @@ class Cf7_Grid_Layout_Admin {
     */
     $is_cf7sg = ( 'true' === $_POST['is_cf7sg_form']) ? true : false;
     update_post_meta($post_id, '_cf7sg_managed_form', $is_cf7sg);
-    update_post_meta($post_id, '_cf7sg_version', $this->version);
+    $ver = sanitize_text_field($_POST['cf7sg-version']);
+    $ver = version_compare($ver, '5.0dev', '>=') ? $this->version:$ver; //retain lower version for older forms.
+    update_post_meta($post_id, '_cf7sg_version', $ver);
     /** @since 3.0.0 track script classes for loading for js/css in front-end */
     $classes = sanitize_text_field($_POST['cf7sg-script-classes']);
     $classes = explode(',', trim($classes, ','));

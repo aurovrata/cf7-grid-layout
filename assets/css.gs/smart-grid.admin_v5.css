@@ -1,149 +1,145 @@
 /*! css-smart-grid 5.1.4 | MIT License | http://css.gd */
-#grid-form .cf7sg-row, #cf7sg-field-edit .cf7sg-row,  #grid-form .cf7sg-col:first-child, #cf7sg-field-edit .cf7sg-col:first-child{
+.post-type-wpcf7_contact_form .cf7sg-row,  .post-type-wpcf7_contact_form .cf7sg-col:first-child{
     margin:0;
 }
-#grid-form .cf7sg-row:after,
-#grid-form .cf7sg-row:before,
+.post-type-wpcf7_contact_form .cf7sg-row:after,
+.post-type-wpcf7_contact_form .cf7sg-row:before,
 #cf7sg-field-edit .cf7sg-row:after,
 #cf7sg-field-edit .cf7sg-row:before {
     content: "";
     display: table
 }
-#grid-form .cf7sg-row:after,
+.post-type-wpcf7_contact_form .cf7sg-row:after,
 #cf7sg-field-edit .cf7sg-row:after {
     clear: both
 }
 @media (min-width:481px) {
-    #grid-form .cf7sg-col, #cf7sg-field-edit .cf7sg-col {
+    .post-type-wpcf7_contact_form .cf7sg-col {
         float: left;
         margin: 0 0 0 2.12766%;
         width: 6.38298%
     }
-    #grid-form .cf7sg-col.point-five {
+    .post-type-wpcf7_contact_form .cf7sg-col.point-five {
         width: 2.12766%
     }
-    #grid-form .row-controls +.cf7sg-col {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col {
         margin-left: 0
     }
-    #grid-form .cf7sg-col.one.point-five {
+    .post-type-wpcf7_contact_form .cf7sg-col.one.point-five {
         width: 10.63830%
     }
-    #grid-form .cf7sg-col.two {
+    .post-type-wpcf7_contact_form .cf7sg-col.two {
         width: 14.89362%
     }
-    #grid-form .cf7sg-col.two.point-five {
+    .post-type-wpcf7_contact_form .cf7sg-col.two.point-five {
         width: 19.14894%
     }
-    #grid-form .cf7sg-col.one-fourth,
-    #grid-form .cf7sg-col.three,
-    #cf7sg-field-edit .cf7sg-col.three {
+    .post-type-wpcf7_contact_form .cf7sg-col.one-fourth,
+    .post-type-wpcf7_contact_form .cf7sg-col.three{
         width: 23.40426%
     }
-    #grid-form .cf7sg-col.three.point-five {
+    .post-type-wpcf7_contact_form .cf7sg-col.three.point-five {
         width: 27.65957%
     }
-    #grid-form .cf7sg-col.four,
-    #grid-form .cf7sg-col.one-third,
-    #cf7sg-field-edit .cf7sg-col.one-third{
+    .post-type-wpcf7_contact_form .cf7sg-col.four,
+    .post-type-wpcf7_contact_form .cf7sg-col.one-third{
         width: 31.91489%
     }
-    #grid-form .cf7sg-col.four.point-five {
+    .post-type-wpcf7_contact_form .cf7sg-col.four.point-five {
         width: 36.17021%
     }
-    #grid-form .cf7sg-col.five {
+    .post-type-wpcf7_contact_form .cf7sg-col.five {
         width: 40.42553%
     }
-    #grid-form .cf7sg-col.one-half,
-    #grid-form .cf7sg-col.six {
+    .post-type-wpcf7_contact_form .cf7sg-col.one-half,
+    .post-type-wpcf7_contact_form .cf7sg-col.six, #cf7sg-field-edit  .cf7sg-col.six {
         width: 48.93617%
     }
-    #grid-form .cf7sg-col.seven {
+    .post-type-wpcf7_contact_form .cf7sg-col.seven {
         width: 57.44681%
     }
-    #grid-form .cf7sg-col.eight,
-    #grid-form .cf7sg-col.two-thirds,
-    #cf7sg-field-edit .cf7sg-col.two-thirds {
+    .post-type-wpcf7_contact_form .cf7sg-col.eight,
+    .post-type-wpcf7_contact_form .cf7sg-col.two-thirds{
         width: 65.95745%
     }
-    #grid-form .cf7sg-col.nine,
-    #grid-form .cf7sg-col.three-fourths,
-    #cf7sg-field-edit .cf7sg-col.nine {
+    .post-type-wpcf7_contact_form .cf7sg-col.nine,
+    .post-type-wpcf7_contact_form .cf7sg-col.three-fourths {
         width: 74.46808%
     }
-    #grid-form .cf7sg-col.ten {
+    .post-type-wpcf7_contact_form .cf7sg-col.ten {
         width: 82.97872%
     }
-    #grid-form .cf7sg-col.eleven {
+    .post-type-wpcf7_contact_form .cf7sg-col.eleven {
         width: 91.48936%
     }
-    #grid-form .cf7sg-col.full,
-    #grid-form .cf7sg-col.twelve {
+    .post-type-wpcf7_contact_form .cf7sg-col.full,
+    .post-type-wpcf7_contact_form .cf7sg-col.twelve,#cf7sg-field-edit  .cf7sg-col.full {
         width: 100%
     }
-    #grid-form .cf7sg-col.offset-one {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-one {
         margin-left: 10.6383%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-one {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-one {
         margin-left: 8.51064%
     }
-    #grid-form .cf7sg-col.offset-two {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-two {
         margin-left: 19.14894%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-two {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-two {
         margin-left: 17.02128%
     }
-    #grid-form .cf7sg-col.offset-three {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-three {
         margin-left: 27.65957%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-three {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-three, #cf7sg-field-edit  .cf7sg-col.offset-three {
         margin-left: 25.53191%
     }
-    #grid-form .cf7sg-col.offset-four {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-four {
         margin-left: 36.17021%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-four {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-four,#cf7sg-field-edit  .cf7sg-col.offset-four {
         margin-left: 34.04255%
     }
-    #grid-form .cf7sg-col.offset-five {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-five {
         margin-left: 44.68085%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-five {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-five {
         margin-left: 42.55319%
     }
-    #grid-form .cf7sg-col.offset-six {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-six {
         margin-left: 53.19149%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-six {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-six {
         margin-left: 51.06383%
     }
-    #grid-form .cf7sg-col.offset-seven {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-seven {
         margin-left: 61.70213%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-seven {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-seven {
         margin-left: 59.57447%
     }
-    #grid-form .cf7sg-col.offset-eight {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-eight {
         margin-left: 70.21277%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-eight {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-eight,#cf7sg-field-edit  .cf7sg-col.offset- {
         margin-left: 68.08511%
     }
-    #grid-form .cf7sg-col.offset-nine  {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-nine  {
         margin-left: 78.7234%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-nine , #cf7sg-field-edit .row-controls +.cf7sg-col.offset-nine {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-nine{
         margin-left: 76.59574%
     }
-    #grid-form .cf7sg-col.offset-ten {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-ten {
         margin-left: 87.23404%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-ten {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-ten {
         margin-left: 85.10638%
     }
-    #grid-form .cf7sg-col.offset-eleven {
+    .post-type-wpcf7_contact_form .cf7sg-col.offset-eleven {
         margin-left: 95.74468%
     }
-    #grid-form .row-controls +.cf7sg-col.offset-eleven {
+    .post-type-wpcf7_contact_form .row-controls +.cf7sg-col.offset-eleven {
         margin-left: 93.61702%
     }
 }

@@ -98,6 +98,19 @@ if(empty($colour)) $colour = 'default';
         </div>
         <div class="cf7sg-modal-input cf7sg-row">
           <div class="cf7sg-col three">
+            <span><?=__('Field tag','cf7-grid-layout')?></span>
+          </div>
+          <div class="cf7sg-col nine">
+            <textarea name="_cf7sg_modal_tag" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="cf7sg-modal-input cf7sg-row">
+          <div class="cf7sg-col offset-eight one-third">
+            <a class="button cf7sg-edit-shortcode" href="javascript:void(0);"><?=__('Edit shortcode','cf7-grid-layout')?></a>
+          </div>
+        </div>
+        <div class="cf7sg-modal-input cf7sg-row">
+          <div class="cf7sg-col three">
             <span><?=__('Field description','cf7-grid-layout')?></span>
           </div>
           <div class="cf7sg-col nine">
@@ -106,14 +119,10 @@ if(empty($colour)) $colour = 'default';
           </div>
         </div>
         <div class="cf7sg-modal-input cf7sg-row">
-          <div class="cf7sg-col nine">
-            <textarea name="_cf7sg_modal_tag" rows="3"></textarea>
-          </div>
-          <div class="cf7sg-col three">
-            <a class="button cf7sg-edit-shortcode" href="javascript:void(0);"><?=__('Edit shortcode','cf7-grid-layout')?></a>
+          <div class="cf7sg-col offset-four one-third">
             <div class="cf7sg-tag-update">
-            <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
-          </div>
+              <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
+            </div>
           </div>
         </div>
       </form>  

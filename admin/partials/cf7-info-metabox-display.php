@@ -3,9 +3,15 @@ $slug='';
 if(!empty($post)){
   $slug =  $post->post_name;
 }
+$ver = get_post_meta($post->ID, '_cf7sg_version',true);
+
 ?>
 <label for="post_name"><?=__('Form key','cf7-grid-layout')?></label>
 <input name="post_name" size="13" id="post_name" value="<?php echo $slug?>" type="text" />
+<p>
+  <span><?=__('Plugin version:','cf7-grid-layout')?></span>&nbsp;<strong><?=$ver?></strong> 
+  <input type="hidden" id="cf7sg-version" name="cf7sg-version" value="<?=$ver?>"/>
+</p>
 <p>
   <a href="<?= __cf7sg( 'https://contactform7.com/docs/' )?>"><?= __cf7sg( 'Docs' )?></a>&nbsp;
   <a href="<?= __cf7sg( 'https://contactform7.com/faq/' )?>"><?= __cf7sg( 'FAQ' )?></a>&nbsp;
@@ -13,16 +19,13 @@ if(!empty($post)){
 </p>
 <?php /** @since 4.3.0 preview link */
 $preview_id = get_post_meta($post->ID, '_cf7sg_form_page',true);
-$preview = '<em>'.__('Update your form to preview','cf7-grid-layout').'</em>';
+$preview = '';
 if( !empty($preview_id) ){
   /*translators: link to preview page with form*/
-  $preview = sprintf(__('Preview <a href="%s">form</a>','cf7-grid-layout'), get_preview_post_link($preview_id));
+  $preview = sprintf('<a href="%1s" class="button">%2s</a>', get_preview_post_link($preview_id),__('Preview form','cf7-grid-layout'));
+}else{
+  $preview = sprintf('<strong><em>%s</em></strong>',__('Update your form to preview','cf7-grid-layout'));
 }
-?>
-<p id="preview-form-link">
-  <strong><?= $preview?></strong>
-</p>
-<?php
 $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
 $show_dropdown = array();
 if( isset($dropdowns[$post->ID]) ):
@@ -38,3 +41,4 @@ if( isset($dropdowns[$post->ID]) ):
 </ul>
 <?php endif;?>
 <div class="clear"></div>
+<div id="preview-form-link"><?= $preview?></div>
