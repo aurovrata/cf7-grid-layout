@@ -157,10 +157,25 @@ $cf7_key = $post->post_name;
     </div>
   </div>
   <div class="add-item-button add-row-button">
-    <span class=button>
+    <span class="button add-row">
       <span class="dashicons dashicons-plus"></span>
-      <span class="slide-label display-none"><?= __('Add Slide', 'cf7-grid-layout');?></span>
-      <span class="row-label display-none"><?= __('Add Row', 'cf7-grid-layout');?></span>
+      <span><?= __('Row', 'cf7-grid-layout');?></span>
+    </span>
+    <span class="button add-tab">
+      <span class="dashicons dashicons-plus"></span>
+      <span><?= __('Tab', 'cf7-grid-layout');?></span>
+    </span>
+    <span class="button add-table">
+      <span class="dashicons dashicons-plus"></span>
+      <span><?= __('Table', 'cf7-grid-layout');?></span>
+    </span>
+    <span class="button add-collapsible">
+      <span class="dashicons dashicons-plus"></span>
+      <span><?= __('Collapsible', 'cf7-grid-layout');?></span>
+    </span>
+    <span class="button add-slide display-none">
+      <span class="dashicons dashicons-plus"></span>
+      <span><?= __('Slide', 'cf7-grid-layout');?></span>
     </span>
   </div>
 </template>
@@ -256,8 +271,8 @@ $cf7_key = $post->post_name;
   <div class="cf7sg-container cf7sg-slider">
     <div class="cf7sg-row">
       <div class="cf7sg-col full cf7sg-slider-section" data-next="" data-prev="" data-submit="<?= __('Submit','cf7-grid-layout');?>" data-dots="false">
-        <div class="cf7sg-container cf7sg-collapsible cf7sg-slide" id="">
-          <div class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></div>
+        <div class="cf7sg-container cf7sg-slide" id="">
+          <div class="cf7sg-slide-title"><span class="cf7sg-title"></span></div>
           <div class="cf7sg-row">
             <div class="row-controls">
               <span class="dashicons dashicons-move row-control grid-control"></span>
@@ -360,7 +375,6 @@ $cf7_key = $post->post_name;
     <span class=button>
       <span class="dashicons dashicons-plus"></span>
       <span class="field-label display-none"><?= __('Add Field', 'cf7-grid-layout');?></span>
-      <span class="slide-label display-none"><?= __('Add Slide', 'cf7-grid-layout');?></span>
       <span class="row-label display-none"><?= __('Add Row', 'cf7-grid-layout');?></span>
     </span>
   </div>

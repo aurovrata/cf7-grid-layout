@@ -264,12 +264,13 @@
         $('.cf7sg-col', $grid).each(function(){
           let $this = $(this);
           if($this.children().is('.cf7sg-container')) return true;
+          if($this.children('.cf7sg-row').length > 1) $this.closest('.cf7sg-container').addClass('cf7sg-grid');
           $this.html2gui();
           if($this.is('.cf7sg-container > .cf7sg-row:first-child > .cf7sg-col')){
             $this.append($colTemplt.find('.add-field-button').clone());
           }
       });
-        /** @since 5.0  add row button after last container*/
+        /** @since 5.0  add ctrl buttons after last container*/
         if($gridEditor.children('.add-row-button').length==0) $grid.after($rowTemplt.find('.add-row-button').clone());
       }else{
         //set the first textarea as our default tag consumer
@@ -375,7 +376,7 @@
           //change the label on grid form menu
           // $target.closest('label').siblings('.control-label').toggleClass('display-none');
           //wrap existing form into a new slider container without any buttons.
-          $grid.insertNewRow($grid.children().remove(), '#grid-multistep-container .cf7sg-slider', 'append', true);
+          $grid.insertNewRow($grid.children().remove(), '#grid-multistep-container .cf7sg-slider', 'append');
           //change the add row button to add slide.
           $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
           //add row button to first slide.
@@ -478,8 +479,8 @@
       
       /* --------------------------------SLIDER controls ------------------*/
       if($target.is('.add-slide-button *')){ //add slide
-        //add a new empty slide with a new row after the last one, without a button.
-        $('.cf7sg-slide.cf7sg-container', $grid).last().insertNewRow('', '#grid-multistep-container .cf7sg-slide', 'after', true);
+        //add a new empty slide with a new row after the last one, with a button.
+        $('.cf7sg-slide.cf7sg-container', $grid).last().insertNewRow('', '#grid-multistep-container .cf7sg-slide', 'after');
       }
       /*
         Row controls
@@ -504,7 +505,7 @@
         let $row = $target.closest('.add-row-button').prev('.cf7sg-container');
         //default, last button
         if($row.length === 0) $row = $grid.children('.cf7sg-container').last();
-        $row.insertNewRow();
+        $row.insertNewRow().find('.add-row-button').remove(); //without button.
         return true;
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
         toggleControl($target.siblings('.grid-controls'));
@@ -529,7 +530,7 @@
             action = 'prepend';
           }
           //wrap its content into a new row.
-          $anchor.insertNewRow($container.remove(), '#grid-collapsible', action, true);
+          $anchor.insertNewRow($container.remove(), '#grid-collapsible', action);
           $container.after($rowTemplt.find('.add-row-button').clone());
           $container = (action=='after' ? $anchor.next():$anchor.children('.cf7sg-collapsible') );
           $container.attr('id',randString(6));
@@ -630,9 +631,10 @@
           $('.cf7-field-inner, .grid-input',$col).remove();
           $col = $('<div class="cf7sg-col full"></div>').append($col);
           $col.children('.grid-column').append($field);
-          $target.insertNewRow($col, '#grid-row .cf7sg-row', 'before', false); //insert row without container before button, without an extra button.
+          $target.closest('.cf7sg-container').addClass('cf7sg-grid');
+          $target.insertNewRow($col, '#grid-row .cf7sg-row', 'before').find('.add-item-button').remove(); //insert row without container before button, without an extra button.
         }
-        $target.siblings('.cf7sg-row').last().insertNewRow('', '#grid-row .cf7sg-row', 'after', false); //insert a new row after the last one without an extra button.
+        $target.siblings('.cf7sg-row').last().insertNewRow('', '#grid-row .cf7sg-row', 'after').find('.add-item-button').remove(); //insert a new row after the last one without an extra button.
         return true;
         
       }else if( $target.is('.dashicons-edit.column-control') ){ //------------------show controls
@@ -727,6 +729,7 @@
             $parentColumn = $sibs.parent();
             $('.grid-column',$parentColumn).append($sibs.children('.cf7sg-col').children('.grid-column').children('.cf7-field-inner'));
             $sibs.remove();
+            $parentColumn.closest('.cf7sg-container').removeClass('cf7sg-grid');
           }
         }else{
           $parentColumn.remove();
@@ -956,7 +959,7 @@
   }
   function sortableRows( $newRow='' ){
     if($newRow.length>0 && !$newRow.is('.cf7sg-slider')){
-      $('.cf7sg-row', $grid).not($('.cf7sg-row',$newRow)).sortable('destroy');
+      $('.cf7sg-row.ui-sortable', $grid).sortable('destroy');
     }
     $('.cf7sg-row', $grid).sortable({
       //placeholder: "ui-state-highlight",
@@ -1365,7 +1368,7 @@
     return {'length':total, 'size':size};
   }
   //add new rows
-  $.fn.insertNewRow = function(areaCode, type, action, wButton){
+  $.fn.insertNewRow = function(areaCode, type, action){
     let $this = $(this), $newRow = $rowTemplt.clone().find('.cf7sg-container');
     if(typeof areaCode === 'undefined') areaCode ='';
     if(typeof type === 'string' && type.trim().length > 0){ //redefine new row object.
@@ -1390,12 +1393,10 @@
     }
     //fill in any template requirements.
     $newRow = $newRow.fillCF7SGTemplate(areaCode);
-    //remove buttons?
-    if(typeof wButton === 'undefined' || !wButton) $('.add-item-button', $newRow).remove();
     //make new row's columns sortable.
     sortableRows($newRow);
     $newRow.fireGridUpdate('add','row');
-    return $this;
+    return $newRow;
   }
   /** @since 5.0 function to fill inner templates if any */ 
   $.fn.fillCF7SGTemplate = function(inner){
