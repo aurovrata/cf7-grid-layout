@@ -37,7 +37,7 @@
     }
   }
   let wpcf7Value = '';
-  let $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list');
+  let $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html');
   
 	$(document).ready( function(){
     
@@ -502,10 +502,30 @@
         }
         return true;
       }else if($target.is('.add-row-button *')){ //-----------ADD Row
-        let $row = $target.closest('.add-row-button').prev('.cf7sg-container');
+        let $row = $target.closest('.add-row-button').prev('.cf7sg-container'),$added;
+        if($target.is('.button *')) $target = $target.closest('.button');
         //default, last button
         if($row.length === 0) $row = $grid.children('.cf7sg-container').last();
-        $row.insertNewRow().find('.add-row-button').remove(); //without button.
+        switch(true){
+          case $target.is('.add-row'):
+            $added = $row.insertNewRow(); //without button.
+            $added.find('.add-row-button').remove();
+            break;
+          case $target.is('.add-collapsible'):
+            $added = $row.insertNewRow('', '#grid-collapsible', 'after')
+            $added.attr('id',randString(6));//.find('.add-row-button').remove();
+            $added.fireGridUpdate('add','collapsible-row');
+            break;
+          case $target.is('.add-table'):
+            $added = $row.insertNewRow(); //without button.
+            $added.find('.add-row-button').remove();
+            let id = 'cf7-sg-table-'+(new Date).getTime();
+            $added.find('.cf7sg-row').addClass('cf7-sg-table');
+            $added.addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
+            break;
+          case $target.is('.add-tab'):
+            break;
+        }
         return true;
       }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
         toggleControl($target.siblings('.grid-controls'));
@@ -1011,22 +1031,28 @@
     if(!$this.is('.cf7-field-inner')){
       return $this;
     }
-    $field = $this.closest('.grid-column');
-    /** @since 5.0.0 use a modal */
-    $modal.modal();
-    $('textarea#wpcf7-form').attr('id','');
-    $('textarea',$modal).attr('id','wpcf7-form').val($('.cf7-field-type textarea', $field).val()); 
-    //check if the field has values.
-    $('#cf7sg-modal-label', $modal).val($('.cf7-field-label input', $field).val());
-    $('#cf7sg-modal-desc', $modal).val($('.cf7-field-tip input', $field).val());
-    // $this.find('span.dashicons').show();
-    let $input = $(':input', $this);//.show();
-    // $input.focus();
-    if($input.is('textarea')){
-      $input.attr('id', 'cf7sg-ui-field');
-      wpcf7Value = $input.val();
+    if($this.is('.cf7-sg-table-footer-row *')){
+      $customModal.modal();
+      $field = $this.closest('.grid-column-tip');
+      $('textarea', $customModal).val($('.cf7-field-tip input', $field).val());
     }else{
-      changeTextarea();
+      $field = $this.closest('.grid-column');
+      /** @since 5.0.0 use a modal */
+      $modal.modal();
+      $('textarea#wpcf7-form').attr('id','');
+      $('textarea',$modal).attr('id','wpcf7-form').val($('.cf7-field-type textarea', $field).val()); 
+      //check if the field has values.
+      $('#cf7sg-modal-label', $modal).val($('.cf7-field-label input', $field).val());
+      $('#cf7sg-modal-desc', $modal).val($('.cf7-field-tip input', $field).val());
+      // $this.find('span.dashicons').show();
+      let $input = $(':input', $this);//.show();
+      // $input.focus();
+      if($input.is('textarea')){
+        $input.attr('id', 'cf7sg-ui-field');
+        wpcf7Value = $input.val();
+      }else{
+        changeTextarea();
+      }
     }
     return $this;
   }

@@ -268,16 +268,15 @@ textarea.grid-input {
 #cf7-css-codemirror .CodeMirror {
     height: calc( 100vh - 180px);
 }
-#grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row{
-   /* padding: 0; */
-   border: solid 1px #d7d7d7;
+#grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row:not(.cf7-sg-table-footer-row):not(.cf7-sg-table){
+   border-style: solid;
+   border-width: 1px;
    margin-top: 5px;
    border-radius: 3px;
 }
- #grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) {
-    /* padding: 4px 0px; */
-    position: relative;
-    /* min-height: 90px; */
+#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) {
+  padding: 0 5px;
+  position: relative;
 }
 #grid-form .cf7-sg-table-footer-row {
 	border: solid 1px var(--cf7sg-text-color);
@@ -290,9 +289,6 @@ textarea.grid-input {
 }
 #grid-form .cf7sg-container.cf7sg-slide > .cf7sg-row > .cf7sg-col > .cf7sg-container:first-child {
 	margin-top: 0;
-}
-#grid-form .cf7sg-container > .cf7sg-row {
-	padding: 0 5px;
 }
 #grid-form  .row-controls+.cf7sg-col {
 	margin-left: 0px;
@@ -432,7 +428,10 @@ textarea.grid-input {
     padding-left: 4px;
 }
 #grid-form .row-selected .row-controls{
-    background-color: var(---cf7sg-row-default);
+    background-color: var(--cf7sg-row-default);
+}
+#grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row:not(.cf7-sg-table-footer-row) {
+  border-color: var(--cf7sg-row-default);
 }
 #cf7-editor-grid > .form-controls .grid-controls{
   background-color: var(--cf7sg-col-default);
@@ -441,8 +440,9 @@ textarea.grid-input {
 #grid-form  .row-controls .control-label{
     color: var(--cf7sg-row-icons);
 }
-#grid-form .cf7sg-container.cf7-sg-table {
-    box-shadow: 0px 0px 4px var(--cf7sg-row-table);
+#grid-form .cf7sg-container.cf7-sg-table  {
+    border: solid 1px var(--cf7sg-row-table);
+    border-radius: 3px;
 }
 #grid-form .cf7sg-row.cf7-sg-table > .row-controls {
 	background-color: var(--cf7sg-row-table);
@@ -470,10 +470,13 @@ textarea.grid-input {
 	background-color: var(--cf7sg-col-default);
 }
 #grid-form .cf7-sg-table .row-controls .dashicons-editor-table{
-    color:var(--cf7sg-row-table);
+    color:var(--cf7sg-row-default);
 }
 #grid-form .cf7sg-slide > .cf7sg-row > .row-controls {
 	background: var(--cf7sg-row-slide);
+}
+#grid-form .cf7sg-container.cf7sg-slide > .cf7sg-row {
+  border-color: var(--cf7sg-row-slide);
 }
 #cf7-editor-grid .add-field-button .button {
 	/* border: none; */
@@ -489,8 +492,13 @@ textarea.grid-input {
 #cf7-editor-grid .add-row-button .button.add-slide {
 	background: var(--cf7sg-row-slide);
 }
-#cf7-editor-grid .add-row-button .button.add-collapsible {
+#cf7-editor-grid .add-row-button .button.add-collapsible,
+#grid-form .grid-controls.collapsible,
+#grid-form .cf7sg-collapsible >.cf7sg-row > .row-controls {
 	background: var(--cf7sg-row-collapsible);
+}
+#grid-form .cf7sg-container.cf7sg-collapsible > .cf7sg-row {
+  border-color: var(--cf7sg-row-collapsible);
 }
 #cf7-editor-grid .add-row-button .button.add-table,
 #grid-form .cf7-sg-table > .row-controls .grid-controls {
@@ -638,9 +646,6 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #grid-form input:disabled:hover, #grid-form .grid-controls label:hover {
     cursor: default;
 }
-#grid-form .cf7sg-container.cf7-sg-tabs-panel, #grid-form .cf7sg-container.cf7sg-collapsible {
-    border: solid 2px var(--cf7sg-row-slide);
-}
 #grid-form .two .grid-column .dashicons-move {
     margin-left: -2px;
 }
@@ -662,6 +667,9 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   margin: 0;
   position: relative;
 }
+#grid-form .cf7-sg-table-footer-row .cf7-field-tip {
+	padding: 5px;
+}
 #grid-form  .cf7-field-tip .content {
     font-size: 90%;
     color: #727272;
@@ -682,7 +690,8 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     overflow: hidden;
     white-space: nowrap;
 }
-#grid-form .grid-column:hover > .cf7-field-inner p.content {
+#grid-form .grid-column:hover > .cf7-field-inner p.content,
+#grid-form .grid-column-tip:hover > .cf7-field-inner p.content {
     cursor: pointer;
     color: var(--cf7sg-row-default);
 }
@@ -730,15 +739,18 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	margin-bottom: 5px ;
 }
 #cf7sg-editor #contact-form-editor .contact-form-editor-panel{ padding: 0 10px;}
-.post-type-wpcf7_contact_form .postbox .inside{ padding: 0;}
 #cf7sg-editor  #contact-form-editor-tabs {padding: 0;}
 #cf7sg-editor #contact-form-editor-tabs li {margin: 0;}
 .post-type-wpcf7_contact_form  .jquery-modal.blocker{ z-index: 101;}
 .cf7sg-modal-input.cf7sg-row p {
 	margin: 0;
 }
-.cf7sg-modal-input.cf7sg-row input, .cf7sg-modal-input.cf7sg-row textarea {
+.cf7sg-modal-input.cf7sg-row input, .cf7sg-modal-input.cf7sg-row textarea,.cf7sg-modal-input.cf7sg-row a.button {
 	width: 100%;
+}
+#cf7sg-custom-html .button-primary {
+	text-align: center;
+	margin-top: 8px;
 }
 #cf7sg-field-edit .button {
 	width: 100%;

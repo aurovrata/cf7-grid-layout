@@ -85,7 +85,7 @@ if(empty($colour)) $colour = 'default';
   <?php  
   $tag_generator = WPCF7_TagGenerator::get_instance(); 
   if('_v5' === $ver):?>
-    <div id="cf7sg-modal-tags" class="cf7-tag-generators display-none">
+    <div id="cf7sg-modal" class="cf7-tag-generators display-none">
       <form id="cf7sg-field-edit">
         <div class="cf7sg-modal-input cf7sg-row">
           <div class="cf7sg-col three">
@@ -129,6 +129,19 @@ if(empty($colour)) $colour = 'default';
       <div id="cf7sg-tag-list">
         <h3><?= __('Select a field', 'cf7-grid-layout');?></h3>
         <?php $tag_generator->print_buttons(); ?>
+      </div>
+      <div id="cf7sg-custom-html">
+        <h3><?= __('Custom HTML', 'cf7-grid-layout');?></h3>
+        <div class="cf7sg-modal-input cf7sg-row">
+          <div class="cf7sg-col full"><textarea name="_cf7sg_modal_custom" rows="10"></textarea></div>
+        </div>
+        <div class="cf7sg-modal-input cf7sg-row">
+          <div class="cf7sg-col offset-four one-third">
+            <div class="cf7sg-tag-update">
+              <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   <?php endif; //_v5 ?>

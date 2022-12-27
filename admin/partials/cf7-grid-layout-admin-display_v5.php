@@ -234,7 +234,7 @@ $cf7_key = $post->post_name;
         </div>
       </div>
       <div class="cf7sg-col full">
-        <template class="inner-template">#grid-col</template>
+        <template class="inner-template">#grid-row</template>
       </div>
     </div>
   </div>
@@ -254,7 +254,7 @@ $cf7_key = $post->post_name;
   </div>
 </template>
 <template id="grid-table-footer-row">
-  <div class="row cf7-sg-table-footer-row">
+  <div class="cf7sg-row cf7-sg-table-footer-row">
     <div class="cf7sg-col full">
       <div class="grid-column-tip">
         <div class="cf7-field-tip cf7-field-inner">
