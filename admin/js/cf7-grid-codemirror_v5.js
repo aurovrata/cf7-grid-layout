@@ -110,9 +110,11 @@
       cm.indentSelection("smart");
       cm.setCursor(cm.firstLine(),0,{scroll: false});
       if('undefined' != typeof cursor && cursor.find(false)){
-        const from = cursor.from(), to = cursor.to();
+        let from = cursor.from(), to = cursor.to();
         cm.setSelection(CodeMirror.Pos(from.line, 0), to);
-        cm.scrollIntoView({from: from, to: CodeMirror.Pos(to.line + 10, 0)});
+        to = to.line + 10;
+        if(to > cm.lastLine()) to = cm.lastLine();
+        cm.scrollIntoView({from: from, to: CodeMirror.Pos(to, 0)});
       }
     }
     //set codemirror editor value;
@@ -127,10 +129,10 @@
 
       cme.on('changes', function(){
         codemirrorUpdated = true;
-        const disabled = $editorTabs.tabs('option','disabled');
+        let disabled = $editorTabs.tabs('option','disabled');
 
         if(true===disabled){
-          const changes = $('<div>').append(cme.getValue());
+          let changes = $('<div>').append(cme.getValue());
           if(0===changes.children().length || changes.children('.cf7sg-container').length>0){
             $editorTabs.tabs('option',{disabled:false});
             /**
@@ -215,9 +217,9 @@
                 //trigger rebuild grid event
                 $grid.trigger('build-grid');
               }else{ //try to set the focus on the 'cf7sgfocus element'
-                const $focus = $('.cf7sgfocus', $grid);
+                let $focus = $('.cf7sgfocus', $grid);
                 if($focus.length>0){
-                  const scrollPos = $focus.offset().top - $(window).height()/2 + $focus.height()/2;
+                  let scrollPos = $focus.offset().top - $(window).height()/2 + $focus.height()/2;
                   //console.log(scrollPos);
                   $(window).scrollTop(scrollPos);
                   $focus.removeClass('cf7sgfocus');
@@ -225,7 +227,7 @@
               }
               break;
             case '#cf7-codemirror': //HTML editor.
-              const cursor = cme.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cme.firstLine(), 0), {caseFold: true, multiline: true});
+              let cursor = cme.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cme.firstLine(), 0), {caseFold: true, multiline: true});
               $topTags.removeClass('click-disabled');
               $bottomTags.removeClass('click-disabled');
               $codemirror.beautify(cursor);
@@ -525,9 +527,9 @@
       }
       //update the codemirror when tags are inserted
       $('form.tag-generator-panel .button.insert-tag').on('click', function(){
-        const $textarea = $('textarea#wpcf7-form');
+        let $textarea = $('textarea#wpcf7-form');
         if($textarea.is('.codemirror-cf7-update')){
-          const tag = $textarea.delay(100).val();
+          let tag = $textarea.delay(100).val();
           cme.replaceSelection(tag);
           $textarea.val(''); //clear.
         }
@@ -539,14 +541,14 @@
       })
     }); //-----------end codemirror editor setup
     $('form#post').submit(function(event) {
-      const $this = $(this);
+      let $this = $(this);
       $( window ).off( 'beforeunload' ); //remove event to stop cf7 script from warning on save
       event.preventDefault(); //this will prevent the default submit
       //close any open UI fields.
       $('.cf7-field-inner :input:visible').closeUIfield();
       let $embdedForms = '',$formNoEmbeds = '', codeMirror ='';
       if('#cf7-editor-grid' == gridTab){ //set up the code in the cf7 textarea
-        const $txta = $('textarea#wpcf7-form');
+        let $txta = $('textarea#wpcf7-form');
         $txta.html($txta.val()+'\n');
         codeMirror = html_beautify(
           $grid.CF7FormHTML(),
@@ -566,8 +568,7 @@
       $('.cf7sgfocus', $formNoEmbeds).removeClass('cf7sgfocus');
       $embdedForms = $formNoEmbeds.find('.cf7sg-external-form').remove();
       //setup sub-forms hidden field.
-      const embeds = [];
-      let hasTables = false, hasTabs = false, hasToggles=false;
+      let embeds = [], hasTables = false, hasTabs = false, hasToggles=false;
       if($embdedForms.length>0){
         $embdedForms.each(function(){
           embeds[embeds.length] = $(this).data('form');
@@ -589,10 +590,10 @@
       if(codeMirror.indexOf("[date")>0 || 0<codeMirror.search(/\[text([^\]]+?)class:datepicker/ig)) scriptClass += "has-date,";
 
       //scan and submit tabs & tables fields.
-      const tableFields = [];
+      let tableFields = [];
       $('.cf7sg-row.cf7-sg-table', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        const unique = $(this).closest('.cf7sg-container.cf7-sg-table').attr('id'),
+        let unique = $(this).closest('.cf7sg-container.cf7-sg-table').attr('id'),
           fields = {}, search = $(this).html();
         fields[unique]=[];
         let match = cf7TagRegexp.exec(search);
@@ -607,10 +608,10 @@
         hasTables = true;
       });
 
-      const tabFields = [];
+      let tabFields = [];
       $('.cf7sg-container.cf7-sg-tabs-panel', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        const unique = $(this).attr('id'),fields = {}, search = $(this).html();
+        let unique = $(this).attr('id'),fields = {}, search = $(this).html();
         fields[unique]=[];
 
         let match = cf7TagRegexp.exec(search);
@@ -627,10 +628,10 @@
       * Track toggled fields to see if they are submitted or not.
       * @since 2.5 */
 
-      const toggledFields = [], tabbedToggles=[], groupedToggles={};
+      let toggledFields = [], tabbedToggles=[], groupedToggles={};
       $('.cf7sg-container.cf7sg-collapsible.with-toggle', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
-        const $toggle = $(this), unique = $toggle.attr('id'), group = $toggle.data('group'),
+        let $toggle = $(this), unique = $toggle.attr('id'), group = $toggle.data('group'),
           fields = {}, search = $toggle.html();
         fields[unique]=[];
         if(group.length>0){
@@ -651,7 +652,7 @@
       $this.append('<input type="hidden" name="cf7sg-has-tabs" value="'+hasTabs+'" /> ');
       $this.append('<input type="hidden" name="cf7sg-has-tables" value="'+hasTables+'" /> ');
       $this.append('<input type="hidden" name="cf7sg-has-toggles" value="'+hasToggles+'" /> ');
-      const disabled = $editorTabs.tabs('option','disabled');
+      let disabled = $editorTabs.tabs('option','disabled');
       $this.append('<input type="hidden" name="cf7sg-has-grid" value="'+disabled+'" /> ');
       //update script classes since v3.
       if(hasTabs) scriptClass+="has-tabs,";
@@ -687,18 +688,18 @@
    Function to convert the UI form into its html final form for editing in the codemirror and/or saving to the CF7 plugin.
    */
     $.fn.CF7FormHTML = function(){
-      const $this = $(this);
+      let $this = $(this);
       if( !$this.is('#grid-form') ){
         return '';
       }
-      const $form = $('<div>').append(  $this.html() );
+      let $form = $('<div>').append(  $this.html() );
       let text='';
       //remove the add row button
       $('.add-item-button', $form).remove();
       //remove the external forms
-      const external = {};
+      let external = {};
       $('.cf7sg-external-form', $form).each(function(){
-        const $exform = $(this), id = $exform.data('form');
+        let $exform = $(this), id = $exform.data('form');
         external[id] = $exform.children('.cf7sg-external-form-content').remove();
         $exform.children('.form-controls').remove();
       });
@@ -707,7 +708,7 @@
 
       //remove the collapsible input
       $('.cf7sg-container.cf7sg-collapsible', $form).each(function(){
-        const $this = $(this),cid = $this.attr('id'), $title = $this.children('.cf7sg-collapsible-title');
+        let $this = $(this),cid = $this.attr('id'), $title = $this.children('.cf7sg-collapsible-title');
         let text = $title.children('label').children('input[type="hidden"]').val();
         $title.children('label').remove();
         let toggle = '';
@@ -756,7 +757,7 @@
                     case 'file*':
                       let options = '';
                       if(match.length>4){
-                        const tglmatch = cf7sgToggleRegex.exec(match[4]);
+                        let tglmatch = cf7sgToggleRegex.exec(match[4]);
                         if(tglmatch != null){
                           if(tglmatch[1] == cid) break;
                           options =match[4].replace(tglmatch[0],'class:cf7sg-toggle-'+cid);
@@ -787,7 +788,7 @@
       });
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
-        const $this = $(this);
+        let $this = $(this);
         let id = $this.data('form');
         $this.append( external[id] );
       });

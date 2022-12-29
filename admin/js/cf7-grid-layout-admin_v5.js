@@ -318,21 +318,22 @@
       }
     });
     /** @since 5.0.0 modal management */    
-    $modal.on('click', (e)=>{
-      let $target = $(e.target);
+    $('body').on('click','.jquery-modal a', (e)=>{
+      let $target = $(e.target),$txaf, $uif,$txam, lbl, desc;
+      
       switch(true){
-        case $target.is('.cf7sg-edit-shortcode'):
+        case $target.is('#cf7sg-field-edit .cf7sg-edit-shortcode'):
           $tagModal.modal({
             closeExisting: false
           });
           break;
-        case $target.is('.button-primary'):
+        case $target.is('#cf7sg-field-edit .button-primary'):
           //udpate field.
-          let $txaf = $('#cf7sg-ui-field', $grid),
-            $uif = $txaf.closest('.grid-column'),
-            $txam = $('#wpcf7-form', $modal),
-            lbl = $('#cf7sg-modal-label', $modal).val(),
-            desc = $('#cf7sg-modal-desc', $modal).val();
+          $txaf = $('#cf7sg-ui-field', $grid);
+          $uif = $txaf.closest('.grid-column');
+          $txam = $('#wpcf7-form', $modal);
+          lbl = $('#cf7sg-modal-label', $modal).val();
+          desc = $('#cf7sg-modal-desc', $modal).val();
 
           $txaf.val($txam.val()).text($txam.val());
 
@@ -350,13 +351,29 @@
           $('textarea.grid-input', $uif).updateGridForm();
           $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
           break;
+        case $target.is('#cf7sg-tag-list .button'): //tag list modal
+          $.modal.close();
+          break;
+        case $target.is('#cf7sg-custom-html .button'):
+          $txaf = $('#cf7sg-ui-field', $grid); 
+          $uif = $txaf.closest('.grid-column-tip');
+          $txam = $('#wpcf7-form', $customModal);
+          desc = $txam.val();
+          $('.cf7-field-tip input', $uif).val(desc);
+          $('.cf7-field-tip p.content', $uif).html(desc);
+          //reset textarea#wpcf7-form, nad modal
+          $txam.attr('id','').val('').text('');
+          $txaf.attr('id','');
+          $('input', $modal).val('');
+          $.modal.close();
+          $('textarea.grid-input', $uif).updateGridForm();
+          break;
+        case $target.is('.close-modal'): //reset modal and field.
+          $('#cf7sg-ui-field', $grid).attr('id','');
+          $target.closest('form').find('#wpcf7-form').attr('id','');
+          break;
       }
     });
-    $tagModal.on('click',(e)=>{
-      if($(e.target).is(('.button'))){ 
-        $.modal.close();
-      }
-    })
 
     //offset/size change using event delegation
     /*---------------------------------------------------------------------------- ui menus */
@@ -1034,7 +1051,9 @@
     if($this.is('.cf7-sg-table-footer-row *')){
       $customModal.modal();
       $field = $this.closest('.grid-column-tip');
-      $('textarea', $customModal).val($('.cf7-field-tip input', $field).val());
+      $field = $('textarea.table-footer-tip', $field);
+      $('textarea', $customModal).attr('id','wpcf7-form').val($field.val());
+      $field.attr('id', 'cf7sg-ui-field');
     }else{
       $field = $this.closest('.grid-column');
       /** @since 5.0.0 use a modal */
@@ -1047,12 +1066,8 @@
       // $this.find('span.dashicons').show();
       let $input = $(':input', $this);//.show();
       // $input.focus();
-      if($input.is('textarea')){
-        $input.attr('id', 'cf7sg-ui-field');
-        wpcf7Value = $input.val();
-      }else{
-        changeTextarea();
-      }
+      wpcf7Value = $('.cf7-field-type textarea', $field).attr('id', 'cf7sg-ui-field').val();
+        // changeTextarea();
     }
     return $this;
   }
