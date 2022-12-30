@@ -536,11 +536,15 @@
           case $target.is('.add-table'):
             $added = $row.insertNewRow(); //without button.
             $added.find('.add-row-button').remove();
-            let id = 'cf7-sg-table-'+(new Date).getTime();
             $added.find('.cf7sg-row').addClass('cf7-sg-table');
-            $added.addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
+            $added.addClass('cf7-sg-table').attr('id', 'cf7-sg-table-'+(new Date).getTime() )
+            $added.fireGridUpdate('add','table-row');
             break;
           case $target.is('.add-tab'):
+            $added = $row.insertNewRow('','#grid-tabs', 'after');
+            $added.attr('id','cf7-sg-tab-'+(new Date).getTime());
+
+            $added.fireGridUpdate('add','tabbed-row');
             break;
         }
         return true;
@@ -601,6 +605,7 @@
         return true;
       }else if($target.is('input.tabs-row')){ //-------------checkbox tabbed row
         let $panel = $target.closest('.cf7sg-container');
+        return true;
         if($target.is(':checked')){
           let id = 'cf7-sg-tab-'+(new Date).getTime();
           $panel.addClass('cf7-sg-tabs-panel').attr('id',id);

@@ -206,7 +206,7 @@
           $bottomTags.show().addClass('click-disabled');
           $jsTags.hide();
           $optionals.hide();
-          $(window).scrollTop($('#form-panel').offset().top);
+          $(window).scrollTop($('#contact-form-editor-tabs').offset().top);
 
           switch(gridTab){
             case '#cf7-editor-grid': //grid editor.
@@ -780,7 +780,7 @@
           }//else this column is a grid.
           $gridCol.remove();
         }else if($this.is('.cf7-sg-table-footer-row .cf7sg-col')){ //no grid-column
-          $text = $('textarea.grid-input', $this).html();
+          $text = $('textarea.grid-input', $this).val();
           $('.grid-column-tip', $this).remove();
           $this.html($('<p class="info-tip">').html($text));
           // $this.html($text);

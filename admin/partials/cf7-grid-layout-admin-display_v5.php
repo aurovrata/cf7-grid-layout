@@ -245,11 +245,28 @@ $cf7_key = $post->post_name;
   </div>
 </template>
 <template id="grid-tabs">
-  <div class="cf7-sg-tabs" id="">
-    <input type="radio" id=""/>
-    <div class="cf7-sg-tab">
-      <label for=""><?=__('Tab label','cf7-grid-layout')?><input type="text"/></label>
-      <template>#grid-row</template>
+  <div class="cf7-sg-tabs cf7sg-container" id="">
+    <div class="cf7sg-row">
+      <div class="row-controls">
+        <span class="dashicons dashicons-move row-control grid-control"></span>
+        <span class="control-label"><?= __('Tabbed section', 'cf7-grid-layout');?></span>
+        <span class="dashicons dashicons-edit row-control grid-control"></span>
+        <span class="dashicons dashicons-no-alt row-control grid-control"></span>
+        <span class="dashicons dashicons-trash row-control grid-control"></span>
+        <div class="grid-controls collapsible">
+          <label class="tab-row-title unique-mod">
+            <?=__('Tab label','cf7-grid-layout')?>
+            <input type="text" value=""/>
+          </label>
+        </div>
+      </div>
+      <div class="cf7sg-col full">
+        <input type="radio" class="display-none" id=""/>
+        <div class="cf7-sg-panel">
+          <label class="cf7sg-tab-title" for=""></label>
+          <template class="inner-template">#grid-row</template>
+        </div>
+      </div>
     </div>
   </div>
 </template>
