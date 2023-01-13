@@ -482,6 +482,12 @@ textarea.grid-input {
 	/* border: none; */
 	background: var(--cf7sg-text-color);
 }
+#cf7-editor-grid .centred-menu, #cf7-editor-grid  .cm-item{
+  background: var(--cf7sg-col-default);
+}
+#cf7-editor-grid .cm-item:hover {
+  color: var(--cf7sg-row-default);
+}
 #cf7-editor-grid .add-item-button:not(.add-field-button) .button{
 	background: var(--cf7sg-row-default);
 	color: var(--cf7sg-text-color);
@@ -513,6 +519,37 @@ textarea.grid-input {
 #grid-form .cf7-field-inner,
 #grid-form .cf7sg-row.cf7-sg-table-footer-row {
 	background-color: var(--cf7sg-text-color);
+}
+#cf7-editor-grid .centred-menu, #cf7-editor-grid  .cm-item{
+  --cf7sg-col-height: 18px;
+  height: var(--cf7sg-col-height);
+  vertical-align: middle;
+}
+#cf7-editor-grid .centred-menu {
+display: inline-block;
+overflow: hidden;
+width: fit-content;
+vertical-align: text-bottom;
+--selected-item: 0;
+padding: 1px 0;
+text-align: center;
+}
+#cf7-editor-grid .cm-item {
+display: table-row;
+}
+#cf7-editor-grid .cm-list {
+  transform: translateY(calc(-1 * var(--cf7sg-col-height) * var(--cf7sg-cm-val)));
+}
+#cf7-editor-grid .cm-list {
+  display: table;
+  position: relative;
+  z-index: 9;
+}
+#cf7-editor-grid .centred-menu.unset {
+  width: 0; 
+}
+#cf7-editor-grid .centred-menu.show { 
+overflow: visible;
 }
 #grid-form .cf7sg-col.one .grid-column .dashicons-move {
     margin-left: 0;

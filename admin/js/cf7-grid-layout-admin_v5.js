@@ -118,13 +118,10 @@
         }
         $this.prepend($area.children());
         
-        //add col labels
-        let c = $this.get(0).classList.forEach(cl => {
-          if('cf7sg-col'==cl) return true;
-          if(typeof columnLabels[cl] != 'undefined'){ 
-            $this.children('.grid-column').find('.column-label').text(columnLabels[cl]+' Col');
-          }
-        });
+        //set UI column size/offset menu
+        $this.setColumnUIControl();
+        //disable any non-valid options
+        $this.filterColumnControls();
       });
       $('div.cf7sg-row:not(.cf7-sg-table-footer-row)', $form).each(function(){
         $(this).prepend( $rowTemplt.find('.row-controls').clone() );
@@ -414,23 +411,23 @@
         return true;
       }
       if($target.is('.column-setting')){ //----------- column size/offset settings
-        let validation = ['dummy'];
-        if( $target.is('.column-offset') ){
-          validation = offsets;
-        }else if( $target.is('.column-size') ){
-          validation = columnsizes;
-        }else{
-          return false;
-        }
-        let $column = $target.closest('.cf7sg-col'), classList = $column.attr('class').split(/\s+/);
-        for(let idx=0; idx<classList.length; idx++){
-          if($.inArray(classList[idx], validation) > -1){
-             $column.removeClass(classList[idx]);
-          }
-        }
-        $column.addClass($target.val());
+        // let validation = ['dummy'];
+        // if( $target.is('.column-offset') ){
+        //   validation = offsets;
+        // }else if( $target.is('.column-size') ){
+        //   validation = columnsizes;
+        // }else{
+        //   return false;
+        // }
+        // let $column = $target.closest('.cf7sg-col'), classList = $column.attr('class').split(/\s+/);
+        // for(let idx=0; idx<classList.length; idx++){
+        //   if($.inArray(classList[idx], validation) > -1){
+        //      $column.removeClass(classList[idx]);
+        //   }
+        // }
+        // $column.addClass($target.val());
         //filter the options
-        $target.closest('.grid-controls').filterColumnControls();
+        // $target.closest('.grid-controls').filterColumnControls(); //changed in v5
         return true;
       }else if($target.is('.form-select')){ //-------------- external form selection
         let $container = $target.closest('.cf7sg-external-form');
@@ -683,7 +680,27 @@
         //now show this control
         let $ctrl = $target.siblings('.grid-controls');
         toggleControl($ctrl);
-        $ctrl.filterColumnControls();
+        // $ctrl.filterColumnControls(); //column controls changed in v5
+        return true;
+      }else if( $target.is('.centred-menu.column-setting *') ) { //----- show column sizes
+        let $menu = $target.closest('.cm-list');
+        if($menu.is('.show *')){ 
+          $menu.css('--cf7sg-cm-val', $target.data('cmi'));
+          let validation = ['dummy'];
+          if( $target.is('.column-offset *') ){
+            validation = offsets;
+          }else if( $target.is('.column-size *') ){
+            validation = columnsizes;
+          }
+          let classList = $parentColumn.get(0).classList;
+          for(let idx=0; idx<classList.length; idx++){
+            if(validation.indexOf(classList.item(idx)) > -1){
+              $parentColumn.removeClass(classList.item(idx));
+            }
+          }
+          $parentColumn.addClass($target.data('cmv'));
+        }
+        $menu.parent().toggleClass('show'); //toggle menu.
         return true;
       }else if( $target.is('.php-icon.column-control') ) { //--------show hooks
         let $helper =$('<div class="helper-popup">').html( $('#grid-helper').html()),
@@ -1381,36 +1398,40 @@
     });
     return {'length':total, 'cols':sizes};
   }
+  /** get the column size/offset, expect UI menu to be set */
   $.fn.getColumnTotalSize = function(){
     let $this = $(this);
     if(! $this.is('.cf7sg-col')){
       return 0;
     }
-    let off, foundSize, size = 0,total = 0, classList = $this.attr('class').split(/\s+/);
-    let $sizes = $this.find('.grid-column select.column-size'), $offsets = $this.find('.grid-column select.column-offset');
-    $offsets.val('');
-    $sizes.val('one');
-    foundSize = false;
-    for(let idx=0;idx<classList.length; idx++){
-      if(!foundSize){
-        size = $.inArray(classList[idx], columnsizes);
-        if(size > -1){
-          foundSize = true;
-          total += size + 1;
-          //reset select
-          $sizes.val(classList[idx]);
-        }
-      }
-      off = $.inArray(classList[idx], offsets);
-      if(off > -1){
-        total += off+1;
-        $offsets.val(classList[idx]);
-      }
-    }
-    if(!foundSize){ //by default a colum which is not set set is treated as 1
-      size = 0; //by default a colum which is not set set is treated as 1
-      total += 1;
-    }
+    let size = 0,total = 0;
+    // , classList = $this.attr('class').split(/\s+/);
+    let $sizes = $this.children('.grid-column').find('.column-size .cm-list'), 
+      $offsets = $this.children('.grid-column').find('.column-offset .cm-list');
+    size = $sizes.get(0).style.getPropertyValue('--cf7sg-cm-val');
+    total = $offsets.get(0).style.getPropertyValue('--cf7sg-cm-val')*1.0 + size*1.0 +1;
+    // $sizes.val('one');
+    // foundSize = false;
+    // for(let idx=0;idx<classList.length; idx++){
+    //   if(!foundSize){
+    //     size = $.inArray(classList[idx], columnsizes);
+    //     if(size > -1){
+    //       foundSize = true;
+    //       total += size + 1;
+    //       //reset select
+    //       $sizes.val(classList[idx]);
+    //     }
+    //   }
+    //   off = $.inArray(classList[idx], offsets);
+    //   if(off > -1){
+    //     total += off+1;
+    //     $offsets.val(classList[idx]);
+    //   }
+    // }
+    // if(!foundSize){ 
+    //   size = 0; //by default a colum which is not set set is treated as 1
+    //   total += 1;
+    // }
     return {'length':total, 'size':size};
   }
   //add new rows
@@ -1479,36 +1500,60 @@
   }
   //refresh controls select
   $.fn.changeColumnSize = function(oldSize, newSize){
-    let $this = $(this);
+    let $this = $(this), $sizeItem;
     if(oldSize.length > 0) $this.removeClass(oldSize);
     $this.addClass(newSize);
-    $this.children('.grid-column').find('.column-label').text(columnLabels[newSize]+' Col');
-    $('.column-size option[value="'+newSize+'"]', $this ).prop('selected', true);
+    // $this.children('.grid-column').find('.column-label').text(columnLabels[newSize]+' Col');
+    $sizeItem = $this.children('.grid-column').find(`.columns-size .cm-item[data-cmv=${newSize}]`);
+    $sizeItem.closest('.cm-list').css('--cf7sg-cm-val',$sizeItem.data('cmi'));
+    //$('.column-size option[value="'+newSize+'"]', $this ).prop('selected', true);
   }
-  //$target.closest('.grid-controls').filterColumnControls();
+  /** Setup column size/offet in UI menu */
+  $.fn.setColumnUIControl = function(){
+    if(!this.is('.cf7sg-col') ) return false;
+
+    let $col = $(this), classes = $col.get(0).classList,
+      $cmSize = $col.children('.grid-column').find('.column-size .cm-list'),
+      $cmOffset = $col.children('.grid-column').find('.column-offset .cm-list');
+    
+    $cmSize.css('--cf7sg-cm-val',0);//default for no classes
+    $cmOffset.css('--cf7sg-cm-val',0);//default for no classes
+    for(let idx = 0; idx<classes.length; idx++){
+      let c = classes.item(idx), size=0;
+      if('cf7sg-col'==c) continue;
+      size = columnsizes.indexOf(c);
+      if(size>-1) $cmSize.css('--cf7sg-cm-val',size);
+      else{
+        size = offsets.indexOf(c);
+        if(size>-1) $cmOffset.css('--cf7sg-cm-val',size);
+      }
+    }
+  }
+  /** Functions to disable options on the column size/offset list */
   $.fn.filterColumnControls = function(){
-    let $this = $(this);
-    if(!$this.is('.grid-controls')){
-      return $this;
-    }
+    if( !this.is('.cf7sg-col') ) return false;
+
+    let $col = $(this), 
+      $ctrl = $col.children('.grid-column'),
+      $parentRow = $col.closest('.cf7sg-row'), 
+      rowSize = $parentRow.getRowSize(),
+      colSize = $col.getColumnTotalSize();
     //enable all options
-    $('.column-size option', $this ).prop('disabled', false);
-    $('.column-offset option', $this ).prop('disabled', false);
-    let $parentRow = $this.closest('.cf7sg-row'), $parentColumn = $this.closest('.cf7sg-col');
-    let row = $parentRow.getRowSize(), col = $parentColumn.getColumnTotalSize();
+    $('.cm-item', $ctrl ).removeClass('disabled');
+    
     let idx, start, free = 0;
-    if(row.length < 12) free = (12 - row.length);
-    for(idx = start = col.size+1; idx < columnsizes.length; idx++){
+    if(rowSize.length < 12) free = (12 - rowSize.length);
+    for(idx = start = colSize.size+1; idx < columnsizes.length; idx++){
       if( idx > (free + start - 1) ){
-        $('.column-size option[value="'+columnsizes[idx]+'"]', $this ).prop('disabled', true);
+        $(`.column-size .cm-item[data-cmi=${idx}]`, $ctrl ).addClass('disabled');
       }
     }
-    for(idx = start = col.length - col.size - 1 ;idx< offsets.length; idx++){
+    for(idx = start = colSize.length - colSize.size - 1 ;idx< offsets.length; idx++){
       if( idx > (free + start - 1) ){
-        $('.column-offset option[value="'+offsets[idx]+'"]', $this ).prop('disabled', true);
+        $(`.column-offset .cm-item[data-cmi=${idx}]`, $ctrl ).addClass('disabled');
       }
     }
-    return $this;
+    return $col;
   }
   /** @since 3.4.0 fire grid ui update events.*/
   $.fn.fireGridUpdate = function(action, element){

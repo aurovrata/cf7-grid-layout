@@ -331,15 +331,48 @@ $cf7_key = $post->post_name;
 <template id="grid-col">
   <div class="grid-column">
     <span class="dashicons dashicons-move column-control grid-control"></span>
-    <span class="column-label column-control">Full Col</span>
-    <span class="dashicons dashicons-edit column-control grid-control"></span>
-    <span class="dashicons dashicons-no-alt column-control grid-control"></span>
+    <span class="column-label column-control">
+      <div class="column-offset centred-menu column-setting unset" style="--cf7sg-cm-val:0">
+        <div class="cm-list">
+          <div class="cm-item" data-cmi="0" data-cmv="">&nbsp;</div>
+          <div class="cm-item" data-cmi="1" data-cmv="offset-one">[1/12]</div>
+          <div class="cm-item" data-cmi="2" data-cmv="offset-two">[1/6]</div>
+          <div class="cm-item" data-cmi="3" data-cmv="offset-three">[1/4]</div>
+          <div class="cm-item" data-cmi="4" data-cmv="offset-four">[1/3]</div>
+          <div class="cm-item" data-cmi="5" data-cmv="offset-five">[5/12]</div>
+          <div class="cm-item" data-cmi="6" data-cmv="offset-six">[1/2]</div>
+          <div class="cm-item" data-cmi="7" data-cmv="offset-seven">[7/12]</div>
+          <div class="cm-item" data-cmi="8" data-cmv="offset-eight">[2/3]</div>
+          <div class="cm-item" data-cmi="9" data-cmv="offset-nine">[3/4]</div>
+          <div class="cm-item" data-cmi="10" data-cmv="offset-ten">[5/6]</div>
+          <div class="cm-item" data-cmi="11" data-cmv="offset-eleven">[11/12]</div>
+      </div>
+      </div>
+      <div class="column-size centred-menu column-setting" style="--cf7sg-cm-val:11">
+        <div class="cm-list">
+          <div class="cm-item" data-cmi="0" data-cmv="one">1/12</div>
+          <div class="cm-item" data-cmi="1" data-cmv="two">1/6</div>
+          <div class="cm-item" data-cmi="2" data-cmv="one-fourth">1/4</div>
+          <div class="cm-item" data-cmi="3" data-cmv="one-third">1/3</div>
+          <div class="cm-item" data-cmi="4" data-cmv="five">5/12</div>
+          <div class="cm-item" data-cmi="5" data-cmv="one-half">1/2</div>
+          <div class="cm-item" data-cmi="6" data-cmv="seven">7/12</div>
+          <div class="cm-item" data-cmi="7" data-cmv="two-thirds">2/3</div>
+          <div class="cm-item" data-cmi="8" data-cmv="nine">3/4</div>
+          <div class="cm-item" data-cmi="9" data-cmv="ten">5/6</div>
+          <div class="cm-item" data-cmi="10" data-cmv="eleven">11/12</div>
+          <div class="cm-item" data-cmi="11" data-cmv="full">Full</div>
+        </div>
+      </div><?=__('Col','cf7-grid-layout')?>
+    </span>
+    <!-- <span class="dashicons dashicons-edit column-control grid-control"></span>
+    <span class="dashicons dashicons-no-alt column-control grid-control"></span> -->
     <span class="dashicons dashicons-trash column-control grid-control"></span>
     <span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
     <span class="js-icon column-control grid-control" style="display:none;"></span>
     <span class="dashicons dashicons-editor-code column-control grid-control"></span>
     <div class="grid-controls">
-      <?=__('Column offset:','cf7-grid-layout')?><br />
+      <!-- <?=__('Column offset:','cf7-grid-layout')?><br />
       <select class="column-offset select2 column-setting">
         <option value="" selected><?=__('no offset','cf7-grid-layout')?></option>
         <option value="offset-one"><?=__('one (1/12<sup>th</sup>)','cf7-grid-layout')?></option>
@@ -368,7 +401,7 @@ $cf7_key = $post->post_name;
         <option value="ten"><?=__('ten (5/6<sup>ths</sup>)','cf7-grid-layout')?></option>
         <option value="eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
         <option value="full" selected><?=__('full width','cf7-grid-layout')?></option>
-      </select>
+      </select> -->
       <!-- <a id="new-row" class="button make-grid column-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
       <a class="button external-form" href="javascript:void(0);"><?= __('Insert form', 'cf7-grid-layout');?></a>
       <label class="display-none accordion-label grouping-option"><input type="checkbox" name="grouping-option" class="accordion-rows column-control" /><?=__('Enable accordion','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Group collapsible rows as jQuery accordion','cf7-smart-grid')?></span>
