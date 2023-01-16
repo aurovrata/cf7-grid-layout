@@ -82,7 +82,7 @@ class Cf7_Grid_Layout_Admin {
   *@return string post type.
   */
   private function cf7_post_type(){
-    $type = 'wpcf7_post_type_notset';
+    $type = 'wpcf7_contact_form';
     if(class_exists('WPCF7_ContactForm') ) {
       $type = WPCF7_ContactForm::post_type;
     }
@@ -622,7 +622,7 @@ class Cf7_Grid_Layout_Admin {
     // debug_msg('created dynamic select ');
   }
   /**
-   * function to regsiter dyanmic dropdown taxonomies
+   * function to regsiter dynamic dropdown taxonomies
    *
    * @since 1.0.0
    * @param      Object    $taxonomy_object     std object with parameters $taxonomy_object->slug, $taxonomy_object->singular, $taxonomy_object->plural, $taxonomy_object->hierarchical .

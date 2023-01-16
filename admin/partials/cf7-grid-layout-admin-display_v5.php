@@ -334,7 +334,7 @@ $cf7_key = $post->post_name;
     <span class="column-label column-control">
       <div class="column-offset centred-menu column-setting unset" style="--cf7sg-cm-val:0">
         <div class="cm-list">
-          <div class="cm-item" data-cmi="0" data-cmv="">&nbsp;</div>
+          <div class="cm-item" data-cmi="0" data-cmv="">[.]</div>
           <div class="cm-item" data-cmi="1" data-cmv="offset-one">[1/12]</div>
           <div class="cm-item" data-cmi="2" data-cmv="offset-two">[1/6]</div>
           <div class="cm-item" data-cmi="3" data-cmv="offset-three">[1/4]</div>
@@ -346,8 +346,9 @@ $cf7_key = $post->post_name;
           <div class="cm-item" data-cmi="9" data-cmv="offset-nine">[3/4]</div>
           <div class="cm-item" data-cmi="10" data-cmv="offset-ten">[5/6]</div>
           <div class="cm-item" data-cmi="11" data-cmv="offset-eleven">[11/12]</div>
+        </div>
       </div>
-      </div>
+      <span class="popup-helper  display-none"><?= __('Column offset','cf7-grid-layout')?></span>
       <div class="column-size centred-menu column-setting" style="--cf7sg-cm-val:11">
         <div class="cm-list">
           <div class="cm-item" data-cmi="0" data-cmv="one">1/12</div>
@@ -363,7 +364,9 @@ $cf7_key = $post->post_name;
           <div class="cm-item" data-cmi="10" data-cmv="eleven">11/12</div>
           <div class="cm-item" data-cmi="11" data-cmv="full">Full</div>
         </div>
-      </div><?=__('Col','cf7-grid-layout')?>
+      </div>
+      <span class="popup-helper display-none"><?= __('Column size','cf7-grid-layout')?></span>
+      <?=__('Col','cf7-grid-layout')?>
     </span>
     <!-- <span class="dashicons dashicons-edit column-control grid-control"></span>
     <span class="dashicons dashicons-no-alt column-control grid-control"></span> -->

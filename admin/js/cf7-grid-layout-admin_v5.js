@@ -121,7 +121,7 @@
         //set UI column size/offset menu
         $this.setColumnUIControl();
         //disable any non-valid options
-        $this.filterColumnControls();
+        // $this.filterColumnControls(); do this when menu is opened instead.
       });
       $('div.cf7sg-row:not(.cf7-sg-table-footer-row)', $form).each(function(){
         $(this).prepend( $rowTemplt.find('.row-controls').clone() );
@@ -477,11 +477,14 @@
         case $target.is('input[type="text"]:visible'):
         case $target.is('textarea:visible'): //click on a field.
         case $target.is('select:visible'):
+        case $target.is('.centred-menu .cm-item.disabled'):
           return true;
           break;
       }
       //close any open row/column controls
       toggleControl();
+      //close any column size popups
+      toggleCentredMenus($target);
       /* ---------------------------------------------------------------------------FORM CONTROLS */
       if( $target.is('.dashicons-edit.form-control') ){ //------------------show controls
         toggleControl($target.siblings('.grid-controls'));
@@ -689,6 +692,14 @@
           let validation = ['dummy'];
           if( $target.is('.column-offset *') ){
             validation = offsets;
+            switch($target.data('cmi')){
+              case 0:
+                $menu.parent().addClass('unset');
+                break;
+              default:
+                $menu.parent().removeClass('unset');
+                break;
+            }
           }else if( $target.is('.column-size *') ){
             validation = columnsizes;
           }
@@ -699,6 +710,15 @@
             }
           }
           $parentColumn.addClass($target.data('cmv'));
+          if($target.is('.column-offset *')){
+
+            
+          }
+        }else{//filter the option list before opening
+          $target.closest('.cf7sg-col').filterColumnControls();
+          // if($target.is('.column-size *')){
+          //   $menu.parent().siblings('.column-offset.unset').toggleClass('show'); //toggle menu.
+          // }
         }
         $menu.parent().toggleClass('show'); //toggle menu.
         return true;
@@ -1003,6 +1023,12 @@
     });
     //close helper popups.
     $('.column-control+.helper-popup').remove();
+  }
+  //close any column size popups
+  function toggleCentredMenus($t){
+    let $menus = $('.centred-menu.show', $gridEditor);
+    if($t.length>0 && $t.is('.centred-menu *')) $menus = $menus.not($t.closest('.centred-menu'));
+    $menus.toggleClass('show');
   }
   //trigger a change on the textarea#wpcf7-form field if its value has changed
   function changeTextarea(finalise = false){
@@ -1408,30 +1434,8 @@
     // , classList = $this.attr('class').split(/\s+/);
     let $sizes = $this.children('.grid-column').find('.column-size .cm-list'), 
       $offsets = $this.children('.grid-column').find('.column-offset .cm-list');
-    size = $sizes.get(0).style.getPropertyValue('--cf7sg-cm-val');
-    total = $offsets.get(0).style.getPropertyValue('--cf7sg-cm-val')*1.0 + size*1.0 +1;
-    // $sizes.val('one');
-    // foundSize = false;
-    // for(let idx=0;idx<classList.length; idx++){
-    //   if(!foundSize){
-    //     size = $.inArray(classList[idx], columnsizes);
-    //     if(size > -1){
-    //       foundSize = true;
-    //       total += size + 1;
-    //       //reset select
-    //       $sizes.val(classList[idx]);
-    //     }
-    //   }
-    //   off = $.inArray(classList[idx], offsets);
-    //   if(off > -1){
-    //     total += off+1;
-    //     $offsets.val(classList[idx]);
-    //   }
-    // }
-    // if(!foundSize){ 
-    //   size = 0; //by default a colum which is not set set is treated as 1
-    //   total += 1;
-    // }
+    size = $sizes.get(0).style.getPropertyValue('--cf7sg-cm-val')*1.0;
+    total = $offsets.get(0).style.getPropertyValue('--cf7sg-cm-val')*1.0 + size +1;
     return {'length':total, 'size':size};
   }
   //add new rows
@@ -1548,8 +1552,9 @@
         $(`.column-size .cm-item[data-cmi=${idx}]`, $ctrl ).addClass('disabled');
       }
     }
-    for(idx = start = colSize.length - colSize.size - 1 ;idx< offsets.length; idx++){
-      if( idx > (free + start - 1) ){
+    for(idx = start = colSize.length - colSize.size - 1 ;idx<= offsets.length; idx++){
+      if(0===idx) continue; //0 is unset.
+      if( idx > (free + start) ){
         $(`.column-offset .cm-item[data-cmi=${idx}]`, $ctrl ).addClass('disabled');
       }
     }

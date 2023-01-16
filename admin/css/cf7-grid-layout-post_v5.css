@@ -485,8 +485,12 @@ textarea.grid-input {
 #cf7-editor-grid .centred-menu, #cf7-editor-grid  .cm-item{
   background: var(--cf7sg-col-default);
 }
-#cf7-editor-grid .cm-item:hover {
+#cf7-editor-grid .cm-item:not(.disabled):hover {
   color: var(--cf7sg-row-default);
+  cursor: pointer;
+}
+.cm-item.disabled {
+	color: var(--cf7sg-row-icons-hover);
 }
 #cf7-editor-grid .add-item-button:not(.add-field-button) .button{
 	background: var(--cf7sg-row-default);
@@ -520,6 +524,10 @@ textarea.grid-input {
 #grid-form .cf7sg-row.cf7-sg-table-footer-row {
 	background-color: var(--cf7sg-text-color);
 }
+#cf7-editor-grid .centred-menu + .popup-helper {
+	background: var(--cf7sg-text-color);
+	color: var(--cf7sg-row-default);
+}
 #cf7-editor-grid .centred-menu, #cf7-editor-grid  .cm-item{
   --cf7sg-col-height: 18px;
   height: var(--cf7sg-col-height);
@@ -528,11 +536,14 @@ textarea.grid-input {
 #cf7-editor-grid .centred-menu {
 display: inline-block;
 overflow: hidden;
-width: fit-content;
+width: min-content;
 vertical-align: text-bottom;
 --selected-item: 0;
 padding: 1px 0;
-text-align: center;
+text-align: left;
+}
+#cf7-editor-grid .column-offset {
+	text-align: right;
 }
 #cf7-editor-grid .cm-item {
 display: table-row;
@@ -545,11 +556,25 @@ display: table-row;
   position: relative;
   z-index: 9;
 }
-#cf7-editor-grid .centred-menu.unset {
-  width: 0; 
+#cf7-editor-grid .centred-menu.unset { /*:not(.show) */
+  width: 15px;
+  text-align: left; 
 }
 #cf7-editor-grid .centred-menu.show { 
 overflow: visible;
+}
+#cf7-editor-grid .centred-menu.show + .popup-helper {
+	display: block;
+	position: absolute;
+	width: fit-content;
+	bottom: 20px;
+	z-index: 10;
+	padding: 2px 5px;
+	border-radius: 3px;
+	left: 70px;
+}
+#cf7-editor-grid .centred-menu.column-offset.show + .popup-helper {
+	left: 61px;
 }
 #grid-form .cf7sg-col.one .grid-column .dashicons-move {
     margin-left: 0;
