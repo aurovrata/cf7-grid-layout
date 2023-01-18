@@ -816,6 +816,7 @@
         //replace container with form selector
         $target.closest('.cf7sg-container').after($('#grid-cf7-forms').html());
         $target.closest('.cf7sg-container').remove();
+        return true;
       }else if( $target.is('.dashicons-menu-alt.row-control') ){ //--------------------add column
         $parentColumn = $target.parent().siblings('.cf7sg-col').last();
         $parentRow = $parentColumn.closest('.cf7sg-row');
@@ -870,6 +871,7 @@
         }
         $newColumn.changeColumnSize('',columnsizes[newSize]);
         $parentColumn.after($newColumn);
+        return true;
       }else if( $target.is('.accordion-rows.column-control') ){ /** @since 3.4.0 enable accordion */
         if($target.is(':checked')){
           $parentColumn.addClass('cf7sg-accordion-rows').removeClass('cf7sg-slider-section').removeAttr("data-next data-prev data-submit data-dots");
@@ -884,6 +886,7 @@
           //show toggle checkbox.
           $('input[type="checkbox"]', $parentColumn.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).show().next('span').show();
         }
+        return true;
       }
       /*
        Column UI fields
@@ -893,6 +896,7 @@
         closeAlluiFields();
         if($target.is('.cf7-field-inner p.content')){ //show modal
           $target.parent().showUIfield();
+          return true;
         }else if($target.is('.cf7-field-inner span.dashicons')){
           //field will be closed by closeAlluiFields
         }else if('none'!==$('#wpcf7-form').css('display') && !$target.is('#wpcf7-form')){
@@ -1099,6 +1103,12 @@
       $field = $this.closest('.grid-column');
       /** @since 5.0.0 use a modal */
       $modal.modal();
+      if(!$field.is('.field-set')){
+        $tagModal.modal({
+          closeExisting: false
+        });
+      } 
+
       $('textarea#wpcf7-form').attr('id','');
       $('textarea',$modal).attr('id','wpcf7-form').val($('.cf7-field-type textarea', $field).val()); 
       //check if the field has values.
@@ -1197,10 +1207,10 @@
       fields = [],
       hooks = [],jshooks=[],
       tag='',
-      isSubmit = false, hasHidden = false,
+      isSubmit = false,
       count =0, counth = 0,
       field = '',
-      stopSearch = false, isField = false,
+      isField = false,
       classes = $colTemplt.find('div.cf7-field-type').attr('class');
 
     while ( (match = tagRegex.exec(search)) !== null) {
@@ -1287,6 +1297,7 @@
       $parentColumn.addClass('cf7-tags-'+count);
     }
     $parent.attr('class',classes);
+    $parent.closest('.grid-column').addClass('field-set'); //flag for modal sequence.
     /**@since 2.0.0
     * setup fields for tag specific filters/actions.
     */
