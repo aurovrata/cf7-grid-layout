@@ -676,7 +676,10 @@
           $target.closest('.cf7sg-container').addClass('cf7sg-grid');
           $target.insertNewRow($col, '#grid-row .cf7sg-row', 'before').find('.add-item-button').remove(); //insert row without container before button, without an extra button.
         }
-        $target.siblings('.cf7sg-row').last().insertNewRow('', '#grid-row .cf7sg-row', 'after').find('.add-item-button').remove(); //insert a new row after the last one without an extra button.
+        let $row = $target.siblings('.cf7sg-row').last().insertNewRow('', '#grid-row .cf7sg-row', 'after');
+        $row.find('.add-item-button').remove(); //insert a new row after the last one without an extra button.
+        //launch the field modal.
+        $row.find('.cf7-field-inner').first().showUIfield();
         return true;
         
       }else if( $target.is('.dashicons-edit.column-control') ){ //------------------show controls
