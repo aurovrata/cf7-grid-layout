@@ -597,7 +597,7 @@ overflow: visible;
 /* #cf7-editor-grid .add-item-button .button{
 	border: none;
 } */
-#grid-form .cf7sg-row > div:nth-last-child(2) > .grid-column .dashicons-trash.column-control,
+#grid-form .cf7sg-row > div:nth-child(2) > .grid-column .dashicons-trash.column-control,
 .cf7sg-container.cf7-sg-tabs-panel > .cf7sg-row > .row-controls .dashicons-plus,
 .cf7sg-container.cf7-sg-tabs-panel > .cf7sg-row > .row-controls .dashicons-trash,
 #grid-form .helper-popup .no-post-my-form,

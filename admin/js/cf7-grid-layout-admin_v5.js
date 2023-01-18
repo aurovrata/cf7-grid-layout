@@ -686,21 +686,21 @@
         // $ctrl.filterColumnControls(); //column controls changed in v5
         return true;
       }else if( $target.is('.centred-menu.column-setting *') ) { //----- show column sizes
-        let $menu = $target.closest('.cm-list');
-        if($menu.is('.show *')){ 
+        let $menu = $target.closest('.centred-menu');
+        if($menu.is('.show')){ 
           $menu.css('--cf7sg-cm-val', $target.data('cmi'));
           let validation = ['dummy'];
-          if( $target.is('.column-offset *') ){
+          if( $menu.is('.column-offset') ){
             validation = offsets;
             switch($target.data('cmi')){
               case 0:
-                $menu.parent().addClass('unset');
+                $menu.addClass('unset');
                 break;
               default:
-                $menu.parent().removeClass('unset');
+                $menu.removeClass('unset');
                 break;
             }
-          }else if( $target.is('.column-size *') ){
+          }else if( $menu.is('.column-size') ){
             validation = columnsizes;
           }
           let classList = $parentColumn.get(0).classList;
@@ -710,17 +710,10 @@
             }
           }
           $parentColumn.addClass($target.data('cmv'));
-          if($target.is('.column-offset *')){
-
-            
-          }
         }else{//filter the option list before opening
-          $target.closest('.cf7sg-col').filterColumnControls();
-          // if($target.is('.column-size *')){
-          //   $menu.parent().siblings('.column-offset.unset').toggleClass('show'); //toggle menu.
-          // }
+          $parentColumn.filterColumnControls();
         }
-        $menu.parent().toggleClass('show'); //toggle menu.
+        $menu.toggleClass('show'); //toggle menu.
         return true;
       }else if( $target.is('.php-icon.column-control') ) { //--------show hooks
         let $helper =$('<div class="helper-popup">').html( $('#grid-helper').html()),
@@ -1432,8 +1425,8 @@
     }
     let size = 0,total = 0;
     // , classList = $this.attr('class').split(/\s+/);
-    let $sizes = $this.children('.grid-column').find('.column-size .cm-list'), 
-      $offsets = $this.children('.grid-column').find('.column-offset .cm-list');
+    let $sizes = $this.children('.grid-column').find('.column-size'), 
+      $offsets = $this.children('.grid-column').find('.column-offset');
     size = $sizes.get(0).style.getPropertyValue('--cf7sg-cm-val')*1.0;
     total = $offsets.get(0).style.getPropertyValue('--cf7sg-cm-val')*1.0 + size +1;
     return {'length':total, 'size':size};
@@ -1507,18 +1500,16 @@
     let $this = $(this), $sizeItem;
     if(oldSize.length > 0) $this.removeClass(oldSize);
     $this.addClass(newSize);
-    // $this.children('.grid-column').find('.column-label').text(columnLabels[newSize]+' Col');
     $sizeItem = $this.children('.grid-column').find(`.columns-size .cm-item[data-cmv=${newSize}]`);
-    $sizeItem.closest('.cm-list').css('--cf7sg-cm-val',$sizeItem.data('cmi'));
-    //$('.column-size option[value="'+newSize+'"]', $this ).prop('selected', true);
+    $sizeItem.closest('.centred-menu').css('--cf7sg-cm-val',$sizeItem.data('cmi'));
   }
   /** Setup column size/offet in UI menu */
   $.fn.setColumnUIControl = function(){
     if(!this.is('.cf7sg-col') ) return false;
 
     let $col = $(this), classes = $col.get(0).classList,
-      $cmSize = $col.children('.grid-column').find('.column-size .cm-list'),
-      $cmOffset = $col.children('.grid-column').find('.column-offset .cm-list');
+      $cmSize = $col.children('.grid-column').find('.column-size'),
+      $cmOffset = $col.children('.grid-column').find('.column-offset');
     
     $cmSize.css('--cf7sg-cm-val',0);//default for no classes
     $cmOffset.css('--cf7sg-cm-val',0);//default for no classes
