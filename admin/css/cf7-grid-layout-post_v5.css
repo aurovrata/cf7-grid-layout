@@ -563,10 +563,13 @@ display: table-row;
 #cf7-editor-grid .centred-menu.show { 
 overflow: visible;
 }
+#cf7-editor-grid .column-label{
+position: relative;
+}
 #cf7-editor-grid .centred-menu.show + .popup-helper {
 	display: block;
 	position: absolute;
-	width: fit-content;
+	width: max-content;
 	bottom: 20px;
 	z-index: 10;
 	padding: 2px 5px;
@@ -574,7 +577,10 @@ overflow: visible;
 	left: 70px;
 }
 #cf7-editor-grid .centred-menu.column-offset.show + .popup-helper {
-	left: 61px;
+	left: 40px;
+}
+#cf7-editor-grid .centred-menu.column-offset.unset + .popup-helper + .column-size.show + .popup-helper {
+	left: 47px;
 }
 #grid-form .cf7sg-col.one .grid-column .dashicons-move {
     margin-left: 0;
