@@ -429,6 +429,15 @@ class Cf7_Grid_Layout_Admin {
         /** @since 4.11.0 abstract out dynamic lists */
         do_action('cf7sg_register_dynamic_lists');
         $lists = cf7sg_get_dynamic_lists();
+        /** @since 5.0 get a list of usable tags */
+        $tags = array();
+        if(class_exists('WPCF7_FormTagsManager')){
+          $form_tags_manager = WPCF7_FormTagsManager::get_instance();
+          $tags = $form_tags_manager->collect_tag_types( array(
+            'feature' => 'name-attr',
+          ) );
+          $tags = array_filter($tags, function($t){ return !strpos($t, '*');});
+        }
         wp_localize_script(
           $this->plugin_name,
           'cf7grid',
@@ -437,7 +446,8 @@ class Cf7_Grid_Layout_Admin {
 						'postHTML' => apply_filters('cf7sg_post_cf7_field_html', '<p class="info-tip"></p></div>', $post->post_name),
 						'requiredHTML' => apply_filters('cf7sg_required_cf7_field_html', '<em>*</em>', $post->post_name),
 						'ui' => apply_filters('cf7sg_grid_ui', true, $post->post_name),
-            'dynamicTags' => array_keys($lists)
+            'dynamicTags' => array_keys($lists),
+            'fieldtags' => $tags
           )
         );
         wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );

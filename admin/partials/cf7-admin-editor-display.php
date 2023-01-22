@@ -129,19 +129,37 @@ if(empty($colour)) $colour = 'default';
       <div id="cf7sg-tag-list">
         <h3><?= __('Select a field', 'cf7-grid-layout');?></h3>
         <?php $tag_generator->print_buttons(); ?>
+        <span class="custom-tags"></span>
+        <p>or insert</p>
+        <a class="button custom-html" href="javascript:void(0);"><?= __('Custom HTML', 'cf7-grid-layout')?></a>
       </div>
-      <div id="cf7sg-custom-html">
-        <h3><?= __('Custom HTML', 'cf7-grid-layout');?></h3>
-        <div class="cf7sg-modal-input cf7sg-row">
-          <div class="cf7sg-col full"><textarea name="_cf7sg_modal_custom" rows="10"></textarea></div>
-        </div>
-        <div class="cf7sg-modal-input cf7sg-row">
-          <div class="cf7sg-col offset-four one-third">
+      <div id="cf7sg-custom-tag">
+        <form>
+          <h3><?= __('Custom CF7 field tag', 'cf7-grid-layout');?></h3>
+          <div class="cf7sg-modal-input cf7sg-row">
+            <textarea name="_cf7sg_modal_custom_tag" rows="2"></textarea>
+          </div>
+          <div class="cf7sg-col offset-eight one-third">
             <div class="cf7sg-tag-update">
               <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
             </div>
           </div>
-        </div>
+        </form>
+      </div>
+      <div id="cf7sg-custom-html">
+        <form>
+          <h3><?= __('Custom HTML', 'cf7-grid-layout');?></h3>
+          <div class="cf7sg-modal-input cf7sg-row">
+            <div class="cf7sg-col full"><textarea name="_cf7sg_modal_custom" rows="10"></textarea></div>
+          </div>
+          <div class="cf7sg-modal-input cf7sg-row">
+            <div class="cf7sg-col offset-eight one-third">
+              <div class="cf7sg-tag-update">
+                <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   <?php endif; //_v5 ?>

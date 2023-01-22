@@ -1,4 +1,4 @@
-#cf7sg-editor{
+:root{
     --cf7sg-scheme-name: "default" ;
     --cf7sg-text-color: #fff ;
     --cf7sg-row-default: #2271b1; /*#23282d*/ ;
@@ -528,6 +528,11 @@ textarea.grid-input {
 	background: var(--cf7sg-text-color);
 	color: var(--cf7sg-row-default);
 }
+#cf7sg-tag-list a.button.custom-tag {
+	border-color: var(--cf7sg-row-collapsible);
+	color: var(--cf7sg-row-collapsible);
+}
+/*-----------colours end------------------*/
 #cf7-editor-grid .centred-menu, #cf7-editor-grid  .cm-item{
   --cf7sg-col-height: 18px;
   height: var(--cf7sg-col-height);
@@ -721,6 +726,16 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #grid-form  .cf7-field-inner textarea,
 #grid-form  .cf7-field-inner span.dashicons{
     display: none;
+}
+#cf7sg-tag-list a.button {
+	font-size: 12px;
+	height: 26px;
+	line-height: 24px;
+	margin: 2px;
+	padding: 0 8px 1px;
+}
+#cf7sg-tag-list a.button.custom-html {
+	width: 50%;
 }
 #grid-form  .cf7-field-inner span.dashicons {
   position:absolute;

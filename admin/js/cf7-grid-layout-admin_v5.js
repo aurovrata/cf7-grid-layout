@@ -9,6 +9,8 @@
     columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'],
     columnLabels={'one':'1/12','two':'1/6', 'one-fourth':'1/4', 'one-third':'1/3', 'five':'5/12', 'one-half':'1/2', 'seven':'7/12', 'two-thirds':'2/3', 'nine':'3/4', 'ten':'5/6', 'eleven':'11/12', 'full':'Full'};
   const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
+  /** @since 5.0 filter out tag fields that have form generators. */
+  const cf7TagGen = Object.values(cf7grid.fieldtags).filter(v => !["count","range","captchac","captchar","reflection","select"].includes(v));
   let cf7TagRgxp, $wpcf7Editor, $grid, $gridEditor, $colTemplt, $rowTemplt; 
   //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
   let $pattern = $('<div>').html('' +
@@ -37,10 +39,18 @@
     }
   }
   let wpcf7Value = '';
-  let $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html');
-  
+  const $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html'), $customTagModal = $('#cf7sg-custom-tag');
+  $.modal.defaults.modalClass= "cf7sg-modal modal";
 	$(document).ready( function(){
-    
+    /** @since 5.0 scan tag with form generators  */
+    document.querySelectorAll('#cf7-taggenerator-forms form.tag-generator-panel').forEach((el)=>{
+      let idx = cf7TagGen.indexOf(el.dataset.id);
+      if(idx>-1) cf7TagGen.splice(idx,1);
+    });
+    //populate the tag list modal with custom tags.
+    cf7TagGen.forEach(t=>{
+      $('.custom-tags', $tagModal).append(`<a href="javascript:void(0);" class="button custom-tag" data-id="${t}">${t}</a>`);
+    });
     //change the form id to mimic cf7 plugin custom admin page.
     /** @since 2.11.0 full screen button*/
     let $editor = $('#cf7sg-editor');
@@ -350,6 +360,15 @@
           break;
         case $target.is('#cf7sg-tag-list .button'): //tag list modal
           $.modal.close();
+          switch(true){
+            case $target.is('.custom-tag'):
+              $customTagModal.modal();
+              $('textarea', $customTagModal).text(`[${$target.data('id')} field_${randString(4)}]`)
+              break;
+            case $target.is('.custom-html'):
+              $customModal.modal();
+              break;
+          }
           break;
         case $target.is('#cf7sg-custom-html .button'):
           $txaf = $('#cf7sg-ui-field', $grid); 
@@ -368,6 +387,12 @@
         case $target.is('.close-modal'): //reset modal and field.
           $('#cf7sg-ui-field', $grid).attr('id','');
           $target.closest('form').find('#wpcf7-form').attr('id','');
+          break;
+        case $target.is('#cf7sg-custom-tag .button'): //custom tag field.
+          $('textarea#wpcf7-form').val($('textarea',$customTagModal).val());
+          $('textarea',$customTagModal).val('').text('');
+          $.modal.close();
+          $modal.modal();
           break;
       }
     });
@@ -994,7 +1019,7 @@
         n = 5;
     }
     let text = '';
-    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     for(let i=0; i < n; i++){
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
