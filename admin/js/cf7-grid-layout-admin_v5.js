@@ -372,14 +372,24 @@
           break;
         case $target.is('#cf7sg-custom-html .button'):
           $txaf = $('#cf7sg-ui-field', $grid); 
-          $uif = $txaf.closest('.grid-column-tip');
-          $txam = $('#wpcf7-form', $customModal);
-          desc = $txam.val();
-          $('.cf7-field-tip input', $uif).val(desc);
-          $('.cf7-field-tip p.content', $uif).html(desc);
+          $txam = $('textarea', $customModal);
+          if($txaf.is('.cf7-sg-table-footer-row *')){
+            $uif = $txaf.closest('.grid-column-tip');
+            desc = $txam.val();
+            $('.cf7-field-tip input', $uif).val(desc);
+            $('.cf7-field-tip p.content', $uif).html(desc);
+            $txaf.attr('id','');
+          }else{
+            //remove field and set custom html.
+            $uif = $txaf.closest('.grid-column').addClass('custom-html');
+            let $f = $uif.children('.cf7-field-inner');
+            $f.last().after('<div class="cf7-field-inner cf7-field-html">');
+            $f.remove();
+            $('.cf7-field-inner', $uif).html($txam.val());
+            $('textarea.grid-input', $uif).html($txam.val());
+          }
           //reset textarea#wpcf7-form, nad modal
           $txam.attr('id','').val('').text('');
-          $txaf.attr('id','');
           $('input', $modal).val('');
           $.modal.close();
           $('textarea.grid-input', $uif).updateGridForm();
@@ -1125,7 +1135,7 @@
       $customModal.modal();
       $field = $this.closest('.grid-column-tip');
       $field = $('textarea.table-footer-tip', $field);
-      $('textarea', $customModal).attr('id','wpcf7-form').val($field.val());
+      $('textarea', $customModal).val($field.val());
       $field.attr('id', 'cf7sg-ui-field');
     }else{
       $field = $this.closest('.grid-column');
@@ -1190,12 +1200,15 @@
         $('textarea.grid-input', $this).hide();
         //reset global regex
         templateRegex.lastIndex = 0;
-      }else{ //this html does not match our templates
-        $('div.cf7-field-inner', $this).remove();
-      }
-    }else{//this html does not match our templates
-     $('div.cf7-field-inner', $this).remove();
+        return $this;
+      } 
     }
+    //else this html does not match our templates, treat as custom html.
+    let $f = $('div.cf7-field-inner', $this);
+    $f.last().after('<div class="cf7-field-inner cf7-field-html">');
+    $f.remove();
+    $('.cf7-field-html', $this).html(html);
+    return $this;
   }
 
   $.fn.scanCF7Tag = function(){
@@ -1380,6 +1393,9 @@
   $.fn.updateGridForm = function(){
     let $this = $(this);
     if(!$this.is('textarea.grid-input')){
+      return $this;
+    }
+    if($this.is('.custom-html *')){
       return $this;
     }
     //extract field components to contruct html markup.

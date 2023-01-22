@@ -26,7 +26,8 @@
     .post-type-wpcf7_contact_form #grid-form .cf7sg-col.point-five {
         width: 2.12766%
     }
-    .post-type-wpcf7_contact_form #grid-form .row-controls +.cf7sg-col {
+    .post-type-wpcf7_contact_form #grid-form .row-controls + .cf7sg-col, 
+    .post-type-wpcf7_contact_form #grid-form .cf7-sg-table-footer-row > .cf7sg-col {
         margin-left: 0
     }
     .post-type-wpcf7_contact_form #grid-form .cf7sg-col.one.point-five {
