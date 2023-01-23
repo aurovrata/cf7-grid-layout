@@ -190,6 +190,9 @@ grid layout
 #grid-form .cf7sg-row.cf7-sg-table-footer-row .content {
 	text-align: center;
 }
+#grid-form  .cf7-field-html > :nth-child(1) {
+	margin-top: 0;
+}
 #grid-form .form-select {
     display: block;
     margin: 0 auto;
@@ -532,6 +535,13 @@ textarea.grid-input {
 	border-color: var(--cf7sg-row-collapsible);
 	color: var(--cf7sg-row-collapsible);
 }
+#grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons {
+	color: var(--cf7sg-row-default);
+}
+#grid-form  .grid-column:hover .cf7-field-html::before {
+  background: var(--cf7sg-row-default);
+	color: #fff;
+}
 /*-----------colours end------------------*/
 #cf7-editor-grid .centred-menu, #cf7-editor-grid  .cm-item{
   --cf7sg-col-height: 18px;
@@ -618,17 +628,18 @@ position: relative;
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column > span  {
   display: none;
 }
-#grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-trash {
+#grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-trash,
+#grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-editor-code {
 	display: inline-block;
 	position: absolute;
 	/* top: 0; */
 	z-index: 2;
 	right: 0;
 }
-#grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons {
-	color: var(--cf7sg-row-default);
+#grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-editor-code {
+  right: 20px;
 }
-  .row-controls .dashicons-move, .row-controls .dashicons-move.ext-form-control{
+.row-controls .dashicons-move, .row-controls .dashicons-move.ext-form-control{
     cursor: unset;
 }
 .cf7sg-container + .cf7sg-container > .cf7sg-row > .row-controls .dashicons-move,
@@ -749,6 +760,22 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   padding: 0px 10px;
   margin: 0;
   position: relative;
+}
+#grid-form  .grid-column:hover .cf7-field-html::before {
+	content: "\f464";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -12px;
+	margin-right: -12px;
+	font-family: dashicons;
+	font-weight: 400;
+	font-size: 130%;
+	width: 25px;
+	height: 25px;
+	text-align: center;
+	border-radius: 50%;
+  cursor: pointer;
 }
 #grid-form .cf7-sg-table-footer-row .cf7-field-tip {
 	padding: 5px;

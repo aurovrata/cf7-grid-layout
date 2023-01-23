@@ -375,36 +375,6 @@ $cf7_key = $post->post_name;
     <span class="js-icon column-control grid-control" style="display:none;"></span>
     <span class="dashicons dashicons-editor-code column-control grid-control"></span>
     <div class="grid-controls">
-      <!-- <?=__('Column offset:','cf7-grid-layout')?><br />
-      <select class="column-offset select2 column-setting">
-        <option value="" selected><?=__('no offset','cf7-grid-layout')?></option>
-        <option value="offset-one"><?=__('one (1/12<sup>th</sup>)','cf7-grid-layout')?></option>
-        <option value="offset-two"><?=__('two (1/6<sup>th</sup>)','cf7-grid-layout')?></option>
-        <option value="offset-three"><?=__('three (1/4<sup>th</sup>)','cf7-grid-layout')?></option>
-        <option value="offset-four"><?=__('four (1/3<sup>rd</sup>)','cf7-grid-layout')?></option>
-        <option value="offset-five"><?=__('five (5/12<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="offset-six"><?=__('half','cf7-grid-layout')?></option>
-        <option value="offset-seven"><?=__('seven (7/12<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="offset-eight"><?=__('eight (2/3<sup>rds</sup>)','cf7-grid-layout')?></option>
-        <option value="offset-nine"><?=__('nine (3/4<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="offset-ten"><?=__('ten (5/6<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="offset-eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
-      </select>
-      <?=__('Column size:','cf7-grid-layout')?><br />
-      <select class="column-size select2 column-setting">
-        <option value="one"><?=__('one (1/12<sup>th</sup>)','cf7-grid-layout')?></option>
-        <option value="two"><?=__('two (1/6<sup>th</sup>)','cf7-grid-layout')?></option>
-        <option value="one-fourth"><?=__('three (1/4<sup>th</sup>)','cf7-grid-layout')?></option>
-        <option value="one-third"><?=__('four (1/3<sup>rd</sup>)','cf7-grid-layout')?></option>
-        <option value="five"><?=__('five (5/12<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="one-half"><?=__('half width','cf7-grid-layout')?></option>
-        <option value="seven"><?=__('seven (7/12<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="two-thirds"><?=__('eight (2/3<sup>rds</sup>)','cf7-grid-layout')?></option>
-        <option value="nine"><?=__('nine (3/4<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="ten"><?=__('ten (5/6<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
-        <option value="full" selected><?=__('full width','cf7-grid-layout')?></option>
-      </select> -->
       <!-- <a id="new-row" class="button make-grid column-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
       <a class="button external-form" href="javascript:void(0);"><?= __('Insert form', 'cf7-grid-layout');?></a>
       <label class="display-none accordion-label grouping-option"><input type="checkbox" name="grouping-option" class="accordion-rows column-control" /><?=__('Enable accordion','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Group collapsible rows as jQuery accordion','cf7-smart-grid')?></span>

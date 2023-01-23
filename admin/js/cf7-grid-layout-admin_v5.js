@@ -336,8 +336,8 @@
           break;
         case $target.is('#cf7sg-field-edit .button-primary'):
           //udpate field.
-          $txaf = $('#cf7sg-ui-field', $grid);
-          $uif = $txaf.closest('.grid-column');
+          $uif = $('#cf7sg-ui-field', $grid);
+          $txaf = $('.cf7-field-type textarea', $uif);
           $txam = $('#wpcf7-form', $modal);
           lbl = $('#cf7sg-modal-label', $modal).val();
           desc = $('#cf7sg-modal-desc', $modal).val();
@@ -371,17 +371,15 @@
           }
           break;
         case $target.is('#cf7sg-custom-html .button'):
-          $txaf = $('#cf7sg-ui-field', $grid); 
+          $uif = $('#cf7sg-ui-field', $grid); 
           $txam = $('textarea', $customModal);
-          if($txaf.is('.cf7-sg-table-footer-row *')){
-            $uif = $txaf.closest('.grid-column-tip');
+          if($uif.is('.cf7-sg-table-footer-row *')){
             desc = $txam.val();
             $('.cf7-field-tip input', $uif).val(desc);
             $('.cf7-field-tip p.content', $uif).html(desc);
-            $txaf.attr('id','');
           }else{
             //remove field and set custom html.
-            $uif = $txaf.closest('.grid-column').addClass('custom-html');
+            $uif.addClass('custom-html');
             let $f = $uif.children('.cf7-field-inner');
             $f.last().after('<div class="cf7-field-inner cf7-field-html">');
             $f.remove();
@@ -389,6 +387,7 @@
             $('textarea.grid-input', $uif).html($txam.val());
           }
           //reset textarea#wpcf7-form, nad modal
+          $uif.attr('id','');
           $txam.attr('id','').val('').text('');
           $('input', $modal).val('');
           $.modal.close();
@@ -935,6 +934,9 @@
         if($target.is('.cf7-field-inner p.content')){ //show modal
           $target.parent().showUIfield();
           return true;
+        }else if($target.is('.cf7-field-inner')){
+          $target.showUIfield();
+          return true;
         }else if($target.is('.cf7-field-inner span.dashicons')){
           //field will be closed by closeAlluiFields
         }else if('none'!==$('#wpcf7-form').css('display') && !$target.is('#wpcf7-form')){
@@ -1131,32 +1133,43 @@
     if(!$this.is('.cf7-field-inner')){
       return $this;
     }
-    if($this.is('.cf7-sg-table-footer-row *')){
-      $customModal.modal();
-      $field = $this.closest('.grid-column-tip');
-      $field = $('textarea.table-footer-tip', $field);
-      $('textarea', $customModal).val($field.val());
-      $field.attr('id', 'cf7sg-ui-field');
-    }else{
-      $field = $this.closest('.grid-column');
-      /** @since 5.0.0 use a modal */
-      $modal.modal();
-      if(!$field.is('.field-set')){
-        $tagModal.modal({
-          closeExisting: false
+    switch(true){
+      case $this.is('.cf7-sg-table-footer-row *'):
+        $customModal.modal();
+        $field = $this.closest('.grid-column-tip').attr('id', 'cf7sg-ui-field');
+        $field = $('textarea.table-footer-tip', $field);
+        $('textarea', $customModal).val($field.val());
+        break;
+      case $this.is('.cf7-field-html'):
+        // $field = $this.closest('.grid-column');
+        /** @since 5.0.0 use a modal */
+        $customModal.modal();
+        $this.closest('.grid-column').attr('id', 'cf7sg-ui-field');
+        $('textarea#wpcf7-form').attr('id','');
+        let txt = html_beautify($this.html(),{
+          'indent_size': 2,
+          'wrap_line_length': 0
         });
-      } 
+        $('textarea',$customModal).attr('id','wpcf7-form').val(txt); 
+        break;
+      default: //inner field
+        $field = $this.closest('.grid-column').attr('id', 'cf7sg-ui-field');
+        /** @since 5.0.0 use a modal */
+        $modal.modal();
+        if(!$field.is('.field-set')){
+          $tagModal.modal({
+            closeExisting: false
+          });
+        } 
 
-      $('textarea#wpcf7-form').attr('id','');
-      $('textarea',$modal).attr('id','wpcf7-form').val($('.cf7-field-type textarea', $field).val()); 
-      //check if the field has values.
-      $('#cf7sg-modal-label', $modal).val($('.cf7-field-label input', $field).val());
-      $('#cf7sg-modal-desc', $modal).val($('.cf7-field-tip input', $field).val());
-      // $this.find('span.dashicons').show();
-      let $input = $(':input', $this);//.show();
-      // $input.focus();
-      wpcf7Value = $('.cf7-field-type textarea', $field).attr('id', 'cf7sg-ui-field').val();
-        // changeTextarea();
+        $('textarea#wpcf7-form').attr('id','');
+        $('textarea',$modal).attr('id','wpcf7-form').val($('.cf7-field-type textarea', $field).val()); 
+        //check if the field has values.
+        $('#cf7sg-modal-label', $modal).val($('.cf7-field-label input', $field).val());
+        $('#cf7sg-modal-desc', $modal).val($('.cf7-field-tip input', $field).val());
+        wpcf7Value = $('.cf7-field-type textarea', $field).val();
+          // changeTextarea();
+        break;
     }
     return $this;
   }
