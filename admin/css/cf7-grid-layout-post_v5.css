@@ -615,6 +615,26 @@ position: relative;
     transform: rotate(90deg);
     margin-top: 1px;
 }
+#grid-form span.cf7-conditional-group {
+	position: absolute;
+	top: 20px;
+	z-index: 3;
+	background: grey;
+	height: auto;
+  right: 0;
+}
+#grid-form span.cf7-conditional-group input {
+	width: 67px;
+	line-height: 20px;
+	padding: 0 3px;
+}
+#grid-form span.cf7-conditional-group label {
+  padding: 0 3px;
+}
+#grid-form span.cf7-conditional-group :not(input) {
+	vertical-align: middle;
+	color: #fff;
+}
 /* #cf7-editor-grid .add-item-button .button{
 	border: none;
 } */
@@ -624,20 +644,26 @@ position: relative;
 #grid-form .helper-popup .no-post-my-form,
 .cf7sg-container.cf7-sg-table .add-item-button,
 .helper-list li.no-post-my-form,
+#grid-form:not(.cf7-conditional-group) .dashicons-visibility,
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .row-controls,
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column > span  {
   display: none;
 }
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-trash,
+#grid-form.cf7-conditional-group .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-visibility,
+#grid-form.cf7-conditional-group .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-hidden,
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-editor-code {
 	display: inline-block;
 	position: absolute;
-	/* top: 0; */
 	z-index: 2;
 	right: 0;
 }
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-editor-code {
   right: 20px;
+}
+#grid-form.cf7-conditional-group .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-visibility,
+#grid-form.cf7-conditional-group .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-hidden{
+  right: 40px;
 }
 .row-controls .dashicons-move, .row-controls .dashicons-move.ext-form-control{
     cursor: unset;
@@ -648,7 +674,7 @@ position: relative;
     cursor: grab;
 }
 #grid-form .cf7sg-row .cf7sg-col + .cf7sg-col > .grid-column .dashicons-trash.column-control {
-    display: inline-block;
+    display: block;
 }
 #grid-form > .cf7sg-container:first-child >.cf7sg-row:first-child > .row-controls  .dashicons-trash,
 #grid-form > .cf7sg-external-form:first-child > .ext-form-controls  .dashicons-trash {

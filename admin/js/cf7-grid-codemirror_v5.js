@@ -5,9 +5,9 @@
     $formEditor = $('#contact-form-editor'),
     $wpcf7Editor = $('textarea#wpcf7-form-hidden'),
     $editorTabs = $('#form-editor-tabs'),
-    $optionals= $('#optional-editors'),
-    $topTags =$('#top-tags').addClass('click-disabled'),
-    $bottomTags =$('#bottom-tags').addClass('click-disabled');
+    $optionals= $('#optional-editors');
+    //$topTags =$('#top-tags').addClass('click-disabled'),
+    //$bottomTags =$('#bottom-tags').addClass('click-disabled');
 
   let eh = $formEditor.height(), ew =$formEditor.width();
   $('.loading-screen',$formEditor).css('padding','250px 5px '+(eh-100)+'px 5px');
@@ -87,8 +87,10 @@
     /** @since 4.11 update the hidden cf7 textarea when the cf7 tabs are achanged.*/
     $cf7Tabs.on('mousedown', 'li',function(e){
       let active = e.delegateTarget.querySelector('.ui-state-active');
-      if( active && 'form-panel-tab' == active.id){
-        $wpcf7Editor.text(cme.getValue());
+        $('textarea#wpcf7-form').attr('id', ''); //reset wpcf7 form editor.
+        if( active && 'form-panel-tab' == active.id){
+        // $wpcf7Editor.text(cme.getValue());
+        $('textarea.codemirror-cf7-update', $codemirror).attr('id', 'wpcf7-form').html(cme.getValue()).trigger('change');
       }
     })
 
@@ -538,6 +540,7 @@
       $grid.on('cf7sg-cf7tag-update', function(e){
         //update HTML code to ensure latest UI form changes available to other tabs.
         $wpcf7Editor.html($grid.CF7FormHTML());
+        cme.setValue($wpcf7Editor.text()); //codemirror
       })
     }); //-----------end codemirror editor setup
     $('form#post').submit(function(event) {
@@ -792,12 +795,21 @@
         let id = $this.data('form');
         $this.append( external[id] );
       });
+      //check if any conditional group.
+      $('[data-conditional-group]', $form).each((i,e)=>{
+        let g = e.dataset.conditionalGroup;
+        e.removeAttribute('data-conditional-group');
+        if(g.length > 0) {
+          e.insertAdjacentText('beforebegin', `[group ${g}]`);
+          e.insertAdjacentText('afterend', '[/group]');
+        }
+      });
       text = $form.html();
       if($grid.children('.cf7sg-container').length > 0){ //strip tabs/newlines
           text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gm, "");
       }
       return text;
-    }
+    }//CF7FormHTML() end
   });//document ready end
   //empty checks for undefined, null, false, NaN, ''
   function isEmpty(v){

@@ -1,6 +1,8 @@
 <?php
 global $post, $pagenow;
 $cf7_key = $post->post_name;
+$cf7_conditional='';
+if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.php')) $cf7_conditional='cf7-conditional-group';
  ?>
 <?php require_once plugin_dir_path( __FILE__ ) .'helpers/cf7sg-js-events.php'; ?>
 <div id="editors">
@@ -88,7 +90,7 @@ $cf7_key = $post->post_name;
           <a class="button clear-form" href="javascript:void(0);"><?= __('Clear the form', 'cf7-grid-layout');?></a>
         </div>
       </div>
-      <div id="grid-form"></div>
+      <div id="grid-form" class="<?=$cf7_conditional?>"></div>
     </div>
     <div id="cf7-codemirror">
       <div  class="codemirror-theme"><?=__('Editor theme:','cf7-grid-layout')?>
@@ -102,7 +104,7 @@ $cf7_key = $post->post_name;
       </div>
       <textarea id="wpcf7-form" class="cf7-sg-hidden codemirror-cf7-update">
         <?= esc_textarea( $form_obj->prop( 'form' ) );
-        /** @since 2.8.3 rename codemirror textarea##wpcf7-form adn initially popullate with form.  */?>
+        /** @since 2.8.3 rename codemirror textarea#wpcf7-form and initially popullate with form.  */?>
       </textarea>
     </div>
   </div>
@@ -329,7 +331,7 @@ $cf7_key = $post->post_name;
   <ul class="cf7sg-helper-list"></ul>
 </template>
 <template id="grid-col">
-  <div class="grid-column">
+  <div class="grid-column" data-conditional-group="">
     <span class="dashicons dashicons-move column-control grid-control"></span>
     <span class="column-label column-control">
       <div class="column-offset centred-menu column-setting unset" style="--cf7sg-cm-val:0">
@@ -374,6 +376,11 @@ $cf7_key = $post->post_name;
     <span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
     <span class="js-icon column-control grid-control" style="display:none;"></span>
     <span class="dashicons dashicons-editor-code column-control grid-control"></span>
+    <span class="dashicons dashicons-visibility column-control grid-control"></span>
+    <span class="display-none cf7-conditional-group">
+      <label for="cf7cfg"><?= __('Group', 'cf7-grid-layout');?></label><input type="text" id="cf7cfg"/>
+      <span class="dashicons dashicons-no-alt"></span>
+    </span>
     <div class="grid-controls">
       <!-- <a id="new-row" class="button make-grid column-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
       <a class="button external-form" href="javascript:void(0);"><?= __('Insert form', 'cf7-grid-layout');?></a>

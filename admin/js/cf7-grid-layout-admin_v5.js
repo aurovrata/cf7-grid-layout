@@ -351,12 +351,12 @@
           lbl = $txaf.scanCF7Tag();
           $('.cf7-field-type p.content', $uif).html(lbl);
           //reset textarea#wpcf7-form, nad modal
+          $uif.attr('id','');
           $txam.attr('id','').val('').text('');
           $txaf.attr('id','');
           $('input', $modal).val('');
           $.modal.close();
           $('textarea.grid-input', $uif).updateGridForm();
-          $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
           break;
         case $target.is('#cf7sg-tag-list .button'): //tag list modal
           $.modal.close();
@@ -404,6 +404,7 @@
           $modal.modal();
           break;
       }
+      $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
     });
 
     //offset/size change using event delegation
@@ -814,7 +815,22 @@
           $(this).remove();
         });
         return true;
-      }else if($target.is('.dashicons-editor-code.column-control') ){
+      }else if($target.is('.cf7-conditional-group .dashicons-no-alt') ){ //hide conditional group
+        let $g = $target.closest('.cf7-conditional-group').hide(),
+          v = $('input', $g).val();
+        if(v.length > 0){
+          $g.siblings('.dashicons-visibility').removeClass('dashicons-visibility').addClass('dashicons-hidden');
+          $g.closest('.cf7sg-col').attr('data-conditional-group', v);
+        }else{
+          $g.siblings('.dashicons-hidden').removeClass('dashicons-hidden').addClass('dashicons-visibility');
+          $g.closest('.cf7sg-col').attr('data-conditional-group', '');
+        }
+        $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
+        return true;
+      }else if($target.is('.dashicons-visibility.column-control') || $target.is('.dashicons-hidden.column-control') ){ //edit conditional group
+        $target.siblings('.cf7-conditional-group').show();
+        return true;
+      }else if($target.is('.dashicons-editor-code.column-control') ){ //goto html code
         let $focus = $target.closest('.cf7sg-col');
         //toggle cf7sgfocus class on inner field to focus on.
         if($focus.is('.cf7sgfocus')){
