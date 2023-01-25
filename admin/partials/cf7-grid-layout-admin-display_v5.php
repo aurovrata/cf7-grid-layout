@@ -331,7 +331,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   <ul class="cf7sg-helper-list"></ul>
 </template>
 <template id="grid-col">
-  <div class="grid-column" data-conditional-group="">
+  <div class="grid-column">
     <span class="dashicons dashicons-move column-control grid-control"></span>
     <span class="column-label column-control">
       <div class="column-offset centred-menu column-setting unset" style="--cf7sg-cm-val:0">

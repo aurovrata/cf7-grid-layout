@@ -469,6 +469,12 @@ textarea.grid-input {
   cursor:pointer;
   color: var(--cf7sg-row-default);
 }
+#grid-form .grid-column .dashicons-hidden {
+	color: var(--cf7sg-row-default);
+}
+#grid-form .grid-column .dashicons-hidden:hover {
+	color:var(--cf7sg-row-icons-hover);
+}
 #grid-form .cf7sg-container:not(.cf7sg-slider):not(.cf7sg-slide) .grid-column, #grid-form .grid-controls {
 	background-color: var(--cf7sg-col-default);
 }
@@ -526,6 +532,11 @@ textarea.grid-input {
 #grid-form .cf7-field-inner,
 #grid-form .cf7sg-row.cf7-sg-table-footer-row {
 	background-color: var(--cf7sg-text-color);
+}
+#grid-form .cf7sg-col[data-conditional-group] .grid-column {
+	border-width: 1px;
+	border-style: dashed;
+	border-color: #fff;
 }
 #cf7-editor-grid .centred-menu + .popup-helper {
 	background: var(--cf7sg-text-color);

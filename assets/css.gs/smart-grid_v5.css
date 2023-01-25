@@ -16,6 +16,12 @@
     margin: 0
 }
 
+.cf7sg-container .cf7-smart-grid.has-grid .cf7sg-col {
+  float: left;
+  margin: 0 0 0 2.12766%;
+  width: 6.38298%;
+  min-height: 1px;
+}
 .cf7sg-container .cf7-smart-grid.has-grid .cf7sg-container:before,
 .cf7sg-container .cf7-smart-grid.has-grid .cf7sg-container:after,
 .cf7sg-container .cf7-smart-grid.has-grid .cf7sg-row:before,
@@ -151,11 +157,3 @@
 .cf7sg-container .cf7-smart-grid.has-grid .cf7sg-col.offset-eleven:first-child {
     margin-left: 93.61702%;
 }
-.cf7sg-container .cf7-smart-grid.has-grid .cf7sg-col {
-    float: left;
-    margin: 0 0 0 2.12766%;
-    width: 6.38298%;
-}
-
-
-/*# sourceMappingURL=smart-grid.css.map */

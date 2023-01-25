@@ -24,8 +24,8 @@
           $loadScreen.hide();
           $editorTabs.children('ul').hide();
           $optionals.hide();
-          $topTags.hide();
-          $bottomTags.hide();
+          // $topTags.hide();
+          // $bottomTags.hide();
           $('#publish').prop('disabled', false);
         }
       }
@@ -90,7 +90,9 @@
         $('textarea#wpcf7-form').attr('id', ''); //reset wpcf7 form editor.
         if( active && 'form-panel-tab' == active.id){
         // $wpcf7Editor.text(cme.getValue());
-        $('textarea.codemirror-cf7-update', $codemirror).attr('id', 'wpcf7-form').html(cme.getValue()).trigger('change');
+        let $te = $('textarea.codemirror-cf7-update', $codemirror).attr('id', 'wpcf7-form');
+        $te.get(0).value=cme.getValue();
+        $te.trigger('change');
       }
     })
 
@@ -204,8 +206,8 @@
           else if('undefined' != typeof ui.newPanel.selector) gridTab = ui.newPanel.selector;
           else console.log('CF7 GRID EDITOR: unknown tab ui panel object');
 
-          $topTags.show().addClass('click-disabled');
-          $bottomTags.show().addClass('click-disabled');
+          // $topTags.show().addClass('click-disabled');
+          // $bottomTags.show().addClass('click-disabled');
           $jsTags.hide();
           $optionals.hide();
           $(window).scrollTop($('#contact-form-editor-tabs').offset().top);
@@ -230,14 +232,14 @@
               break;
             case '#cf7-codemirror': //HTML editor.
               let cursor = cme.getSearchCursor('cf7sgfocus', CodeMirror.Pos(cme.firstLine(), 0), {caseFold: true, multiline: true});
-              $topTags.removeClass('click-disabled');
-              $bottomTags.removeClass('click-disabled');
+              // $topTags.removeClass('click-disabled');
+              // $bottomTags.removeClass('click-disabled');
               $codemirror.beautify(cursor);
               cme.refresh();
               break;
             case '#cf7-js-codemirror': //js editor.
-              $topTags.hide();
-              $bottomTags.hide();
+              // $topTags.hide();
+              // $bottomTags.hide();
               $jsTags.show();
               let $form = $('<div>').html($grid.CF7FormHTML());
               $('.display-none', $jsTags).removeClass('show-events');
@@ -286,8 +288,8 @@
               });
               break;
             case '#cf7-css-codemirror': //css editor.
-              $topTags.hide();
-              $bottomTags.hide();
+              // $topTags.hide();
+              // $bottomTags.hide();
               break;
           }
         },
@@ -522,8 +524,8 @@
       /*@since 1.1.1 disable grid editor for existing cf7 forms*/
       if(0==$grid.children('.cf7sg-container').length){
         $editorTabs.tabs('option',{ active:1, disabled:[0]});
-        $topTags.removeClass('click-disabled');
-        $bottomTags.removeClass('click-disabled');
+        // $topTags.removeClass('click-disabled');
+        // $bottomTags.removeClass('click-disabled');
         /** @since 1.2.3 disable cf7sg styling/js for non-cf7sg forms.*/
         $('#is-cf7sg-form').val('false');
       }
@@ -800,8 +802,8 @@
         let g = e.dataset.conditionalGroup;
         e.removeAttribute('data-conditional-group');
         if(g.length > 0) {
-          e.insertAdjacentText('beforebegin', `[group ${g}]`);
-          e.insertAdjacentText('afterend', '[/group]');
+          e.insertAdjacentText('afterbegin', `\n[group ${g}]\n`);
+          e.insertAdjacentText('beforeend', '\n[/group]\n');
         }
       });
       text = $form.html();

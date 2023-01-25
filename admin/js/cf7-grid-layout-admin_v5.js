@@ -285,18 +285,23 @@
         $textareaSelected = $('textarea', $grid).first();
         $textareaSelected.attr('id', 'wpcf7-form');
       }
-      //change this to whichever is live
-      $('textarea', $grid).on('focus', function(){
-        let $this = $(this);
-        if($textareaSelected.length>0 && $textareaSelected.is('#wpcf7-form')){
-          $textareaSelected.attr('id','');
-          $textareaSelected.html($textareaSelected.val()); //set its inner html
-        }
-        if($this.is('.grid-input')){
-          $('textarea#wpcf7-form').attr('id','');
-          $textareaSelected = $this.attr('id','wpcf7-form');
-        }
-      });
+      /** @since 5.0 track conditional groups */
+      if($grid.is('.cf7-conditional-group')){
+        $('textarea:contains("[group ")', $grid).each((i,t)=>{
+          let g = t.textContent.match(/\[group\s(.*)\]/);
+          if(g && g.length>1){
+            let col = t.closest('.cf7sg-col');
+            col.setAttribute('data-conditional-group', g[1]);
+            t.innerHTML = t.value;
+            t.value = t.innerHTML.replace(/\[group\s(.*)\]/, '').replace(/\[\/group\]/,'');
+            col.querySelector('.cf7-conditional-group input').value = g[1];
+            col = col.querySelector('.dashicons-visibility');
+            col.classList.remove('dashicons-visibility');
+            col.classList.add('dashicons-hidden');
+          }
+        });
+        
+      }
       return isGrid;
     } //---------------------------------------------------------------end buildGridForm().
 

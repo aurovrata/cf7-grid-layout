@@ -15,7 +15,12 @@
     display: block;
     margin: 0
 }
-
+.cf7sg-container .cf7-smart-grid.has-grid .columns {
+  float: left;
+  margin: 0 0 0 2.12766%;
+  width: 6.38298%;
+  min-height: 1px;
+}
 .cf7sg-container .cf7-smart-grid.has-grid .container:before,
 .cf7sg-container .cf7-smart-grid.has-grid .container:after,
 .cf7sg-container .cf7-smart-grid.has-grid .row:before,
@@ -151,11 +156,4 @@
 .cf7sg-container .cf7-smart-grid.has-grid .columns.offset-eleven:first-child {
     margin-left: 93.61702%;
 }
-.cf7sg-container .cf7-smart-grid.has-grid .columns {
-    float: left;
-    margin: 0 0 0 2.12766%;
-    width: 6.38298%;
-}
 
-
-/*# sourceMappingURL=smart-grid.css.map */
