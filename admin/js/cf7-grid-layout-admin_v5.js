@@ -289,7 +289,7 @@
       if($grid.is('.cf7-conditional-group')){
         $('textarea:contains("[group ")', $grid).each((i,t)=>{
           let g = t.textContent.match(/\[group\s(.*)\]/);
-          if(g && g.length>1){
+          if(g && t.textContent.indexOf('[group')< 5 && g.length>1){ //conditional col content
             let col = t.closest('.cf7sg-col');
             col.setAttribute('data-conditional-group', g[1]);
             t.innerHTML = t.value;
