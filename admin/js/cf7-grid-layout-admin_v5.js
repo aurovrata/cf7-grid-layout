@@ -89,6 +89,12 @@
       if(0===$form.children('.cf7sg-container').length){
         isGrid = false;
       }
+      /** @since 5.0 track conditional groups */
+      if($grid.is('.cf7-conditional-group')){
+        $('.cf7sg-col:contains("[group "):not(:has(:contains("[group ")))', $form).trackConditionalGroups();
+        //check for other conditional groups, div with group but not children with group
+        $('div:contains("[group "):not(:has(:contains("[group ")))', $form).trackConditionalGroups()
+      }
       //remove the external forms
       $('.cf7sg-external-form .cf7sg-external-form-content', $form).remove();
       //seek collapsibles for slider/accordion.
@@ -124,6 +130,11 @@
             if($this.closest('.cf7sg-col').length>0) $('.add-field-button', $area).remove();
             $this.children().remove();
             $this.text('');
+            //populate conditional groups if any.
+            if($grid.is('.cf7-conditional-group') && $this.data('conditional-group')){
+              $('.cf7-conditional-group input', $area).val($this.data('conditional-group'));
+              $('.dashicons-visibility',$area).removeClass('dashicons-visibility').addClass('dashicons-hidden');
+            }
             break;
         }
         $this.prepend($area.children());
@@ -285,23 +296,6 @@
         $textareaSelected = $('textarea', $grid).first();
         $textareaSelected.attr('id', 'wpcf7-form');
       }
-      /** @since 5.0 track conditional groups */
-      if($grid.is('.cf7-conditional-group')){
-        $('textarea:contains("[group ")', $grid).each((i,t)=>{
-          let g = t.textContent.match(/\[group\s(.*)\]/);
-          if(g && t.textContent.indexOf('[group')< 5 && g.length>1){ //conditional col content
-            let col = t.closest('.cf7sg-col');
-            col.setAttribute('data-conditional-group', g[1]);
-            t.innerHTML = t.value;
-            t.value = t.innerHTML.replace(/\[group\s(.*)\]/, '').replace(/\[\/group\]/,'');
-            col.querySelector('.cf7-conditional-group input').value = g[1];
-            col = col.querySelector('.dashicons-visibility');
-            col.classList.remove('dashicons-visibility');
-            col.classList.add('dashicons-hidden');
-          }
-        });
-        
-      }
       return isGrid;
     } //---------------------------------------------------------------end buildGridForm().
 
@@ -450,24 +444,17 @@
         }
         return true;
       }
-      if($target.is('.column-setting')){ //----------- column size/offset settings
-        // let validation = ['dummy'];
-        // if( $target.is('.column-offset') ){
-        //   validation = offsets;
-        // }else if( $target.is('.column-size') ){
-        //   validation = columnsizes;
-        // }else{
-        //   return false;
-        // }
-        // let $column = $target.closest('.cf7sg-col'), classList = $column.attr('class').split(/\s+/);
-        // for(let idx=0; idx<classList.length; idx++){
-        //   if($.inArray(classList[idx], validation) > -1){
-        //      $column.removeClass(classList[idx]);
-        //   }
-        // }
-        // $column.addClass($target.val());
-        //filter the options
-        // $target.closest('.grid-controls').filterColumnControls(); //changed in v5
+      if($target.is('.cf7-conditional-group input')){ //----------- column size/offset settings
+        let $g = $target.closest('.cf7-conditional-group'),
+          v = $target.val();
+        if(v.length > 0){
+          $g.siblings('.dashicons-visibility').removeClass('dashicons-visibility').addClass('dashicons-hidden');
+          $g.closest('.cf7sg-col').attr('data-conditional-group', v);
+        }else{
+          $g.siblings('.dashicons-hidden').removeClass('dashicons-hidden').addClass('dashicons-visibility');
+          $g.closest('.cf7sg-col').attr('data-conditional-group', '');
+        }
+        $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
         return true;
       }else if($target.is('.form-select')){ //-------------- external form selection
         let $container = $target.closest('.cf7sg-external-form');
@@ -821,16 +808,7 @@
         });
         return true;
       }else if($target.is('.cf7-conditional-group .dashicons-no-alt') ){ //hide conditional group
-        let $g = $target.closest('.cf7-conditional-group').hide(),
-          v = $('input', $g).val();
-        if(v.length > 0){
-          $g.siblings('.dashicons-visibility').removeClass('dashicons-visibility').addClass('dashicons-hidden');
-          $g.closest('.cf7sg-col').attr('data-conditional-group', v);
-        }else{
-          $g.siblings('.dashicons-hidden').removeClass('dashicons-hidden').addClass('dashicons-visibility');
-          $g.closest('.cf7sg-col').attr('data-conditional-group', '');
-        }
-        $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
+        $target.closest('.cf7-conditional-group').hide();
         return true;
       }else if($target.is('.dashicons-visibility.column-control') || $target.is('.dashicons-hidden.column-control') ){ //edit conditional group
         $target.siblings('.cf7-conditional-group').show();
@@ -1081,6 +1059,8 @@
     });
     //close helper popups.
     $('.column-control+.helper-popup').remove();
+    //close conditional group
+    $ctrl = $('span.cf7-conditional-group:visible', $gridEditor).hide();
   }
   //close any column size popups
   function toggleCentredMenus($t){
@@ -1134,6 +1114,15 @@
     });
   }
   /* some function definitions...*/
+  $.fn.trackConditionalGroups = function(){
+    $(this).each((i,d)=>{
+      let g = d.textContent.match(/\[group\s(.*)\]/);
+      if(g && d.textContent.trim().indexOf('[group')<3 && g.length>1){ //conditional div content
+        d.setAttribute('data-conditional-group', g[1]);
+        d.innerHTML = d.innerHTML.replace(/\[group\s(.*)\]/, '').replace(/\[\/group\]/,'');
+      }
+    });
+  }
   $.fn.closeUIfield = function(){
     let obj = this;
     if(!Array.isArray(this)) obj=[this];

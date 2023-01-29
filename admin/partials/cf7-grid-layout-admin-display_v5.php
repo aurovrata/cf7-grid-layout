@@ -378,7 +378,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     <span class="dashicons dashicons-editor-code column-control grid-control"></span>
     <span class="dashicons dashicons-visibility column-control grid-control"></span>
     <span class="display-none cf7-conditional-group">
-      <label for="cf7cfg"><?= __('Group', 'cf7-grid-layout');?></label><input type="text" id="cf7cfg"/>
+      <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
       <span class="dashicons dashicons-no-alt"></span>
     </span>
     <div class="grid-controls">
