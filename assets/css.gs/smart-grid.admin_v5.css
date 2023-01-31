@@ -21,7 +21,8 @@
     .post-type-wpcf7_contact_form #grid-form .cf7sg-col {
         float: left;
         margin: 0 0 0 2.12766%;
-        width: 6.38298%
+        width: 6.38298%;
+        box-sizing: border-box;
     }
     .post-type-wpcf7_contact_form #grid-form .cf7sg-col.point-five {
         width: 2.12766%

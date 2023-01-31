@@ -91,9 +91,14 @@
       }
       /** @since 5.0 track conditional groups */
       if($grid.is('.cf7-conditional-group')){
+
+        $('.field:contains("[group ")', $form).trackConditionalGroups('group','cf7sgGroup');
         $('.cf7sg-col:contains("[group "):not(:has(:contains("[group ")))', $form).trackConditionalGroups();
+        $('.cf7sg-col.cf7sg-grid:contains("[group ")', $form).trackConditionalGroups();
         //check for other conditional groups, div with group but not children with group
-        $('div:contains("[group "):not(:has(:contains("[group ")))', $form).trackConditionalGroups()
+        $('div:contains("[group "):not(:has(:contains("[group ")))', $form).trackConditionalGroups();
+        //finally reinstate conditional groups within fields.
+        $('.field:contains("[cf7sgGroup ")', $form).trackConditionalGroups('cf7sgGroup','group');
       }
       //remove the external forms
       $('.cf7sg-external-form .cf7sg-external-form-content', $form).remove();
@@ -693,9 +698,9 @@
         //check if the button has row siblings.
         $target = $target.closest('.add-field-button');
         if($target.siblings('.cf7sg-row').length == 0){ //convert column to grid.
-          let $parentColumn = $target.parent('.cf7sg-col'),
-            $field = $('.cf7-field-inner, .grid-input', $parentColumn).remove(),
+          let $field = $('.cf7-field-inner, .grid-input', $parentColumn).remove(),
             $col = $('.grid-column',$colTemplt).clone();
+          $parentColumn.addClass('cf7sg-grid'); //label as grid
           //cleanup new col controls.
           $('.cf7-field-inner, .grid-input',$col).remove();
           $col = $('<div class="cf7sg-col full"></div>').append($col);
@@ -838,6 +843,7 @@
             $('.grid-column',$parentColumn).append($sibs.children('.cf7sg-col').children('.grid-column').children('.cf7-field-inner'));
             $sibs.remove();
             $parentColumn.closest('.cf7sg-container').removeClass('cf7sg-grid');
+            $parentColumn.removeClass('cf7sg-grid');
           }
         }else{
           $parentColumn.remove();
@@ -1114,12 +1120,18 @@
     });
   }
   /* some function definitions...*/
-  $.fn.trackConditionalGroups = function(){
+  $.fn.trackConditionalGroups = function(s,r){
+    if('undefined' == typeof s) s='group';
+    if('undefined' == typeof r) r='';
     $(this).each((i,d)=>{
+      if(d.classList.contains('conditional-group')){ //replace with temp group name
+        d.innerHTML = d.innerHTML.replaceAll(new RegExp('\\['+s+'\\s(.*)\\]','ig'), '['+r+' ').replaceAll(new RegExp('\\[\\/'+s+'\\]/','ig'), '[/'+r+']');
+        return; //field condition.
+      }
       let g = d.textContent.match(/\[group\s(.*)\]/);
       if(g && d.textContent.trim().indexOf('[group')<3 && g.length>1){ //conditional div content
         d.setAttribute('data-conditional-group', g[1]);
-        d.innerHTML = d.innerHTML.replace(/\[group\s(.*)\]/, '').replace(/\[\/group\]/,'');
+        d.innerHTML = d.innerHTML.replace(new RegExp('\\['+s+'\\s(.*)\\]'), '').replace(new RegExp('(\\[\\/'+s+'\\])(?!.*\\1)'), '');
       }
     });
   }

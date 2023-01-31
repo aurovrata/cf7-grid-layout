@@ -241,9 +241,6 @@ textarea.grid-input {
 #cf7-editor-grid > .form-controls .dashicons-edit {
 	float: right;
 }
-#cf7-editor-grid > .form-controls .control-label {
-	color: #8e8e8e;
-}
 #cf7-editor-grid > .form-controls .active.control-label {
 	color: inherit;
 }
@@ -277,12 +274,13 @@ textarea.grid-input {
    margin-top: 5px;
    border-radius: 3px;
 }
+#grid-form div[data-conditional-group]:not(.cf7sg-col), #grid-form .cf7sg-col.cf7sg-grid[data-conditional-group] {
+	border-style: dashed !important;
+	border-width: 2px !important;
+}
 #grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) {
   padding: 0 5px;
   position: relative;
-}
-#grid-form .cf7-sg-table-footer-row {
-	border: solid 1px var(--cf7sg-text-color);
 }
 #grid-form .cf7sg-container:not(.cf7sg-slider) > .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col {
 	margin-top: 25px;
@@ -430,6 +428,13 @@ textarea.grid-input {
 #grid-form .cf7sg-collapsible-title label {
     padding-left: 4px;
 }
+/* ----- colour rues----*/
+#grid-form .cf7-sg-table-footer-row {
+	border: solid 1px var(--cf7sg-text-color);
+}
+#grid-form .cf7sg-col.cf7sg-grid[data-conditional-group]{
+  border-color: var(--cf7sg-col-default);
+}
 #grid-form .row-selected .row-controls{
     background-color: var(--cf7sg-row-default);
 }
@@ -533,8 +538,8 @@ textarea.grid-input {
 #grid-form .cf7sg-row.cf7-sg-table-footer-row {
 	background-color: var(--cf7sg-text-color);
 }
-#grid-form .cf7sg-col[data-conditional-group] .grid-column {
-	border-width: 1px;
+#grid-form .cf7sg-col[data-conditional-group]:not(.cf7sg-grid) > .grid-column {
+	border-width: 2px;
 	border-style: dashed;
 	border-color: #fff;
 }
@@ -836,6 +841,10 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+#grid-form .cf7-field-type.conditional-group .content {
+	border-style: dashed;
+	border-width: 2px;
 }
 #grid-form .grid-column:hover > .cf7-field-inner p.content,
 #grid-form .grid-column-tip:hover > .cf7-field-inner p.content {
