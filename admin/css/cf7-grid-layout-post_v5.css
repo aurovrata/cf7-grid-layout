@@ -512,6 +512,7 @@ textarea.grid-input {
 	border-color: var(--cf7sg-row-icons);
   width: calc(100%/5);
   max-width: 120px;
+  position: relative;
 }
 #cf7-editor-grid .add-row-button .button.add-slide {
 	background: var(--cf7sg-row-slide);
@@ -558,7 +559,21 @@ textarea.grid-input {
   background: var(--cf7sg-row-default);
 	color: #fff;
 }
+#cf7-editor-grid .add-row-button .button:hover .helper-tip {
+	color: var(--cf7sg-row-icons);
+	background: var(--cf7sg-col-default);
+}
 /*-----------colours end------------------*/
+#cf7-editor-grid .add-row-button .button:hover .helper-tip {
+	display: block;
+	position: absolute;
+	z-index: 2;
+	padding: 0 10px;
+	border: 1px solid;
+	border-radius: 3px;
+	top: -35px;
+	left: 0px;
+}
 #cf7-editor-grid .centred-menu, #cf7-editor-grid  .cm-item{
   --cf7sg-col-height: 18px;
   height: var(--cf7sg-col-height);
