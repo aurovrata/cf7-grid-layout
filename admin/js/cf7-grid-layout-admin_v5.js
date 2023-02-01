@@ -91,14 +91,14 @@
       }
       /** @since 5.0 track conditional groups */
       if($grid.is('.cf7-conditional-group')){
-
-        $('.field:contains("[group ")', $form).trackConditionalGroups('group','cf7sgGroup');
+        let r = 'cf7sgGroup'+randString(6);
+        $('.field:contains("[group ")', $form).trackConditionalGroups('group',r);
         $('.cf7sg-col:contains("[group "):not(:has(:contains("[group ")))', $form).trackConditionalGroups();
         $('.cf7sg-col.cf7sg-grid:contains("[group ")', $form).trackConditionalGroups();
         //check for other conditional groups, div with group but not children with group
         $('div:contains("[group "):not(:has(:contains("[group ")))', $form).trackConditionalGroups();
         //finally reinstate conditional groups within fields.
-        $('.field:contains("[cf7sgGroup ")', $form).trackConditionalGroups('cf7sgGroup','group');
+        $('.field:contains('+r+')', $form).trackConditionalGroups(r,'group');
       }
       //remove the external forms
       $('.cf7sg-external-form .cf7sg-external-form-content', $form).remove();
@@ -135,12 +135,12 @@
             if($this.closest('.cf7sg-col').length>0) $('.add-field-button', $area).remove();
             $this.children().remove();
             $this.text('');
-            //populate conditional groups if any.
-            if($grid.is('.cf7-conditional-group') && $this.data('conditional-group')){
-              $('.cf7-conditional-group input', $area).val($this.data('conditional-group'));
-              $('.dashicons-visibility',$area).removeClass('dashicons-visibility').addClass('dashicons-hidden');
-            }
             break;
+        }
+        //populate conditional groups if any.
+        if($grid.is('.cf7-conditional-group') && $this.data('conditional-group')){
+          $('.cf7-conditional-group input', $area).val($this.data('conditional-group'));
+          $('.dashicons-visibility',$area).removeClass('dashicons-visibility').addClass('dashicons-hidden');
         }
         $this.prepend($area.children());
         
@@ -449,7 +449,7 @@
         }
         return true;
       }
-      if($target.is('.cf7-conditional-group input')){ //----------- column size/offset settings
+      if($target.is('.cf7-conditional-group input')){ //----------- change in conditional group.
         let $g = $target.closest('.cf7-conditional-group'),
           v = $target.val();
         if(v.length > 0){
@@ -457,7 +457,7 @@
           $g.closest('.cf7sg-col').attr('data-conditional-group', v);
         }else{
           $g.siblings('.dashicons-hidden').removeClass('dashicons-hidden').addClass('dashicons-visibility');
-          $g.closest('.cf7sg-col').attr('data-conditional-group', '');
+          $g.closest('.cf7sg-col').removeAttr('data-conditional-group');
         }
         $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
         return true;
@@ -1124,13 +1124,14 @@
     if('undefined' == typeof s) s='group';
     if('undefined' == typeof r) r='';
     $(this).each((i,d)=>{
-      if(d.classList.contains('conditional-group')){ //replace with temp group name
-        d.innerHTML = d.innerHTML.replaceAll(new RegExp('\\['+s+'\\s(.*)\\]','ig'), '['+r+' ').replaceAll(new RegExp('\\[\\/'+s+'\\]/','ig'), '[/'+r+']');
+      if(d.classList.contains('conditional-group') && d.innerHTML.indexOf('['+s+' ')>-1){ //replace with temp group name
+        d.innerHTML = d.innerHTML.replaceAll(s,r);
         return; //field condition.
       }
       let g = d.textContent.match(/\[group\s(.*)\]/);
       if(g && d.textContent.trim().indexOf('[group')<3 && g.length>1){ //conditional div content
         d.setAttribute('data-conditional-group', g[1]);
+        //replace the [group ... as well as the last matching [/gorup]
         d.innerHTML = d.innerHTML.replace(new RegExp('\\['+s+'\\s(.*)\\]'), '').replace(new RegExp('(\\[\\/'+s+'\\])(?!.*\\1)'), '');
       }
     });
