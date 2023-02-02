@@ -39,7 +39,7 @@
     }
   }
   let wpcf7Value = '';
-  const $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html'), $customTagModal = $('#cf7sg-custom-tag');
+  const $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html'), $customTagModal = $('#cf7sg-custom-tag'), $gridModal=$('#cf7sg-grid-modal');
   $.modal.defaults.modalClass= "cf7sg-modal modal";
 	$(document).ready( function(){
     /** @since 5.0 scan tag with form generators  */
@@ -150,7 +150,7 @@
         // $this.filterColumnControls(); do this when menu is opened instead.
       });
       $('div.cf7sg-row:not(.cf7-sg-table-footer-row)', $form).each(function(){
-        $(this).prepend( $rowTemplt.find('.row-controls').clone() );
+        $(this).prepend( $rowTemplt.find('.grid-ctrls').clone() );
       });
       /*--------------------------------------------------- convert collapsible sections  */
       $('div.cf7sg-container.cf7sg-collapsible', $form).each(function(){
@@ -177,7 +177,7 @@
           $title.append($toggle);
           $('input[type="checkbox"]', $title ).prop('checked', true);
         }
-        let $ctrl = $this.children('.cf7sg-row').children('.row-controls').find('.collapsible-row-label');
+        let $ctrl = $this.children('.cf7sg-row').children('.grid-ctrls').find('.collapsible-row-label');
         $('input', $ctrl).prop('checked', true);
         //toggle disable the sibling input
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
@@ -190,7 +190,7 @@
           id = 'cf7-sg-table-'+(new Date).getTime();
           $this.attr('id', id);
         }
-        let $ctrl = $this.find('.cf7sg-row.cf7-sg-table > .row-controls' );
+        let $ctrl = $this.find('.cf7sg-row.cf7-sg-table > .grid-ctrls' );
         // $('input', $ctrl).prop('checked', true);
         //set button label
         let text = $this.data('button');
@@ -217,7 +217,7 @@
         $('label input', $this).val(text);
         //setup checkbox
         let $ctrl = $this.parent().siblings('.cf7-sg-tabs-panel');
-        $ctrl = $ctrl.children('.cf7sg-row').children('.row-controls' ).find('.tabs-row-label');
+        $ctrl = $ctrl.children('.cf7sg-row').children('.grid-ctrls' ).find('.tabs-row-label');
         $('input.tabs-row', $ctrl).prop('checked', true);
         $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v});
       });
@@ -259,7 +259,7 @@
           //check if next container is a slider control.
           let $ctrl = $col.closest('.cf7sg-container').next();
           if($ctrl.is('.cf7sg-container.cf7sg-slider-controls')){
-            $control = $ctrl.children('.cf7sg-row').children('.row-controls');
+            $control = $ctrl.children('.cf7sg-row').children('.grid-ctrls');
             $('.slider-control:input', $control).prop('checked', true);
           }
         }
@@ -418,7 +418,7 @@
       if(keycode == '13'){
         e.preventDefault();
         e.stopPropagation();
-        toggleControl(); //close menu.
+        //toggleControl(); //close menu.
       }
     });
     $gridEditor.on('change', function(event){
@@ -438,7 +438,7 @@
           $s.fireGridUpdate('add','slider-section');
           $s = $('.cf7sg-slide',$s).children('.cf7sg-row');
           /** @since 4.13.0 display auto scroll helper code */
-          $s.children('.row-controls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
+          $s.children('.grid-ctrls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
           $s = $s.children('.cf7sg-col');
           $s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
         }else{ //single slide, revert to form.
@@ -514,15 +514,15 @@
           break;
       }
       //close any open row/column controls
-      toggleControl();
+      // toggleControl();
       //close any column size popups
       toggleCentredMenus($target);
       /* ---------------------------------------------------------------------------FORM CONTROLS */
-      if( $target.is('.dashicons-edit.form-control') ){ //------------------show controls
-        toggleControl($target.siblings('.grid-controls'));
-        return true;
-      }else if($target.is('.dashicons-no-alt.form-control') ){ // close controls.
-        //closed by toggleControl
+      if( $target.is('.dashicons-admin-generic') ){ //------------------show controls modal
+        let cl = [...$target.closest('.grid-ctrls').prop('classList')];
+        cl = '.'+cl.join('.');
+        $gridModal.modal();
+        $(cl,$gridModal).show();
         return true;
       }
       
@@ -579,13 +579,6 @@
             $added.fireGridUpdate('add','tabbed-row');
             break;
         }
-        return true;
-      }else if($target.is('.dashicons-edit.row-control')){ //-----------Show controls
-        toggleControl($target.siblings('.grid-controls'));
-        /*
-        TODO: use $('.grid-controls')filterColumnControls() to make sure columns sizes/offsets are correct.
-        possibly introduce a boolean to check if filter has been run already on this row
-        */
         return true;
       }else if( $target.is('.dashicons-no-alt.row-control') ) { //----------------hide controls
         //take care by toggleControl
@@ -714,12 +707,6 @@
         $row.find('.cf7-field-inner').first().showUIfield();
         return true;
         
-      }else if( $target.is('.dashicons-edit.column-control') ){ //------------------show controls
-        //now show this control
-        let $ctrl = $target.siblings('.grid-controls');
-        toggleControl($ctrl);
-        // $ctrl.filterColumnControls(); //column controls changed in v5
-        return true;
       }else if( $target.is('.centred-menu.column-setting *') ) { //----- show column sizes
         let $menu = $target.closest('.centred-menu');
         if($menu.is('.show')){ 
@@ -854,7 +841,7 @@
         //close the grid-control box
         $target.parent().hide();
         $target.parent().siblings('.dashicons-no-alt').hide();
-        $target.parent().siblings('.dashicons-edit').show();
+        $target.parent().siblings('.dashicons-admin-generic').show();
         //replace container with form selector
         $target.closest('.cf7sg-container').after($('#grid-cf7-forms').html());
         $target.closest('.cf7sg-container').remove();
@@ -1020,7 +1007,7 @@
     //make rows sortable
     $('.cf7sg-col', $grid).sortable({
       //placeholder: "ui-state-highlight",
-      handle:'.row-controls > .dashicons-move',
+      handle:'.grid-ctrls > .dashicons-move',
       axis: 'y',
       //containment:'parent',
       items: '> .cf7sg-container, > .cf7sg-external-form', //.cf7sg-col.cf7-sg-tabs > .cf7sg-row',
@@ -1049,25 +1036,25 @@
     });
   }
   //close controls row/column
-  function toggleControl($ctrl){
-    if(typeof $ctrl == 'undefined') $ctrl = $('.grid-controls:visible', $gridEditor);
-    $ctrl.each(function(){
-      let $this = $(this);
-      if($this.is(':visible')){ //close
-        $this.hide();
-        $this.siblings('.dashicons-no-alt').hide();
-        $this.siblings('.dashicons-edit').show();
-      }else{ //open
-        $this.show();
-        $this.siblings('.dashicons-no-alt').show();
-        $this.siblings('.dashicons-edit').hide();
-      }
-    });
-    //close helper popups.
-    $('.column-control+.helper-popup').remove();
-    //close conditional group
-    $ctrl = $('span.cf7-conditional-group:visible', $gridEditor).hide();
-  }
+  // function toggleControl($ctrl){
+  //   if(typeof $ctrl == 'undefined') $ctrl = $('.grid-controls:visible', $gridEditor);
+  //   $ctrl.each(function(){
+  //     let $this = $(this);
+  //     if($this.is(':visible')){ //close
+  //       $this.hide();
+  //       $this.siblings('.dashicons-no-alt').hide();
+  //       $this.siblings('.dashicons-admin-generic').show();
+  //     }else{ //open
+  //       $this.show();
+  //       $this.siblings('.dashicons-no-alt').show();
+  //       $this.siblings('.dashicons-admin-generic').hide();
+  //     }
+  //   });
+  //   //close helper popups.
+  //   $('.column-control+.helper-popup').remove();
+  //   //close conditional group
+  //   $ctrl = $('span.cf7-conditional-group:visible', $gridEditor).hide();
+  // }
   //close any column size popups
   function toggleCentredMenus($t){
     let $menus = $('.centred-menu.show', $gridEditor);
@@ -1113,7 +1100,7 @@
           });
         }else{
           //make sure the row controls is at the end.
-          let control = $targetRow.children('.row-controls').remove();
+          let control = $targetRow.children('.grid-ctrls').remove();
           $targetRow.append(control);
         }
       }

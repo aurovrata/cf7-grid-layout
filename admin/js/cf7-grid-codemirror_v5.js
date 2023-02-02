@@ -709,7 +709,7 @@
         $exform.children('.form-controls').remove();
       });
       //remove the row controls
-      $('.cf7sg-row', $form).removeClass('ui-sortable').children('.row-controls').remove();
+      $('.cf7sg-row', $form).removeClass('ui-sortable').children('.grid-ctrls').remove();
 
       //remove the collapsible input
       $('.cf7sg-container.cf7sg-collapsible', $form).each(function(){

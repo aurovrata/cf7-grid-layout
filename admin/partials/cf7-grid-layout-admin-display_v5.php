@@ -79,7 +79,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
           </div>
           <span class="multistep control-label"><?= __('Multistep form', 'cf7-grid-layout');?></span>
         </span>
-        <span class="dashicons dashicons-edit form-control grid-control"></span>
+        <span class="dashicons dashicons-admin-generic form-control grid-control"></span>
         <span class="dashicons dashicons-no-alt form-control grid-control display-none"></span>
         <div class="grid-controls display-none">
           <label class="slider-form-label unique-mod">
@@ -109,8 +109,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     </div>
   </div>
 </div>
-<div id="cf7sg-grid-modal" class="">
-  <div class="row-controls cf7sg-collapsible-ctrls display-none">
+<div id="cf7sg-grid-modal" class="display-none">
+  <section class="grid-ctrls cf7sg-collapsible-ctrls display-none">
     <span class="dashicons dashicons-trash row-control grid-control"></span>
     <div class="grid-controls collapsible">
       <label class="collapsible-row-label unique-mod">
@@ -126,8 +126,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <input type="checkbox" class="collapsible-toggle wrap-control" />
       </label>
     </div>
-  </div>
-  <div class="row-controls display-none">
+  </section>
+  <section class="grid-ctrls cf7sg-ui-row display-none">
     <div class="grid-controls">
       <label class="collapsible-row-label unique-mod">
         <?=__('Row collapsible','cf7-grid-layout')?>
@@ -146,16 +146,21 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <input type="checkbox" class="footer-row" />
       </label>
     </div>
-  </div>
-  <div class="row-controls cf7sg-form display-none">
+  </section>
+  <section class="grid-ctrls cf7sg-form display-none">
 
-  </div>
-  <div class="row-controls cf7sg-tabs display-none">
-
-  </div>
-  <div class="row-controls cf7sg-slide display-none">
-
-  </div>
+  </section>
+  <section class="grid-ctrls cf7sg-tabs display-none">
+    <label class="tab-row-title unique-mod">
+      <?=__('Tab label','cf7-grid-layout')?>
+      <input type="text" value=""/>
+    </label>
+  </section>
+    <label class="cf7-sg-hidden table-row-button table-control">
+      <?=__('Slide title','cf7-grid-layout')?>
+      <input type="text" value=""/>
+    </label>
+  </section>
 </div>
 <textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?= esc_textarea( $form_obj->prop( 'form' ) );?></textarea>
 <!-- cf7sg - track embeded sub-forms -->
@@ -169,14 +174,14 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-row">
   <div class="cf7sg-container">
     <div class="cf7sg-row">
-      <div class="row-controls">
+      <div class="grid-ctrls cf7sg-ui-row">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label">
           <span class="row-label display-none"><?= __('Row', 'cf7-grid-layout');?></span>
           <span class="table-label display-none"><?= __('Table', 'cf7-grid-layout');?></span>
           <span class="collapsible-label display-none"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
         </span>
-        <span class="dashicons dashicons-edit row-control grid-control"></span>
+        <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-no-alt row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
         <span class="dashicons dashicons-menu-alt row-control grid-control"></span>
@@ -220,7 +225,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-cf7-forms">
   <div class="cf7sg-external-form" data-form="">
     <div class="ext-form-controls">
-      <div class="row-controls cf7sg-form">
+      <div class="grid-ctrls cf7sg-form">
         <span class="dashicons dashicons-move ext-form-control"></span>
         <span class="dashicons dashicons-trash ext-form-control"></span>
       </div>
@@ -250,7 +255,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   <div class="cf7sg-container cf7sg-collapsible">
     <div class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></div>
     <div class="cf7sg-row">
-      <div class="row-controls cf7sg-collapsible-ctrls">
+      <div class="grid-ctrls cf7sg-collapsible-ctrls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
@@ -269,18 +274,12 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-tabs">
   <div class="cf7-sg-tabs cf7sg-container" id="">
     <div class="cf7sg-row">
-      <div class="row-controls cf7sg-tabs">
+      <div class="grid-ctrls cf7sg-tabs">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label"><?= __('Tabbed section', 'cf7-grid-layout');?></span>
-        <span class="dashicons dashicons-edit row-control grid-control"></span>
+        <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-no-alt row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
-        <div class="grid-controls collapsible">
-          <label class="tab-row-title unique-mod">
-            <?=__('Tab label','cf7-grid-layout')?>
-            <input type="text" value=""/>
-          </label>
-        </div>
       </div>
       <div class="cf7sg-col full">
         <input type="radio" class="display-none" id=""/>
@@ -313,21 +312,16 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <div class="cf7sg-container cf7sg-slide" id="">
           <div class="cf7sg-slide-title"><span class="cf7sg-title"></span></div>
           <div class="cf7sg-row">
-            <div class="row-controls cf7sg-slide">
+            <div class="grid-ctrls cf7sg-slide">
               <span class="dashicons dashicons-move row-control grid-control"></span>
               <span class="control-label">
                 <span class="slide-label"><?= __('Slide', 'cf7-grid-layout');?></span>
               </span>
-              <span class="dashicons dashicons-edit row-control grid-control"></span>
+              <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
               <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
               <span class="dashicons dashicons-no-alt row-control grid-control"></span>
               <span class="dashicons dashicons-trash row-control grid-control"></span>
-              <div class="grid-controls">
-                <label class="cf7-sg-hidden table-row-button table-control">
-                  <?=__('Slide title','cf7-grid-layout')?>
-                  <input type="text" value=""/>
-                </label>
-              </div>
+              
             </div>
             <div class="cf7sg-col full">
               <template class="inner-template">#grid-row</template>
@@ -390,7 +384,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
       <span class="popup-helper display-none"><?= __('Column size','cf7-grid-layout')?></span>
       <?=__('Col','cf7-grid-layout')?>
     </span>
-    <!-- <span class="dashicons dashicons-edit column-control grid-control"></span>
+    <!-- <span class="dashicons dashicons-admin-generic column-control grid-control"></span>
     <span class="dashicons dashicons-no-alt column-control grid-control"></span> -->
     <span class="dashicons dashicons-trash column-control grid-control"></span>
     <span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>

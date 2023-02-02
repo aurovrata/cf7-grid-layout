@@ -86,10 +86,10 @@
 /* @since 4.4 .cf7sg-slider-section .cf7sg-collapsible .collapsible-row-label,
 .cf7sg-accordion-rows .cf7sg-collapsible .collapsible-row-label, */
 .cf7sg-col.cf7sg-slider-section, .cf7sg-col.cf7sg-accordion-rows {box-shadow: 0 0 6px #333;}
-.cf7sg-col:not(.full) + .row-controls .grid-controls .make-grid{display:inline-block;}
-.cf7sg-col.full > .cf7sg-container:not(.cf7sg-collapsible) > .cf7sg-row:not(.cf7-sg-table) > .cf7sg-col:not(.full) + .row-controls .grid-controls .make-grid,
+.cf7sg-col:not(.full) + .grid-ctrls .grid-controls .make-grid{display:inline-block;}
+.cf7sg-col.full > .cf7sg-container:not(.cf7sg-collapsible) > .cf7sg-row:not(.cf7-sg-table) > .cf7sg-col:not(.full) + .grid-ctrls .grid-controls .make-grid,
 .button.make-grid.display-none, .cf7sg-row.cf7-sg-table .collapsible-row-label, .cf7sg-row.cf7-sg-table .tabs-row-label, 
-.cf7sg-container.cf7sg-collapsible > .cf7sg-row .cf7sg-row:not(.cf7-sg-table) .row-controls > .dashicons-edit,
+.cf7sg-container.cf7sg-collapsible > .cf7sg-row .cf7sg-row:not(.cf7-sg-table) .grid-ctrls > .dashicons-admin-generic,
 #grid-form .display-none, #js-tags > li.display-none:not(.show-events), .add-row-button .button.display-none {display: none;}
 .enable-grouping.grid-column > .grid-controls .grouping-option {
     display: inline-block;
@@ -159,7 +159,7 @@ grid layout
 */
 #html-script,
 #grid-form .grid-controls,
-#grid-form .row-controls .dashicons-no-alt,
+#grid-form .grid-ctrls .dashicons-no-alt,
 #grid-form .grid-column > .dashicons-no-alt, .cf7-sg-hidden,
 #grid-form .cf7sg-external-form-content{
     display: none;
@@ -170,18 +170,18 @@ grid layout
 #grid-form .cf7sg-row.cf7-sg-table .grid-controls input[type=checkbox] {
 	margin-right: 0;
 }
-#grid-form .cf7sg-grid > .cf7sg-row > .row-controls .dashicons-editor-table {
+#grid-form .cf7sg-grid > .cf7sg-row > .grid-ctrls .dashicons-editor-table {
 	display: none;
 }
 #cf7-editor-grid .add-item-button {
 	margin: 10px 0;
 }
 /* footer table special styling */
-#grid-form .cf7sg-row.cf7-sg-table .row-controls label {
+#grid-form .cf7sg-row.cf7-sg-table .grid-ctrls label {
 	display: none;
 }
-#grid-form .cf7sg-row.cf7-sg-table .row-controls .table-control,
-#grid-form .cf7sg-row.cf7-sg-table .row-controls .table-control input[type=text] {
+#grid-form .cf7sg-row.cf7-sg-table .grid-ctrls .table-control,
+#grid-form .cf7sg-row.cf7-sg-table .grid-ctrls .table-control input[type=text] {
     display: block;
 }
 #grid-form .cf7-sg-table-footer .cf7sg-row:not(.cf7-sg-table-footer-row) {
@@ -222,7 +222,7 @@ textarea.grid-input {
 #cf7-editor-grid .form-controls .dashicons-no-alt {
 	float: right;
 }
-#cf7-editor-grid .row-controls{
+#cf7-editor-grid .grid-ctrls{
   width: 100%;
   position: absolute;
   top: 0;
@@ -238,7 +238,7 @@ textarea.grid-input {
   height: 15px;
   margin: 0 3px;
 }
-#cf7-editor-grid > .form-controls .dashicons-edit {
+#cf7-editor-grid > .form-controls .dashicons-admin-generic {
 	float: right;
 }
 #cf7-editor-grid > .form-controls .active.control-label {
@@ -252,7 +252,7 @@ textarea.grid-input {
 #grid-form .grid-controls > *:not(.cf7-sg-hidden) {
 	display: block;
 }
-/* .dashicons.column-control:hover::before, .row-controls .dashicons:hover::before {color:#0065aa} */
+/* .dashicons.column-control:hover::before, .grid-ctrls .dashicons:hover::before {color:#0065aa} */
 #grid-form .cf7sg-col:hover > .grid-column > .cf7-field-inner {
 	background: #e4e4e4;
 }
@@ -291,10 +291,10 @@ textarea.grid-input {
 #grid-form .cf7sg-container.cf7sg-slide > .cf7sg-row > .cf7sg-col > .cf7sg-container:first-child {
 	margin-top: 0;
 }
-#grid-form  .row-controls+.cf7sg-col {
+#grid-form  .grid-ctrls+.cf7sg-col {
 	margin-left: 0px;
 }
-/* #grid-form .row-controls:hover{ background: #ddd;} */
+/* #grid-form .grid-ctrls:hover{ background: #ddd;} */
 #grid-form .cf7sg-tag-dynamic_select:last-child {
     margin: 0;
 }
@@ -392,10 +392,10 @@ textarea.grid-input {
 #cf7-editor-grid .add-slide-button > .button > .slide-label,
 #cf7-editor-grid .add-field-button > .button > .field-label,
 #cf7-editor-grid .add-row-button > .button > .row-label,
-#cf7-editor-grid .cf7sg-row:not(.cf7-sg-table) > .row-controls .row-label {
+#cf7-editor-grid .cf7sg-row:not(.cf7-sg-table) > .grid-ctrls .row-label {
 	display: inline;
 }
-#cf7-editor-grid .cf7sg-container.cf7sg-slide > .cf7sg-row > .row-controls .slide-label {
+#cf7-editor-grid .cf7sg-container.cf7sg-slide > .cf7sg-row > .grid-ctrls .slide-label {
 	display: inline;
 }
 #cf7-editor-grid .cf7sg-slide > .cf7sg-row > .cf7sg-col > .grid-column > span {
@@ -411,7 +411,7 @@ textarea.grid-input {
 	font-size: 1.25em;
 }
 #grid-form .dashicons.column-control::before, 
-#grid-form .row-controls .dashicons::before,
+#grid-form .grid-ctrls .dashicons::before,
 #cf7-editor-grid .form-controls .dashicons::before {
 	font-size: 14px;
 	font-weight: lighter;
@@ -421,7 +421,7 @@ textarea.grid-input {
 	font-size: 16px;
 }
 #grid-form .grid-column{position: relative;}
-#grid-form .row-controls span,
+#grid-form .grid-ctrls span,
 #grid-form .grid-column .dashicons {
 	line-height: 1.35rem;
 }
@@ -435,7 +435,7 @@ textarea.grid-input {
 #grid-form .cf7sg-col.cf7sg-grid[data-conditional-group]{
   border-color: var(--cf7sg-col-default);
 }
-#grid-form .row-selected .row-controls{
+#grid-form .row-selected .grid-ctrls{
     background-color: var(--cf7sg-row-default);
 }
 #grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row:not(.cf7-sg-table-footer-row) {
@@ -444,28 +444,28 @@ textarea.grid-input {
 #cf7-editor-grid > .form-controls .grid-controls{
   background-color: var(--cf7sg-col-default);
 }
-#grid-form  .row-controls .dashicons, 
-#grid-form  .row-controls .control-label{
+#grid-form  .grid-ctrls .dashicons, 
+#grid-form  .grid-ctrls .control-label{
     color: var(--cf7sg-row-icons);
 }
 #grid-form .cf7sg-container.cf7-sg-table  {
     border: solid 1px var(--cf7sg-row-table);
     border-radius: 3px;
 }
-#grid-form .cf7sg-row.cf7-sg-table > .row-controls {
+#grid-form .cf7sg-row.cf7-sg-table > .grid-ctrls {
 	background-color: var(--cf7sg-row-table);
 }
 #grid-form  .grid-column .column-control, #grid-form .grid-controls {
   color: var(--cf7sg-text-color);
 }
-#grid-form .row-controls{
+#grid-form .grid-ctrls{
     background-color: var(--cf7sg-row-default);
 }
-#grid-form .row-controls .grid-controls{
+#grid-form .grid-ctrls .grid-controls{
     background-color: var(--cf7sg-row-default);
     color: var(--cf7sg-row-icons); 
 }
-#grid-form .row-controls .dashicons:hover, 
+#grid-form .grid-ctrls .dashicons:hover, 
 #cf7-editor-grid .form-controls .dashicons:hover{
   cursor:pointer;
   color: var(--cf7sg-row-icons-hover);
@@ -483,10 +483,10 @@ textarea.grid-input {
 #grid-form .cf7sg-container:not(.cf7sg-slider):not(.cf7sg-slide) .grid-column, #grid-form .grid-controls {
 	background-color: var(--cf7sg-col-default);
 }
-#grid-form .cf7-sg-table .row-controls .dashicons-editor-table{
+#grid-form .cf7-sg-table .grid-ctrls .dashicons-editor-table{
     color:var(--cf7sg-row-default);
 }
-#grid-form .cf7sg-slide > .cf7sg-row > .row-controls {
+#grid-form .cf7sg-slide > .cf7sg-row > .grid-ctrls {
 	background: var(--cf7sg-row-slide);
 }
 #grid-form .cf7sg-container.cf7sg-slide > .cf7sg-row {
@@ -519,14 +519,14 @@ textarea.grid-input {
 }
 #cf7-editor-grid .add-row-button .button.add-collapsible,
 #grid-form .grid-controls.collapsible,
-#grid-form .cf7sg-collapsible >.cf7sg-row > .row-controls {
+#grid-form .cf7sg-collapsible >.cf7sg-row > .grid-ctrls {
 	background: var(--cf7sg-row-collapsible);
 }
 #grid-form .cf7sg-container.cf7sg-collapsible > .cf7sg-row {
   border-color: var(--cf7sg-row-collapsible);
 }
 #cf7-editor-grid .add-row-button .button.add-table,
-#grid-form .cf7-sg-table > .row-controls .grid-controls {
+#grid-form .cf7-sg-table > .grid-ctrls .grid-controls {
 	background: var(--cf7sg-row-table);
 }
 #cf7-editor-grid .add-row-button .button.add-tab {
@@ -632,17 +632,17 @@ position: relative;
     margin-left: 0;
 }
 /*limit inner tables/tabs within tables/tabs */
-#grid-form .cf7sg-container.cf7-sg-table .cf7sg-container .row-controls span.dashicons-edit,
+#grid-form .cf7sg-container.cf7-sg-table .cf7sg-container .grid-controls span.dashicons-admin-generic,
 #grid-form .cf7sg-container.cf7-sg-tabs-panel .cf7sg-row .cf7sg-row label.tabs-row-label {
     display: none !important;
 }
-#grid-form  .dashicons-edit, 
+#grid-form  .dashicons-admin-generic, 
 #grid-form  .dashicons-no-alt{margin-right: 3px;}
 
 #grid-form  .grid-control:not(.dashicons-move){
     float: right;
 }
-#grid-form .row-controls .dashicons-menu-alt{
+#grid-form .grid-ctrls .dashicons-menu-alt{
     transform: rotate(90deg);
     margin-top: 1px;
 }
@@ -670,13 +670,13 @@ position: relative;
 	border: none;
 } */
 #grid-form .cf7sg-row > div:nth-child(2) > .grid-column .dashicons-trash.column-control,
-.cf7sg-container.cf7-sg-tabs-panel > .cf7sg-row > .row-controls .dashicons-plus,
-.cf7sg-container.cf7-sg-tabs-panel > .cf7sg-row > .row-controls .dashicons-trash,
+.cf7sg-container.cf7-sg-tabs-panel > .cf7sg-row > .grid-ctrls .dashicons-plus,
+.cf7sg-container.cf7-sg-tabs-panel > .cf7sg-row > .grid-ctrls .dashicons-trash,
 #grid-form .helper-popup .no-post-my-form,
 .cf7sg-container.cf7-sg-table .add-item-button,
 .helper-list li.no-post-my-form,
 #grid-form:not(.cf7-conditional-group) .dashicons-visibility,
-#grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .row-controls,
+#grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-ctrls,
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column > span  {
   display: none;
 }
@@ -696,18 +696,18 @@ position: relative;
 #grid-form.cf7-conditional-group .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-hidden{
   right: 40px;
 }
-.row-controls .dashicons-move, .row-controls .dashicons-move.ext-form-control{
+.grid-ctrls .dashicons-move, .grid-ctrls .dashicons-move.ext-form-control{
     cursor: unset;
 }
-.cf7sg-container + .cf7sg-container > .cf7sg-row > .row-controls .dashicons-move,
+.cf7sg-container + .cf7sg-container > .cf7sg-row > .grid-ctrls .dashicons-move,
 .cf7sg-container + .cf7sg-external-form > .ext-form-controls .dashicons-move,
-.cf7sg-external-form + .cf7sg-container > .cf7sg-row > .row-controls .dashicons-move {
+.cf7sg-external-form + .cf7sg-container > .cf7sg-row > .grid-ctrls .dashicons-move {
     cursor: grab;
 }
 #grid-form .cf7sg-row .cf7sg-col + .cf7sg-col > .grid-column .dashicons-trash.column-control {
     display: block;
 }
-#grid-form > .cf7sg-container:first-child >.cf7sg-row:first-child > .row-controls  .dashicons-trash,
+#grid-form > .cf7sg-container:first-child >.cf7sg-row:first-child > .grid-ctrls  .dashicons-trash,
 #grid-form > .cf7sg-external-form:first-child > .ext-form-controls  .dashicons-trash {
   visibility:hidden;
 }
@@ -776,12 +776,12 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #form-editor-tabs ul.ui-tabs-nav > li.ui-tabs-active a:hover {
     cursor: default;
 }
-.cf7sg-col .row-controls .control-label,
-.cf7sg-col .row-controls .tabs-row-label,
-.cf7sg-container.cf7sg-slider + .cf7sg-container  > .cf7sg-row .row-controls .slider-control-label{
+.cf7sg-col .grid-ctrls .control-label,
+.cf7sg-col .grid-ctrls .tabs-row-label,
+.cf7sg-container.cf7sg-slider + .cf7sg-container  > .cf7sg-row .grid-ctrls .slider-control-label{
     display: inline-block;
 }
-.cf7sg-row.cf7-sg-table > .row-controls .table-label {
+.cf7sg-row.cf7-sg-table > .grid-ctrls .table-label {
 	display: inline;
 }
 #grid-form input:disabled:hover, #grid-form .grid-controls label:hover {
