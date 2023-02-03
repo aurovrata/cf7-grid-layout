@@ -23,7 +23,11 @@
 body.disable-scroll{overflow:hidden;}
 #meta-box-cf7-info p, #minor-publishing .misc-pub-section {
 margin: 0;
-padding: 5px 0;
+padding: 5px 0 0;
+}
+#cf7sg-locale-info.cf7sg-locale-warning > span + strong{
+  background-color: red;
+  padding: 0 3px;
 }
 #minor-publishing {
 padding: 0 12px;
