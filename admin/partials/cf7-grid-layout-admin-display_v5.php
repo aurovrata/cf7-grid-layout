@@ -182,12 +182,15 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
           <span class="collapsible-label display-none"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
         </span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
-        <span class="dashicons dashicons-no-alt row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
         <span class="dashicons dashicons-menu-alt row-control grid-control"></span>
         <span class="dashicons dashicons-editor-table row-control grid-control"></span>
         <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
-        
+        <span class="dashicons dashicons-visibility column-control grid-control"></span>
+        <span class="display-none cf7-conditional-group">
+          <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+          <span class="dashicons dashicons-no-alt"></span>
+        </span>
       </div>
       <div class="cf7sg-col full">
         <template class="inner-template">#grid-col</template>
@@ -227,8 +230,15 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     <div class="ext-form-controls">
       <div class="grid-ctrls cf7sg-form">
         <span class="dashicons dashicons-move ext-form-control"></span>
+        <span class="dashicons dashicons-admin-generic ext-form-control"></span>
         <span class="dashicons dashicons-trash ext-form-control"></span>
+        <span class="dashicons dashicons-visibility ext-form-control"></span>
+        <span class="display-none cf7-conditional-group">
+          <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+          <span class="dashicons dashicons-no-alt"></span>
+        </span>
       </div>
+      
       <select class="form-select">
         <option value=""><?=__('Select contact form 7','cf7-grid-layout')?></option>
         <?php
@@ -259,6 +269,12 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
+        <span class="dashicons dashicons-trash row-control grid-control"></span>
+        <span class="dashicons dashicons-visibility row-control grid-control"></span>
+        <span class="display-none cf7-conditional-group">
+          <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+          <span class="dashicons dashicons-no-alt"></span>
+        </span>
       </div>
       <div class="cf7sg-col full">
         <template class="inner-template">#grid-row</template>
@@ -278,8 +294,11 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label"><?= __('Tabbed section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
-        <span class="dashicons dashicons-no-alt row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
+        <span class="display-none cf7-conditional-group">
+          <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+          <span class="dashicons dashicons-no-alt"></span>
+        </span>
       </div>
       <div class="cf7sg-col full">
         <input type="radio" class="display-none" id=""/>
@@ -321,7 +340,10 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
               <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
               <span class="dashicons dashicons-no-alt row-control grid-control"></span>
               <span class="dashicons dashicons-trash row-control grid-control"></span>
-              
+              <span class="display-none cf7-conditional-group">
+                <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+                <span class="dashicons dashicons-no-alt"></span>
+              </span>
             </div>
             <div class="cf7sg-col full">
               <template class="inner-template">#grid-row</template>
@@ -384,8 +406,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
       <span class="popup-helper display-none"><?= __('Column size','cf7-grid-layout')?></span>
       <?=__('Col','cf7-grid-layout')?>
     </span>
-    <!-- <span class="dashicons dashicons-admin-generic column-control grid-control"></span>
-    <span class="dashicons dashicons-no-alt column-control grid-control"></span> -->
+    <span class="dashicons dashicons-admin-generic column-control grid-control"></span>
     <span class="dashicons dashicons-trash column-control grid-control"></span>
     <span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
     <span class="js-icon column-control grid-control" style="display:none;"></span>

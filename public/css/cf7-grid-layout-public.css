@@ -491,7 +491,7 @@ span.cf7sg-validation-warning {
     width: 100%;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control.cf7sg-imagegrid{
-	width:max-content;
+	width:auto;
 	display: block;
 	margin: 0 auto;
 }
