@@ -601,6 +601,11 @@ display: table-row;
   display: table;
   position: relative;
   z-index: 9;
+  border-radius: 3px;
+}
+#cf7-editor-grid .cm-item::after {
+	content: var(--cf7sg-col-label);
+	padding-left: 2px;
 }
 #cf7-editor-grid .centred-menu.unset { /*:not(.show) */
   width: 15px;
@@ -1031,4 +1036,49 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 .style-r .knobs::before {
 	border-radius: 50%;
+}
+/* remove dashicons from smallest columns */
+#grid-form .one .grid-column .cf7sg-responsive {
+	display: none;
+}
+#grid-form .one .grid-column:hover .cf7sg-responsive:not(.column-title) {
+	display: inherit;
+	position: absolute;
+	top: -20px;
+	background: inherit;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+#grid-form .one .add-field-button .button{
+  padding: 0;
+}
+#grid-form .one .dashicons {
+  width: 15px;
+}
+/* Responsive screens */
+@media (max-width:1750px) and (min-width: 1600px) {
+  /* ensure column dashicons are more compact */
+  #grid-form .two .grid-control {
+    width: 17px;
+  }
+}
+@media (max-width:1400px) and (min-width: 1250px) {
+  /* ensure column dashicons are more compact */
+  #grid-form .one-fourth .grid-control {
+    width: 17px;
+  }
+}
+@media (max-width:1250px)  and (min-width: 1100px){
+  /* ensure column dashicons are more compact */
+  #grid-form .one-third .grid-control {
+    width: 17px;
+  }
+}
+@media (max-width:1000px) and (min-width: 900px) {
+  /* ensure column dashicons are more compact */
+  #grid-form .one-third .grid-control,
+  #grid-form .two .grid-control,
+  #grid-form .one-fourth .grid-control {
+    width: 17px;
+  }
 }

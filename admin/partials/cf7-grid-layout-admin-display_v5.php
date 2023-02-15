@@ -70,7 +70,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
       <li><a class="button" href="#cf7-editor-grid"><?=__('Grid','cf7-grid-layout')?></a></li>
       <li><a class="button" href="#cf7-codemirror">&lt;HTML/&gt;</a></li>
     </ul>
-    <div id="cf7-editor-grid">
+    <div id="cf7-editor-grid" style="--cf7sg-col-label:'<?=__('Col','cf7-grid-layout')?>'">
       <div class="form-controls">
         <span class="form-switch">
           <span class="grid control-label active"><?= __('Single form', 'cf7-grid-layout');?></span>
@@ -369,59 +369,54 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-col">
   <div class="grid-column">
     <span class="dashicons dashicons-move column-control grid-control"></span>
-    <span class="column-label column-control">
-      <div class="column-offset centred-menu column-setting unset" style="--cf7sg-cm-val:0">
-        <div class="cm-list">
-          <div class="cm-item" data-cmi="0" data-cmv="">[.]</div>
-          <div class="cm-item" data-cmi="1" data-cmv="offset-one">[1/12]</div>
-          <div class="cm-item" data-cmi="2" data-cmv="offset-two">[1/6]</div>
-          <div class="cm-item" data-cmi="3" data-cmv="offset-three">[1/4]</div>
-          <div class="cm-item" data-cmi="4" data-cmv="offset-four">[1/3]</div>
-          <div class="cm-item" data-cmi="5" data-cmv="offset-five">[5/12]</div>
-          <div class="cm-item" data-cmi="6" data-cmv="offset-six">[1/2]</div>
-          <div class="cm-item" data-cmi="7" data-cmv="offset-seven">[7/12]</div>
-          <div class="cm-item" data-cmi="8" data-cmv="offset-eight">[2/3]</div>
-          <div class="cm-item" data-cmi="9" data-cmv="offset-nine">[3/4]</div>
-          <div class="cm-item" data-cmi="10" data-cmv="offset-ten">[5/6]</div>
-          <div class="cm-item" data-cmi="11" data-cmv="offset-eleven">[11/12]</div>
+    <span class="cf7sg-responsive">
+      <span class="column-label column-control">
+        <div class="column-offset centred-menu column-setting unset" style="--cf7sg-cm-val:0">
+          <div class="cm-list">
+            <div class="cm-item" data-cmi="0" data-cmv="">[.]</div>
+            <div class="cm-item" data-cmi="1" data-cmv="offset-one">[1/12]</div>
+            <div class="cm-item" data-cmi="2" data-cmv="offset-two">[1/6]</div>
+            <div class="cm-item" data-cmi="3" data-cmv="offset-three">[1/4]</div>
+            <div class="cm-item" data-cmi="4" data-cmv="offset-four">[1/3]</div>
+            <div class="cm-item" data-cmi="5" data-cmv="offset-five">[5/12]</div>
+            <div class="cm-item" data-cmi="6" data-cmv="offset-six">[1/2]</div>
+            <div class="cm-item" data-cmi="7" data-cmv="offset-seven">[7/12]</div>
+            <div class="cm-item" data-cmi="8" data-cmv="offset-eight">[2/3]</div>
+            <div class="cm-item" data-cmi="9" data-cmv="offset-nine">[3/4]</div>
+            <div class="cm-item" data-cmi="10" data-cmv="offset-ten">[5/6]</div>
+            <div class="cm-item" data-cmi="11" data-cmv="offset-eleven">[11/12]</div>
+          </div>
         </div>
-      </div>
-      <span class="popup-helper  display-none"><?= __('Column offset','cf7-grid-layout')?></span>
-      <div class="column-size centred-menu column-setting" style="--cf7sg-cm-val:11">
-        <div class="cm-list">
-          <div class="cm-item" data-cmi="0" data-cmv="one">1/12</div>
-          <div class="cm-item" data-cmi="1" data-cmv="two">1/6</div>
-          <div class="cm-item" data-cmi="2" data-cmv="one-fourth">1/4</div>
-          <div class="cm-item" data-cmi="3" data-cmv="one-third">1/3</div>
-          <div class="cm-item" data-cmi="4" data-cmv="five">5/12</div>
-          <div class="cm-item" data-cmi="5" data-cmv="one-half">1/2</div>
-          <div class="cm-item" data-cmi="6" data-cmv="seven">7/12</div>
-          <div class="cm-item" data-cmi="7" data-cmv="two-thirds">2/3</div>
-          <div class="cm-item" data-cmi="8" data-cmv="nine">3/4</div>
-          <div class="cm-item" data-cmi="9" data-cmv="ten">5/6</div>
-          <div class="cm-item" data-cmi="10" data-cmv="eleven">11/12</div>
-          <div class="cm-item" data-cmi="11" data-cmv="full">Full</div>
+        <span class="popup-helper  display-none"><?= __('Column offset','cf7-grid-layout')?></span>
+        <div class="column-size centred-menu column-setting" style="--cf7sg-cm-val:11">
+          <div class="cm-list">
+            <div class="cm-item" data-cmi="0" data-cmv="one">1/12</div>
+            <div class="cm-item" data-cmi="1" data-cmv="two">1/6</div>
+            <div class="cm-item" data-cmi="2" data-cmv="one-fourth">1/4</div>
+            <div class="cm-item" data-cmi="3" data-cmv="one-third">1/3</div>
+            <div class="cm-item" data-cmi="4" data-cmv="five">5/12</div>
+            <div class="cm-item" data-cmi="5" data-cmv="one-half">1/2</div>
+            <div class="cm-item" data-cmi="6" data-cmv="seven">7/12</div>
+            <div class="cm-item" data-cmi="7" data-cmv="two-thirds">2/3</div>
+            <div class="cm-item" data-cmi="8" data-cmv="nine">3/4</div>
+            <div class="cm-item" data-cmi="9" data-cmv="ten">5/6</div>
+            <div class="cm-item" data-cmi="10" data-cmv="eleven">11/12</div>
+            <div class="cm-item" data-cmi="11" data-cmv="full">Full</div>
+          </div>
         </div>
-      </div>
-      <span class="popup-helper display-none"><?= __('Column size','cf7-grid-layout')?></span>
-      <?=__('Col','cf7-grid-layout')?>
+        <span class="popup-helper display-none"><?= __('Column size','cf7-grid-layout')?></span>
+      </span>
+      <span class="dashicons dashicons-admin-generic column-control grid-control"></span>
+      <span class="dashicons dashicons-trash column-control grid-control"></span>
+      <span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
+      <span class="js-icon column-control grid-control" style="display:none;"></span>
+      <span class="dashicons dashicons-editor-code column-control grid-control"></span>
+      <span class="dashicons dashicons-visibility column-control grid-control"></span>
+      <span class="display-none cf7-conditional-group">
+        <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+        <span class="dashicons dashicons-no-alt"></span>
+      </span>
     </span>
-    <span class="dashicons dashicons-admin-generic column-control grid-control"></span>
-    <span class="dashicons dashicons-trash column-control grid-control"></span>
-    <span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
-    <span class="js-icon column-control grid-control" style="display:none;"></span>
-    <span class="dashicons dashicons-editor-code column-control grid-control"></span>
-    <span class="dashicons dashicons-visibility column-control grid-control"></span>
-    <span class="display-none cf7-conditional-group">
-      <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
-      <span class="dashicons dashicons-no-alt"></span>
-    </span>
-    <div class="grid-controls">
-      <!-- <a id="new-row" class="button make-grid column-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
-      <a class="button external-form" href="javascript:void(0);"><?= __('Insert form', 'cf7-grid-layout');?></a>
-      <label class="display-none accordion-label grouping-option"><input type="checkbox" name="grouping-option" class="accordion-rows column-control" /><?=__('Enable accordion','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Group collapsible rows as jQuery accordion','cf7-smart-grid')?></span>
-      <label class="display-none slider-label grouping-option"><input type="checkbox" name="grouping-option" class="slider-rows column-control" /><?=__('Enable slider','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Convert collapsible rows into sides','cf7-smart-grid')?></span> -->
-    </div>
     <div class="cf7-field-label cf7-field-inner">
       <p class="content"><?=__('Field label','cf7-grid-layout')?></p>
       <input type="text" placeholder="<?=__('Field label','cf7-grid-layout')?>"/>

@@ -1578,7 +1578,7 @@
     let $this = $(this), $sizeItem;
     if(oldSize.length > 0) $this.removeClass(oldSize);
     $this.addClass(newSize);
-    $sizeItem = $this.children('.grid-column').find(`.columns-size .cm-item[data-cmv=${newSize}]`);
+    $sizeItem = $this.children('.grid-column').find(`.column-size .cm-item[data-cmv=${newSize}]`);
     $sizeItem.closest('.centred-menu').css('--cf7sg-cm-val',$sizeItem.data('cmi'));
   }
   /** Setup column size/offet in UI menu */
