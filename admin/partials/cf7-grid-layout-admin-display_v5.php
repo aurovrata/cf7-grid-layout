@@ -71,6 +71,9 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
       <li><a class="button" href="#cf7-codemirror">&lt;HTML/&gt;</a></li>
     </ul>
     <div id="cf7-editor-grid" style="--cf7sg-col-label:'<?=__('Col','cf7-grid-layout')?>'">
+      <div class="cf7sg-hide-grid display-none">
+        <p>Please toggle to full screen mode to edit this form</p>
+      </div >
       <div class="form-controls">
         <span class="form-switch">
           <span class="grid control-label active"><?= __('Single form', 'cf7-grid-layout');?></span>
@@ -417,6 +420,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="dashicons dashicons-no-alt"></span>
       </span>
     </span>
+    <span class="dashicons dashicons-ellipsis column-control grid-control display-none"></span>
     <div class="cf7-field-label cf7-field-inner">
       <p class="content"><?=__('Field label','cf7-grid-layout')?></p>
       <input type="text" placeholder="<?=__('Field label','cf7-grid-layout')?>"/>

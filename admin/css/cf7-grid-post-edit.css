@@ -55,7 +55,7 @@ a.helper:hover + span.helper {display: inline;}
 }
 #full-screen-cf7 {
     position: absolute;
-    top: -2.4rem;
+    top: -2.13rem;
     left: 160px;
 		z-index: 100;
 }

@@ -558,7 +558,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #grid-form .cf7-field-type.textarea p.content {
     padding: 35px 0;
 }
-#grid-form  .cf7-field-inner p {
+#grid-form .cf7-field-inner p {
     margin: 0;
     min-height: 20px;
 }

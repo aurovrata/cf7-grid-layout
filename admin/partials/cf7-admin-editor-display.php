@@ -23,9 +23,9 @@ $colour = get_user_meta( get_current_user_id(), 'admin_color', true );
 if(empty($colour)) $colour = 'default';
 ?>
 <div id="cf7sg-editor" class="<?=$colour?>">
-    <div style="position:relative">
-      <a id="full-screen-cf7" class="button" href="javascript:void(0)"><span><?= __('toggle full screen','cf7-grid-layout')?></span></a>
-    </div>
+  <div style="position:relative">
+    <a id="full-screen-cf7" class="button" href="javascript:void(0)"><span><?= __('toggle full screen','cf7-grid-layout')?></span></a>
+  </div>
   <input type="hidden" id="is-cf7sg-form" name="is_cf7sg_form" value="true" />
   <input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
   <input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />

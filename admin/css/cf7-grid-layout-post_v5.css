@@ -173,6 +173,9 @@ grid layout
 #grid-form .cf7sg-grid > .cf7sg-row > .grid-ctrls .dashicons-editor-table {
 	display: none;
 }
+#cf7-editor-grid{
+  position: relative;
+}
 #cf7-editor-grid .add-item-button {
 	margin: 10px 0;
 }
@@ -603,7 +606,7 @@ display: table-row;
   z-index: 9;
   border-radius: 3px;
 }
-#cf7-editor-grid .cm-item::after {
+#cf7-editor-grid .column-size .cm-item::after {
 	content: var(--cf7sg-col-label);
 	padding-left: 2px;
 }
@@ -878,9 +881,10 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #grid-form .cf7-field-type.textarea p.content {
     padding: 35px 0;
 }
-#grid-form  .cf7-field-inner p {
+#grid-form .cf7-field-inner p {
     margin: 0;
     min-height: 20px;
+    overflow-x: hidden;
 }
 #grid-form  .grid-column.submit-field .cf7-field-label,
 #grid-form  .grid-column.submit-field .cf7-field-tip {
@@ -1038,40 +1042,68 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	border-radius: 50%;
 }
 /* remove dashicons from smallest columns */
-#grid-form .one .grid-column .cf7sg-responsive {
-	display: none;
-}
-#grid-form .one .grid-column:hover .cf7sg-responsive:not(.column-title) {
-	display: inherit;
-	position: absolute;
-	top: -20px;
+#grid-form .grid-column .cf7sg-responsive{
+  position: static;
+  display:inline;
+  top: -20px;
 	background: inherit;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
+  z-index: 18;
+  min-width: 162px;
+  right: 0;
+}
+#grid-form .one .grid-column .cf7sg-responsive {
+	display: none;
+}
+#grid-form .one .grid-column .cf7sg-responsive + .dashicons-ellipsis{
+  display: inline;
+  float:right;
+}
+#grid-form .one .grid-column:hover .cf7sg-responsive {
+	position: absolute;
+	display: block;
+  border: solid 1px var(--cf7sg-row-icons);
 }
 #grid-form .one .add-field-button .button{
   padding: 0;
 }
-#grid-form .one .dashicons {
+#grid-form .one .dashicons:not(.dashicons-ellipsis):not(.dashicons-move) {
   width: 15px;
 }
+
 /* Responsive screens */
-@media (max-width:1750px) and (min-width: 1600px) {
-  /* ensure column dashicons are more compact */
-  #grid-form .two .grid-control {
-    width: 17px;
+@media (max-width:1854px) {
+  #grid-form .two .grid-column .cf7sg-responsive {
+    display: none;
+  }
+  #grid-form .two .grid-column:hover .cf7sg-responsive {
+    position: absolute;
+    display: block;
+    border: solid 1px var(--cf7sg-row-icons);
+  }
+  #grid-form .two .grid-column .cf7sg-responsive + .dashicons-ellipsis{
+    display: inline;
+    float:right;
+  }
+  #grid-form .two .dashicons:not(.dashicons-ellipsis):not(.dashicons-move) {
+    width: 15px;
   }
 }
-@media (max-width:1400px) and (min-width: 1250px) {
+@media (max-width:1701px) {
   /* ensure column dashicons are more compact */
-  #grid-form .one-fourth .grid-control {
-    width: 17px;
+  #grid-form .one .add-field-button .field-label {
+    display: none;
+  }
+  #grid-form .one .add-field-button .button .dashicons{
+    width: 20px;
   }
 }
-@media (max-width:1250px)  and (min-width: 1100px){
+@media (max-width:1229px){
   /* ensure column dashicons are more compact */
-  #grid-form .one-third .grid-control {
-    width: 17px;
+  #cf7sg-editor:not(.full-screen) .cf7sg-hide-grid{
+    display:block;
+    position: absolute;
   }
 }
 @media (max-width:1000px) and (min-width: 900px) {
