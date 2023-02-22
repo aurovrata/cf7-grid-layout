@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitive fields, form custom JavaScript
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 6.1.0
+Tested up to: 6.1.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -352,9 +352,15 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 21. (21) The plugin include hooks for further customisation.  Handy helper code snippets are provided within form editor in the metabox 'Actions & Filers', with a set of links on which you can click to copy  the code snippet and paste it in your *functions.php* file.
 22. (22) You can set a maximum number of rows a user can add to a table, by adding the `data-max` attribute to your table element.
 23. (23) You can filter mail tags, hover your mouse over the blue information icon next to each tag and click the link, this will copy the filter code to your clipboard which you can paste into your functions.php file.
+24. (24) Redirect your form on submission to one of your existing pages and retrieve the submitted values from a transient field.
+
 == Changelog ==
-= 4.16.0 =
-* add 'c2p-refill-field' prefill event in public js.
+= 4.15.4 =
+* fix dynamic field validation.
+= 4.15.3 =
+* update mininfied public css.
+= 4.15.2 =
+* fix codemirror init loop.
 = 4.15.1 =
 * fix prefill filter.
 * fix shortcode regex for form detection in pages.

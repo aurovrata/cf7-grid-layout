@@ -1018,27 +1018,30 @@ class Cf7_Grid_Layout_Public {
 	}
 
   /**
-   * Validates required benchmark and dynamic_select tags
-   *
-   * @since 1.0.0
-   * @param WPCF7_Validation $result   validation object
-   * @param Array $tag   an array of cf7 tag attributes and values
-   * @return WPCF7_Validation  validation result
-  **/
-  public function validate_required($result, $tag){
-    if(!isset( $_POST[$tag->name] ) ){
-      return $result; //not submitted hence disabled.
+   * Action to add cf7 SWV schema rules for the dynamic fields.
+   * hooked to 'wpcf7_swv_create_schema'
+   * @since 4.15.4 
+   * @param WPCF7_SWV_Schema $schema itself a WPCF7_SWV_Rule
+   * @param WPCF7_ContactForm $form form object.
+   */
+  function cf7_swv_schemas_dynamic_fields($schema, $form){
+    /** @since 4.10.0 abstract out dynamic lists */
+    do_action('cf7sg_register_dynamic_lists');
+    $lists = cf7sg_get_dynamic_lists();
+    $ids = array_map( function($v){return "$v*";}, array_keys($lists));
+    array_push($ids, 'benchmark*'); //include benchmark as well
+    
+    $tags = $form->scan_form_tags( array(
+      'type' => $ids,
+    ) );
+    foreach ( $tags as $tag ) {
+      $schema->add_rule(
+        wpcf7_swv_create_rule( 'required', array(
+          'field' => $tag->name,
+          'error' => wpcf7_get_message( 'invalid_required' ),
+        ) )
+      );
     }
-    $tag = new WPCF7_FormTag( $tag );
-
-    $name = $tag->name;
-  	$value = isset( $_POST[$name] )
-  		? trim( strtr( (string) sanitize_text_field($_POST[$name]), "\n", " " ) ): '';
-
-  	if ( $tag->is_required() && '' == $value ) {
-  		$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
-    }
-    return $result;
   }
   /**
    * New validation for CF7 5.6 onwards hooked to 'wpcf7_swv_create_schema'
@@ -1048,7 +1051,7 @@ class Cf7_Grid_Layout_Public {
    * @param WPCF7_SWV_Schema $schema itself a WPCF7_SWV_Rule
    * @param WPCF7_ContactForm $form form object.
   */
-  function validate_swv_schemas($schema, $form){
+  function cf7_swv_schemas_repetitive_fields($schema, $form){
     // debug_msg($schema, 'schema...');
     //setup the form id
     $this->form_id = $form->id();
@@ -1066,9 +1069,9 @@ class Cf7_Grid_Layout_Public {
     // 3. check for hidden WPCF conditional fields in tabs/tables/toggles
     $tags = $form->scan_form_tags();
     //cf7 plugin is unable to handle dynamic fields (added or removed).
-    $added_tags = array();
-    $removed_tags = array(); 
-    $valid_tags = array();
+    $added_tags = array(); //these are for repetitive fields, we need to add a tag for each additional repetition.
+    $removed_tags = array();  //these are for fields in unused toggled sections which have not been submitted.
+    $valid_tags = array(); //the tags that have been validated by the CF7 plugin, and which will used as template for added tags.
     foreach ( $tags as $tag ) {
 		  //check to see if this field is an array (table or tab or both).
       $field_type = self::field_type( $tag['name'], $this->form_id );
@@ -1141,7 +1144,9 @@ class Cf7_Grid_Layout_Public {
       return;
     }
     
-    // debug_msg($schema, 'new schema...');
+    // debug_msg($added_tags, 'added tags...');
+    // debug_msg($removed_tags, 'removed tags...');
+    // debug_msg($valid_tags, 'valid tags...');
     //validate the extra schemas once validation by CF7 is done.
     add_filter('wpcf7_validate', function($result) use ($rules,$added_tags, $removed_tags, $valid_tags){
 

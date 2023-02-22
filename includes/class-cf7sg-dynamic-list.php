@@ -558,7 +558,7 @@ class CF7SG_Dynamic_list{
     }
     $other_classes='';
     if(!empty($other_attrs)) $other_classes = ' cf7sg-dl-'.implode(' cf7sg-dl-', array_keys($other_attrs));
-    $html = '<span class="wpcf7-form-control-wrap cf7sg-dl-'. $source['source'] .' '. $tag_name . $other_classes . '">' . PHP_EOL;
+    $html = '<span class="wpcf7-form-control-wrap cf7sg-dl-'. $source['source'] .' '. $tag_name . $other_classes . '" data-name="'.$tag->name.'">' . PHP_EOL;
     //add other attributes found in tag.
     $attributes = array_merge($attributes, $data_attrs);
 
@@ -702,7 +702,9 @@ if(!function_exists('cf7sg_get_dynamic_lists')){
     return CF7SG_Dynamic_list::get_instances($tag_id);
   }
 }
-/* build a dynamic select dropdown */
+/* Register new dyamic list by calling the do_action('cf7sg_register_dynamic_lists');
+build a dynamic select dropdown 
+*/
 if( !function_exists('cf7sg_create_dynamic_select_tag') ){
   function cf7sg_create_dynamic_select_tag(){
     //check if there is an existing instance in memory.

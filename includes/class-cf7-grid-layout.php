@@ -296,12 +296,11 @@ class Cf7_Grid_Layout {
     //setup individual tag filers
     $this->loader->add_filter( 'wpcf7_posted_data', $plugin_public, 'setup_grid_values', 5, 1 );
     //filter cf7 validation
-		$this->loader->add_action('wpcf7_swv_create_schema', $plugin_public, 'validate_swv_schemas', PHP_INT_MAX , 2);
+		$this->loader->add_action('wpcf7_swv_create_schema', $plugin_public, 'cf7_swv_schemas_repetitive_fields', PHP_INT_MAX , 2);
+		$this->loader->add_action('wpcf7_swv_create_schema', $plugin_public, 'cf7_swv_schemas_dynamic_fields', 10 , 2);
 
     $this->loader->add_filter( 'wpcf7_validate', $plugin_public, 'filter_wpcf7_validate', 1, 1);
-    //benchmark validation
-    $this->loader->add_filter( 'wpcf7_validate_dynamic_select*', $plugin_public, 'validate_required', 30, 2 );
-    $this->loader->add_filter( 'wpcf7_validate_benchmark*', $plugin_public, 'validate_required', 30, 2 );
+    
     /**
     * @since 2.1 filter mail tags for tables and tabs.*/
     $this->loader->add_filter( 'wpcf7_mail_tag_replaced', $plugin_public, 'filter_table_tab_mail_tag', 30, 4 );
