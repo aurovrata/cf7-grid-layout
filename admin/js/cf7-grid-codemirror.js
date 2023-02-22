@@ -71,7 +71,7 @@
   }else $(':input',$themeRadio).prop('disabled',true);
 
   $(document).ready( function(){
-    let codemirrorUpdated = false, initCF7sgPage =true, formFields={},
+    let codemirrorUpdated = false, initCF7sgPage = true, formFields={},
       $grid = $('#grid-form'),
       $jsTags = $('#js-tags'),
       gridTab = '#cf7-editor-grid', //default at load time.
