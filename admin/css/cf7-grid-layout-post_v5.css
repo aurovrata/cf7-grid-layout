@@ -91,7 +91,7 @@
 .cf7sg-col.full > .cf7sg-container:not(.cf7sg-collapsible) > .cf7sg-row:not(.cf7-sg-table) > .cf7sg-col:not(.full) + .grid-ctrls .grid-controls .make-grid,
 .button.make-grid.display-none, .cf7sg-row.cf7-sg-table .collapsible-row-label, .cf7sg-row.cf7-sg-table .tabs-row-label, 
 .cf7sg-container.cf7sg-collapsible > .cf7sg-row .cf7sg-row:not(.cf7-sg-table) .grid-ctrls > .dashicons-admin-generic,
-#grid-form .display-none, #js-tags > li.display-none:not(.show-events), .add-row-button .button.display-none {display: none;}
+#cf7sg-editor .display-none, #js-tags > li.display-none:not(.show-events), .add-row-button .button.display-none {display: none;}
 .enable-grouping.grid-column > .grid-controls .grouping-option {
     display: inline-block;
 }
