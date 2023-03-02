@@ -231,6 +231,7 @@ textarea.grid-input {
   position: absolute;
   top: 0;
   right: 0;
+  height: 22px;
 }
 #cf7-editor-grid > .form-controls .grid-controls > * {
 	display: block;
@@ -274,20 +275,20 @@ textarea.grid-input {
 }
 #grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row:not(.cf7-sg-table-footer-row):not(.cf7-sg-table){
    border-style: solid;
-   border-width: 1px;
-   margin-top: 5px;
-   border-radius: 3px;
+   border-width: 2px;
+   /* margin-top: 5px; */
+   /* border-radius: 3px; */
 }
 #grid-form div[data-conditional-group]:not(.cf7sg-col), #grid-form .cf7sg-col.cf7sg-grid[data-conditional-group] {
 	border-style: dashed !important;
 	border-width: 2px !important;
 }
 #grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) {
-  padding: 0 5px;
+  padding: 0 8px;
   position: relative;
 }
 #grid-form .cf7sg-container:not(.cf7sg-slider) > .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col {
-	margin-top: 25px;
+	margin-top: 30px;
 }
 #grid-form .cf7sg-container.cf7sg-slide {
 	margin: 2px 2px 3px 2px;
@@ -451,11 +452,11 @@ textarea.grid-input {
 #grid-form .row-selected .grid-ctrls{
     background-color: var(--cf7sg-row-default);
 }
-#grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row:not(.cf7-sg-table-footer-row) {
+#grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row {
   border-color: var(--cf7sg-row-default);
 }
-#cf7-editor-grid > .form-controls .grid-controls{
-  background-color: var(--cf7sg-col-default);
+#grid-form .cf7sg-container.cf7-sg-tabs > .cf7sg-row{
+  border-color: var(--cf7sg-row-tab);
 }
 #grid-form  .grid-ctrls .dashicons, 
 #grid-form  .grid-ctrls .control-label{
@@ -473,6 +474,9 @@ textarea.grid-input {
 }
 #grid-form .grid-ctrls{
     background-color: var(--cf7sg-row-default);
+}
+#grid-form .grid-ctrls.cf7sg-tabs {
+	background-color: var(--cf7sg-row-tab);
 }
 #grid-form .grid-ctrls .grid-controls{
     background-color: var(--cf7sg-row-default);
@@ -527,6 +531,7 @@ textarea.grid-input {
   max-width: 120px;
   position: relative;
 }
+#grid-form .cf7-sg-tabs  .button.add-tab{ display: none}
 #cf7-editor-grid .add-row-button .button.add-slide {
 	background: var(--cf7sg-row-slide);
 }
