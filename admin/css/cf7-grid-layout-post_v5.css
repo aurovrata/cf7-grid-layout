@@ -1124,16 +1124,30 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 @media (max-width:1229px){
   /* ensure column dashicons are more compact */
-  #cf7sg-editor:not(.full-screen) .cf7sg-hide-grid{
-    display:block;
+  #cf7sg-editor:not(.full-screen) .cf7sg-hide-grid {
+    display: block;
+  }
+  #cf7sg-editor .cf7sg-hide-grid {
     position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    z-index: 18;
+  }
+  .cf7sg-hide-grid p {
+    margin-top: 10%;
+    text-align: center;
+    font-size: 1.5rem;
   }
 }
-@media (max-width:1000px) and (min-width: 900px) {
-  /* ensure column dashicons are more compact */
-  #grid-form .one-third .grid-control,
-  #grid-form .two .grid-control,
-  #grid-form .one-fourth .grid-control {
-    width: 17px;
+@media (max-width:725px) {
+  #cf7sg-editor .cf7sg-hide-grid{
+    display: block;
+  }
+  #cf7sg-editor .cf7sg-hide-grid p.no-ui{
+    display: block;
+  }
+  #cf7sg-editor .cf7sg-hide-grid p.full-ui{
+    display: none;
   }
 }

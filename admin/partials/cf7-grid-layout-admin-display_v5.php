@@ -72,7 +72,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     </ul>
     <div id="cf7-editor-grid" style="--cf7sg-col-label:'<?=__('Col','cf7-grid-layout')?>'">
       <div class="cf7sg-hide-grid display-none">
-        <p>Please toggle to full screen mode to edit this form</p>
+        <p class="full-ui"><?=__('Please toggle to full screen mode to edit this form','cf7-grid-layout')?></p>
+        <p class="no-ui display-none"><?=__('Your device screen is too small to edit this form, use the HTML editor instead.','cf7-grid-layout')?></p>
       </div >
       <div class="form-controls">
         <span class="form-switch">

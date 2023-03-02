@@ -59,6 +59,11 @@ a.helper:hover + span.helper {display: inline;}
     left: 160px;
 		z-index: 100;
 }
+@media (max-width:782px){
+  #full-screen-cf7 {
+    top: -2.7rem;
+  }
+}
 #full-screen-cf7.full-screen {
   position: absolute;
   top: auto;
@@ -79,6 +84,17 @@ a.helper:hover + span.helper {display: inline;}
   margin-left: -15px;
   right:0;
   width: calc( 100% - 170px);
+}
+@media (max-width:960px){
+  #cf7sg-editor.full-screen {
+    width: calc( 100% - 36px);
+  }
+}
+@media (max-width:782px){
+  #cf7sg-editor.full-screen {
+    width: 100%;
+    top: 35px;
+  }
 }
 .folded #cf7sg-editor.full-screen{
 	width: calc( 100% - 46px);
