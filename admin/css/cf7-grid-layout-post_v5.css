@@ -524,12 +524,15 @@ textarea.grid-input {
 	color: var(--cf7sg-row-icons-hover);
 }
 #cf7-editor-grid .add-item-button:not(.add-field-button) .button{
-	background: var(--cf7sg-row-default);
 	color: var(--cf7sg-text-color);
 	border-color: var(--cf7sg-row-icons);
   width: calc(100%/5);
   max-width: 120px;
   position: relative;
+}
+#cf7-editor-grid .add-item-button:not(.add-field-button) .button,
+#cf7sg-grid-modal .cf7sg-uirs label[for="cf7sg-uirs-row"]{
+	background: var(--cf7sg-row-default);
 }
 #grid-form .cf7-sg-tabs  .button.add-tab{ display: none}
 #cf7-editor-grid .add-row-button .button.add-slide {
@@ -537,17 +540,20 @@ textarea.grid-input {
 }
 #cf7-editor-grid .add-row-button .button.add-collapsible,
 #grid-form .grid-controls.collapsible,
-#grid-form .cf7sg-collapsible >.cf7sg-row > .grid-ctrls {
+#grid-form .cf7sg-collapsible >.cf7sg-row > .grid-ctrls,
+#cf7sg-grid-modal .cf7sg-uirs label[for="cf7sg-uirs-coll"] {
 	background: var(--cf7sg-row-collapsible);
 }
 #grid-form .cf7sg-container.cf7sg-collapsible > .cf7sg-row {
   border-color: var(--cf7sg-row-collapsible);
 }
 #cf7-editor-grid .add-row-button .button.add-table,
-#grid-form .cf7-sg-table > .grid-ctrls .grid-controls {
+#grid-form .cf7-sg-table > .grid-ctrls .grid-controls,
+#cf7sg-grid-modal .cf7sg-uirs label[for="cf7sg-uirs-table"] {
 	background: var(--cf7sg-row-table);
 }
-#cf7-editor-grid .add-row-button .button.add-tab {
+#cf7-editor-grid .add-row-button .button.add-tab,
+#cf7sg-grid-modal .cf7sg-uirs label[for="cf7sg-uirs-tabs"] {
 	background: var(--cf7sg-row-tab);
 }
 #cf7-editor-grid .add-slide-button .button.add-slide {
@@ -950,6 +956,35 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 .cf7sg-modal-input.cf7sg-row input, .cf7sg-modal-input.cf7sg-row textarea,.cf7sg-modal-input.cf7sg-row a.button {
 	width: 100%;
 }
+#cf7sg-grid-modal .grid-controls {
+	position: relative;
+	display: flex;
+	height: 300px;
+}
+#cf7sg-grid-modal .cf7sg-uirs {
+	width: 25%;
+}
+#cf7sg-grid-modal .cf7sg-uirs > label {
+	display: inline-flex;
+	width: 100%;
+	padding: 5px 10px;
+	box-sizing: border-box;
+	color: var(--cf7sg-row-icons);
+}
+#cf7sg-grid-modal .cf7sg-settab {
+	display: none;
+}
+#cf7sg-grid-modal input[name="cf7sg-uirst"] {
+	visibility: hidden;
+}
+#cf7sg-grid-modal .cf7sg-uirs > input[name="cf7sg-uirst"]:checked + label + .cf7sg-settab {
+	display: block;
+	position: absolute;
+	top: 50px;
+	z-index: 100;
+	width: 100%;
+	left: 0;
+}
 #cf7sg-custom-html .button-primary {
 	text-align: center;
 	margin-top: 8px;
@@ -1096,7 +1131,83 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #grid-form .one > .grid-column{  
   --cf7sg-r-icon-w:20px;
 } 
+/* vertical row type switch*/
+.cf7sg-switch-vertical{
+  margin: 0;
+  width: 10px;
+  position: relative;
+}
+.cf7sg-switch-vertical input {
+	height: 0;
+	visibility: hidden;
+	position: absolute;
+}
+.cf7sg-switch-vertical input:checked {
+  z-index: 1;
+}
+.cf7sg-switch-vertical input:checked + label {
+  opacity: 1;
+  cursor: default;
+}
+.cf7sg-switch-vertical input:not(:checked) + label:hover {
+  opacity: 0.5;
+}
+.cf7sg-switch-vertical label {
+  opacity: 0.33;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+}
+.cf7sg-switch-vertical .cf7sg-toggle-outside {
+  height: calc(100% - 5px);
+  border-radius: 17px;
+  padding: 11px;
+  overflow: hidden;
+  transition: opacity 0.3s ease-in-out;
+	background: rgba(193, 193, 193, 0.5);
+  position: absolute;
+  right: 0;
+  top: -1px;
+	box-sizing: border-box;
+}
+.cf7sg-switch-vertical .cf7sg-toggle-inside {
+  border-radius: 50%;
+  background: #424242;
+  position: absolute;
+  transition: all 0.3s ease-in-out;
+	height: 17px;
+  left: 3px;
+  top: 4px;
+  width: 17px;
+}
+.cf7sg-switch-vertical {
+  background-color: #00F;
+  width: 0px;
+  height: auto;
+  margin-left: 27px;
+}
+.cf7sg-switch-vertical label {
+  font-size: 15px;
+  line-height: 30px;
+  display: block;
+  width: max-content;
+  height: auto;
+  margin: 0;
+  text-align: left;
+  padding-left: 12px;
+}
+#svrow:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
+  top: 4px;
+}
+#svtable:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
+  top: 38px;
+}
 
+#svcoll:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
+  top: 68px;
+}
+#svtabs:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
+  top: 99px;
+}
 /* Responsive screens */
 @media (max-width:1854px) {
   #grid-form .two > .grid-column .cf7sg-responsive {

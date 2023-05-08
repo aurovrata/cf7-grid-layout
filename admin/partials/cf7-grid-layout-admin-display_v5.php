@@ -17,19 +17,19 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   ?>
 
   <div id="optional-editors">
-    <a class="button jstab cf7sg-cmtab<?=$jscm_required.$editor_disable?>" href="javascript:void(0);"><?=__('Add custom JS','cf7-grid-layout')?></a>
+    <a class="button jstab cf7sg-cmtab<?php esc_attr_e($jscm_required.$editor_disable)?>" href="javascript:void(0);"><?php _e('Add custom JS','cf7-grid-layout')?></a>
     <div id="cf7-js-codemirror" class="display-none">
-      <div  class="codemirror-theme"><?=__('Editor theme:','cf7-grid-layout')?>
+      <div  class="codemirror-theme"><?php _e('Editor theme:','cf7-grid-layout')?>
         <?php $user_js_theme = get_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', true); ?>
         <label>
-          <input type="radio" value="light" name="cf7sg_js_codemirror_theme"<?=('light'==$user_js_theme ? ' checked' : '')?>/><?=__('Light','cf7-grid-layout')?>
+          <input type="radio" value="light" name="cf7sg_js_codemirror_theme"<?php echo ('light'==$user_js_theme ? ' checked' : '')?>/><?php _e('Light','cf7-grid-layout')?>
         </label>
         <label>
-          <input type="radio" value="dark" name="cf7sg_js_codemirror_theme" <?=('dark'==$user_js_theme ? ' checked' : '')?>/><?=__('Dark','cf7-grid-layout')?>
+          <input type="radio" value="dark" name="cf7sg_js_codemirror_theme" <?php echo ('dark'==$user_js_theme ? ' checked' : '')?>/><?php _e('Dark','cf7-grid-layout')?>
         </label>
         <input type="hidden" name="cf7sg_prev_js_file" class="prev-file" />
       </div>
-      <textarea id="cf7-form-js" class="cf7-sg-hidden" data-file="<?=__('File','cf7-grid-layout')?>&nbsp;&gt;&gt;&nbsp;/<?=$js_file?>" name="cf7sg_js_file" data-form="">
+      <textarea id="cf7-form-js" class="cf7-sg-hidden" data-file="<?php _e('File','cf7-grid-layout')?>&nbsp;&gt;&gt;&nbsp;/<?php esc_html_e($js_file)?>" name="cf7sg_js_file" data-form="">
         <?php
         if($js_file_exists){
           $file = file_get_contents(ABSPATH.$js_file);
@@ -40,19 +40,19 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         ?>
       </textarea>
     </div>
-    <a class="button csstab cf7sg-cmtab<?=$csscm_required.$editor_disable?>" href=""><?=__('Add custom CSS','cf7-grid-layout')?></a>
+    <a class="button csstab cf7sg-cmtab <?php esc_attr_e($csscm_required.$editor_disable)?>" href=""><?php _e('Add custom CSS','cf7-grid-layout')?></a>
     <div id="cf7-css-codemirror" class="display-none">
-      <div  class="codemirror-theme"><?=__('Editor theme:','cf7-grid-layout')?>
+      <div  class="codemirror-theme"><?php _e('Editor theme:','cf7-grid-layout')?>
         <?php $user_css_theme = get_user_meta(get_current_user_id(),'_cf7sg_css_cm_theme', true); ?>
         <label>
-          <input type="radio" value="light" name="cf7sg_css_codemirror_theme"<?=('light'==$user_css_theme ? ' checked' : '')?>/><?=__('Light','cf7-grid-layout')?>
+          <input type="radio" value="light" name="cf7sg_css_codemirror_theme" <?php echo ('light'==$user_css_theme ? ' checked' : '')?>/><?php _e('Light','cf7-grid-layout')?>
         </label>
         <label>
-          <input type="radio" value="dark" name="cf7sg_css_codemirror_theme" <?=('dark'==$user_css_theme ? ' checked' : '')?>/><?=__('Dark','cf7-grid-layout')?>
+          <input type="radio" value="dark" name="cf7sg_css_codemirror_theme" <?php echo ('dark'==$user_css_theme ? ' checked' : '')?>/><?php _e('Dark','cf7-grid-layout')?>
         </label>
         <input type="hidden" name="cf7sg_prev_css_file" class="prev-file" />
       </div>
-      <textarea id="cf7-form-css" class="cf7-sg-hidden" data-file="<?=__('File','cf7-grid-layout')?>&nbsp;&gt;&gt;&nbsp;/<?=$css_file?>" name="cf7sg_css_file" data-form="">
+      <textarea id="cf7-form-css" class="cf7-sg-hidden" data-file="<?php _e('File','cf7-grid-layout')?>&nbsp;&gt;&gt;&nbsp;/<?php esc_html_e($css_file)?>" name="cf7sg_css_file" data-form="">
         <?php
         if($css_file_exists){
           $file = file_get_contents(ABSPATH.$css_file);
@@ -67,47 +67,47 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 
   <div id="form-editor-tabs">
     <ul>
-      <li><a class="button" href="#cf7-editor-grid"><?=__('Grid','cf7-grid-layout')?></a></li>
+      <li><a class="button" href="#cf7-editor-grid"><?php _e('Grid','cf7-grid-layout')?></a></li>
       <li><a class="button" href="#cf7-codemirror">&lt;HTML/&gt;</a></li>
     </ul>
-    <div id="cf7-editor-grid" style="--cf7sg-col-label:'<?=__('Col','cf7-grid-layout')?>'">
+    <div id="cf7-editor-grid" style="--cf7sg-col-label:'<?php _e('Col','cf7-grid-layout')?>'">
       <div class="cf7sg-hide-grid display-none">
-        <p class="full-ui"><?=__('Please toggle to full screen mode to edit this form','cf7-grid-layout')?></p>
-        <p class="no-ui display-none"><?=__('Your device screen is too small to edit this form, use the HTML editor instead.','cf7-grid-layout')?></p>
+        <p class="full-ui"><?php _e('Please toggle to full screen mode to edit this form','cf7-grid-layout')?></p>
+        <p class="no-ui display-none"><?php _e('Your device screen is too small to edit this form, use the HTML editor instead.','cf7-grid-layout')?></p>
       </div >
       <div class="form-controls">
         <span class="form-switch">
-          <span class="grid control-label active"><?= __('Single form', 'cf7-grid-layout');?></span>
+          <span class="grid control-label active"><?php _e('Single form', 'cf7-grid-layout');?></span>
           <div class="cf7sg-toggle-button style-r">
             <input type="checkbox" class="form-switch-checkbox checkbox"><div class="knobs"></div><div class="layer"></div>
           </div>
-          <span class="multistep control-label"><?= __('Multistep form', 'cf7-grid-layout');?></span>
+          <span class="multistep control-label"><?php _e('Multistep form', 'cf7-grid-layout');?></span>
         </span>
         <span class="dashicons dashicons-admin-generic form-control grid-control"></span>
         <span class="dashicons dashicons-no-alt form-control grid-control display-none"></span>
         <div class="grid-controls display-none">
           <label class="slider-form-label unique-mod">
-            <?=__('Multistep slider form','cf7-grid-layout')?>
+            <?php _e('Multistep slider form','cf7-grid-layout')?>
             <input type="checkbox" class="slider-form wrap-control" />
           </label>
-          <a class="button template-form" href="javascript:void(0);"><?= __('Load form template', 'cf7-grid-layout');?></a>
-          <a class="button clear-form" href="javascript:void(0);"><?= __('Clear the form', 'cf7-grid-layout');?></a>
+          <a class="button template-form" href="javascript:void(0);"><?php _e('Load form template', 'cf7-grid-layout');?></a>
+          <a class="button clear-form" href="javascript:void(0);"><?php _e('Clear the form', 'cf7-grid-layout');?></a>
         </div>
       </div>
-      <div id="grid-form" class="<?=$cf7_conditional?>"></div>
+      <div id="grid-form" class="<?php esc_attr_e($cf7_conditional)?>"></div>
     </div>
     <div id="cf7-codemirror">
-      <div  class="codemirror-theme"><?=__('Editor theme:','cf7-grid-layout')?>
+      <div  class="codemirror-theme"><?php _e('Editor theme:','cf7-grid-layout')?>
         <?php $user_theme = get_user_meta(get_current_user_id(),'_cf7sg_cm_theme', true);?>
         <label>
-          <input type="radio" value="light" name="cf7sg_codemirror_theme"<?=('light'==$user_theme ? ' checked' : '')?>/><?=__('Light','cf7-grid-layout')?>
+          <input type="radio" value="light" name="cf7sg_codemirror_theme"<?php echo ('light'==$user_theme ? ' checked' : '')?>/><?php _e('Light','cf7-grid-layout')?>
         </label>
         <label>
-          <input type="radio" value="dark" name="cf7sg_codemirror_theme" <?=('dark'==$user_theme ? ' checked' : '')?>/><?=__('Dark','cf7-grid-layout')?>
+          <input type="radio" value="dark" name="cf7sg_codemirror_theme" <?php echo ('dark'==$user_theme ? ' checked' : '')?>/><?php _e('Dark','cf7-grid-layout')?>
         </label>
       </div>
       <textarea id="wpcf7-form" class="cf7-sg-hidden codemirror-cf7-update">
-        <?= esc_textarea( $form_obj->prop( 'form' ) );
+        <?php echo esc_textarea( $form_obj->prop( 'form' ) );
         /** @since 2.8.3 rename codemirror textarea#wpcf7-form and initially popullate with form.  */?>
       </textarea>
     </div>
@@ -118,37 +118,116 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     <span class="dashicons dashicons-trash row-control grid-control"></span>
     <div class="grid-controls collapsible">
       <label class="collapsible-row-label unique-mod">
-        <?=__('Row collapsible','cf7-grid-layout')?>
+        <?php _e('Row collapsible','cf7-grid-layout')?>
         <input type="checkbox" checked="checked" class="collapsible-row wrap-control" />
       </label>
       <label class="collapsible-row-title unique-mod">
-        <?=__('Section title','cf7-grid-layout')?>
+        <?php _e('Section title','cf7-grid-layout')?>
         <input type="text" value=""/>
       </label>
       <label class="collapsible-row-toggle unique-mod">
-        <?=__('Toggled section','cf7-grid-layout')?>
+        <?php _e('Toggled section','cf7-grid-layout')?>
         <input type="checkbox" class="collapsible-toggle wrap-control" />
       </label>
     </div>
   </section>
   <section class="grid-ctrls cf7sg-ui-row display-none">
+		<h3><?php _e('Row Settings','cf7-grid-layout')?></h3>
     <div class="grid-controls">
-      <label class="collapsible-row-label unique-mod">
-        <?=__('Row collapsible','cf7-grid-layout')?>
-        <input type="checkbox" class="collapsible-row wrap-control" />
-      </label>
-      <label class="tabs-row-label unique-mod">
-        <?=__('Tabbed section','cf7-grid-layout')?>
-        <input type="checkbox" class="tabs-row wrap-control" />
-      </label>
-      <label class="cf7-sg-hidden table-row-button table-control">
-        <?=__('Button label','cf7-grid-layout')?>
-        <input type="text" value="<?= __('Add Row','cf7-grid-layout')?>"/>
-      </label>
-      <label class="cf7-sg-hidden footer-row-label table-control unique-mod">
-        <?=__('Row table footer','cf7-grid-layout')?>
-        <input type="checkbox" class="footer-row" />
-      </label>
+			<div class="cf7sg-uirs">
+					<input id="cf7sg-uirs-g" type="radio" name="cf7sg-uirst" value="gen" />
+					<label for="cf7sg-uirs-g"><?php _e('General','cf7-grid-layout')?></label>
+					<div class="cf7sg-settab">
+						<div class="cf7sg-row-type">
+							<div class="cf7sg-switch-vertical">
+								<input id="svrow" type="radio" name="cf7sg-row-switch" checked="checked" />
+								<label for="svrow"><?php _e('Grid row','cf7-grid-layout')?></label>
+								<input id="svtable" type="radio" name="cf7sg-row-switch" />
+								<label for="svtable"><?php _e('Table row','cf7-grid-layout')?></label>
+								<input id="svcoll" type="radio" name="cf7sg-row-switch" />
+								<label for="svcoll"><?php _e('Collapsible row','cf7-grid-layout')?></label>
+								<input id="svtabs" type="radio" name="cf7sg-row-switch" />
+								<label for="svtabs"><?php _e('Tabbed section','cf7-grid-layout')?></label>
+								<span class="cf7sg-toggle-outside">
+									<span class="cf7sg-toggle-inside"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+			</div>
+			<div class="cf7sg-uirs">
+				<input id="cf7sg-uirs-coll" type="radio" name="cf7sg-uirst" value="collapsible" />
+				<label for="cf7sg-uirs-coll"><?php _e('Collapsible row','cf7-grid-layout')?></label>
+				<div class="cf7sg-settab">
+					<div>
+						<?php _e('Title','cf7-grid-layout')?>
+						<input type="text" value=""/>
+					</div>
+					<div>
+						<?php _e('Toggled','cf7-grid-layout')?>
+						<input type="checkbox" class="collapsible-toggle wrap-control" />
+					</div>
+				</div>
+			</div>
+			<div class="cf7sg-uirs">
+				<input id="cf7sg-uirs-table" type="radio" name="cf7sg-uirst" value="table"/>
+				<label for="cf7sg-uirs-table"><?php _e('Table row','cf7-grid-layout')?></label>
+				<div class="cf7sg-settab">
+					<div>
+						<?php _e('Button label','cf7-grid-layout')?>
+						<input type="text" value="<?php _e('Add Row','cf7-grid-layout')?>"/>
+					</div>
+					<div class="footer-row-label table-control unique-mod">
+						<?php _e('Row table footer','cf7-grid-layout')?>
+						<input type="checkbox" class="footer-row " />
+					</div>
+				</div>
+	    </div>
+			<div class="cf7sg-uirs">
+				<input id="cf7sg-uirs-tabs"  type="radio" name="cf7sg-uirst" value="tabs" />
+				<label for="cf7sg-uirs-tabs"><?php _e('Tabbed section','cf7-grid-layout')?></label>
+				<div class="cf7sg-settab">
+				</div>
+			</div>
+    </div>
+  </section>
+	<section class="grid-ctrls cf7sg-ui-table display-none">
+		<h3><?php _e('Table Settings','cf7-grid-layout')?></h3>
+    <div class="grid-controls">
+			<div class="cf7sg-uirs">
+				<input id="cf7sg-uitbls-g" type="radio" name="cf7sg-uitblst" value="gen" />
+				<label for="cf7sg-uitbls-g"><?php _e('General','cf7-grid-layout')?></label>
+				<div class="cf7sg-settab">
+					<div>
+						<?php _e('Title','cf7-grid-layout')?>
+						<input type="text" value=""/>
+					</div>
+					<div>
+						<?php _e('Toggled','cf7-grid-layout')?>
+						<input type="checkbox" class="collapsible-toggle wrap-control" />
+					</div>
+				</div>
+			</div>
+			<div class="cf7sg-uirs">
+				<input id="cf7sg-uirs-table" type="radio" name="cf7sg-uirst" value="table"/>
+				<label for="cf7sg-uirs-table"><?php _e('Table row','cf7-grid-layout')?></label>
+				<div class="cf7sg-settab">
+					<div>
+						<?php _e('Button label','cf7-grid-layout')?>
+						<input type="text" value="<?php _e('Add Row','cf7-grid-layout')?>"/>
+					</div>
+					<div class="footer-row-label table-control unique-mod">
+						<?php _e('Row table footer','cf7-grid-layout')?>
+						<input type="checkbox" class="footer-row " />
+					</div>
+				</div>
+	    </div>
+			<div class="cf7sg-uirs">
+				<input id="cf7sg-uirs-tabs"  type="radio" name="cf7sg-uirst" value="tabs" />
+				<label for="cf7sg-uirs-tabs"><?php _e('Tabbed section','cf7-grid-layout')?></label>
+				<div class="cf7sg-settab">
+				</div>
+			</div>
     </div>
   </section>
   <section class="grid-ctrls cf7sg-form display-none">
@@ -156,17 +235,17 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   </section>
   <section class="grid-ctrls cf7sg-tabs display-none">
     <label class="tab-row-title unique-mod">
-      <?=__('Tab label','cf7-grid-layout')?>
+      <?php _e('Tab label','cf7-grid-layout')?>
       <input type="text" value=""/>
     </label>
   </section>
     <label class="cf7-sg-hidden table-row-button table-control">
-      <?=__('Slide title','cf7-grid-layout')?>
+      <?php _e('Slide title','cf7-grid-layout')?>
       <input type="text" value=""/>
     </label>
   </section>
 </div>
-<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?= esc_textarea( $form_obj->prop( 'form' ) );?></textarea>
+<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?php esc_textarea( $form_obj->prop( 'form' ) );?></textarea>
 <!-- cf7sg - track embeded sub-forms -->
 <input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms" />
 <input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />
@@ -181,9 +260,9 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
       <div class="grid-ctrls cf7sg-ui-row">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label">
-          <span class="row-label display-none"><?= __('Row', 'cf7-grid-layout');?></span>
-          <span class="table-label display-none"><?= __('Table', 'cf7-grid-layout');?></span>
-          <span class="collapsible-label display-none"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
+          <span class="row-label display-none"><?php _e('Row', 'cf7-grid-layout');?></span>
+          <span class="table-label display-none"><?php _e('Table', 'cf7-grid-layout');?></span>
+          <span class="collapsible-label display-none"><?php _e('Collapsible section', 'cf7-grid-layout');?></span>
         </span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
@@ -192,7 +271,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
         <span class="dashicons dashicons-visibility column-control grid-control"></span>
         <span class="display-none cf7-conditional-group">
-          <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+          <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
           <span class="dashicons dashicons-no-alt"></span>
         </span>
       </div>
@@ -203,29 +282,29 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   </div>
   <div class="add-item-button add-row-button">
     <span class="button add-row">
-      <span class="helper-tip display-none"><?= __('Add a row', 'cf7-grid-layout');?></span>
+      <span class="helper-tip display-none"><?php _e('Add a row', 'cf7-grid-layout');?></span>
       <span class="dashicons dashicons-plus"></span>
-      <span><?= __('Row', 'cf7-grid-layout');?></span>
+      <span><?php _e('Row', 'cf7-grid-layout');?></span>
     </span>
     <span class="button add-table">
-      <span class="helper-tip display-none"><?= __('Add a table of repetitive fields', 'cf7-grid-layout');?></span>
+      <span class="helper-tip display-none"><?php _e('Add a table of repetitive fields', 'cf7-grid-layout');?></span>
       <span class="dashicons dashicons-plus"></span>
-      <span><?= __('Table', 'cf7-grid-layout');?></span>
+      <span><?php _e('Table', 'cf7-grid-layout');?></span>
     </span>
     <span class="button add-collapsible">
-      <span class="helper-tip display-none"><?= __('Add a collapsible section', 'cf7-grid-layout');?></span>
+      <span class="helper-tip display-none"><?php _e('Add a collapsible section', 'cf7-grid-layout');?></span>
       <span class="dashicons dashicons-plus"></span>
-      <span><?= __('Collapsible', 'cf7-grid-layout');?></span>
+      <span><?php _e('Collapsible', 'cf7-grid-layout');?></span>
     </span>
     <span class="button add-tab">
-      <span class="helper-tip display-none"><?= __('Add a repetitive tabbular fields section', 'cf7-grid-layout');?></span>
+      <span class="helper-tip display-none"><?php _e('Add a repetitive tabbular fields section', 'cf7-grid-layout');?></span>
       <span class="dashicons dashicons-plus"></span>
-      <span><?= __('Tab', 'cf7-grid-layout');?></span>
+      <span><?php _e('Tab', 'cf7-grid-layout');?></span>
     </span>
     <span class="button add-slide display-none">
-      <span class="helper-tip display-none"><?= __('Add another slide', 'cf7-grid-layout');?></span>
+      <span class="helper-tip display-none"><?php _e('Add another slide', 'cf7-grid-layout');?></span>
       <span class="dashicons dashicons-plus"></span>
-      <span><?= __('Slide', 'cf7-grid-layout');?></span>
+      <span><?php _e('Slide', 'cf7-grid-layout');?></span>
     </span>
   </div>
 </template>
@@ -238,13 +317,13 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="dashicons dashicons-trash ext-form-control"></span>
         <span class="dashicons dashicons-visibility ext-form-control"></span>
         <span class="display-none cf7-conditional-group">
-          <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+          <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
           <span class="dashicons dashicons-no-alt"></span>
         </span>
       </div>
       
       <select class="form-select">
-        <option value=""><?=__('Select contact form 7','cf7-grid-layout')?></option>
+        <option value=""><?php _e('Select contact form 7','cf7-grid-layout')?></option>
         <?php
           $cf7_forms = get_posts(array(
             'post_type' => 'wpcf7_contact_form',
@@ -271,12 +350,12 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     <div class="cf7sg-row">
       <div class="grid-ctrls cf7sg-collapsible-ctrls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
-        <span class="control-label"><?= __('Collapsible section', 'cf7-grid-layout');?></span>
+        <span class="control-label"><?php _e('Collapsible section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
         <span class="dashicons dashicons-visibility row-control grid-control"></span>
         <span class="display-none cf7-conditional-group">
-          <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+          <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
           <span class="dashicons dashicons-no-alt"></span>
         </span>
       </div>
@@ -287,7 +366,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   </div>
 </template>
 <template id="grid-collapsible-with-toggle">
-  <div class="cf7sg-toggle-button style-r" data-on="<?=_x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?=_x('No','toggle label','cf7-grid-layout')?>">
+  <div class="cf7sg-toggle-button style-r" data-on="<?php echo _x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?php echo _x('No','toggle label','cf7-grid-layout')?>">
     <input type="checkbox" class="checkbox"><div class="knobs"></div><div class="layer"></div>
   </div>
 </template>
@@ -296,11 +375,11 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     <div class="cf7sg-row">
       <div class="grid-ctrls cf7sg-tabs">
         <span class="dashicons dashicons-move row-control grid-control"></span>
-        <span class="control-label"><?= __('Tabbed section', 'cf7-grid-layout');?></span>
+        <span class="control-label"><?php _e('Tabbed section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
         <span class="display-none cf7-conditional-group">
-          <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+          <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
           <span class="dashicons dashicons-no-alt"></span>
         </span>
       </div>
@@ -319,8 +398,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     <div class="cf7sg-col full">
       <div class="grid-column-tip">
         <div class="cf7-field-tip cf7-field-inner">
-          <p class="content" style=""><?= __('describe your table here','cf7-grid-layout')?></p>
-          <input type="text" placeholder="<?= __('describe your table here','cf7-grid-layout')?>" style="display: none;" id="">
+          <p class="content" style=""><?php _e('describe your table here','cf7-grid-layout')?></p>
+          <input type="text" placeholder="<?php _e('describe your table here','cf7-grid-layout')?>" style="display: none;" id="">
           <span class="dashicons dashicons-no-alt field-control" style="display: none;"></span>
         </div>
         <textarea class="grid-input cf7-sg-hidden table-footer-tip"></textarea>
@@ -331,21 +410,21 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-multistep-container">
   <div class="cf7sg-container cf7sg-slider">
     <div class="cf7sg-row">
-      <div class="cf7sg-col full cf7sg-slider-section" data-next="" data-prev="" data-submit="<?= __('Submit','cf7-grid-layout');?>" data-dots="false">
+      <div class="cf7sg-col full cf7sg-slider-section" data-next="" data-prev="" data-submit="<?php _e('Submit','cf7-grid-layout');?>" data-dots="false">
         <div class="cf7sg-container cf7sg-slide" id="">
           <div class="cf7sg-slide-title"><span class="cf7sg-title"></span></div>
           <div class="cf7sg-row">
             <div class="grid-ctrls cf7sg-slide">
               <span class="dashicons dashicons-move row-control grid-control"></span>
               <span class="control-label">
-                <span class="slide-label"><?= __('Slide', 'cf7-grid-layout');?></span>
+                <span class="slide-label"><?php _e('Slide', 'cf7-grid-layout');?></span>
               </span>
               <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
               <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
               <span class="dashicons dashicons-no-alt row-control grid-control"></span>
               <span class="dashicons dashicons-trash row-control grid-control"></span>
               <span class="display-none cf7-conditional-group">
-                <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+                <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
                 <span class="dashicons dashicons-no-alt"></span>
               </span>
             </div>
@@ -360,14 +439,14 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 </template>
 <template id="grid-helper">
   <span class="dashicons dashicons-no-alt"></span>
-  <span class="copy-helper"><?=__('Click to copy!','cf7-grid-layout')?></span>
-  <p><?=__('Click-to-copy &amp; paste in your <em>functions.php</em> file.','cf7-grid-layout')?></p>
+  <span class="copy-helper"><?php _e('Click to copy!','cf7-grid-layout')?></span>
+  <p><?php _e('Click-to-copy &amp; paste in your <em>functions.php</em> file.','cf7-grid-layout')?></p>
   <ul class="cf7sg-helper-list"></ul>
 </template>
 <template id="grid-js-helper">
   <span class="dashicons dashicons-no-alt"></span>
-  <span class="copy-helper"><?=__('Click to copy!','cf7-grid-layout')?></span>
-  <p class="js-help"><?= sprintf(__('Click-to-copy &amp; paste in<br/><em>&lt;theme folder&gt;/js/%s.js</em> file.','cf7-grid-layout'), $cf7_key);?></p>
+  <span class="copy-helper"><?php _e('Click to copy!','cf7-grid-layout')?></span>
+  <p class="js-help"><?php echo wp_kses_post( sprintf(__('Click-to-copy &amp; paste in<br/><em>&lt;theme folder&gt;/js/%s.js</em> file.','cf7-grid-layout'), $cf7_key));?></p>
   <ul class="cf7sg-helper-list"></ul>
 </template>
 <template id="grid-col">
@@ -391,7 +470,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
             <div class="cm-item" data-cmi="11" data-cmv="offset-eleven">[11/12]</div>
           </div>
         </div>
-        <span class="popup-helper  display-none"><?= __('Column offset','cf7-grid-layout')?></span>
+        <span class="popup-helper  display-none"><?php _e('Column offset','cf7-grid-layout')?></span>
         <div class="column-size centred-menu column-setting" style="--cf7sg-cm-val:11">
           <div class="cm-list">
             <div class="cm-item" data-cmi="0" data-cmv="one">1/12</div>
@@ -408,7 +487,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
             <div class="cm-item" data-cmi="11" data-cmv="full">Full</div>
           </div>
         </div>
-        <span class="popup-helper display-none"><?= __('Column size','cf7-grid-layout')?></span>
+        <span class="popup-helper display-none"><?php _e('Column size','cf7-grid-layout')?></span>
       </span>
       <span class="dashicons dashicons-admin-generic column-control grid-control"></span>
       <span class="dashicons dashicons-trash column-control grid-control"></span>
@@ -417,30 +496,30 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
       <span class="dashicons dashicons-editor-code column-control grid-control"></span>
       <span class="dashicons dashicons-visibility column-control grid-control"></span>
       <span class="display-none cf7-conditional-group">
-        <label><?= __('Group', 'cf7-grid-layout');?></label><input type="text"/>
+        <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
         <span class="dashicons dashicons-no-alt"></span>
       </span>
     </span>
     <span class="dashicons dashicons-ellipsis column-control grid-control display-none"></span>
     <div class="cf7-field-label cf7-field-inner">
-      <p class="content"><?=__('Field label','cf7-grid-layout')?></p>
-      <input type="text" placeholder="<?=__('Field label','cf7-grid-layout')?>"/>
+      <p class="content"><?php _e('Field label','cf7-grid-layout')?></p>
+      <input type="text" placeholder="<?php _e('Field label','cf7-grid-layout')?>"/>
     </div>
     <div class="cf7-field-type cf7-field-inner">
-      <p class="content"><?=__('[select a field]','cf7-grid-layout')?></p>
-      <textarea class="field-entry" placeholder="<?=__('select a field','cf7-grid-layout')?>"></textarea>
+      <p class="content"><?php _e('[select a field]','cf7-grid-layout')?></p>
+      <textarea class="field-entry" placeholder="<?php _e('select a field','cf7-grid-layout')?>"></textarea>
     </div>
     <div class="cf7-field-tip cf7-field-inner">
-      <p class="content"><?=__('describe your field','cf7-grid-layout')?></p>
-      <input type="text" placeholder="<?=__('describe your field here','cf7-grid-layout')?>" />
+      <p class="content"><?php _e('describe your field','cf7-grid-layout')?></p>
+      <input type="text" placeholder="<?php _e('describe your field here','cf7-grid-layout')?>" />
     </div>
     <textarea class="grid-input display-none"></textarea>
   </div>
   <div class="add-item-button add-field-button">
     <span class=button>
       <span class="dashicons dashicons-plus"></span>
-      <span class="field-label display-none"><?= __('Add Field', 'cf7-grid-layout');?></span>
-      <span class="row-label display-none"><?= __('Add Row', 'cf7-grid-layout');?></span>
+      <span class="field-label display-none"><?php _e('Add Field', 'cf7-grid-layout');?></span>
+      <span class="row-label display-none"><?php _e('Add Row', 'cf7-grid-layout');?></span>
     </span>
   </div>
 </template>
