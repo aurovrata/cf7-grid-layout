@@ -114,31 +114,16 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   </div>
 </div>
 <div id="cf7sg-grid-modal" class="display-none">
-  <section class="grid-ctrls cf7sg-collapsible-ctrls display-none">
-    <span class="dashicons dashicons-trash row-control grid-control"></span>
-    <div class="grid-controls collapsible">
-      <label class="collapsible-row-label unique-mod">
-        <?php _e('Row collapsible','cf7-grid-layout')?>
-        <input type="checkbox" checked="checked" class="collapsible-row wrap-control" />
-      </label>
-      <label class="collapsible-row-title unique-mod">
-        <?php _e('Section title','cf7-grid-layout')?>
-        <input type="text" value=""/>
-      </label>
-      <label class="collapsible-row-toggle unique-mod">
-        <?php _e('Toggled section','cf7-grid-layout')?>
-        <input type="checkbox" class="collapsible-toggle wrap-control" />
-      </label>
-    </div>
-  </section>
-  <section class="grid-ctrls cf7sg-ui-row display-none">
+	<section class="grid-ctrls cf7sg-ui-row">
 		<h3><?php _e('Row Settings','cf7-grid-layout')?></h3>
     <div class="grid-controls">
 			<div class="cf7sg-uirs">
-					<input id="cf7sg-uirs-g" type="radio" name="cf7sg-uirst" value="gen" />
-					<label for="cf7sg-uirs-g"><?php _e('General','cf7-grid-layout')?></label>
+					<input id="cf7sg-uirs-g" type="radio" name="cf7sg-uirst" checked="checked" />
+					<label for="cf7sg-uirs-g"><span><?php _e('General','cf7-grid-layout')?></span></label>
 					<div class="cf7sg-settab">
-						<div class="cf7sg-row-type">
+						<div class="cf7sg-uirs-label"><?php _e('Row type','cf7-grid-layout');?></div>
+						<div class="cf7sg-row-type cf7sg-uirs-ctrl">
+							<p><?php _e('Transform this row','cf7-grid-layout');?></p>
 							<div class="cf7sg-switch-vertical">
 								<input id="svrow" type="radio" name="cf7sg-row-switch" checked="checked" />
 								<label for="svrow"><?php _e('Grid row','cf7-grid-layout')?></label>
@@ -146,7 +131,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 								<label for="svtable"><?php _e('Table row','cf7-grid-layout')?></label>
 								<input id="svcoll" type="radio" name="cf7sg-row-switch" />
 								<label for="svcoll"><?php _e('Collapsible row','cf7-grid-layout')?></label>
-								<input id="svtabs" type="radio" name="cf7sg-row-switch" />
+								<input id="svtabs" type="radio" name="cf7sg-row-switch"/>
 								<label for="svtabs"><?php _e('Tabbed section','cf7-grid-layout')?></label>
 								<span class="cf7sg-toggle-outside">
 									<span class="cf7sg-toggle-inside"></span>
@@ -155,23 +140,27 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 						</div>
 					</div>
 			</div>
-			<div class="cf7sg-uirs">
-				<input id="cf7sg-uirs-coll" type="radio" name="cf7sg-uirst" value="collapsible" />
-				<label for="cf7sg-uirs-coll"><?php _e('Collapsible row','cf7-grid-layout')?></label>
+			<div class="cf7sg-uirs cf7sg-uirs-coll">
+				<input id="cf7sg-uirs-coll" type="radio" name="cf7sg-uirst" />
+				<label for="cf7sg-uirs-coll"><span><?php _e('Collapsible Row','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
-					<div>
-						<?php _e('Title','cf7-grid-layout')?>
-						<input type="text" value=""/>
-					</div>
-					<div>
-						<?php _e('Toggled','cf7-grid-layout')?>
-						<input type="checkbox" class="collapsible-toggle wrap-control" />
+					<div class="cf7sg-uirs-label"><?php _e('Section title','cf7-grid-layout')?></div>
+					<div class="cf7sg-uirs-ctrl"><input type="text" value="" id="cf7sg-coll-title"/></div>
+					<div class="cf7sg-uirs-label"><?php _e('Toggled','cf7-grid-layout')?></div>
+					<div class="cf7sg-uirs-ctrl">
+						<input type="checkbox" class="collapsible-toggle" /><?php _e('enable togle switch','cf7-grid-layout')?>
+						<p><?php _e('Fields within a toggled and collapsed section are disabled and not submitted.','cf7-grid-layout')?></p>
+						<div class="cf7sg-uirs-toggled">
+							<label><?php _e('Toggle labels','cf7-grid-layout')?>: <?php _e('On','cf7-grid-layout')?>-</label>
+							<input size="6" type="text" value="Yes" id="cf7sg-is-toggled"/> | 
+							<label><?php _e('off','cf7-grid-layout')?>-</label><input size="6" type="text" value="No" id=""/>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="cf7sg-uirs">
-				<input id="cf7sg-uirs-table" type="radio" name="cf7sg-uirst" value="table"/>
-				<label for="cf7sg-uirs-table"><?php _e('Table row','cf7-grid-layout')?></label>
+			<div class="cf7sg-uirs cf7sg-uirs-table">
+				<input id="cf7sg-uirs-table" type="radio" name="cf7sg-uirst"/>
+				<label for="cf7sg-uirs-table"><span><?php _e('Table Row','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
 					<div>
 						<?php _e('Button label','cf7-grid-layout')?>
@@ -183,66 +172,26 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 					</div>
 				</div>
 	    </div>
-			<div class="cf7sg-uirs">
-				<input id="cf7sg-uirs-tabs"  type="radio" name="cf7sg-uirst" value="tabs" />
-				<label for="cf7sg-uirs-tabs"><?php _e('Tabbed section','cf7-grid-layout')?></label>
+			<div class="cf7sg-uirs cf7sg-uirs-tabs">
+				<input id="cf7sg-uirs-tabs"  type="radio" name="cf7sg-uirst" />
+				<label for="cf7sg-uirs-tabs"><span><?php _e('Tabbed Section','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
+				</div>
+			</div>
+			<div class="cf7sg-uirs cf7sg-uirs-condition">
+				<input id="cf7sg-uirs-condition"  type="radio" name="cf7sg-uirst" />
+				<label for="cf7sg-uirs-condition"><span><?php _e('Conditional Row','cf7-grid-layout')?></span></label>
+				<div class="cf7sg-settab">
+					<div class="cf7sg-uirs-label"><?php _e('Conditional Group','cf7-grid-layout');?></div>
+					<div class="cf7sg-uirs-ctrl">
+						<input type="checkbox" id="conditional-grp"/>
+						<label for="conditional-grp"><?php _e('Make this row conditional','cf7-grid-layout');?></label>
+					</div>
+					<div class="cf7sg-uirs-label"><?php _e('Group name','cf7-grid-layout');?></div>
+					<div class="cf7sg-uirs-ctrl"><input type="text" id="conditional-grp-name"/></div>
 				</div>
 			</div>
     </div>
-  </section>
-	<section class="grid-ctrls cf7sg-ui-table display-none">
-		<h3><?php _e('Table Settings','cf7-grid-layout')?></h3>
-    <div class="grid-controls">
-			<div class="cf7sg-uirs">
-				<input id="cf7sg-uitbls-g" type="radio" name="cf7sg-uitblst" value="gen" />
-				<label for="cf7sg-uitbls-g"><?php _e('General','cf7-grid-layout')?></label>
-				<div class="cf7sg-settab">
-					<div>
-						<?php _e('Title','cf7-grid-layout')?>
-						<input type="text" value=""/>
-					</div>
-					<div>
-						<?php _e('Toggled','cf7-grid-layout')?>
-						<input type="checkbox" class="collapsible-toggle wrap-control" />
-					</div>
-				</div>
-			</div>
-			<div class="cf7sg-uirs">
-				<input id="cf7sg-uirs-table" type="radio" name="cf7sg-uirst" value="table"/>
-				<label for="cf7sg-uirs-table"><?php _e('Table row','cf7-grid-layout')?></label>
-				<div class="cf7sg-settab">
-					<div>
-						<?php _e('Button label','cf7-grid-layout')?>
-						<input type="text" value="<?php _e('Add Row','cf7-grid-layout')?>"/>
-					</div>
-					<div class="footer-row-label table-control unique-mod">
-						<?php _e('Row table footer','cf7-grid-layout')?>
-						<input type="checkbox" class="footer-row " />
-					</div>
-				</div>
-	    </div>
-			<div class="cf7sg-uirs">
-				<input id="cf7sg-uirs-tabs"  type="radio" name="cf7sg-uirst" value="tabs" />
-				<label for="cf7sg-uirs-tabs"><?php _e('Tabbed section','cf7-grid-layout')?></label>
-				<div class="cf7sg-settab">
-				</div>
-			</div>
-    </div>
-  </section>
-  <section class="grid-ctrls cf7sg-form display-none">
-
-  </section>
-  <section class="grid-ctrls cf7sg-tabs display-none">
-    <label class="tab-row-title unique-mod">
-      <?php _e('Tab label','cf7-grid-layout')?>
-      <input type="text" value=""/>
-    </label>
-  </section>
-    <label class="cf7-sg-hidden table-row-button table-control">
-      <?php _e('Slide title','cf7-grid-layout')?>
-      <input type="text" value=""/>
-    </label>
   </section>
 </div>
 <textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?php esc_textarea( $form_obj->prop( 'form' ) );?></textarea>
@@ -373,7 +322,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-tabs">
   <div class="cf7-sg-tabs cf7sg-container" id="">
     <div class="cf7sg-row">
-      <div class="grid-ctrls cf7sg-tabs">
+      <div class="grid-ctrls cf7sg-tabs-ctrls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label"><?php _e('Tabbed section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
@@ -414,7 +363,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <div class="cf7sg-container cf7sg-slide" id="">
           <div class="cf7sg-slide-title"><span class="cf7sg-title"></span></div>
           <div class="cf7sg-row">
-            <div class="grid-ctrls cf7sg-slide">
+            <div class="grid-ctrls cf7sg-slide-ctrls">
               <span class="dashicons dashicons-move row-control grid-control"></span>
               <span class="control-label">
                 <span class="slide-label"><?php _e('Slide', 'cf7-grid-layout');?></span>

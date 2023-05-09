@@ -475,7 +475,7 @@ textarea.grid-input {
 #grid-form .grid-ctrls{
     background-color: var(--cf7sg-row-default);
 }
-#grid-form .grid-ctrls.cf7sg-tabs {
+#grid-form .grid-ctrls.cf7sg-tabs-ctrls {
 	background-color: var(--cf7sg-row-tab);
 }
 #grid-form .grid-ctrls .grid-controls{
@@ -530,8 +530,7 @@ textarea.grid-input {
   max-width: 120px;
   position: relative;
 }
-#cf7-editor-grid .add-item-button:not(.add-field-button) .button,
-#cf7sg-grid-modal .cf7sg-uirs label[for="cf7sg-uirs-row"]{
+#cf7-editor-grid .add-item-button:not(.add-field-button) .button{
 	background: var(--cf7sg-row-default);
 }
 #grid-form .cf7-sg-tabs  .button.add-tab{ display: none}
@@ -540,20 +539,17 @@ textarea.grid-input {
 }
 #cf7-editor-grid .add-row-button .button.add-collapsible,
 #grid-form .grid-controls.collapsible,
-#grid-form .cf7sg-collapsible >.cf7sg-row > .grid-ctrls,
-#cf7sg-grid-modal .cf7sg-uirs label[for="cf7sg-uirs-coll"] {
+#grid-form .cf7sg-collapsible >.cf7sg-row > .grid-ctrls{
 	background: var(--cf7sg-row-collapsible);
 }
 #grid-form .cf7sg-container.cf7sg-collapsible > .cf7sg-row {
   border-color: var(--cf7sg-row-collapsible);
 }
 #cf7-editor-grid .add-row-button .button.add-table,
-#grid-form .cf7-sg-table > .grid-ctrls .grid-controls,
-#cf7sg-grid-modal .cf7sg-uirs label[for="cf7sg-uirs-table"] {
+#grid-form .cf7-sg-table > .grid-ctrls .grid-controls{
 	background: var(--cf7sg-row-table);
 }
-#cf7-editor-grid .add-row-button .button.add-tab,
-#cf7sg-grid-modal .cf7sg-uirs label[for="cf7sg-uirs-tabs"] {
+#cf7-editor-grid .add-row-button .button.add-tab {
 	background: var(--cf7sg-row-tab);
 }
 #cf7-editor-grid .add-slide-button .button.add-slide {
@@ -956,35 +952,6 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 .cf7sg-modal-input.cf7sg-row input, .cf7sg-modal-input.cf7sg-row textarea,.cf7sg-modal-input.cf7sg-row a.button {
 	width: 100%;
 }
-#cf7sg-grid-modal .grid-controls {
-	position: relative;
-	display: flex;
-	height: 300px;
-}
-#cf7sg-grid-modal .cf7sg-uirs {
-	width: 25%;
-}
-#cf7sg-grid-modal .cf7sg-uirs > label {
-	display: inline-flex;
-	width: 100%;
-	padding: 5px 10px;
-	box-sizing: border-box;
-	color: var(--cf7sg-row-icons);
-}
-#cf7sg-grid-modal .cf7sg-settab {
-	display: none;
-}
-#cf7sg-grid-modal input[name="cf7sg-uirst"] {
-	visibility: hidden;
-}
-#cf7sg-grid-modal .cf7sg-uirs > input[name="cf7sg-uirst"]:checked + label + .cf7sg-settab {
-	display: block;
-	position: absolute;
-	top: 50px;
-	z-index: 100;
-	width: 100%;
-	left: 0;
-}
 #cf7sg-custom-html .button-primary {
 	text-align: center;
 	margin-top: 8px;
@@ -1131,6 +1098,110 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #grid-form .one > .grid-column{  
   --cf7sg-r-icon-w:20px;
 } 
+/* Row modal tabbed settings */
+#cf7sg-grid-modal {
+	background: var(--cf7sg-row-default);
+	padding: 0;
+	font-size: 15px;
+	max-width: 600px;
+}
+#cf7sg-grid-modal.cf7sg-collapsible-ctrls{
+	background: var(--cf7sg-row-collapsible);
+}
+#cf7sg-grid-modal.cf7sg-table-ctrls{
+	background: var(--cf7sg-row-table);
+}
+#cf7sg-grid-modal.cf7sg-tabs-ctrls{
+	background: var(--cf7sg-row-tab);
+}
+#cf7sg-grid-modal h3 {
+	padding: 20px;
+	margin: 0;
+	color: #fff;
+}
+#cf7sg-grid-modal .grid-controls {
+	position: relative;
+	display: flex;
+	height: 300px;
+}
+#cf7sg-grid-modal .cf7sg-uirs {
+	width: 25%;
+	box-sizing: border-box;
+}
+.cf7sg-uirs-tabs, .cf7sg-uirs-table, .cf7sg-uirs-coll,.cf7sg-uirs-toggled{
+	display: none;
+}
+.collapsible-toggle:checked ~ .cf7sg-uirs-toggled {
+	display: block;
+}
+#cf7sg-coll-title{
+	width:100%;
+}
+#cf7sg-grid-modal.cf7sg-collapsible-ctrls .cf7sg-uirs.cf7sg-uirs-coll,
+#cf7sg-grid-modal.cf7sg-tabs-ctrls .cf7sg-uirs.cf7sg-uirs-tabs, 
+#cf7sg-grid-modal.cf7sg-table-ctrls .cf7sg-uirs.cf7sg-uirs-table {
+	display: block;
+}
+#cf7sg-grid-modal .grid-controls .cf7sg-uirs:first-child {
+	padding-left: 20px;
+}
+#cf7sg-grid-modal .cf7sg-settab {
+	background: #fff;
+	height: 100%;
+	padding: 20px;
+	box-sizing: border-box;
+}
+#cf7sg-grid-modal .cf7sg-uirs > input {
+	position: absolute;
+	visibility: hidden;
+}
+#cf7sg-grid-modal .cf7sg-uirs > label {
+	display: inline-flex;
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	color: var(--cf7sg-row-icons);
+	border-radius: 15px 15px 0 0;
+}
+#cf7sg-grid-modal .cf7sg-uirs > label span{
+	text-align: center;
+	width: 100%;;
+}
+#cf7sg-grid-modal .cf7sg-uirs > input:checked + label {
+	background: #fff;
+	color: inherit;
+	font-weight: bold;
+}
+#cf7sg-grid-modal .cf7sg-settab p{
+	margin: 0 0 10px 0;
+	font-size: inherit;
+}
+#cf7sg-grid-modal .cf7sg-settab {
+	display: none;
+}
+#cf7sg-grid-modal .cf7sg-settab .cf7sg-uirs-label {
+	width: 150px;
+	display: inline-block;
+	vertical-align: top;
+	font-weight: bold;
+	margin: 10px 0;
+}
+#cf7sg-grid-modal .cf7sg-settab .cf7sg-uirs-ctrl {
+	width: calc( 100% - 155px);
+	display: inline-block;
+	vertical-align: top;
+	margin: 10px 0;
+}
+#cf7sg-grid-modal input[name="cf7sg-uirst"] {
+	visibility: hidden;
+}
+#cf7sg-grid-modal .cf7sg-uirs > input[name="cf7sg-uirst"]:checked + label + .cf7sg-settab {
+	display: block;
+	position: absolute;
+	z-index: 100;
+	width: 100%;
+	left: 0;
+}
 /* vertical row type switch*/
 .cf7sg-switch-vertical{
   margin: 0;
@@ -1145,17 +1216,42 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 .cf7sg-switch-vertical input:checked {
   z-index: 1;
 }
-.cf7sg-switch-vertical input:checked + label {
-  opacity: 1;
-  cursor: default;
+.cf7sg-switch-vertical label {
+	line-height: 30px;
+	display: block;
+	width: max-content;
+	height: auto;
+	margin: 0 0 0 3px;
+	text-align: left;
+	padding: 0 20px 0 9px;
+	border-radius: 0 15px 15px 0;
+  transition: opacity 0.3s ease-in-out;
 }
-.cf7sg-switch-vertical input:not(:checked) + label:hover {
+.cf7sg-switch-vertical input:checked + label {
+  cursor: default;
+	color: #fff;
+	font-weight: bold;
+}
+.cf7sg-switch-vertical input#svrow:checked + label {
+	background-color: var(--cf7sg-row-default);
+}
+.cf7sg-switch-vertical input#svtable:checked + label {
+	background-color: var(--cf7sg-row-table);
+}
+.cf7sg-switch-vertical input#svcoll:checked + label {
+	background-color: var(--cf7sg-row-collapsible);
+}
+.cf7sg-switch-vertical input#svtabs:checked + label {
+	background-color: var(--cf7sg-row-tab);
+}
+.cf7sg-switch-vertical input:not(:checked):not(:disabled) + label:hover {
   opacity: 0.5;
 }
-.cf7sg-switch-vertical label {
+.cf7sg-switch-vertical input:disabled + label {
   opacity: 0.33;
+}	
+.cf7sg-switch-vertical input:not(:disabled) + label {
   cursor: pointer;
-  transition: opacity 0.3s ease-in-out;
 }
 .cf7sg-switch-vertical .cf7sg-toggle-outside {
   height: calc(100% - 5px);
@@ -1163,7 +1259,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   padding: 11px;
   overflow: hidden;
   transition: opacity 0.3s ease-in-out;
-	background: rgba(193, 193, 193, 0.5);
+	background: rgba(193, 193, 193, 0.29);
   position: absolute;
   right: 0;
   top: -1px;
@@ -1171,7 +1267,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 .cf7sg-switch-vertical .cf7sg-toggle-inside {
   border-radius: 50%;
-  background: #424242;
+  background: var(--cf7sg-row-default);
   position: absolute;
   transition: all 0.3s ease-in-out;
 	height: 17px;
@@ -1185,28 +1281,18 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   height: auto;
   margin-left: 27px;
 }
-.cf7sg-switch-vertical label {
-  font-size: 15px;
-  line-height: 30px;
-  display: block;
-  width: max-content;
-  height: auto;
-  margin: 0;
-  text-align: left;
-  padding-left: 12px;
-}
 #svrow:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
-  top: 4px;
+  top: 6px;
 }
 #svtable:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
-  top: 38px;
+  top: 36px;
 }
 
 #svcoll:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
-  top: 68px;
+  top: 66px;
 }
 #svtabs:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
-  top: 99px;
+  top: 96px;
 }
 /* Responsive screens */
 @media (max-width:1854px) {

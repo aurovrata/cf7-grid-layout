@@ -39,7 +39,7 @@
     }
   }
   let wpcf7Value = '';
-  const $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html'), $customTagModal = $('#cf7sg-custom-tag'), $gridModal=$('#cf7sg-grid-modal');
+  const $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html'), $customTagModal = $('#cf7sg-custom-tag'), $gridModal= $('#cf7sg-grid-modal');
   $.modal.defaults.modalClass= "cf7sg-modal modal";
 	$(document).ready( function(){
     /** @since 5.0 scan tag with form generators  */
@@ -190,7 +190,7 @@
           id = 'cf7-sg-table-'+(new Date).getTime();
           $this.attr('id', id);
         }
-        let $ctrl = $this.find('.cf7sg-row.cf7-sg-table > .grid-ctrls' );
+        let $ctrl = $this.find('.cf7sg-row.cf7-sg-table > .grid-ctrls' ).addClass('cf7sg-table-ctrls');;
         // $('input', $ctrl).prop('checked', true);
         //set button label
         let text = $this.data('button');
@@ -519,10 +519,9 @@
       toggleCentredMenus($target);
       /* ---------------------------------------------------------------------------FORM CONTROLS */
       if( $target.is('.dashicons-admin-generic') ){ //------------------show controls modal
-        let cl = [...$target.closest('.grid-ctrls').prop('classList')];
-        cl = '.'+cl.join('.');
+        let cl = $target.closest('.grid-ctrls').attr("class");
+				$gridModal.attr('class',cl);
         $gridModal.modal();
-        $(cl,$gridModal).show();
         return true;
       }
       
@@ -568,7 +567,7 @@
           case $target.is('.add-table'):
             $added = $row.insertNewRow(); //without button.
             $added.find('.add-row-button').remove();
-            $added.find('.cf7sg-row').addClass('cf7-sg-table');
+            $added.find('.cf7sg-row').addClass('cf7-sg-table').find('.grid-ctrls').addClass('cf7sg-table-ctrls');
             $added.addClass('cf7-sg-table').attr('id', 'cf7-sg-table-'+(new Date).getTime() )
             $added.fireGridUpdate('add','table-row');
             break;
