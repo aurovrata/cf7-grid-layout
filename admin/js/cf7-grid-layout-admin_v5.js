@@ -41,6 +41,7 @@
   let wpcf7Value = '';
   const $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html'), $customTagModal = $('#cf7sg-custom-tag'), $gridModal= $('#cf7sg-grid-modal');
   $.modal.defaults.modalClass= "cf7sg-modal modal";
+	
 	$(document).ready( function(){
     /** @since 5.0 scan tag with form generators  */
     document.querySelectorAll('#cf7-taggenerator-forms form.tag-generator-panel').forEach((el)=>{
@@ -67,6 +68,8 @@
     $wpcf7Editor = $('textarea#wpcf7-form-hidden');
     $grid = $('#grid-form');
     $gridEditor = $('#cf7-editor-grid');
+		// track conditional plugin on modal settings.
+		if($grid.is('.cf7-conditional-group')) $.modal.defaults.modalClass += ' cf7-conditional-group';
     
     /** @since v5.0 improved cf7 tag regex pattern. */
     cf7TagRgxp = ['hidden']; //by default no hidden button.
@@ -136,11 +139,6 @@
             $this.children().remove();
             $this.text('');
             break;
-        }
-        //populate conditional groups if any.
-        if($grid.is('.cf7-conditional-group') && $this.data('conditional-group')){
-          $('.cf7-conditional-group input', $area).val($this.data('conditional-group'));
-          $('.dashicons-visibility',$area).removeClass('dashicons-visibility').addClass('dashicons-hidden');
         }
         $this.prepend($area.children());
         
@@ -519,9 +517,35 @@
       toggleCentredMenus($target);
       /* ---------------------------------------------------------------------------FORM CONTROLS */
       if( $target.is('.dashicons-admin-generic') ){ //------------------show controls modal
-        let cl = $target.closest('.grid-ctrls').attr("class");
+        let cl = $target.closest('.grid-ctrls').attr("class"),
+					$col = $target.closest('.cf7sg-col');
 				$gridModal.attr('class',cl);
         $gridModal.modal();
+				//populate conditional groups if any.
+        if($grid.is('.cf7-conditional-group') && $col.data('conditional-group')){
+          $('input#conditional-grp-name', $gridModal).val($cal.data('conditional-group'));
+          $('input#conditional-grp', $gridModal).get(0).checked=true;
+        }
+				switch(true){
+					case $gridModal.is('.cf7sg-collapsible-ctrls'): //collapsible row.
+						$('input#svcoll', $gridModal).get(0).checked = true;
+						$('.cf7sg-switch-vertical > input').not('#svrow').prop('disabled', true); //disable the row types.
+						// is it toggled?
+						break;
+					case $gridModal.is('.cf7sg-table-ctrls'): //table row.
+						$('input#svtable', $gridModal).get(0).checked = true;
+						$('.cf7sg-switch-vertical > input').not('#svrow').prop('disabled', true); //disable the row types.
+
+						break;
+					case $gridModal.is('.cf7sg-tabs-ctrls'): //tabs row.
+						$('input#svtabs', $gridModal).get(0).checked = true;
+						$('.cf7sg-switch-vertical > input').not('#svrow').prop('disabled', true); //disable the row types.
+						break;
+					default:
+						$('input#svrow', $gridModal).get(0).checked = true;
+						$('.cf7sg-switch-vertical > input').prop('disabled', false); //disable the row types.
+						break;
+				}
         return true;
       }
       
@@ -1117,7 +1141,7 @@
       let g = d.textContent.match(/\[group\s(.*)\]/);
       if(g && d.textContent.trim().indexOf('[group')<3 && g.length>1){ //conditional div content
         d.setAttribute('data-conditional-group', g[1]);
-        //replace the [group ... as well as the last matching [/gorup]
+        //replace the [group ... as well as the last matching [/group].
         d.innerHTML = d.innerHTML.replace(new RegExp('\\['+s+'\\s(.*)\\]'), '').replace(new RegExp('(\\[\\/'+s+'\\])(?!.*\\1)'), '');
       }
     });

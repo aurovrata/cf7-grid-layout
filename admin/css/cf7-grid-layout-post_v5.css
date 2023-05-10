@@ -171,9 +171,6 @@ grid layout
 #grid-form .cf7sg-row.cf7-sg-table .grid-controls input[type=checkbox] {
 	margin-right: 0;
 }
-#grid-form .cf7sg-grid > .cf7sg-row > .grid-ctrls .dashicons-editor-table {
-	display: none;
-}
 #cf7-editor-grid{
   position: relative;
 }
@@ -499,9 +496,6 @@ textarea.grid-input {
 }
 #grid-form .cf7sg-container:not(.cf7sg-slider):not(.cf7sg-slide) .grid-column, #grid-form .grid-controls {
 	background-color: var(--cf7sg-col-default);
-}
-#grid-form .cf7-sg-table .grid-ctrls .dashicons-editor-table{
-    color:var(--cf7sg-row-default);
 }
 #grid-form .cf7sg-slide > .cf7sg-row > .grid-ctrls {
 	background: var(--cf7sg-row-slide);

@@ -149,7 +149,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 					<div class="cf7sg-uirs-label"><?php _e('Toggled','cf7-grid-layout')?></div>
 					<div class="cf7sg-uirs-ctrl">
 						<input type="checkbox" class="collapsible-toggle" /><?php _e('enable togle switch','cf7-grid-layout')?>
-						<p><?php _e('Fields within a toggled and collapsed section are disabled and not submitted.','cf7-grid-layout')?></p>
+						<p><em><?php _e('Fields within a toggled and collapsed section are disabled and not submitted.','cf7-grid-layout')?></em></p>
 						<div class="cf7sg-uirs-toggled">
 							<label><?php _e('Toggle labels','cf7-grid-layout')?>: <?php _e('On','cf7-grid-layout')?>-</label>
 							<input size="6" type="text" value="Yes" id="cf7sg-is-toggled"/> | 
@@ -162,13 +162,12 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 				<input id="cf7sg-uirs-table" type="radio" name="cf7sg-uirst"/>
 				<label for="cf7sg-uirs-table"><span><?php _e('Table Row','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
-					<div>
-						<?php _e('Button label','cf7-grid-layout')?>
-						<input type="text" value="<?php _e('Add Row','cf7-grid-layout')?>"/>
-					</div>
-					<div class="footer-row-label table-control unique-mod">
-						<?php _e('Row table footer','cf7-grid-layout')?>
-						<input type="checkbox" class="footer-row " />
+					<div class="cf7sg-uirs-label"><?php _e('Button label','cf7-grid-layout')?></div>
+					<div class="cf7sg-uirs-ctrl"><input type="text" id="cf7sg-uirs-table-button" value="<?php _e('Add Row','cf7-grid-layout')?>"/></div>
+					<div class="cf7sg-uirs-label"><?php _e('Table footer row','cf7-grid-layout')?></div>
+					<div class="cf7sg-uirs-ctrl">
+						<input type="checkbox" id="cf7sg-uirs-table-footer" /><?php _e('enable footer row','cf7-grid-layout')?>
+						<p><em><?php _e('Adds an addtional row below the table and above the control button for additional content such as helper text.','cf7-grid-layout')?></em></p>
 					</div>
 				</div>
 	    </div>
@@ -194,7 +193,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     </div>
   </section>
 </div>
-<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?php esc_textarea( $form_obj->prop( 'form' ) );?></textarea>
+<textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?php echo esc_textarea( $form_obj->prop( 'form' ) );?></textarea>
 <!-- cf7sg - track embeded sub-forms -->
 <input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms" />
 <input type="hidden" value="" id="cf7sg-tabs-fields" name="cf7sg-tabs-fields" />
@@ -216,13 +215,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
         <span class="dashicons dashicons-menu-alt row-control grid-control"></span>
-        <span class="dashicons dashicons-editor-table row-control grid-control"></span>
         <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
         <span class="dashicons dashicons-visibility column-control grid-control"></span>
-        <span class="display-none cf7-conditional-group">
-          <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
-          <span class="dashicons dashicons-no-alt"></span>
-        </span>
       </div>
       <div class="cf7sg-col full">
         <template class="inner-template">#grid-col</template>
@@ -264,11 +258,6 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="dashicons dashicons-move ext-form-control"></span>
         <span class="dashicons dashicons-admin-generic ext-form-control"></span>
         <span class="dashicons dashicons-trash ext-form-control"></span>
-        <span class="dashicons dashicons-visibility ext-form-control"></span>
-        <span class="display-none cf7-conditional-group">
-          <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
-          <span class="dashicons dashicons-no-alt"></span>
-        </span>
       </div>
       
       <select class="form-select">
@@ -302,11 +291,6 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="control-label"><?php _e('Collapsible section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
-        <span class="dashicons dashicons-visibility row-control grid-control"></span>
-        <span class="display-none cf7-conditional-group">
-          <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
-          <span class="dashicons dashicons-no-alt"></span>
-        </span>
       </div>
       <div class="cf7sg-col full">
         <template class="inner-template">#grid-row</template>
@@ -327,10 +311,6 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="control-label"><?php _e('Tabbed section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
-        <span class="display-none cf7-conditional-group">
-          <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
-          <span class="dashicons dashicons-no-alt"></span>
-        </span>
       </div>
       <div class="cf7sg-col full">
         <input type="radio" class="display-none" id=""/>
@@ -372,10 +352,6 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
               <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
               <span class="dashicons dashicons-no-alt row-control grid-control"></span>
               <span class="dashicons dashicons-trash row-control grid-control"></span>
-              <span class="display-none cf7-conditional-group">
-                <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
-                <span class="dashicons dashicons-no-alt"></span>
-              </span>
             </div>
             <div class="cf7sg-col full">
               <template class="inner-template">#grid-row</template>

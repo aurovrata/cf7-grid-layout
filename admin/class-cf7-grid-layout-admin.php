@@ -1029,9 +1029,9 @@ class Cf7_Grid_Layout_Admin {
   	$args['mail'] = isset( $_POST['wpcf7-mail'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail'] ): array();
   	$args['mail_2'] = isset( $_POST['wpcf7-mail-2'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail-2'] ): array();
   	$args['messages'] = isset( $_POST['wpcf7-messages'] ) ? $_POST['wpcf7-messages'] : array();
-	foreach($args['messages'] as $key=>$value){
-		$args['messages'][$key] = sanitize_text_field($value);
-	}
+		foreach($args['messages'] as $key=>$value){
+			$args['messages'][$key] = sanitize_text_field($value);
+		}
   	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] ) ? sanitize_textarea_field($_POST['wpcf7-additional-settings']) : '';
 
 
@@ -1045,7 +1045,8 @@ class Cf7_Grid_Layout_Admin {
 	  }
     update_post_meta($post_id, '_cf7sg_sub_forms', $sanitised_sub_forms);
     //save form fields which are in tabs or tables.
-    $tt_fields = json_decode(stripslashes($_POST['cf7sg-table-fields']));
+		$tt_fields = sanitize_text_field($_POST['cf7sg-table-fields']);
+    $tt_fields = json_decode(stripslashes($tt_fields));
     if(empty($tt_fields)) $tt_fields = array();
     if(!is_array($tt_fields)) $tt_fields = array($tt_fields);
   	$sanitised_table_fields = array();
@@ -1061,7 +1062,8 @@ class Cf7_Grid_Layout_Admin {
   	}
     update_post_meta($post_id, '_cf7sg_grid_table_names', $sanitised_table_fields);
     //tabs
-    $tt_fields = json_decode(stripslashes($_POST['cf7sg-tabs-fields']));
+		$tt_fields = sanitize_text_field($_POST['cf7sg-tabs-fields']);
+    $tt_fields = json_decode(stripslashes($tt_fields));
     if(empty($tt_fields)) $tt_fields = array();
     if(!is_array($tt_fields)) $tt_fields = array($tt_fields);
   	$sanitised_tab_fields = array();
@@ -1078,7 +1080,8 @@ class Cf7_Grid_Layout_Admin {
     update_post_meta($post_id, '_cf7sg_grid_tabs_names', $sanitised_tab_fields);
     /** track toggled fields.
     * @since 2.5*/
-    $tt_fields = json_decode(stripslashes($_POST['cf7sg-toggle-fields']));
+		$tt_fields = sanitize_text_field($_POST['cf7sg-toggle-fields']);
+    $tt_fields = json_decode(stripslashes($tt_fields));
     if(empty($tt_fields)) $tt_fields = array();
     if(!is_array($tt_fields)) $tt_fields = array($tt_fields);
   	$sanitised_toggled_fields = array();
@@ -1094,12 +1097,14 @@ class Cf7_Grid_Layout_Admin {
   	}
     update_post_meta($post_id, '_cf7sg_grid_toggled_names', $sanitised_toggled_fields);
     /** @since 4.0.0 track tabbed toggles */
-    $ttgls = json_decode(stripslashes($_POST['cf7sg-tabbed-toggles']));
+		$ttgls = sanitize_text_field($_POST['cf7sg-tabbed-toggles']);
+    $ttgls = json_decode(stripslashes($ttgls));
     if(empty($ttgls)) $ttgls = array();
     if(!is_array($ttgls)) $ttgls = array($ttgls);
     update_post_meta($post_id, '_cf7sg_grid_tabbed_toggles', $ttgls);
     /** @since 4.0.0 track grouped toggles */
-    $ttgls = json_decode(stripslashes($_POST['cf7sg-grouped-toggles']));
+		$ttgls = sanitize_text_field($_POST['cf7sg-grouped-toggles']);
+    $ttgls = json_decode(stripslashes($ttgls));
     if(empty($ttgls)) $ttgls = array();
     if(is_object($ttgls)) $ttgls = get_object_vars($ttgls); //convert to array.
     else $ttgls = array();
