@@ -113,25 +113,26 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     </div>
   </div>
 </div>
-<div id="cf7sg-grid-modal" class="display-none">
+<div id="cf7sg-grid-modal" class="display-none"></div>
+<template id="cf7sg-grid-modal-tpl">
 	<section class="grid-ctrls cf7sg-ui-row">
 		<h3><?php _e('Row Settings','cf7-grid-layout')?></h3>
     <div class="grid-controls">
 			<div class="cf7sg-uirs">
-					<input id="cf7sg-uirs-g" type="radio" name="cf7sg-uirst" checked="checked" />
+					<input id="cf7sg-uirs-g" type="radio" name="cf7sg-uirst" checked="checked" class="cf7sg-uirs-tab"/>
 					<label for="cf7sg-uirs-g"><span><?php _e('General','cf7-grid-layout')?></span></label>
 					<div class="cf7sg-settab">
 						<div class="cf7sg-uirs-label"><?php _e('Row type','cf7-grid-layout');?></div>
 						<div class="cf7sg-row-type cf7sg-uirs-ctrl">
 							<p><?php _e('Transform this row','cf7-grid-layout');?></p>
 							<div class="cf7sg-switch-vertical">
-								<input id="svrow" type="radio" name="cf7sg-row-switch" checked="checked" />
+								<input id="svrow" type="radio" name="cf7sg-row-switch" checked="checked" class="cf7sg-uirs-rowtype"/>
 								<label for="svrow"><?php _e('Grid row','cf7-grid-layout')?></label>
-								<input id="svtable" type="radio" name="cf7sg-row-switch" />
+								<input id="svtable" type="radio" name="cf7sg-row-switch" class="cf7sg-uirs-rowtype"/>
 								<label for="svtable"><?php _e('Table row','cf7-grid-layout')?></label>
-								<input id="svcoll" type="radio" name="cf7sg-row-switch" />
+								<input id="svcoll" type="radio" name="cf7sg-row-switch" class="cf7sg-uirs-rowtype"/>
 								<label for="svcoll"><?php _e('Collapsible row','cf7-grid-layout')?></label>
-								<input id="svtabs" type="radio" name="cf7sg-row-switch"/>
+								<input id="svtabs" type="radio" name="cf7sg-row-switch"class="cf7sg-uirs-rowtype"/>
 								<label for="svtabs"><?php _e('Tabbed section','cf7-grid-layout')?></label>
 								<span class="cf7sg-toggle-outside">
 									<span class="cf7sg-toggle-inside"></span>
@@ -141,7 +142,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 					</div>
 			</div>
 			<div class="cf7sg-uirs cf7sg-uirs-coll">
-				<input id="cf7sg-uirs-coll" type="radio" name="cf7sg-uirst" />
+				<input id="cf7sg-uirs-coll" type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
 				<label for="cf7sg-uirs-coll"><span><?php _e('Collapsible Row','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
 					<div class="cf7sg-uirs-label"><?php _e('Section title','cf7-grid-layout')?></div>
@@ -159,7 +160,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 				</div>
 			</div>
 			<div class="cf7sg-uirs cf7sg-uirs-table">
-				<input id="cf7sg-uirs-table" type="radio" name="cf7sg-uirst"/>
+				<input id="cf7sg-uirs-table" type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
 				<label for="cf7sg-uirs-table"><span><?php _e('Table Row','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
 					<div class="cf7sg-uirs-label"><?php _e('Button label','cf7-grid-layout')?></div>
@@ -172,13 +173,13 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 				</div>
 	    </div>
 			<div class="cf7sg-uirs cf7sg-uirs-tabs">
-				<input id="cf7sg-uirs-tabs"  type="radio" name="cf7sg-uirst" />
+				<input id="cf7sg-uirs-tabs"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
 				<label for="cf7sg-uirs-tabs"><span><?php _e('Tabbed Section','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
 				</div>
 			</div>
 			<div class="cf7sg-uirs cf7sg-uirs-condition">
-				<input id="cf7sg-uirs-condition"  type="radio" name="cf7sg-uirst" />
+				<input id="cf7sg-uirs-condition"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
 				<label for="cf7sg-uirs-condition"><span><?php _e('Conditional Row','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
 					<div class="cf7sg-uirs-label"><?php _e('Conditional Group','cf7-grid-layout');?></div>
@@ -192,7 +193,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 			</div>
     </div>
   </section>
-</div>
+</template>
 <textarea id="wpcf7-form-hidden" name="wpcf7-form" class="hidden" data-config-field="form.body"><?php echo esc_textarea( $form_obj->prop( 'form' ) );?></textarea>
 <!-- cf7sg - track embeded sub-forms -->
 <input type="hidden" value="" id="cf7sg-embeded-forms" name="cf7sg-embeded-forms" />

@@ -39,7 +39,7 @@
     }
   }
   let wpcf7Value = '';
-  const $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html'), $customTagModal = $('#cf7sg-custom-tag'), $gridModal= $('#cf7sg-grid-modal');
+  const $modal = $('#cf7sg-field-edit'), $tagModal = $('#cf7sg-tag-list'), $customModal = $('#cf7sg-custom-html'), $customTagModal = $('#cf7sg-custom-tag');
   $.modal.defaults.modalClass= "cf7sg-modal modal";
 	
 	$(document).ready( function(){
@@ -518,7 +518,9 @@
       /* ---------------------------------------------------------------------------FORM CONTROLS */
       if( $target.is('.dashicons-admin-generic') ){ //------------------show controls modal
         let cl = $target.closest('.grid-ctrls').attr("class"),
-					$col = $target.closest('.cf7sg-col');
+					$col = $target.closest('.cf7sg-col'),
+					$row = $target.closest(''),
+					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()); 
 				$gridModal.attr('class',cl);
         $gridModal.modal();
 				//populate conditional groups if any.
@@ -542,10 +544,31 @@
 						$('.cf7sg-switch-vertical > input').not('#svrow').prop('disabled', true); //disable the row types.
 						break;
 					default:
-						$('input#svrow', $gridModal).get(0).checked = true;
-						$('.cf7sg-switch-vertical > input').prop('disabled', false); //disable the row types.
+						// $('input#svrow', $gridModal).get(0).checked = true;
+						// $('.cf7sg-switch-vertical > input').prop('disabled', false); //disable the row types.
 						break;
 				}
+
+				//listen for changes
+				$gridModal.change('input', (e)=>{
+					let $t = $(e.target);
+					switch(true){
+						case $t.is('.cf7sg-uirs-tab'): //tab change.
+							break; //noting to do here.
+						case $t.is('.cf7sg-uirs-rowtype'): //change row type.
+							//convert row
+							switch(true){
+								case $t.is('#svrow'):
+									$row.convertUIRow();
+									break;
+								default:
+									let type = $t.attr('id').replace('sv','');
+									$row.convertUIRow(type);
+									break;
+							}
+							break;
+					}
+				});
         return true;
       }
       
@@ -629,24 +652,6 @@
           $container.after($col.children('.cf7sg-container').remove());
           $container.remove();
           $grid.fireGridUpdate('remove','collapsible-row');
-        }
-        //toggle disable the sibling input
-        $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
-        return true;
-      }else if($target.is('.row-control.dashicons-editor-table')){ //-------------checkbox table row
-        if($target.is('.cf7-sg-table *')){
-          let $table = $target.closest('.cf7sg-container');
-          $table.find('.cf7sg-row.cf7-sg-table').removeClass('cf7-sg-table');
-          $table.removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
-          if($table.is('.cf7-sg-table-footer')){
-            $table.find('.cf7-sg-table-footer-row').remove(); 
-            $table.removeClass('cf7-sg-table-footer');
-            $table.find('input.footer-row').prop('checked', false);
-          }
-        }else{
-          let id = 'cf7-sg-table-'+(new Date).getTime();
-          $target.closest('.cf7sg-row').addClass('cf7-sg-table');
-          $target.closest('.cf7sg-container').addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
         }
         //toggle disable the sibling input
         $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
@@ -1130,6 +1135,29 @@
     });
   }
   /* some function definitions...*/
+	$.fn.convertUIRow = function(type){
+		let $row = $(this);
+		if(!$row.is('.cf7sg-container')) return false;
+		if('undefined' == typeof type){
+			if($row.is('.cf7-sg-table')){ //convert back to a row.
+				$row.find('.cf7sg-row.cf7-sg-table').removeClass('cf7-sg-table');
+				$$row.removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
+				if($row.is('.cf7-sg-table-footer')){
+					$row.find('.cf7-sg-table-footer-row').remove(); 
+					$row.removeClass('cf7-sg-table-footer');
+				}
+			}
+		}else{
+			switch(type){
+				case 'table':
+					let id = 'cf7-sg-table-'+(new Date).getTime();
+					$row.children('.cf7sg-row').addClass('cf7-sg-table');
+					$row.addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
+					break;
+			}
+		}
+		return $row;
+	}
   $.fn.trackConditionalGroups = function(s,r){
     if('undefined' == typeof s) s='group';
     if('undefined' == typeof r) r='';

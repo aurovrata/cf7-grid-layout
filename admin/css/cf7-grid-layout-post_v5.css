@@ -1161,6 +1161,9 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	text-align: center;
 	width: 100%;;
 }
+#cf7sg-grid-modal .cf7sg-uirs > input:not(:checked) + label:hover {
+	cursor: pointer;
+}
 #cf7sg-grid-modal .cf7sg-uirs > input:checked + label {
 	background: #fff;
 	color: inherit;
