@@ -1122,10 +1122,14 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	width: 25%;
 	box-sizing: border-box;
 }
-.cf7sg-uirs-tabs, .cf7sg-uirs-table, .cf7sg-uirs-coll,.cf7sg-uirs-toggled{
+.cf7sg-uirs-tabs, .cf7sg-uirs-table, .cf7sg-uirs-coll,.cf7sg-uirs-toggled, .cf7sg-uirs-cg{
 	display: none;
 }
-.collapsible-toggle:checked ~ .cf7sg-uirs-toggled {
+.cf7sg-uirs-cg{
+	margin-top: 10px;
+}
+.collapsible-toggle:checked ~ .cf7sg-uirs-toggled,
+#conditional-grp:checked ~ .cf7sg-uirs-cg {
 	display: block;
 }
 #cf7sg-coll-title{

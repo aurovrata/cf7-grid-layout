@@ -182,13 +182,15 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 				<input id="cf7sg-uirs-condition"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
 				<label for="cf7sg-uirs-condition"><span><?php _e('Conditional Row','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
-					<div class="cf7sg-uirs-label"><?php _e('Conditional Group','cf7-grid-layout');?></div>
+					<div class="cf7sg-uirs-label"><?php _e('Conditional [group]','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
 						<input type="checkbox" id="conditional-grp"/>
 						<label for="conditional-grp"><?php _e('Make this row conditional','cf7-grid-layout');?></label>
+						<div class="cf7sg-uirs-cg">
+							<label for="conditional-grp-name"><?php _e('Group name','cf7-grid-layout');?></label>
+							<input type="text" id="conditional-grp-name"/>
+						</div>
 					</div>
-					<div class="cf7sg-uirs-label"><?php _e('Group name','cf7-grid-layout');?></div>
-					<div class="cf7sg-uirs-ctrl"><input type="text" id="conditional-grp-name"/></div>
 				</div>
 			</div>
     </div>

@@ -519,13 +519,13 @@
       if( $target.is('.dashicons-admin-generic') ){ //------------------show controls modal
         let cl = $target.closest('.grid-ctrls').attr("class"),
 					$col = $target.closest('.cf7sg-col'),
-					$row = $target.closest(''),
+					$row = $target.closest('.cf7sg-container'), //the current row modal settings.
 					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()); 
 				$gridModal.attr('class',cl);
         $gridModal.modal();
 				//populate conditional groups if any.
-        if($grid.is('.cf7-conditional-group') && $col.data('conditional-group')){
-          $('input#conditional-grp-name', $gridModal).val($cal.data('conditional-group'));
+        if($grid.is('.cf7-conditional-group') && $row.data('conditional-group')){
+          $('input#conditional-grp-name', $gridModal).val($row.data('conditional-group'));
           $('input#conditional-grp', $gridModal).get(0).checked=true;
         }
 				switch(true){
@@ -550,7 +550,7 @@
 				}
 
 				//listen for changes
-				$gridModal.change('input', (e)=>{
+				$('section.cf7sg-ui-row', $gridModal).change('input', (e)=>{
 					let $t = $(e.target);
 					switch(true){
 						case $t.is('.cf7sg-uirs-tab'): //tab change.
@@ -566,6 +566,13 @@
 									$row.convertUIRow(type);
 									break;
 							}
+							break;
+						case $t.is('#conditional-grp') && !$t.is(':checked'): //confitional group.
+							$row.removeAttr('data-conditional-group');
+							$('#conditional-grp-name', $gridModal).val('');
+							break;
+						case $t.is('#conditional-grp-name'):
+							$row.attr('data-conditional-group', $t.val());
 							break;
 					}
 				});
@@ -628,52 +635,6 @@
         return true;
       }else if( $target.is('.dashicons-no-alt.row-control') ) { //----------------hide controls
         //take care by toggleControl
-        return true;
-      }else if($target.is('input.collapsible-row')){ //-------------checkbox collapsible row
-        let $container = $target.closest('.cf7sg-container'), 
-          $anchor = $container.prev(), action;
-        
-        if($target.is(':checked')){
-          $target.prop('checked', false); //wrapper container will be checked instead.
-          
-          action = 'after';
-          if($anchor.length===0){ 
-            $anchor = $container.parent();
-            action = 'prepend';
-          }
-          //wrap its content into a new row.
-          $anchor.insertNewRow($container.remove(), '#grid-collapsible', action);
-          $container.after($rowTemplt.find('.add-row-button').clone());
-          $container = (action=='after' ? $anchor.next():$anchor.children('.cf7sg-collapsible') );
-          $container.attr('id',randString(6));
-          $container.fireGridUpdate('add','collapsible-row');
-        }else{
-          let $col = $container.children('.cf7sg-row').children('.cf7sg-col');
-          $container.after($col.children('.cf7sg-container').remove());
-          $container.remove();
-          $grid.fireGridUpdate('remove','collapsible-row');
-        }
-        //toggle disable the sibling input
-        $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
-        return true;
-      }else if($target.is('input.tabs-row')){ //-------------checkbox tabbed row
-        let $panel = $target.closest('.cf7sg-container');
-        return true;
-        if($target.is(':checked')){
-          let id = 'cf7-sg-tab-'+(new Date).getTime();
-          $panel.addClass('cf7-sg-tabs-panel').attr('id',id);
-          $panel.before($('#grid-tabs').html());
-          $panel.closest('.cf7sg-col').addClass('cf7-sg-tabs');
-          $('li a', $panel.siblings('ul.cf7-sg-tabs-list')).attr('href','#'+id);
-          $panel.fireGridUpdate('add','tabbed-row');
-        }else{
-          $panel.removeClass('cf7-sg-tabs-panel');
-          $panel.closest('.cf7sg-col').removeClass('cf7-sg-tabs');
-          $panel.siblings('ul.cf7-sg-tabs-list').remove();
-          $panel.fireGridUpdate('remove','tabbed-row');
-        }
-        //toggle disable the sibling input
-        $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
         return true;
       }else if($target.is('input.footer-row')){ //-------------checkbox footer row
         let $table = $target.closest('.cf7sg-container');
@@ -1138,14 +1099,27 @@
 	$.fn.convertUIRow = function(type){
 		let $row = $(this);
 		if(!$row.is('.cf7sg-container')) return false;
-		if('undefined' == typeof type){
-			if($row.is('.cf7-sg-table')){ //convert back to a row.
-				$row.find('.cf7sg-row.cf7-sg-table').removeClass('cf7-sg-table');
-				$$row.removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
-				if($row.is('.cf7-sg-table-footer')){
-					$row.find('.cf7-sg-table-footer-row').remove(); 
-					$row.removeClass('cf7-sg-table-footer');
-				}
+		if('undefined' == typeof type){ //convert back to a normal row.
+			switch(true){
+				case $row.is('.cf7-sg-table'): //convert back to a row.
+					$row.find('.cf7sg-row.cf7-sg-table').removeClass('cf7-sg-table');
+					$row.removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
+					if($row.is('.cf7-sg-table-footer')){
+						$row.find('.cf7-sg-table-footer-row').remove(); 
+						$row.removeClass('cf7-sg-table-footer');
+					}
+					break;
+				case $row.is('.cf7sg-collapsible'):
+					let $col = $row.children('.cf7sg-row').children('.cf7sg-col');
+					$row.after($col.children('.cf7sg-container').remove());
+					$row.remove();
+					$grid.fireGridUpdate('remove','collapsible-row');
+					break;
+				case $row.is('.cf7-sg-tabs'):
+					let $panel = $row.find('cf7-sg-panel');
+					$row.after($panel.children('.cf7sg-container').remove());
+					$row.remove().fireGridUpdate('remove','tabbed-row');
+					break;					
 			}
 		}else{
 			switch(type){
@@ -1153,6 +1127,41 @@
 					let id = 'cf7-sg-table-'+(new Date).getTime();
 					$row.children('.cf7sg-row').addClass('cf7-sg-table');
 					$row.addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
+					break;
+				case 'coll':
+					let $added = $row.insertNewRow('', '#grid-collapsible', 'after');
+					$added.attr('id',randString(6));//.find('.add-row-button').remove();
+					$added.fireGridUpdate('add','collapsible-row');
+					$added = $added.find('.cf7sg-container');
+					$added.after($row.remove());
+					$added.remove();
+          // $anchor = $container.prev(), action;
+        
+          
+          // action = 'after';
+          // if($anchor.length===0){ 
+          //   $anchor = $container.parent();
+          //   action = 'prepend';
+          // }
+          // //wrap its content into a new row.
+          // $anchor.insertNewRow($container.remove(), '#grid-collapsible', action);
+          // $container.after($rowTemplt.find('.add-row-button').clone());
+          // $container = (action=='after' ? $anchor.next():$anchor.children('.cf7sg-collapsible') );
+          // $container.attr('id',randString(6));
+          // $container.fireGridUpdate('add','collapsible-row');
+        	break;
+				case 'tabs':
+					let $panel = $target.closest('.cf7sg-container');
+        if($target.is(':checked')){
+          let id = 'cf7-sg-tab-'+(new Date).getTime();
+          $panel.addClass('cf7-sg-tabs-panel').attr('id',id);
+          $panel.before($('#grid-tabs').html());
+          $panel.closest('.cf7sg-col').addClass('cf7-sg-tabs');
+          $('li a', $panel.siblings('ul.cf7-sg-tabs-list')).attr('href','#'+id);
+          $panel.fireGridUpdate('add','tabbed-row');
+        }else{
+          
+        }
 					break;
 			}
 		}
