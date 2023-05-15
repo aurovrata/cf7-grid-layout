@@ -115,7 +115,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 </div>
 <div id="cf7sg-grid-modal" class="display-none"></div>
 <template id="cf7sg-grid-modal-tpl">
-	<section class="grid-ctrls cf7sg-ui-row">
+	<section class="grid-ctrls">
 		<h3><?php _e('Row Settings','cf7-grid-layout')?></h3>
     <div class="grid-controls">
 			<div class="cf7sg-uirs">
@@ -289,7 +289,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   <div class="cf7sg-container cf7sg-collapsible">
     <div class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></div>
     <div class="cf7sg-row">
-      <div class="grid-ctrls cf7sg-collapsible-ctrls">
+      <div class="grid-ctrls cf7sg-coll-ctrls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label"><?php _e('Collapsible section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>

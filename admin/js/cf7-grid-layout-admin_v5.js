@@ -188,7 +188,7 @@
           id = 'cf7-sg-table-'+(new Date).getTime();
           $this.attr('id', id);
         }
-        let $ctrl = $this.find('.cf7sg-row.cf7-sg-table > .grid-ctrls' ).addClass('cf7sg-table-ctrls');;
+        let $ctrl = $this.find('.cf7sg-row.cf7-sg-table > .grid-ctrls' ).attr('class','grid-ctrls cf7sg-table-ctrls');;
         // $('input', $ctrl).prop('checked', true);
         //set button label
         let text = $this.data('button');
@@ -520,8 +520,9 @@
         let cl = $target.closest('.grid-ctrls').attr("class"),
 					$col = $target.closest('.cf7sg-col'),
 					$row = $target.closest('.cf7sg-container'), //the current row modal settings.
-					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()); 
-				$gridModal.attr('class',cl);
+					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
+					$innerSection = $gridModal.children('section.grid-ctrls'); 
+				$innerSection.attr('class',cl);
         $gridModal.modal();
 				//populate conditional groups if any.
         if($grid.is('.cf7-conditional-group') && $row.data('conditional-group')){
@@ -529,28 +530,20 @@
           $('input#conditional-grp', $gridModal).get(0).checked=true;
         }
 				switch(true){
-					case $gridModal.is('.cf7sg-collapsible-ctrls'): //collapsible row.
-						$('input#svcoll', $gridModal).get(0).checked = true;
-						$('.cf7sg-switch-vertical > input').not('#svrow').prop('disabled', true); //disable the row types.
-						// is it toggled?
+					case $innerSection.is('.cf7sg-ui-row'): //default row.
+						$('input#svrow', $gridModal).get(0).checked = true;
+						$('.cf7sg-switch-vertical > input', $gridModal).prop('disabled', false); //disable the row types.
 						break;
-					case $gridModal.is('.cf7sg-table-ctrls'): //table row.
-						$('input#svtable', $gridModal).get(0).checked = true;
-						$('.cf7sg-switch-vertical > input').not('#svrow').prop('disabled', true); //disable the row types.
-
-						break;
-					case $gridModal.is('.cf7sg-tabs-ctrls'): //tabs row.
-						$('input#svtabs', $gridModal).get(0).checked = true;
-						$('.cf7sg-switch-vertical > input').not('#svrow').prop('disabled', true); //disable the row types.
-						break;
-					default:
-						// $('input#svrow', $gridModal).get(0).checked = true;
-						// $('.cf7sg-switch-vertical > input').prop('disabled', false); //disable the row types.
+					default: //other row type.	
+						let type = $innerSection.attr('class').replace('grid-ctrls', '').trim();
+						type = type.match(/[^cf7sg\-](.*)[^\-ctrls]/g); //tabs row.
+						$('input#sv'+type[0], $gridModal).get(0).checked = true;
+						$('.cf7sg-switch-vertical > input',$gridModal).not('#svrow').prop('disabled', true); //disable the row types.
 						break;
 				}
 
 				//listen for changes
-				$('section.cf7sg-ui-row', $gridModal).change('input', (e)=>{
+				$innerSection.change('input', (e)=>{
 					let $t = $(e.target);
 					switch(true){
 						case $t.is('.cf7sg-uirs-tab'): //tab change.
@@ -560,11 +553,15 @@
 							switch(true){
 								case $t.is('#svrow'):
 									$row.convertUIRow();
+									$innerSection.attr('class','grid-ctrls cf7sg-row-ctrls');
+									$('.cf7sg-switch-vertical > input:disabled',$gridModal).prop('disabled', false); //enable the row types.
 									break;
 								default:
 									let type = $t.attr('id').replace('sv','');
 									$row.convertUIRow(type);
-									break;
+									$innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
+									$('.cf7sg-switch-vertical > input').not('#svrow',$gridModal).prop('disabled', true); //disable the row types.
+						break;
 							}
 							break;
 						case $t.is('#conditional-grp') && !$t.is(':checked'): //confitional group.
@@ -621,7 +618,7 @@
           case $target.is('.add-table'):
             $added = $row.insertNewRow(); //without button.
             $added.find('.add-row-button').remove();
-            $added.find('.cf7sg-row').addClass('cf7-sg-table').find('.grid-ctrls').addClass('cf7sg-table-ctrls');
+            $added.find('.cf7sg-row').addClass('cf7-sg-table').find('.grid-ctrls').attr('class','grid-ctrls cf7sg-table-ctrls');
             $added.addClass('cf7-sg-table').attr('id', 'cf7-sg-table-'+(new Date).getTime() )
             $added.fireGridUpdate('add','table-row');
             break;
@@ -1121,12 +1118,14 @@
 					$row.remove().fireGridUpdate('remove','tabbed-row');
 					break;					
 			}
+			$row.find('.grid-ctrls').first().attr('class','grid-ctrls cf7sg-ui-row'); //identify settings 
 		}else{
 			switch(type){
 				case 'table':
 					let id = 'cf7-sg-table-'+(new Date).getTime();
 					$row.children('.cf7sg-row').addClass('cf7-sg-table');
 					$row.addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
+					$row.find('.grid-ctrls').first().attr('class','grid-ctrls cf7sg-table-ctrls');
 					break;
 				case 'coll':
 					let $added = $row.insertNewRow('', '#grid-collapsible', 'after');
@@ -1134,7 +1133,7 @@
 					$added.fireGridUpdate('add','collapsible-row');
 					$added = $added.find('.cf7sg-container');
 					$added.after($row.remove());
-					$added.remove();
+					// $added.remove();
           // $anchor = $container.prev(), action;
         
           
