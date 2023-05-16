@@ -516,20 +516,27 @@
       //close any column size popups
       toggleCentredMenus($target);
       /* ---------------------------------------------------------------------------FORM CONTROLS */
-      if( $target.is('.dashicons-admin-generic') ){ //------------------show controls modal
+			if( $target.is('.dashicons-admin-generic') ){ //------------------show controls modal
         let cl = $target.closest('.grid-ctrls').attr("class"),
-					$col = $target.closest('.cf7sg-col'),
-					$row = $target.closest('.cf7sg-container'), //the current row modal settings.
+					$container = $target.closest('.cf7sg-container'), //the current row modal settings.
 					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
 					$innerSection = $gridModal.children('section.grid-ctrls'); 
+				
 				$innerSection.attr('class',cl);
         $gridModal.modal();
+				if($innerSection.is('.cf7sg-ui-col')){
+					$innerSection.removeClass('grid-column');
+					$container = $target.closest('.cf7sg-col');
+					$('input#cf7sg-uirs-col', $innerSection).prop('checked',true);
+				}
 				//populate conditional groups if any.
-        if($grid.is('.cf7-conditional-group') && $row.data('conditional-group')){
-          $('input#conditional-grp-name', $gridModal).val($row.data('conditional-group'));
+        if($grid.is('.cf7-conditional-group') && $container.data('conditional-group')){
+          $('input#conditional-grp-name', $gridModal).val($container.data('conditional-group'));
           $('input#conditional-grp', $gridModal).get(0).checked=true;
         }
 				switch(true){
+					case $innerSection.is('.cf7sg-ui-col'): //column setting.
+						break;
 					case $innerSection.is('.cf7sg-ui-row'): //default row.
 						$('input#svrow', $gridModal).get(0).checked = true;
 						$('.cf7sg-switch-vertical > input', $gridModal).prop('disabled', false); //disable the row types.
@@ -552,24 +559,24 @@
 							//convert row
 							switch(true){
 								case $t.is('#svrow'):
-									$row.convertUIRow();
+									$container.convertUIRow();
 									$innerSection.attr('class','grid-ctrls cf7sg-row-ctrls');
 									$('.cf7sg-switch-vertical > input:disabled',$gridModal).prop('disabled', false); //enable the row types.
 									break;
 								default:
 									let type = $t.attr('id').replace('sv','');
-									$row.convertUIRow(type);
+									$container.convertUIRow(type);
 									$innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
 									$('.cf7sg-switch-vertical > input').not('#svrow',$gridModal).prop('disabled', true); //disable the row types.
 						break;
 							}
 							break;
 						case $t.is('#conditional-grp') && !$t.is(':checked'): //confitional group.
-							$row.removeAttr('data-conditional-group');
+							$container.removeAttr('data-conditional-group');
 							$('#conditional-grp-name', $gridModal).val('');
 							break;
 						case $t.is('#conditional-grp-name'):
-							$row.attr('data-conditional-group', $t.val());
+							$container.attr('data-conditional-group', $t.val());
 							break;
 					}
 				});
@@ -632,19 +639,6 @@
         return true;
       }else if( $target.is('.dashicons-no-alt.row-control') ) { //----------------hide controls
         //take care by toggleControl
-        return true;
-      }else if($target.is('input.footer-row')){ //-------------checkbox footer row
-        let $table = $target.closest('.cf7sg-container');
-        if($table.is('.cf7sg-container.cf7-sg-table')){
-          if($target.is(':checked')){
-            $table.addClass('cf7-sg-table-footer').append($('#grid-table-footer-row').html()).fireGridUpdate('add','footer-row');
-          }else{
-            $table.find('.cf7-sg-table-footer-row').remove();
-            $table.removeClass('cf7-sg-table-footer').fireGridUpdate('remove','footer-row');
-          }
-          //toggle disable the sibling input
-          $target.parent().siblings('label.unique-mod').children('input').prop('disabled', function(i,v){return !v;});
-        }
         return true;
       }else if($target.is('input.slider-control')){
         $parentContainer = $target.closest('.cf7sg-container');

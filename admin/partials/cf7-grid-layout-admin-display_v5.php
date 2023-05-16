@@ -116,7 +116,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <div id="cf7sg-grid-modal" class="display-none"></div>
 <template id="cf7sg-grid-modal-tpl">
 	<section class="grid-ctrls">
-		<h3><?php _e('Row Settings','cf7-grid-layout')?></h3>
+		<h3 class="cf7sg-uirs">><?php _e('Row Settings','cf7-grid-layout')?></h3>
+		<h3 class="display-none cf7sg-uics"><?php _e('Column Settings','cf7-grid-layout')?></h3>
     <div class="grid-controls">
 			<div class="cf7sg-uirs">
 					<input id="cf7sg-uirs-g" type="radio" name="cf7sg-uirst" checked="checked" class="cf7sg-uirs-tab"/>
@@ -178,14 +179,47 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 				<div class="cf7sg-settab">
 				</div>
 			</div>
+			<div class="cf7sg-uis-col cf7sg-uirs display-none">
+				<input id="cf7sg-uirs-col"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
+				<label for="cf7sg-uirs-col"><span><?php _e('General','cf7-grid-layout')?></span></label>
+				<div class="cf7sg-settab">
+					<div class="cf7sg-uirs-label"><?php _e('Column offset','cf7-grid-layout');?></div>
+					<div class="cf7sg-uirs-ctrl">
+					</div>
+					<div class="cf7sg-uirs-label"><?php _e('Column width','cf7-grid-layout');?></div>
+					<div class="cf7sg-uirs-ctrl">
+					</div>
+					<div class="cf7sg-uirs-label"><?php _e('Column layout','cf7-grid-layout');?></div>
+					<div class="cf7sg-uirs-ctrl">
+						<p><?php _e('Transform this column','cf7-grid-layout');?></p>
+						<div class="cf7sg-switch-vertical">
+							<input id="svcfield" type="radio" name="cf7sg-col-switch" checked="checked" class="cf7sg-uirs-coltype"/>
+							<label for="svcfield"><?php _e('Field cell','cf7-grid-layout')?></label>
+							<input id="svcgrid" type="radio" name="cf7sg-col-switch" class="cf7sg-uirs-coltype"/>
+							<label for="svcgrid"><?php _e('Inner grid','cf7-grid-layout')?></label>
+							<input id="svcform" type="radio" name="cf7sg-col-switch" class="cf7sg-uirs-coltype"/>
+							<label for="svcform"><?php _e('Modular form','cf7-grid-layout')?></label>
+							<span class="cf7sg-toggle-outside">
+								<span class="cf7sg-toggle-inside"></span>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="cf7sg-uirs cf7sg-uirs-condition">
 				<input id="cf7sg-uirs-condition"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
-				<label for="cf7sg-uirs-condition"><span><?php _e('Conditional Row','cf7-grid-layout')?></span></label>
+				<label for="cf7sg-uirs-condition">
+					<span class="cf7sg-uirs"><?php _e('Conditional Row','cf7-grid-layout')?></span>
+					<span class="display-none cf7sg-uics"><?php _e('Conditional Column','cf7-grid-layout')?></span>
+				</label>
 				<div class="cf7sg-settab">
-					<div class="cf7sg-uirs-label"><?php _e('Conditional [group]','cf7-grid-layout');?></div>
+					<div class="cf7sg-uirs-label"><?php _e('Conditional','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
 						<input type="checkbox" id="conditional-grp"/>
-						<label for="conditional-grp"><?php _e('Make this row conditional','cf7-grid-layout');?></label>
+						<label for="conditional-grp">
+							<span class="cf7sg-uirs"><?php _e('Make this row conditional','cf7-grid-layout');?></span>
+							<span class="display-none cf7sg-uics"><?php _e('Make this column conditional','cf7-grid-layout');?></span>
+						</label>
 						<div class="cf7sg-uirs-cg">
 							<label for="conditional-grp-name"><?php _e('Group name','cf7-grid-layout');?></label>
 							<input type="text" id="conditional-grp-name"/>
@@ -378,7 +412,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   <ul class="cf7sg-helper-list"></ul>
 </template>
 <template id="grid-col">
-  <div class="grid-column">
+  <div class="grid-column grid-ctrls cf7sg-ui-col">
     <span class="dashicons dashicons-move column-control grid-control"></span>
     <span class="cf7sg-responsive">
       <span class="column-label column-control">
@@ -423,10 +457,6 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
       <span class="js-icon column-control grid-control" style="display:none;"></span>
       <span class="dashicons dashicons-editor-code column-control grid-control"></span>
       <span class="dashicons dashicons-visibility column-control grid-control"></span>
-      <span class="display-none cf7-conditional-group">
-        <label><?php _e('Group', 'cf7-grid-layout');?></label><input type="text"/>
-        <span class="dashicons dashicons-no-alt"></span>
-      </span>
     </span>
     <span class="dashicons dashicons-ellipsis column-control grid-control display-none"></span>
     <div class="cf7-field-label cf7-field-inner">
