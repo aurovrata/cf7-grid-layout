@@ -1100,6 +1100,8 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 #cf7sg-grid-modal > section{
 	background: var(--cf7sg-row-default);
+	border-radius: 8px;
+	line-height: normal;
 }
 #cf7sg-grid-modal section.cf7sg-ui-col {
 	background: var(--cf7sg-col-default);
@@ -1153,7 +1155,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #cf7sg-grid-modal > .cf7sg-table-ctrls .cf7sg-uirs.cf7sg-uirs-table {
 	display: block;
 }
-#cf7sg-grid-modal .grid-controls .cf7sg-uirs:first-child {
+#cf7sg-grid-modal .grid-controls .cf7sg-uirs:not(span):first-child {
 	padding-left: 20px;
 }
 #cf7sg-grid-modal .cf7sg-settab {
@@ -1176,7 +1178,8 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 #cf7sg-grid-modal .cf7sg-uirs > label span{
 	text-align: center;
-	width: 100%;;
+	width: 100%;
+	height: 20px;
 }
 #cf7sg-grid-modal .cf7sg-uirs > input:not(:checked) + label:hover {
 	cursor: pointer;
@@ -1215,6 +1218,9 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	z-index: 100;
 	width: 100%;
 	left: 0;
+	height: calc(100% - 40px);
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
 }
 /* vertical row type switch*/
 .cf7sg-switch-vertical{
@@ -1268,7 +1274,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   cursor: pointer;
 }
 .cf7sg-switch-vertical .cf7sg-toggle-outside {
-  height: calc(100% - 5px);
+  height: 100%;
   border-radius: 17px;
   padding: 11px;
   overflow: hidden;
@@ -1276,7 +1282,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	background: rgba(193, 193, 193, 0.29);
   position: absolute;
   right: 0;
-  top: -1px;
+  top: 0;
 	box-sizing: border-box;
 }
 .cf7sg-switch-vertical .cf7sg-toggle-inside {
@@ -1289,20 +1295,27 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   top: 4px;
   width: 17px;
 }
+.cf7sg-ui-col .cf7sg-switch-vertical .cf7sg-toggle-inside,
+.cf7sg-ui-col input.cf7sg-uirs-coltype:checked + label {
+	background: var(--cf7sg-col-default);
+}
 .cf7sg-switch-vertical {
-  background-color: #00F;
+  /* background-color: #00F; */
   width: 0px;
   height: auto;
   margin-left: 27px;
 }
-#svrow:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
+#svrow:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside,
+#svcfield:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
   top: 6px;
 }
-#svtable:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
+#svtable:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside,
+#svcgrid:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
   top: 36px;
 }
 
-#svcoll:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
+#svcoll:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside,
+#svcform:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
   top: 66px;
 }
 #svtabs:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
