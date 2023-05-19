@@ -185,9 +185,37 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 				<div class="cf7sg-settab">
 					<div class="cf7sg-uirs-label"><?php _e('Column offset','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
+						<select>
+							<option value="">No offset</option>
+							<option value="offset-one">offset 1/12</option>
+							<option value="offset-two">offset 1/6</option>
+							<option value="offset-three">offset 1/4</option>
+							<option value="offset-four">offset 1/3</option>
+							<option value="offset-five">offset 5/12</option>
+							<option value="offset-six">offset 1/2</option>
+							<option value="offset-seven">offset 7/12</option>
+							<option value="offset-eight">offset 2/3</option>
+							<option value="offset-nine">offset 3/4</option>
+							<option value="offset-ten">offset 5/6</option>
+							<option value="offset-eleven">offset 11/12</option>
+						</select>
 					</div>
 					<div class="cf7sg-uirs-label"><?php _e('Column width','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
+						<select>
+							<option value="one">1/12</option>
+							<option value="two">1/6</option>
+							<option value="one-fourth">1/4</option>
+							<option value="one-third">1/3</option>
+							<option value="five">5/12</option>
+							<option value="one-half">1/2</option>
+							<option value="seven">7/12</option>
+							<option value="two-thirds">2/3</option>
+							<option value="nine">3/4</option>
+							<option value="ten">5/6</option>
+							<option value="eleven">11/12</option>
+							<option value="full">Full</option>
+						</select>
 					</div>
 					<div class="cf7sg-uirs-label"><?php _e('Column layout','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
