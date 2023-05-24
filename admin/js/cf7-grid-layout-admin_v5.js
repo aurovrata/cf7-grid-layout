@@ -517,10 +517,11 @@
       toggleCentredMenus($target);
       /* ---------------------------------------------------------------------------FORM CONTROLS */
 			if( $target.is('.dashicons-admin-generic') ){ //------------------show controls modal
-        let cl = $target.closest('.grid-ctrls').attr("class"),
+        let cl = $target.closest('.ui-grid-ctrls').attr("class"),
 					$container = $target.closest('.cf7sg-container'), //the current row modal settings.
 					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
-					$innerSection = $gridModal.children('section.grid-ctrls'); 
+					$innerSection = $gridModal.children('section.grid-ctrls'),
+					$type = $('.cf7sg-switch-vertical > input', $innerSection);
 				
 				$innerSection.attr('class',cl);
         $gridModal.modal();
@@ -536,20 +537,36 @@
         }
 				switch(true){
 					case $innerSection.is('.cf7sg-ui-col'): //column setting.
+						//setup the column type
+						$type = $type.filter('.cf7sg-uics-ctrl input').prop('disabled',false);
+						$type.filter('#svcfield').get(0).checked=true; //by dfault.
+						switch(true){
+							case $container.is('.cf7sg-grid'): //alreasdy multi field grid.
+								$type.not('#svcfield').prop('disabled',true);
+								break;
+
+						}
+						//setup the column size and offset
+						$innerSection.setColumnSettingsModal($container);
 						break;
 					case $innerSection.is('.cf7sg-ui-row'): //default row.
 						$('input#svrow', $gridModal).get(0).checked = true;
-						$('.cf7sg-switch-vertical > input', $gridModal).prop('disabled', false); //disable the row types.
+						$type.prop('disabled', false); //disable the row types.
 						break;
 					default: //other row type.	
 						let type = $innerSection.attr('class').replace('grid-ctrls', '').trim();
 						type = type.match(/cf7sg\-(.*)\-ctrls/); //tabs row.
-						$('input#sv'+type[1], $gridModal).get(0).checked = true;
-						$('.cf7sg-switch-vertical > input',$gridModal).not('#svrow').prop('disabled', true); //disable the row types.
+						$type.filter('input#sv'+type[1]).get(0).checked = true;
+						$type.not('#svrow').prop('disabled', true); //disable the row types.
 						break;
 				}
 
 				//listen for changes
+				let colSize = '', colOff = ''; 
+				if($innerSection.is('.cf7sg-ui-col')){
+					colSize =  $('#cf7sg-uisc-size',	$innerSection).val();
+					colOff = $('#cf7sg-uisc-off',	$innerSection).val();
+				}
 				$innerSection.change('input', (e)=>{
 					let $t = $(e.target);
 					switch(true){
@@ -561,13 +578,13 @@
 								case $t.is('#svrow'):
 									$container.convertUIRow();
 									$innerSection.attr('class','grid-ctrls cf7sg-row-ctrls');
-									$('.cf7sg-switch-vertical > input:disabled',$gridModal).prop('disabled', false); //enable the row types.
+									$type.filter(':disabled').prop('disabled', false); //enable the row types.
 									break;
 								default:
 									let type = $t.attr('id').replace('sv','');
 									$container.convertUIRow(type);
 									$innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
-									$('.cf7sg-switch-vertical > input').not('#svrow',$gridModal).prop('disabled', true); //disable the row types.
+									$type.not('#svrow',$gridModal).prop('disabled', true); //disable the row types.
 						break;
 							}
 							break;
@@ -578,6 +595,16 @@
 						case $t.is('#conditional-grp-name'):
 							$container.attr('data-conditional-group', $t.val());
 							break;
+						case $t.is('#cf7sg-uisc-size'): //column size.
+							$container.changeColumnSize(colSize, $t.val());
+							colSize = $t.val();
+							$innerSection.setColumnSettingsModal($container);
+						break;
+						case $t.is('#cf7sg-uisc-off'): //column offset.
+							$container.changeColumnOffset(colOff, $t.val());
+							colOff = $t.val();
+							$innerSection.setColumnSettingsModal($container);
+						break;
 					}
 				});
         return true;
@@ -1646,10 +1673,18 @@
   }
   //refresh controls select
   $.fn.changeColumnSize = function(oldSize, newSize){
-    let $this = $(this), $sizeItem;
-    if(oldSize.length > 0) $this.removeClass(oldSize);
-    $this.addClass(newSize);
-    $sizeItem = $this.children('.grid-column').find(`.column-size .cm-item[data-cmv=${newSize}]`);
+		this. changeColumnDim(oldSize, newSize,'size');
+  }
+	$.fn.changeColumnOffset = function(oldSize, newSize){
+		this. changeColumnDim(oldSize, newSize,'offset');
+  }
+	$.fn.changeColumnDim = function(oldSize, newSize, menu){
+		if(!this.is('.cf7sg-col')) return false;
+		if(['offset','size'].indexOf(menu) === -1) return false;
+
+    if(oldSize.length > 0) this.removeClass(oldSize);
+    if(newSize.length > 0) this.addClass(newSize);
+    let $sizeItem = this.children('.grid-column').find(`.column-${menu} .cm-item[data-cmv="${newSize}"]`);
     $sizeItem.closest('.centred-menu').css('--cf7sg-cm-val',$sizeItem.data('cmi'));
   }
   /** Setup column size/offet in UI menu */
@@ -1673,6 +1708,42 @@
       }
     }
   }
+	/** funtion to filter column settings size/offset dropdown list. */
+	$.fn.setColumnSettingsModal = function($c){
+		if(!this.is('.cf7sg-ui-col')) return false;
+		if(!$c.is('.cf7sg-col')) return false;
+		let $r = $c.closest('.cf7sg-row'), 
+			cl = $c.get(0).classList,
+      rowSize = $r.getRowSize(),
+      colSize = $c.getColumnTotalSize();
+		//enable all options
+    $('.cf7sg-uics-ctrl option', this ).prop('disabled', false);
+    
+    let idx, start, free = 0;
+    if(rowSize.length < 12) free = (12 - rowSize.length);
+    for(idx = start = colSize.size+1; idx < columnsizes.length; idx++){
+      if( idx > (free + start - 1) ){
+        $(`#cf7sg-uisc-size > option[value=${columnsizes[idx]}]`, this ).prop('disabled', true);
+      }
+    }
+    for(idx = start = colSize.length - colSize.size - 1 ;idx<= offsets.length; idx++){
+      if(0===idx) continue; //0 is unset.
+      if( idx > (free + start) ){
+        $(`#cf7sg-uisc-off > option[value=${offsets[(idx-1)]}]`, this ).prop('disabled', true);
+      }
+    }
+		//set size/offset
+		for(idx=0; idx< cl.length; idx++ ){
+			if(columnsizes.indexOf(cl.item(idx)) > -1){
+				$(`#cf7sg-uisc-size > option[value=${cl.item(idx)}]`, this ).prop('selected', true);
+				continue;
+			}
+			if(offsets.indexOf(cl.item(idx)) > -1){
+				$(`#cf7sg-uisc-off > option[value=${cl.item(idx)}]`, this ).prop('selected', true);
+			}
+		}
+		return this;
+	}
   /** Functions to disable options on the column size/offset list */
   $.fn.filterColumnControls = function(){
     if( !this.is('.cf7sg-col') ) return false;

@@ -618,6 +618,9 @@ display: table-row;
   z-index: 9;
   border-radius: 3px;
 }
+#cf7-editor-grid .centred-menu:not(.show) .cm-list {
+	z-index: auto;
+}
 #cf7-editor-grid .column-size .cm-item::after {
 	content: var(--cf7sg-col-label);
 	padding-left: 2px;

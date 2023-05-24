@@ -184,41 +184,41 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 				<label for="cf7sg-uirs-col"><span><?php _e('General','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
 					<div class="cf7sg-uirs-label"><?php _e('Column offset','cf7-grid-layout');?></div>
-					<div class="cf7sg-uirs-ctrl">
-						<select>
-							<option value="">No offset</option>
-							<option value="offset-one">offset 1/12</option>
-							<option value="offset-two">offset 1/6</option>
-							<option value="offset-three">offset 1/4</option>
-							<option value="offset-four">offset 1/3</option>
-							<option value="offset-five">offset 5/12</option>
-							<option value="offset-six">offset 1/2</option>
-							<option value="offset-seven">offset 7/12</option>
-							<option value="offset-eight">offset 2/3</option>
-							<option value="offset-nine">offset 3/4</option>
-							<option value="offset-ten">offset 5/6</option>
-							<option value="offset-eleven">offset 11/12</option>
+					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl">
+						<select id="cf7sg-uisc-off">
+							<option value=""><?php _e('no offset','cf7-grid-layout')?></option>
+							<option value="offset-one">1/12</option>
+							<option value="offset-two">1/6</option>
+							<option value="offset-three"><?php _e('one quarter','cf7-grid-layout')?></option>
+							<option value="offset-four"><?php _e('one third','cf7-grid-layout')?></option>
+							<option value="offset-five">5/12</option>
+							<option value="offset-six"><?php _e('one half','cf7-grid-layout')?></option>
+							<option value="offset-seven">7/12</option>
+							<option value="offset-eight"><?php _e('two thirds','cf7-grid-layout')?></option>
+							<option value="offset-nine"><?php _e('three quarters','cf7-grid-layout')?></option>
+							<option value="offset-ten">5/6</option>
+							<option value="offset-eleven">11/12</option>
 						</select>
 					</div>
 					<div class="cf7sg-uirs-label"><?php _e('Column width','cf7-grid-layout');?></div>
-					<div class="cf7sg-uirs-ctrl">
-						<select>
+					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl">
+						<select id="cf7sg-uisc-size">
 							<option value="one">1/12</option>
 							<option value="two">1/6</option>
-							<option value="one-fourth">1/4</option>
-							<option value="one-third">1/3</option>
+							<option value="one-fourth"><?php _e('one quarter','cf7-grid-layout')?></option>
+							<option value="one-third"><?php _e('one third','cf7-grid-layout')?></option>
 							<option value="five">5/12</option>
-							<option value="one-half">1/2</option>
+							<option value="one-half"><?php _e('one half','cf7-grid-layout')?></option>
 							<option value="seven">7/12</option>
-							<option value="two-thirds">2/3</option>
-							<option value="nine">3/4</option>
+							<option value="two-thirds"><?php _e('two thirds','cf7-grid-layout')?></option>
+							<option value="nine"><?php _e('three quarters','cf7-grid-layout')?></option>
 							<option value="ten">5/6</option>
 							<option value="eleven">11/12</option>
-							<option value="full">Full</option>
+							<option value="full"><?php _e('full','cf7-grid-layout')?></option>
 						</select>
 					</div>
 					<div class="cf7sg-uirs-label"><?php _e('Column layout','cf7-grid-layout');?></div>
-					<div class="cf7sg-uirs-ctrl">
+					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl">
 						<p><?php _e('Transform this column','cf7-grid-layout');?></p>
 						<div class="cf7sg-switch-vertical">
 							<input id="svcfield" type="radio" name="cf7sg-col-switch" checked="checked" class="cf7sg-uirs-coltype"/>
@@ -270,7 +270,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-row">
   <div class="cf7sg-container">
     <div class="cf7sg-row">
-      <div class="grid-ctrls cf7sg-ui-row">
+      <div class="ui-grid-ctrls grid-ctrls cf7sg-ui-row">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label">
           <span class="row-label display-none"><?php _e('Row', 'cf7-grid-layout');?></span>
@@ -319,7 +319,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-cf7-forms">
   <div class="cf7sg-external-form" data-form="">
     <div class="ext-form-controls">
-      <div class="grid-ctrls cf7sg-form">
+      <div class="ui-grid-ctrls grid-ctrls cf7sg-form">
         <span class="dashicons dashicons-move ext-form-control"></span>
         <span class="dashicons dashicons-admin-generic ext-form-control"></span>
         <span class="dashicons dashicons-trash ext-form-control"></span>
@@ -351,7 +351,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   <div class="cf7sg-container cf7sg-collapsible">
     <div class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></div>
     <div class="cf7sg-row">
-      <div class="grid-ctrls cf7sg-coll-ctrls">
+      <div class="ui-grid-ctrls grid-ctrls cf7sg-coll-ctrls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label"><?php _e('Collapsible section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
@@ -371,7 +371,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-tabs">
   <div class="cf7-sg-tabs cf7sg-container" id="">
     <div class="cf7sg-row">
-      <div class="grid-ctrls cf7sg-tabs-ctrls">
+      <div class="ui-grid-ctrls grid-ctrls cf7sg-tabs-ctrls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
         <span class="control-label"><?php _e('Tabbed section', 'cf7-grid-layout');?></span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
@@ -440,7 +440,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   <ul class="cf7sg-helper-list"></ul>
 </template>
 <template id="grid-col">
-  <div class="grid-column grid-ctrls cf7sg-ui-col">
+  <div class="grid-column ui-grid-ctrls cf7sg-ui-col">
     <span class="dashicons dashicons-move column-control grid-control"></span>
     <span class="cf7sg-responsive">
       <span class="column-label column-control">
