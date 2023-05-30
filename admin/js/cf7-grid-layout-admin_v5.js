@@ -451,10 +451,8 @@
         let $g = $target.closest('.cf7-conditional-group'),
           v = $target.val();
         if(v.length > 0){
-          $g.siblings('.dashicons-visibility').removeClass('dashicons-visibility').addClass('dashicons-hidden');
           $g.closest('.cf7sg-col').attr('data-conditional-group', v);
         }else{
-          $g.siblings('.dashicons-hidden').removeClass('dashicons-hidden').addClass('dashicons-visibility');
           $g.closest('.cf7sg-col').removeAttr('data-conditional-group');
         }
         $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
@@ -808,9 +806,6 @@
         return true;
       }else if($target.is('.cf7-conditional-group .dashicons-no-alt') ){ //hide conditional group
         $target.closest('.cf7-conditional-group').hide();
-        return true;
-      }else if($target.is('.dashicons-visibility.column-control') || $target.is('.dashicons-hidden.column-control') ){ //edit conditional group
-        $target.siblings('.cf7-conditional-group').show();
         return true;
       }else if($target.is('.dashicons-editor-code.column-control') ){ //goto html code
         let $focus = $target.closest('.cf7sg-col');

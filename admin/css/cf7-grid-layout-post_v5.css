@@ -507,7 +507,7 @@ textarea.grid-input {
 	/* border: none; */
 	background: var(--cf7sg-text-color);
 }
-#cf7-editor-grid .centred-menu, #cf7-editor-grid  .cm-item{
+#cf7-editor-grid .centred-menu{
   background: var(--cf7sg-col-default);
 }
 #cf7-editor-grid .cm-item:not(.disabled):hover {
@@ -600,8 +600,24 @@ overflow: hidden;
 width: min-content;
 vertical-align: text-bottom;
 --selected-item: 0;
-padding: 1px 0;
+padding: 0;
 text-align: left;
+line-height: 1.3;
+}
+#cf7-editor-grid .centred-menu:not(.show) {
+	margin-top: 2px;
+	border-radius: 3px;
+	color: #222;
+	background: #fff;
+	color: #222;
+	height: 16px;
+}
+#cf7-editor-grid .column-size,
+#cf7-editor-grid .column-offset.unset{
+	padding-left: 3px;
+}
+#cf7-editor-grid .column-offset:not(.unset){
+	padding-right: 3px;
 }
 #cf7-editor-grid .column-offset {
 	text-align: right;
@@ -618,8 +634,18 @@ display: table-row;
   z-index: 9;
   border-radius: 3px;
 }
+#cf7-editor-grid .show .cm-list {
+	background: #fff;
+	color: #222;
+	border-radius: 3px;
+	border: 1px solid var(--cf7sg-col-default);
+	padding: 0 3px;
+}
 #cf7-editor-grid .centred-menu:not(.show) .cm-list {
-	z-index: auto;
+	z-index: 2;
+}
+#cf7-editor-grid .centred-menu .cm-item {
+	background: transparent;
 }
 #cf7-editor-grid .column-size .cm-item::after {
 	content: var(--cf7sg-col-label);
@@ -635,7 +661,8 @@ overflow: visible;
 #cf7-editor-grid .column-label{
 position: relative;
 }
-#cf7-editor-grid .centred-menu.show + .popup-helper {
+#cf7-editor-grid .centred-menu.show + .popup-helper, 
+#cf7-editor-grid .centred-menu:not(.show):hover + .popup-helper {
 	display: block;
 	position: absolute;
 	width: max-content;
@@ -643,13 +670,24 @@ position: relative;
 	z-index: 10;
 	padding: 2px 5px;
 	border-radius: 3px;
-	left: 70px;
+	left: 96px;
+	border: 1px solid;
+}
+#cf7-editor-grid .column-offset:not(.show):hover + .popup-helper {
+	left: 0;
+	z-index: 10008;
+	bottom: 18px;
+}
+#cf7-editor-grid .column-size:not(.show):hover + .popup-helper {
+	left: 41px;
+	z-index: 10008;
+	bottom: 18px;
 }
 #cf7-editor-grid .centred-menu.column-offset.show + .popup-helper {
-	left: 40px;
+	left: 44px;
 }
 #cf7-editor-grid .centred-menu.column-offset.unset + .popup-helper + .column-size.show + .popup-helper {
-	left: 47px;
+	left: 77px;
 }
 #grid-form .cf7sg-col.one .grid-column .dashicons-move {
     margin-left: 0;
@@ -698,7 +736,6 @@ position: relative;
 #grid-form .helper-popup .no-post-my-form,
 .cf7sg-container.cf7-sg-table .add-item-button,
 .helper-list li.no-post-my-form,
-#grid-form:not(.cf7-conditional-group) .dashicons-visibility,
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-ctrls,
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column > .column-control,
   #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column > .cf7sg-responsive .column-control {
@@ -706,7 +743,6 @@ position: relative;
 }
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .cf7sg-responsive .dashicons-trash,
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .dashicons-move,
-#grid-form.cf7-conditional-group .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .cf7sg-responsive .dashicons-visibility,
 #grid-form.cf7-conditional-group .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .cf7sg-responsive .dashicons-hidden,
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .cf7sg-responsive .dashicons-editor-code {
 	display: inline-block;
@@ -721,7 +757,6 @@ position: relative;
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .cf7sg-responsive .dashicons-editor-code {
   right: calc( var(--cf7sg-icon-w) * 2);
 }
-#grid-form.cf7-conditional-group .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .cf7sg-responsive .dashicons-visibility,
 #grid-form.cf7-conditional-group .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .cf7sg-responsive .dashicons-hidden{
   right: calc( var(--cf7sg-icon-w) * 3);
 }

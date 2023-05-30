@@ -116,7 +116,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <div id="cf7sg-grid-modal" class="display-none"></div>
 <template id="cf7sg-grid-modal-tpl">
 	<section class="grid-ctrls">
-		<h3 class="cf7sg-uirs">><?php _e('Row Settings','cf7-grid-layout')?></h3>
+		<h3 class="cf7sg-uirs"><?php _e('Row Settings','cf7-grid-layout')?></h3>
 		<h3 class="display-none cf7sg-uics"><?php _e('Column Settings','cf7-grid-layout')?></h3>
     <div class="grid-controls">
 			<div class="cf7sg-uirs">
@@ -281,7 +281,6 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="dashicons dashicons-trash row-control grid-control"></span>
         <span class="dashicons dashicons-menu-alt row-control grid-control"></span>
         <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
-        <span class="dashicons dashicons-visibility column-control grid-control"></span>
       </div>
       <div class="cf7sg-col full">
         <template class="inner-template">#grid-col</template>
@@ -484,7 +483,6 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
       <span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
       <span class="js-icon column-control grid-control" style="display:none;"></span>
       <span class="dashicons dashicons-editor-code column-control grid-control"></span>
-      <span class="dashicons dashicons-visibility column-control grid-control"></span>
     </span>
     <span class="dashicons dashicons-ellipsis column-control grid-control display-none"></span>
     <div class="cf7-field-label cf7-field-inner">
