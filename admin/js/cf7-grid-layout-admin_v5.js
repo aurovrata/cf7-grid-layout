@@ -566,7 +566,7 @@
 					colOff = $('#cf7sg-uisc-off',	$innerSection).val();
 				}
 				$innerSection.change('input', (e)=>{
-					let $t = $(e.target);
+					let $t = $(e.target), type='';
 					switch(true){
 						case $t.is('.cf7sg-uirs-tab'): //tab change.
 							break; //noting to do here.
@@ -579,7 +579,7 @@
 									$type.filter(':disabled').prop('disabled', false); //enable the row types.
 									break;
 								default:
-									let type = $t.attr('id').replace('sv','');
+									type = $t.attr('id').replace('sv','');
 									$container.convertUIRow(type);
 									$innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
 									$type.not('#svrow',$gridModal).prop('disabled', true); //disable the row types.
@@ -597,12 +597,26 @@
 							$container.changeColumnSize(colSize, $t.val());
 							colSize = $t.val();
 							$innerSection.setColumnSettingsModal($container);
-						break;
+							break;
 						case $t.is('#cf7sg-uisc-off'): //column offset.
 							$container.changeColumnOffset(colOff, $t.val());
 							colOff = $t.val();
 							$innerSection.setColumnSettingsModal($container);
-						break;
+							break;
+						case $t.is('.cf7sg-uirs-coltype'): // column type.
+							switch(true){
+								case $t.is('svcfield'):
+									$container.convertUIColumn();
+									// $innerSection.attr('class','grid-ctrls cf7sg-row-ctrls');
+									$type.filter(':disabled').prop('disabled', false); //enable the col types.
+									break;
+								default:
+									type = $t.attr('id').replace('svc','');
+									$container.convertUIColumn(type);
+									// $innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
+									$type.not('#svcfield',$gridModal).prop('disabled', true); //disable the col types.
+							}
+							break;
 					}
 				});
         return true;
@@ -1109,8 +1123,32 @@
     });
   }
   /* some function definitions...*/
+	$.fn.convertUIColumn = function(type){
+		let $col = this, id='', $added=null;
+		if(!$col.is('.cf7sg-col')) return false;
+		if('undefined' == typeof type){ //convert back to a normal column.
+			switch(true){
+				case $col.is('.cf7sg-inner-grid'):
+					$col.removeClass('cf7sg-inner-grid');
+					break;
+				case $col.is('.cf7sg-ext-form'):
+					break;
+			}
+		}else{
+			switch(type){
+				case 'inner': //conver to inner grid.
+					$col.addClass('cf7sg-inner-grid');
+					$col.children('.add-item-button').remove();
+					$col.insertNewRow('', $col.children().not('.grid-column').remove(), 'append');
+					break;
+				case 'form':
+					break;
+			}
+		}
+		return $col;
+	}
 	$.fn.convertUIRow = function(type){
-		let $row = $(this), id='', $added=null;
+		let $row = this, id='', $added=null;
 		if(!$row.is('.cf7sg-container')) return false;
 		if('undefined' == typeof type){ //convert back to a normal row.
 			switch(true){

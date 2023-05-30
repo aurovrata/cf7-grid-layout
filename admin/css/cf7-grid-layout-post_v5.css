@@ -262,6 +262,12 @@ textarea.grid-input {
 #grid-form .table-row-button input  {
     max-width: 100%;
 }
+#grid-form .cf7sg-col.cf7sg-inner-grid {
+	background: #fff;
+}
+#grid-form .cf7sg-col.cf7sg-inner-grid > .cf7sg-container {
+	padding: 3px 10px 0 10px;
+}
 #grid-form  .cf7sg-slider-controls .button.slider-control {
 	display: none;
 }
