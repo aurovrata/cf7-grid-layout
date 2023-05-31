@@ -114,8 +114,7 @@
 
         switch(true){
           case $this.children().is('.cf7sg-container'):
-            $('textarea.grid-input', $area).remove();
-            $('div.cf7-field-inner', $area).remove();
+            $('.grid-input, .cf7-field-inner, .add-field-button', $area).remove();
           break;
           case $this.is('.cf7-sg-table-footer-row > .cf7sg-col'): //table footer.
             $area = $($('#grid-table-footer-row').html()).find('.cf7sg-col'); //clone as jquery object.
@@ -540,9 +539,13 @@
 						$type.filter('#svcfield').get(0).checked=true; //by dfault.
 						switch(true){
 							case $container.is('.cf7sg-grid'): //alreasdy multi field grid.
-								$type.not('#svcfield').prop('disabled',true);
+							case $container.is('.cf7sg-inner-grid *'): //alreasdy inner grid.
+								$type.filter('#svcgrid').prop('disabled',true);
 								break;
-
+							case $container.is('.cf7sg-inner-grid'): 
+								$type.filter('input#svcgrid').get(0).checked=true;
+								$type.filter('#svcform').prop('disabled',true);
+								break;
 						}
 						//setup the column size and offset
 						$innerSection.setColumnSettingsModal($container);
@@ -582,7 +585,7 @@
 									type = $t.attr('id').replace('sv','');
 									$container.convertUIRow(type);
 									$innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
-									$type.not('#svrow',$gridModal).prop('disabled', true); //disable the row types.
+									$type.not('#svrow').prop('disabled', true); //disable the row types.
 						break;
 							}
 							break;
@@ -605,7 +608,7 @@
 							break;
 						case $t.is('.cf7sg-uirs-coltype'): // column type.
 							switch(true){
-								case $t.is('svcfield'):
+								case $t.is('#svcfield'):
 									$container.convertUIColumn();
 									// $innerSection.attr('class','grid-ctrls cf7sg-row-ctrls');
 									$type.filter(':disabled').prop('disabled', false); //enable the col types.
@@ -817,9 +820,6 @@
         $helper.click('a.helper, .dashicons-no-alt', function(e){
           $(this).remove();
         });
-        return true;
-      }else if($target.is('.cf7-conditional-group .dashicons-no-alt') ){ //hide conditional group
-        $target.closest('.cf7-conditional-group').hide();
         return true;
       }else if($target.is('.dashicons-editor-code.column-control') ){ //goto html code
         let $focus = $target.closest('.cf7sg-col');
@@ -1130,16 +1130,31 @@
 			switch(true){
 				case $col.is('.cf7sg-inner-grid'):
 					$col.removeClass('cf7sg-inner-grid');
+					let $inner = $col.children().not('.grid-column').remove();
+					$inner = $('.cf7sg-col',$inner).first().find('.grid-column');
+					if($inner.is('.field-set')){
+						$col.children('.grid-column').addClass('field-set');
+					}
+					$inner = $inner.find('.cf7-field-inner, .grid-input');
+					$col.children('.grid-column').append($inner).after($('.add-field-button', $colTemplt).clone());
 					break;
 				case $col.is('.cf7sg-ext-form'):
 					break;
 			}
 		}else{
 			switch(type){
-				case 'inner': //conver to inner grid.
+				case 'grid': //conver to inner grid.
 					$col.addClass('cf7sg-inner-grid');
-					$col.children('.add-item-button').remove();
-					$col.insertNewRow('', $col.children().not('.grid-column').remove(), 'append');
+					//create a new column for the inner row.
+					let $c = $('.grid-column',$colTemplt).clone();
+					if($col.children('.grid-column').is('.field-set')){
+						$c.addClass('field-set');
+						$col.children('.grid-column').removeClass('field-set');
+					}
+          $('.cf7-field-inner, .grid-input',$c).remove(); //remove the controls, and replace with target column entries.
+          $c = $('<div class="cf7sg-col full"></div>').append($c);
+          $c.children('.grid-column').append($('.cf7-field-inner, .grid-input', $col).remove()).after($('.add-item-button', $col).remove());
+          $col.insertNewRow($c, '#grid-row', 'append');
 					break;
 				case 'form':
 					break;
@@ -1462,7 +1477,7 @@
         jshooks.push(jsHelpers);
       }
 
-      label+='['+tag+ (isRequired?'*':'') + (isField?' '+field:'')+']'; //disolay label.
+      label+='['+tag+ (isRequired?'*':'') + (isField?' '+field:'')+']'; //display label.
     }
     classes += " "+ type.join(' ') + (isRequired ? ' required':'');
     field = fields.join(' ');
