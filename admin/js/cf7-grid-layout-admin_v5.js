@@ -123,9 +123,9 @@
               $text = $text.html().trim();
               $this.children().remove();
               $this.text('');
-              $('textarea.grid-input', $area).html($text);
+              $('.grid-input', $area).html($text);
             }else{
-              $('textarea.grid-input', $area).html($this.html().trim());
+              $('.grid-input', $area).html($this.html().trim());
             }
             break;
           case $this.children('.cf7sg-row').length>0: //inner grid.
@@ -133,7 +133,7 @@
             $('.cf7-field-inner, .grid-input, .add-field-button', $area).remove();
             break;
           default: //move the cf7 tags to UI fields.
-             $('textarea.grid-input', $area).html($this.html().trim());
+             $('.grid-input', $area).html($this.html().trim());
             if($this.closest('.cf7sg-col').length>0) $('.add-field-button', $area).remove();
             $this.children().remove();
             $this.text('');
@@ -545,6 +545,10 @@
 							case $container.is('.cf7sg-inner-grid'): 
 								$type.filter('input#svcgrid').get(0).checked=true;
 								$type.filter('#svcform').prop('disabled',true);
+								break;
+							case $container.is('.cf7sg-ext-form'):
+								$type.filter('input#svcform').get(0).checked=true;
+								$type.filter('#svcgrid').prop('disabled',true);
 								break;
 						}
 						//setup the column size and offset
@@ -1139,6 +1143,10 @@
 					$col.children('.grid-column').append($inner).after($('.add-field-button', $colTemplt).clone());
 					break;
 				case $col.is('.cf7sg-ext-form'):
+					$('.cf7sg-external-form', $col).remove();
+					$col.removeClass('cf7sg-ext-form');
+					$col.children('.grid-column').append($('.cf7-field-inner,.grid-input', $colTemplt).clone());
+					$col.append($('.add-field-button', $colTemplt).clone());
 					break;
 			}
 		}else{
@@ -1157,6 +1165,9 @@
           $col.insertNewRow($c, '#grid-row', 'append');
 					break;
 				case 'form':
+					$col.addClass('cf7sg-ext-form');
+					$('.cf7-field-inner, .grid-input, .add-item-button', $col).remove();
+					$col.insertNewRow('', '#grid-cf7-forms', 'append');
 					break;
 			}
 		}

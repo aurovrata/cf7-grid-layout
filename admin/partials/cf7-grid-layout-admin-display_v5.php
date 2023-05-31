@@ -318,12 +318,6 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-cf7-forms">
   <div class="cf7sg-external-form" data-form="">
     <div class="ext-form-controls">
-      <div class="ui-grid-ctrls grid-ctrls cf7sg-form">
-        <span class="dashicons dashicons-move ext-form-control"></span>
-        <span class="dashicons dashicons-admin-generic ext-form-control"></span>
-        <span class="dashicons dashicons-trash ext-form-control"></span>
-      </div>
-      
       <select class="form-select">
         <option value=""><?php _e('Select contact form 7','cf7-grid-layout')?></option>
         <?php
