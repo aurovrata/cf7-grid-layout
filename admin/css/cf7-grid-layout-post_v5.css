@@ -194,9 +194,13 @@ grid layout
 #grid-form  .cf7-field-html > :nth-child(1) {
 	margin-top: 0;
 }
-#grid-form .form-select {
+#grid-form .cf7sg-form-select {
     display: block;
     margin: 0 auto;
+}
+#grid-form .cf7sg-form-select + p {
+	text-align: center;
+	margin: 0;
 }
 #grid-form .ext-form-controls {
     position: relative;

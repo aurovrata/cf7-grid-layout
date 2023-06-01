@@ -1840,7 +1840,12 @@ class Cf7_Grid_Layout_Admin {
           AND p.post_type = '{$post_type}'
           AND pm.meta_key = '_cf7sg_version'
         ");
-        if(!empty($result) and version_compare($result[0], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
+				$ver = '';
+				foreach($result as $v){
+					$ver = explode('.', $v);
+					if(($ver[0]*1.0) >= 5 and version_compare($v, CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
+					if($warning) break; //no need to look further.
+				}
       }
 
       if($warning){

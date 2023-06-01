@@ -706,7 +706,7 @@
       $('.cf7sg-external-form', $form).each(function(){
         let $exform = $(this), id = $exform.data('form');
         external[id] = $exform.children('.cf7sg-external-form-content').remove();
-        $exform.children('.form-controls').remove();
+        $exform.children('.ext-form-controls').remove();
       });
       //remove the row controls
       $('.cf7sg-row', $form).removeClass('ui-sortable').children('.grid-ctrls').remove();

@@ -318,7 +318,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-cf7-forms">
   <div class="cf7sg-external-form" data-form="">
     <div class="ext-form-controls">
-      <select class="form-select">
+      <select class="cf7sg-form-select">
         <option value=""><?php _e('Select contact form 7','cf7-grid-layout')?></option>
         <?php
           $cf7_forms = get_posts(array(
@@ -327,15 +327,21 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
             'posts_per_page' => -1,
             'post__not_in' => array($form_obj->id())
           ));
-          if(!empty($cf7_forms)):
-            foreach($cf7_forms as $cf7_form):
+					$cnt =0;
+					if(!empty($cf7_forms)):
+					foreach($cf7_forms as $cf7_form):
+						$v = get_post_meta($cf7_form->ID, '_cf7sg_version', true);
+						if(version_compare($v, CF7SG_VERSION_FORM_UPDATE, '<')) continue;
+						$cnt++;
         ?>
         <option value="<?php echo $cf7_form->post_name ?>"><?php echo $cf7_form->post_title ?></option>
-      <?php   endforeach;
+      <?php  
+					endforeach;
             wp_reset_postdata();
           endif;
       ?>
       </select>
+			<?php if(0===$cnt) echo '<p><em>'.__("No forms compatible with form version.",'cf7-grid-layout').'</em></p>';?>
     </div>
     <div class="cf7sg-external-form-content"></div>
   </div>

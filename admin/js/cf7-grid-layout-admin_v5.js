@@ -113,9 +113,11 @@
         let $this = $(this), $area = $colTemplt.clone();
 
         switch(true){
-          case $this.children().is('.cf7sg-container'):
-            $('.grid-input, .cf7-field-inner, .add-field-button', $area).remove();
-          break;
+          case $this.is('.cf7sg-ext-form'):
+					case $this.children().is('.cf7sg-container'):
+          case $this.children('.cf7sg-row').length>0: //grid.
+						$('.grid-input, .cf7-field-inner, .add-field-button', $area).remove();
+						break;
           case $this.is('.cf7-sg-table-footer-row > .cf7sg-col'): //table footer.
             $area = $($('#grid-table-footer-row').html()).find('.cf7sg-col'); //clone as jquery object.
             let $text = $('p.info-tip',$this);
@@ -127,10 +129,6 @@
             }else{
               $('.grid-input', $area).html($this.html().trim());
             }
-            break;
-          case $this.children('.cf7sg-row').length>0: //inner grid.
-            //remove grid inner fields and input area.
-            $('.cf7-field-inner, .grid-input, .add-field-button', $area).remove();
             break;
           default: //move the cf7 tags to UI fields.
              $('.grid-input', $area).html($this.html().trim());
@@ -221,12 +219,12 @@
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
         let $extform = $(this);
-        $extform.append($( $('#grid-cf7-forms').html()).find('.cf7sg-external-form') );
+        $extform.append($( $('#grid-cf7-forms').html()).children() );
         let id = $extform.data('form');
-        if($($('#grid-cf7-forms').html()).find('.form-select option[value="'+id+'"]').length > 0 ){
+        if($($('#grid-cf7-forms').html()).find('.cf7sg-form-select option[value="'+id+'"]').length > 0 ){
           //add controls
           //$extform.append($('#grid-cf7-forms .ext-form-controls').clone());
-          $('.ext-form-controls .form-select', $extform).val(id);
+          $('.ext-form-controls .cf7sg-form-select', $extform).val(id);
           //check for form update.
           let data = {
       			'action' : 'get_cf7_content',
@@ -268,7 +266,7 @@
         $(this).siblings('.cf7sg-collapsible').closest('.cf7sg-col').children('.grid-column').addClass('enable-grouping');
       });
       //add the form to the grid
-      if($form.children('.cf7sg-container').length >0 || $form.children('.cf7sg-external-form').length>0){
+      if($form.children('.cf7sg-container').length >0){
         $grid.append($form.children());
       }else{ //this is not a cf7sg form.
         $grid.html($form.html());
@@ -283,6 +281,9 @@
       if(cf7grid.ui){
         $('.cf7sg-col', $grid).each(function(){
           let $this = $(this);
+          if($this.is('.cf7sg-inner-grid')) return true;
+          if($this.is('.cf7sg-grid')) return true;
+          if($this.is('.cf7sg-ext-form')) return true;
           if($this.children().is('.cf7sg-container')) return true;
           if($this.children('.cf7sg-row').length > 1) $this.closest('.cf7sg-container').addClass('cf7sg-grid');
           $this.html2gui();
@@ -456,7 +457,7 @@
         }
         $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
         return true;
-      }else if($target.is('.form-select')){ //-------------- external form selection
+      }else if($target.is('.cf7sg-form-select')){ //-------------- external form selection
         let $container = $target.closest('.cf7sg-external-form');
         $container.attr('data-form', $target.val());
         let data = {
@@ -639,10 +640,7 @@
         ----------------------------------------------------------ROW CONTRLS
       */
       let $parentRow,$parentContainer, $parentColumn;
-      if($target.is('.dashicons-trash.ext-form-control')){ //--------TRASH included form
-        $target.closest('.cf7sg-external-form').remove();
-        return true;
-      }else if($target.is('.dashicons-trash.row-control')){ //--------TRASH
+      if($target.is('.dashicons-trash.row-control')){ //--------TRASH
          $parentContainer = $target.closest('.cf7sg-container');
         let $parent = $parentContainer.parent();
         $parentContainer.remove();
@@ -1030,7 +1028,7 @@
       handle:'.grid-ctrls > .dashicons-move',
       axis: 'y',
       //containment:'parent',
-      items: '> .cf7sg-container, > .cf7sg-external-form', //.cf7sg-col.cf7-sg-tabs > .cf7sg-row',
+      items: '> .cf7sg-container', //.cf7sg-col.cf7-sg-tabs > .cf7sg-row',
       helper:'clone'
     });
     //grid is ready
@@ -1166,6 +1164,7 @@
 					break;
 				case 'form':
 					$col.addClass('cf7sg-ext-form');
+					if($col.children('.grid-column').is('.field-set')) $col.children('.grid-column').removeClass('field-set');
 					$('.cf7-field-inner, .grid-input, .add-item-button', $col).remove();
 					$col.insertNewRow('', '#grid-cf7-forms', 'append');
 					break;
@@ -1214,24 +1213,6 @@
 					$added = $row.insertNewRow($row, '#grid-collapsible', 'after');
 					$added.attr('id',randString(6));//.find('.add-row-button').remove();
 					$added.fireGridUpdate('add','collapsible-row');
-					// $added = $added.find('.cf7sg-container');
-					// $added.after($row.remove());
-					// $added.remove(); //empty inner container.
-
-          // $anchor = $container.prev(), action;
-        
-          
-          // action = 'after';
-          // if($anchor.length===0){ 
-          //   $anchor = $container.parent();
-          //   action = 'prepend';
-          // }
-          // //wrap its content into a new row.
-          // $anchor.insertNewRow($container.remove(), '#grid-collapsible', action);
-          // $container.after($rowTemplt.find('.add-row-button').clone());
-          // $container = (action=='after' ? $anchor.next():$anchor.children('.cf7sg-collapsible') );
-          // $container.attr('id',randString(6));
-          // $container.fireGridUpdate('add','collapsible-row');
 					$row = $added;
         	break;
 				case 'tabs':
