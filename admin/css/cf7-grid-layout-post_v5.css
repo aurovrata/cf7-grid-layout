@@ -86,7 +86,7 @@
 }
 /* @since 4.4 .cf7sg-slider-section .cf7sg-collapsible .collapsible-row-label,
 .cf7sg-accordion-rows .cf7sg-collapsible .collapsible-row-label, */
-.cf7sg-col.cf7sg-slider-section, .cf7sg-col.cf7sg-accordion-rows {box-shadow: 0 0 6px #333;}
+/* .cf7sg-col.cf7sg-slider-section, .cf7sg-col.cf7sg-accordion-rows {box-shadow: 0 0 6px #333;} */
 .cf7sg-col:not(.full) + .grid-ctrls .grid-controls .make-grid{display:inline-block;}
 .cf7sg-col.full > .cf7sg-container:not(.cf7sg-collapsible) > .cf7sg-row:not(.cf7-sg-table) > .cf7sg-col:not(.full) + .grid-ctrls .grid-controls .make-grid,
 .button.make-grid.display-none, .cf7sg-row.cf7-sg-table .collapsible-row-label, .cf7sg-row.cf7-sg-table .tabs-row-label, 
@@ -224,7 +224,7 @@ textarea.grid-input {
   right: 0;
   text-align: right;
 }
-#cf7-editor-grid .form-controls .dashicons-no-alt {
+#cf7-editor-grid .cf7sg-form-ctrls .dashicons-no-alt {
 	float: right;
 }
 #cf7-editor-grid .grid-ctrls:not(.grid-column){
@@ -234,25 +234,23 @@ textarea.grid-input {
   right: 0;
   height: 22px;
 }
-#cf7-editor-grid > .form-controls .grid-controls > * {
-	display: block;
+#cf7-editor-grid .cf7sg-form-ctrls h3.cf7sg-form-label {
+	margin: 0;
 	text-align: center;
-	margin: 5px 0;
+	font-size: 16px;
 }
-#cf7-editor-grid > .form-controls .toggle {
-	vertical-align: text-top;
-  height: 15px;
-  margin: 0 3px;
+#cf7-editor-grid > .cf7sg-form-ctrls .dashicons-admin-generic {
+	line-height: 0;
+	position: absolute;
+	right: 0;
+	top: 3px;
 }
-#cf7-editor-grid > .form-controls .dashicons-admin-generic {
-	float: right;
-}
-#cf7-editor-grid > .form-controls .active.control-label {
+#cf7-editor-grid > .cf7sg-form-ctrls .active.control-label {
 	color: inherit;
 }
-#cf7-editor-grid > .form-controls .toggle .toggle-on{background:linear-gradient(#cfcfcf, #f5f5f5)}
-#cf7-editor-grid > .form-controls .toggle .toggle-blob{background: var(--cf7sg-row-default);}
-#cf7-editor-grid > .form-controls .control-label:hover {
+#cf7-editor-grid > .cf7sg-form-ctrls .toggle .toggle-on{background:linear-gradient(#cfcfcf, #f5f5f5)}
+#cf7-editor-grid > .cf7sg-form-ctrls .toggle .toggle-blob{background: var(--cf7sg-row-default);}
+#cf7-editor-grid > .cf7sg-form-ctrls .control-label:hover {
 	cursor: pointer;
 }
 #grid-form .grid-controls > *:not(.cf7-sg-hidden) {
@@ -280,11 +278,9 @@ textarea.grid-input {
 #cf7-css-codemirror .CodeMirror {
     height: calc( 100vh - 180px);
 }
-#grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row:not(.cf7-sg-table-footer-row):not(.cf7-sg-table){
+#grid-form .cf7sg-container:not(.cf7sg-slider) > .cf7sg-row:not(.cf7-sg-table-footer-row):not(.cf7-sg-table){
    border-style: solid;
    border-width: 2px;
-   /* margin-top: 5px; */
-   /* border-radius: 3px; */
 }
 #grid-form div[data-conditional-group]:not(.cf7sg-col), #grid-form .cf7sg-col.cf7sg-grid[data-conditional-group] {
 	border-style: dashed !important;
@@ -298,7 +294,7 @@ textarea.grid-input {
 	margin-top: 30px;
 }
 #grid-form .cf7sg-container.cf7sg-slide {
-	margin: 2px 2px 3px 2px;
+	margin: 5px 0 10px 0;
 }
 #grid-form .cf7sg-container.cf7sg-slide > .cf7sg-row > .cf7sg-col > .cf7sg-container:first-child {
 	margin-top: 0;
@@ -422,18 +418,19 @@ textarea.grid-input {
 #cf7-editor-grid .cf7sg-slide > .cf7sg-row > .cf7sg-col > .grid-column > span {
 	display: none;
 }
-#cf7-editor-grid .form-controls {
+#cf7-editor-grid .cf7sg-form-ctrls {
 	padding: 0;
 	border: solid 1px #d7d7d7;
 	margin-top: 5px;
 	border-radius: 3px;
+	position: relative;
 }
 #cf7-editor-grid .control-label {
 	font-size: 1.25em;
 }
 #grid-form .dashicons.column-control::before, 
 #grid-form .grid-ctrls:not(.grid-column) .dashicons::before,
-#cf7-editor-grid .form-controls .dashicons::before {
+#cf7-editor-grid .cf7sg-form-ctrls .dashicons::before {
 	font-size: 14px;
 	font-weight: lighter;
     vertical-align: text-bottom;
@@ -459,8 +456,11 @@ textarea.grid-input {
 #grid-form .row-selected .grid-ctrls{
     background-color: var(--cf7sg-row-default);
 }
-#grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row {
+#grid-form .cf7sg-container > .cf7sg-row {
   border-color: var(--cf7sg-row-default);
+}
+#grid-form .cf7sg-container.cf7sg-slide > .cf7sg-row {
+	border-color: var(--cf7sg-row-slide);
 }
 #grid-form .cf7sg-container.cf7-sg-tabs > .cf7sg-row{
   border-color: var(--cf7sg-row-tab);
@@ -490,7 +490,7 @@ textarea.grid-input {
     color: var(--cf7sg-row-icons); 
 }
 #grid-form .grid-ctrls:not(.grid-column) .dashicons:hover, 
-#cf7-editor-grid .form-controls .dashicons:hover{
+#cf7-editor-grid .cf7sg-form-ctrls .dashicons:hover{
   cursor:pointer;
   color: var(--cf7sg-row-icons-hover);
 }
