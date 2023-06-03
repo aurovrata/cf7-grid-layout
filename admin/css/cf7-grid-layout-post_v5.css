@@ -1263,7 +1263,8 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #cf7sg-grid-modal input[name="cf7sg-uirst"] {
 	visibility: hidden;
 }
-#cf7sg-grid-modal .cf7sg-uirs > input[name="cf7sg-uirst"]:checked + label + .cf7sg-settab {
+#cf7sg-grid-modal .cf7sg-uirs > input[name="cf7sg-uirst"]:checked + label + .cf7sg-settab,
+#cf7sg-grid-modal .cf7sg-uirs > input[name="cf7sg-uifst"]:checked + label + .cf7sg-settab {
 	display: block;
 	position: absolute;
 	z-index: 100;

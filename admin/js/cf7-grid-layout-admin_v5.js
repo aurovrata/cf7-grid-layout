@@ -421,43 +421,7 @@
     });
     $gridEditor.on('change', function(event){
       let $target = $(event.target);
-      if($target.is('.form-switch-checkbox')){ //switch form
-        $target.parent().siblings('.control-label').toggleClass('active');
-        if($target.is(':checked')){ //convert to slider
-          //change the label on grid form menu
-          // $target.closest('label').siblings('.control-label').toggleClass('display-none');
-          //wrap existing form into a new slider container without any buttons.
-          $grid.insertNewRow($grid.children().remove(), '#grid-multistep-container .cf7sg-slider', 'append');
-          //change the add row button to add slide.
-          $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
-          //add row button to first slide.
-          $('.cf7sg-slide.cf7sg-container > .cf7sg-row > .cf7sg-col',$grid).append($rowTemplt.find('.add-row-button').clone());
-          let $s = $grid.find('.cf7sg-slider');
-          $s.fireGridUpdate('add','slider-section');
-          $s = $('.cf7sg-slide',$s).children('.cf7sg-row');
-          /** @since 4.13.0 display auto scroll helper code */
-          $s.children('.grid-ctrls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
-          $s = $s.children('.cf7sg-col');
-          $s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
-        }else{ //single slide, revert to form.
-          $grid.prepend($('.cf7sg-slide >.cf7sg-row > .cf7sg-col > .cf7sg-container', $grid).remove());
-          $('.cf7sg-slider.cf7sg-container', $grid).remove();
-          $grid.fireGridUpdate('remove','slider-section');
-          $grid.siblings('.add-item-button').removeClass('add-slide-button').addClass('add-row-button');
-        }
-        return true;
-      }
-      if($target.is('.cf7-conditional-group input')){ //----------- change in conditional group.
-        let $g = $target.closest('.cf7-conditional-group'),
-          v = $target.val();
-        if(v.length > 0){
-          $g.closest('.cf7sg-col').attr('data-conditional-group', v);
-        }else{
-          $g.closest('.cf7sg-col').removeAttr('data-conditional-group');
-        }
-        $grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
-        return true;
-      }else if($target.is('.cf7sg-form-select')){ //-------------- external form selection
+      if($target.is('.cf7sg-form-select')){ //-------------- external form selection
         let $container = $target.closest('.cf7sg-external-form');
         $container.attr('data-form', $target.val());
         let data = {
@@ -514,47 +478,80 @@
       //close any column size popups
       toggleCentredMenus($target);
       /* ---------------------------------------------------------------------------FORM CONTROLS */
-			if( $target.is('.dashicons-admin-generic') ){ //------------------show controls modal
-        let cl = $target.closest('.ui-grid-ctrls').attr("class"),
-					$container = $target.closest('.cf7sg-container'), //the current row modal settings.
+			if( $target.is('.dashicons-admin-generic.form-control') ){ //------------------show controls modal
+				let $form = $target.closest('.cf7sg-form-ctrls'),
+				  $gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
+					$innerSection = $gridModal.children('section.cf7sg-form-ctrls'),
+					$type = $('.cf7sg-switch-vertical > input', $innerSection);
+
+				$innerSection.siblings('section').remove();
+        $gridModal.modal();
+
+				if($form.is('.multiple')){
+					$type.filter('#svfmulti').get(0).checked=true;
+					$('.cf7sg-multi-form',$innerSection).show();
+
+				} 
+				$innerSection.change('input', (e)=>{
+					let $t = $(e.target), type='', $s;
+					switch(true){
+						case $t.is('#svfsingle'): //single form.
+							$('.cf7sg-multi-form',$innerSection).hide();
+							$form.removeClass('multiple');
+							//revert to single form.
+							$grid.prepend($('.cf7sg-slide >.cf7sg-row > .cf7sg-col > .cf7sg-container', $grid).remove());
+							$('.cf7sg-slider.cf7sg-container', $grid).remove();
+							$grid.fireGridUpdate('remove','slider-section');
+							$grid.siblings('.add-item-button').removeClass('add-slide-button').addClass('add-row-button');
+							break; 
+						case $t.is('#svfsmulti'): //multistep form.
+							$('.cf7sg-multi-form',$innerSection).show(); //show additional options.
+							$form.addClass('multiple');
+							//wrap existing form into a new slider container without any buttons.
+							$grid.insertNewRow($grid.children().remove(), '#grid-multistep-container .cf7sg-slider', 'append');
+							//change the add row button to add slide.
+							$grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
+							//add row button to first slide.
+							$('.cf7sg-slide.cf7sg-container > .cf7sg-row > .cf7sg-col',$grid).append($rowTemplt.find('.add-row-button').clone());
+							$s = $grid.find('.cf7sg-slider');
+							$s.fireGridUpdate('add','slider-section');
+							$s = $('.cf7sg-slide',$s).children('.cf7sg-row');
+							/** @since 4.13.0 display auto scroll helper code */
+							$s.children('.grid-ctrls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
+							$s = $s.children('.cf7sg-col');
+							$s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
+							break;
+						case $t.is('#cf7sg-uifs-dots'): //dots.
+							
+							break; //noting to do here.
+						case $t.is('#cf7sg-uifs-next'): //next button.
+
+							break;
+						case $t.is('#cf7sg-uifs-prev'): //next button.
+
+							break;
+						case $t.is('#cf7sg-uifs-submit'): //submit button.
+
+							break;
+					}
+				});
+        return true;
+
+			}else if( $target.is('.dashicons-admin-generic.row-control') ){ //------------------show controls modal
+				let cl = $target.closest('.ui-grid-ctrls').attr("class"),
+				  $container = $target.closest('.cf7sg-container'), //the current row modal settings.
 					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
-					$innerSection = $gridModal.children('section.grid-ctrls'),
+					$innerSection = $gridModal.children('section.grid-ctrls').attr('class',cl),
 					$type = $('.cf7sg-switch-vertical > input', $innerSection);
 				
-				$innerSection.attr('class',cl);
+				$innerSection.siblings('section').remove();
         $gridModal.modal();
-				if($innerSection.is('.cf7sg-ui-col')){
-					$innerSection.removeClass('grid-column');
-					$container = $target.closest('.cf7sg-col');
-					$('input#cf7sg-uirs-col', $innerSection).prop('checked',true);
-				}
 				//populate conditional groups if any.
         if($grid.is('.cf7-conditional-group') && $container.data('conditional-group')){
           $('input#conditional-grp-name', $gridModal).val($container.data('conditional-group'));
           $('input#conditional-grp', $gridModal).get(0).checked=true;
         }
 				switch(true){
-					case $innerSection.is('.cf7sg-ui-col'): //column setting.
-						//setup the column type
-						$type = $type.filter('.cf7sg-uics-ctrl input').prop('disabled',false);
-						$type.filter('#svcfield').get(0).checked=true; //by dfault.
-						switch(true){
-							case $container.is('.cf7sg-grid'): //alreasdy multi field grid.
-							case $container.is('.cf7sg-inner-grid *'): //alreasdy inner grid.
-								$type.filter('#svcgrid').prop('disabled',true);
-								break;
-							case $container.is('.cf7sg-inner-grid'): 
-								$type.filter('input#svcgrid').get(0).checked=true;
-								$type.filter('#svcform').prop('disabled',true);
-								break;
-							case $container.is('.cf7sg-ext-form'):
-								$type.filter('input#svcform').get(0).checked=true;
-								$type.filter('#svcgrid').prop('disabled',true);
-								break;
-						}
-						//setup the column size and offset
-						$innerSection.setColumnSettingsModal($container);
-						break;
 					case $innerSection.is('.cf7sg-ui-row'): //default row.
 						$('input#svrow', $gridModal).get(0).checked = true;
 						$type.prop('disabled', false); //disable the row types.
@@ -567,12 +564,7 @@
 						break;
 				}
 
-				//listen for changes
-				let colSize = '', colOff = ''; 
-				if($innerSection.is('.cf7sg-ui-col')){
-					colSize =  $('#cf7sg-uisc-size',	$innerSection).val();
-					colOff = $('#cf7sg-uisc-off',	$innerSection).val();
-				}
+				
 				$innerSection.change('input', (e)=>{
 					let $t = $(e.target), type='';
 					switch(true){
@@ -591,15 +583,71 @@
 									$container.convertUIRow(type);
 									$innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
 									$type.not('#svrow').prop('disabled', true); //disable the row types.
-						break;
+									break;
 							}
 							break;
 						case $t.is('#conditional-grp') && !$t.is(':checked'): //confitional group.
 							$container.removeAttr('data-conditional-group');
 							$('#conditional-grp-name', $gridModal).val('');
+							$grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
 							break;
 						case $t.is('#conditional-grp-name'):
 							$container.attr('data-conditional-group', $t.val());
+							$grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
+							break;
+					}
+				});
+        return true;
+			}else if( $target.is('.dashicons-admin-generic.column-control') ){ //------------------show controls modal
+        let $container = $target.closest('.cf7sg-col'), //the current row modal settings.
+					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
+					$innerSection = $gridModal.children('section.grid-ctrls').addClass('cf7sg-ui-col'),
+					$type = $('.cf7sg-switch-vertical > input', $innerSection);
+				
+				$innerSection.siblings('section').remove();
+        $gridModal.modal();
+				$('input#cf7sg-uirs-col', $innerSection).prop('checked',true); //general col tab.
+				//populate conditional groups if any.
+        if($grid.is('.cf7-conditional-group') && $container.data('conditional-group')){
+          $('input#conditional-grp-name', $gridModal).val($container.data('conditional-group'));
+          $('input#conditional-grp', $gridModal).get(0).checked=true;
+        }
+				//setup the column type
+				$type = $type.filter('.cf7sg-uics-ctrl input').prop('disabled',false);
+				$type.filter('#svcfield').get(0).checked=true; //by dfault.
+				//setup the column size and offset
+				$innerSection.setColumnSettingsModal($container);
+				//setup the col type.
+				switch(true){
+					case $container.is('.cf7sg-grid'): //alreasdy multi field grid.
+					case $container.is('.cf7sg-inner-grid *'): //alreasdy inner grid.
+						$type.filter('#svcgrid').prop('disabled',true);
+						break;
+					case $container.is('.cf7sg-inner-grid'): 
+						$type.filter('input#svcgrid').get(0).checked=true;
+						$type.filter('#svcform').prop('disabled',true);
+						break;
+					case $container.is('.cf7sg-ext-form'):
+						$type.filter('input#svcform').get(0).checked=true;
+						$type.filter('#svcgrid').prop('disabled',true);
+						break;
+				}
+
+				//listen for changes
+				let colSize =  $('#cf7sg-uisc-size',	$innerSection).val(),
+					colOff = $('#cf7sg-uisc-off',	$innerSection).val();
+
+				$innerSection.change('input', (e)=>{
+					let $t = $(e.target), type='';
+					switch(true){
+						case $t.is('#conditional-grp') && !$t.is(':checked'): //confitional group.
+							$container.removeAttr('data-conditional-group');
+							$('#conditional-grp-name', $gridModal).val('');
+							$grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
+							break;
+						case $t.is('#conditional-grp-name'):
+							$container.attr('data-conditional-group', $t.val());
+							$grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
 							break;
 						case $t.is('#cf7sg-uisc-size'): //column size.
 							$container.changeColumnSize(colSize, $t.val());
@@ -611,20 +659,17 @@
 							colOff = $t.val();
 							$innerSection.setColumnSettingsModal($container);
 							break;
-						case $t.is('.cf7sg-uirs-coltype'): // column type.
-							switch(true){
-								case $t.is('#svcfield'):
-									$container.convertUIColumn();
-									// $innerSection.attr('class','grid-ctrls cf7sg-row-ctrls');
-									$type.filter(':disabled').prop('disabled', false); //enable the col types.
-									break;
-								default:
-									type = $t.attr('id').replace('svc','');
-									$container.convertUIColumn(type);
-									// $innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
-									$type.not('#svcfield',$gridModal).prop('disabled', true); //disable the col types.
-							}
+						case $t.is('#svcfield'): // default column type.
+							$container.convertUIColumn();
+							// $innerSection.attr('class','grid-ctrls cf7sg-row-ctrls');
+							$type.filter(':disabled').prop('disabled', false); //enable the col types.
 							break;
+						case $t.is('.cf7sg-uirs-coltype'): //other column type.
+							type = $t.attr('id').replace('svc','');
+							$container.convertUIColumn(type);
+							// $innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
+							$type.not('#svcfield',$gridModal).prop('disabled', true); //disable the col types.
+						break;
 					}
 				});
         return true;
@@ -634,6 +679,7 @@
       if($target.is('.add-slide-button *')){ //add slide
         //add a new empty slide with a new row after the last one, with a button.
         $('.cf7sg-slide.cf7sg-container', $grid).last().insertNewRow('', '#grid-multistep-container .cf7sg-slide', 'after');
+				return true;
       }
       /*
         Row controls
