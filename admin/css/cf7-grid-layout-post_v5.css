@@ -286,9 +286,12 @@ textarea.grid-input {
 	border-style: dashed !important;
 	border-width: 2px !important;
 }
-#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) {
+#grid-form :not(.cf7sg-slider) .cf7sg-row:not(.cf7-sg-table-footer-row) {
   padding: 0 8px;
   position: relative;
+}
+#grid-form .cf7sg-grid.cf7sg-col > .cf7sg-row {
+	padding: 0;
 }
 #grid-form .cf7sg-container:not(.cf7sg-slider) > .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col {
 	margin-top: 30px;
@@ -1154,6 +1157,9 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	border-radius: 8px;
 	line-height: normal;
 }
+#cf7sg-grid-modal > .cf7sg-form-ctrls {
+	background-color: #cbcbcb;
+}
 #cf7sg-grid-modal section.cf7sg-ui-col {
 	background: var(--cf7sg-col-default);
 }
@@ -1227,6 +1233,10 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	color: var(--cf7sg-row-icons);
 	border-radius: 15px 15px 0 0;
 }
+#cf7sg-grid-modal > .cf7sg-form-ctrls .cf7sg-uirs > label, 
+#cf7sg-grid-modal > .cf7sg-form-ctrls h3{
+	color: inherit;
+}
 #cf7sg-grid-modal .cf7sg-uirs > label span{
 	text-align: center;
 	width: 100%;
@@ -1241,7 +1251,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	font-weight: bold;
 }
 #cf7sg-grid-modal .cf7sg-settab p{
-	margin: 0 0 10px 0;
+	margin: 0;
 	font-size: inherit;
 }
 #cf7sg-grid-modal .cf7sg-settab {
@@ -1252,13 +1262,13 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	display: inline-block;
 	vertical-align: top;
 	font-weight: bold;
-	margin: 10px 0;
+	margin: 0 0 10px 0;
 }
 #cf7sg-grid-modal .cf7sg-settab .cf7sg-uirs-ctrl {
 	width: calc( 100% - 155px);
 	display: inline-block;
 	vertical-align: top;
-	margin: 10px 0;
+	margin: 0 0 10px 0;
 }
 #cf7sg-grid-modal input[name="cf7sg-uirst"] {
 	visibility: hidden;
@@ -1347,6 +1357,10 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   top: 4px;
   width: 17px;
 }
+.cf7sg-form-ctrls .cf7sg-switch-vertical .cf7sg-toggle-inside, 
+.cf7sg-form-ctrls .cf7sg-switch-vertical input:checked + label {
+	background: var(--cf7sg-col-default);
+}
 .cf7sg-ui-col .cf7sg-switch-vertical .cf7sg-toggle-inside,
 .cf7sg-ui-col input.cf7sg-uirs-coltype:checked + label {
 	background: var(--cf7sg-col-default);
@@ -1358,11 +1372,13 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   margin-left: 27px;
 }
 #svrow:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside,
-#svcfield:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
+#svcfield:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside,
+#svfsingle:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
   top: 6px;
 }
 #svtable:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside,
-#svcgrid:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
+#svcgrid:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside,
+#svfmulti:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
   top: 36px;
 }
 

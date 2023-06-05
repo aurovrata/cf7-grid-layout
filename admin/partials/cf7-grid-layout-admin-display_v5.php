@@ -252,16 +252,6 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 					</div>
 				</div>
 			</div>
-			<div class="cf7sg-uirs cf7sg-uiss display-none">
-					<input id="cf7sg-uiss-g" type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
-					<label for="cf7sg-uiss-g"><span><?php _e('General','cf7-grid-layout')?></span></label>
-					<div class="cf7sg-settab">
-						<div class="cf7sg-uirs-label"><?php _e('Slide title','cf7-grid-layout');?></div>
-						<div class="cf7sg-uirs-ctrl">
-							<input type="text" id="cf7sg-slide-title"/>
-						</div>
-					</div>
-			</div>
 		</div>
 	</section>
 	<section class="cf7sg-form-ctrls">
@@ -269,14 +259,14 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     <div class="grid-controls">
 			<div class="cf7sg-uirs cf7sg-uifs">
 				<input id="cf7sg-uifs-g" type="radio" name="cf7sg-uifst" checked="true" class="cf7sg-uirs-tab"/>
-				<label for="cf7sg-uiss-g"><span><?php _e('General','cf7-grid-layout')?></span></label>
+				<label for="cf7sg-uifs-g"><span><?php _e('General','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
 					<div class="cf7sg-uirs-label"><?php _e('Form type','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
 						<div class="cf7sg-switch-vertical">
 							<input id="svfsingle" type="radio" name="cf7sg-form-switch" checked="checked" class="cf7sg-uirs-formtype"/>
 							<label for="svfsingle"><?php _e('Single form','cf7-grid-layout')?></label>
-							<input id="svfmulti" type="radio" name="cf7sg-fomr-switch" class="cf7sg-uirs-formtype"/>
+							<input id="svfmulti" type="radio" name="cf7sg-form-switch" class="cf7sg-uirs-formtype"/>
 							<label for="svfmulti"><?php _e('Multistep slider form','cf7-grid-layout')?></label>
 							<span class="cf7sg-toggle-outside">
 								<span class="cf7sg-toggle-inside"></span>
@@ -285,31 +275,47 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 					</div>
 				</div>
 			</div>
-			<div class="cf7sg-uirs cf7sg-multi-form">
-				<input id="cf7sg-uifs-g" type="radio" name="cf7sg-uifst" checked="true" class="cf7sg-uirs-tab"/>
-				<label for="cf7sg-uiss-g"><span><?php _e('Multistep','cf7-grid-layout')?></span></label>
+			<div class="cf7sg-uirs cf7sg-multi-form display-none">
+				<input id="cf7sg-uifs-m" type="radio" name="cf7sg-uifst" class="cf7sg-uirs-tab"/>
+				<label for="cf7sg-uifs-m"><span><?php _e('Multistep','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
 					<div class="cf7sg-uirs-label "><?php _e('Slide indicator','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
 						<input type="checkbox" required="true" id="cf7sg-uifs-dots" checked="true"/>
-						<p><em><?php _e('This will display a slide progress indicator','cf7-grid-layout');?></em></p>
+						<em><?php _e('Enable the slide progress indicator','cf7-grid-layout');?></em>
 					</div>
-					<div class="cf7sg-uirs-label "><?php _e('Next slide','cf7-grid-layout');?></div>
+					<div class="cf7sg-uirs-label "><?php _e('Next slide button','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
-						<input type="text" id="cf7sg-uifs-next"/>
+						<input type="text" id="cf7sg-uifs-next" size="12"/>
 						<p><em><?php _e('If left empty, defaults to an arrow icon','cf7-grid-layout');?></em></p>
 					</div>
-					<div class="cf7sg-uirs-label "><?php _e('Previous slide','cf7-grid-layout');?></div>
+					<div class="cf7sg-uirs-label "><?php _e('Previous slide button','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
-						<input type="text" id="cf7sg-uifs-prev"/>
+						<input type="text" id="cf7sg-uifs-prev" size="12"/>
 						<p><em><?php _e('If left empty, defaults to an arrow icon','cf7-grid-layout');?></em></p>
 					</div>
 					<div class="cf7sg-uirs-label "><?php _e('Submit button','cf7-grid-layout');?></div>
 					<div class="cf7sg-uirs-ctrl">
-						<input type="text" required="true" id="cf7sg-uifs-submit" value="<?php _e('Submit','cf7-grid-layout');?>"/>
+						<input type="text" required="true" id="cf7sg-uifs-submit" value="<?php _e('Submit','cf7-grid-layout');?>" size="12"/>
 						<p><em><?php _e('On the last slide, the <em>next</em> slide button is replaced with the form submit button','cf7-grid-layout');?></em></p>
 					</div>
 				</div>
+			</div>
+		</div>
+  </section>
+	<section class="cf7sg-slide-ctrls">
+	<h3 class="cf7sg-uirs"><?php _e('Slide Settings','cf7-grid-layout')?></h3>
+    <div class="grid-controls">
+		<div class="cf7sg-uirs cf7sg-uiss display-none">
+					<input id="cf7sg-uiss-g" type="radio" name="cf7sg-uisst" class="cf7sg-uirs-tab" checked="true"/>
+					<label for="cf7sg-uiss-g"><span><?php _e('General','cf7-grid-layout')?></span></label>
+					<div class="cf7sg-settab">
+						<div class="cf7sg-uirs-label"><?php _e('Slide title','cf7-grid-layout');?></div>
+						<div class="cf7sg-uirs-ctrl">
+							<input type="text" id="cf7sg-slide-title"/>
+							<p><em><?php _e("Optional, leave empty if you don't want a title displayed at the top of the slide.",'cf7-grid-layout');?></em></p>
+						</div>
+					</div>
 			</div>
 		</div>
   </section>
@@ -466,7 +472,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
             <div class="grid-ctrls cf7sg-slide-ctrls">
               <span class="dashicons dashicons-move row-control grid-control"></span>
               <span class="control-label">
-                <span class="slide-label"><?php _e('Slide', 'cf7-grid-layout');?></span>
+                <span class="slide-label"><?php /* translator: the # will be replaced by a number */ _e('Slide #', 'cf7-grid-layout');?></span>
+                <span class="slide-title"></span>
               </span>
               <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
               <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
@@ -478,6 +485,13 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
             </div>
           </div>
         </div>
+				<div class="add-item-button add-slide-button">
+					<span class="button add-slide">
+						<span class="helper-tip display-none"><?php _e('Add another slide', 'cf7-grid-layout');?></span>
+						<span class="dashicons dashicons-plus"></span>
+						<span><?php _e('Slide', 'cf7-grid-layout');?></span>
+					</span>
+				</div>
       </div>
     </div>
   </div>

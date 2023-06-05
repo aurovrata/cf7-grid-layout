@@ -204,7 +204,7 @@
         }
       });
       //tabs
-      /*--------------------------------------------------- convert tabs */
+      /*--------------------------------------------------- convert tabs TODO*/
       $('ul.cf7-sg-tabs-list li', $form).each(function(){
         let $this = $(this);
         let text = $this.children('a').text();
@@ -282,8 +282,8 @@
         $('.cf7sg-col', $grid).each(function(){
           let $this = $(this);
           if($this.is('.cf7sg-inner-grid')) return true;
-          if($this.is('.cf7sg-grid')) return true;
-          if($this.is('.cf7sg-ext-form')) return true;
+          // if($this.is('.cf7sg-grid')) return true;
+          // if($this.is('.cf7sg-ext-form')) return true;
           if($this.children().is('.cf7sg-container')) return true;
           if($this.children('.cf7sg-row').length > 1) $this.closest('.cf7sg-container').addClass('cf7sg-grid');
           $this.html2gui();
@@ -292,7 +292,7 @@
           }
       });
         /** @since 5.0  add ctrl buttons after last container*/
-        if($gridEditor.children('.add-row-button').length==0) $grid.after($rowTemplt.find('.add-row-button').clone());
+        if($grid.children('.add-row-button').length==0) $grid.children().last().after($rowTemplt.find('.add-row-button').clone());
       }else{
         //set the first textarea as our default tag consumer
         $('textarea#wpcf7-form').attr('id','');
@@ -504,20 +504,23 @@
 							$grid.fireGridUpdate('remove','slider-section');
 							$grid.siblings('.add-item-button').removeClass('add-slide-button').addClass('add-row-button');
 							break; 
-						case $t.is('#svfsmulti'): //multistep form.
+						case $t.is('#svfmulti'): //multistep form.
 							$('.cf7sg-multi-form',$innerSection).show(); //show additional options.
 							$form.addClass('multiple');
 							//wrap existing form into a new slider container without any buttons.
-							$grid.insertNewRow($grid.children().remove(), '#grid-multistep-container .cf7sg-slider', 'append');
+							$s = $grid.insertNewRow($grid.children().remove(), '#grid-multistep-container .cf7sg-slider', 'append');
+							type = $('.cf7sg-slide-ctrls .slide-label', $s).text();
+							type= type.replace('#', 1);
+							$('.cf7sg-slide-ctrls .slide-label', $s).text(type);
 							//change the add row button to add slide.
-							$grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
+							// $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
 							//add row button to first slide.
-							$('.cf7sg-slide.cf7sg-container > .cf7sg-row > .cf7sg-col',$grid).append($rowTemplt.find('.add-row-button').clone());
-							$s = $grid.find('.cf7sg-slider');
+							// $('.cf7sg-slide.cf7sg-container > .cf7sg-row > .cf7sg-col',$s).append($rowTemplt.find('.add-row-button').clone());
+							// $s = $grid.find('.cf7sg-slider');
 							$s.fireGridUpdate('add','slider-section');
 							$s = $('.cf7sg-slide',$s).children('.cf7sg-row');
 							/** @since 4.13.0 display auto scroll helper code */
-							$s.children('.grid-ctrls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
+							// $s.children('.grid-ctrls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
 							$s = $s.children('.cf7sg-col');
 							$s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
 							break;
@@ -537,6 +540,24 @@
 				});
         return true;
 
+			}else if( $target.is('.cf7sg-slide-ctrls > .dashicons-admin-generic') ){ //--------------slide settings.
+				let $slide = $target.closest('.cf7sg-container'),
+				  $gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
+					$innerSection = $gridModal.children('section.cf7sg-slide-ctrls');
+
+				$innerSection.siblings('section').remove();
+        $gridModal.modal();
+				
+				$innerSection.change('input', (e)=>{
+					let $t = $(e.target), type='', $s;
+					switch(true){
+						case $t.is('#cf7sg-slide-title'): //title change.
+							$('.cf7sg-slide-title', $slide).html($t.val());
+							$('.cf7sg-slide-ctrls .slide-title', $slide).html($t.val());
+							break;
+					}
+				});
+				return true;
 			}else if( $target.is('.dashicons-admin-generic.row-control') ){ //------------------show controls modal
 				let cl = $target.closest('.ui-grid-ctrls').attr("class"),
 				  $container = $target.closest('.cf7sg-container'), //the current row modal settings.
@@ -678,7 +699,12 @@
       /* --------------------------------SLIDER controls ------------------*/
       if($target.is('.add-slide-button *')){ //add slide
         //add a new empty slide with a new row after the last one, with a button.
-        $('.cf7sg-slide.cf7sg-container', $grid).last().insertNewRow('', '#grid-multistep-container .cf7sg-slide', 'after');
+        let $slides = $target.closest('.add-slide-button').siblings('.cf7sg-container.cf7sg-slide'),
+				  $newSlide = $slides.last().insertNewRow('', '#grid-multistep-container .cf7sg-slide', 'after'),
+					$label = $('.cf7sg-slide-ctrls .slide-label', $newSlide),
+					lbl = $label.text().replace('#', ($slides.length+1));
+				$label.text(lbl);
+				$newSlide.fireGridUpdate('add','cf7sg-slide');
 				return true;
       }
       /*
@@ -698,10 +724,11 @@
         }
         return true;
       }else if($target.is('.add-row-button *')){ //-----------ADD Row
-        let $row = $target.closest('.add-row-button').prev('.cf7sg-container'),$added;
+        let $row = $target.closest('.add-row-button').prev('.cf7sg-container'),
+				  $added=null;
         if($target.is('.button *')) $target = $target.closest('.button');
         //default, last button
-        if($row.length === 0) $row = $grid.children('.cf7sg-container').last();
+        // if($row.length === 0) $row = $grid.children('.cf7sg-container').last();
         switch(true){
           case $target.is('.add-row'):
             $added = $row.insertNewRow(); //without button.
