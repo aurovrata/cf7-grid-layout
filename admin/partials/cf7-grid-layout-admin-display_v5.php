@@ -465,7 +465,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <template id="grid-multistep-container">
   <div class="cf7sg-container cf7sg-slider">
     <div class="cf7sg-row">
-      <div class="cf7sg-col full cf7sg-slider-section" data-next="" data-prev="" data-submit="<?php _e('Submit','cf7-grid-layout');?>" data-dots="false">
+      <div class="cf7sg-col full cf7sg-slider-section" data-next="" data-prev="" data-submit="<?php _e('Submit','cf7-grid-layout');?>" data-dots="true">
         <div class="cf7sg-container cf7sg-slide" id="">
           <div class="cf7sg-slide-title"><span class="cf7sg-title"></span></div>
           <div class="cf7sg-row">

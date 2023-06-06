@@ -109,7 +109,7 @@
       let $collapsibles = $('.cf7sg-col .cf7sg-collapsible:not(.with-toggle):first-child', $form);
       //replace columns content with textareas
       /*--------------------------------------------------- convert columns */
-      $('div.cf7sg-col', $form).each(function(){
+      $('div.cf7sg-col', $form).not('.cf7sg-slider-section').each(function(){
         let $this = $(this), $area = $colTemplt.clone();
 
         switch(true){
@@ -144,7 +144,7 @@
         //disable any non-valid options
         // $this.filterColumnControls(); do this when menu is opened instead.
       });
-      $('div.cf7sg-row:not(.cf7-sg-table-footer-row)', $form).each(function(){
+      $('div.cf7sg-row', $form).not('.cf7-sg-table-footer-row, .cf7sg-slider > *').each(function(){
         $(this).prepend( $rowTemplt.find('.grid-ctrls').clone() );
       });
       /*--------------------------------------------------- convert collapsible sections  */
@@ -242,7 +242,7 @@
         }
       });
       /** @since 3.4 enable groupings of collapsible rows */
-      $('.cf7sg-accordion-rows.cf7sg-col, .cf7sg-slider-section.cf7sg-col', $form).each(function(){
+      $('.cf7sg-accordion-rows.cf7sg-col', $form).each(function(){
         let $col = $(this),
           $control = $col.children('.grid-column').addClass('enable-grouping'); //enable checkboxes.
           /** @since 4.13.0 display auto scroll helper code */
@@ -279,9 +279,9 @@
       /*--------------------------------------------- if ui mode, then convert to gui template */
       let $textareaSelected='';
       if(cf7grid.ui){
-        $('.cf7sg-col', $grid).each(function(){
+        $('.cf7sg-col', $grid).not('.cf7sg-inner-grid, .cf7sg-slider-section').each(function(){
           let $this = $(this);
-          if($this.is('.cf7sg-inner-grid')) return true;
+          if($this.is()) return true;
           // if($this.is('.cf7sg-grid')) return true;
           // if($this.is('.cf7sg-ext-form')) return true;
           if($this.children().is('.cf7sg-container')) return true;
@@ -480,6 +480,7 @@
       /* ---------------------------------------------------------------------------FORM CONTROLS */
 			if( $target.is('.dashicons-admin-generic.form-control') ){ //------------------show controls modal
 				let $form = $target.closest('.cf7sg-form-ctrls'),
+					$slider=null,
 				  $gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
 					$innerSection = $gridModal.children('section.cf7sg-form-ctrls'),
 					$type = $('.cf7sg-switch-vertical > input', $innerSection);
@@ -490,7 +491,11 @@
 				if($form.is('.multiple')){
 					$type.filter('#svfmulti').get(0).checked=true;
 					$('.cf7sg-multi-form',$innerSection).show();
-
+					$slider = $('.cf7sg-col.cf7sg-slider-section',$grid);
+					$('#cf7sg-uifs-dots', $innerSection).get(0).checked = $slider.data('dots');
+					$('#cf7sg-uifs-next', $innerSection).val($slider.data('next'));
+					$('#cf7sg-uifs-prev', $innerSection).val($slider.data('prev'));
+					$('#cf7sg-uifs-submit', $innerSection).val($slider.data('submit'));
 				} 
 				$innerSection.change('input', (e)=>{
 					let $t = $(e.target), type='', $s;
@@ -516,25 +521,24 @@
 							// $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
 							//add row button to first slide.
 							// $('.cf7sg-slide.cf7sg-container > .cf7sg-row > .cf7sg-col',$s).append($rowTemplt.find('.add-row-button').clone());
-							// $s = $grid.find('.cf7sg-slider');
-							$s.fireGridUpdate('add','slider-section');
-							$s = $('.cf7sg-slide',$s).children('.cf7sg-row');
+							$slider = $('.cf7sg-slider-section.cf7sg-col',$s);
+							$slider.fireGridUpdate('add','slider-section');
+							$s = $('.cf7sg-slide',$slider).children('.cf7sg-row').children('.cf7sg-col');
 							/** @since 4.13.0 display auto scroll helper code */
 							// $s.children('.grid-ctrls').children('.php-icon').show().attr('data-search', 'li.cf7sg-slider');
-							$s = $s.children('.cf7sg-col');
 							$s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
 							break;
 						case $t.is('#cf7sg-uifs-dots'): //dots.
-							
+							if('undefined' !== typeof $slider && $slider.length > 0) $slider.data('dots', $t.is(':checked') );
 							break; //noting to do here.
 						case $t.is('#cf7sg-uifs-next'): //next button.
-
+							if('undefined' !== typeof $slider && $slider.length > 0) $slider.data('next', $t.val());
 							break;
 						case $t.is('#cf7sg-uifs-prev'): //next button.
-
+							if('undefined' !== typeof $slider && $slider.length > 0) $slider.data('prev', $t.val());
 							break;
 						case $t.is('#cf7sg-uifs-submit'): //submit button.
-
+							if('undefined' !== typeof $slider && $slider.length > 0) $slider.data('submit', $t.val());
 							break;
 					}
 				});
