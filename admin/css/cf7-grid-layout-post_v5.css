@@ -274,7 +274,7 @@ textarea.grid-input {
 	background: #fff;
 }
 #grid-form .cf7sg-col.cf7sg-inner-grid > .cf7sg-container {
-	padding: 3px 10px 0 10px;
+	padding-top: 3px;
 }
 #grid-form  .cf7sg-slider-controls .button.slider-control {
 	display: none;
@@ -842,7 +842,9 @@ position: relative;
 }
 #grid-form > .cf7sg-container {
     max-width: 100%;
+		margin-top: 5px;
 }
+
 .button.make-grid, .button.external-form {
     width: 100%;
     text-align: center;
