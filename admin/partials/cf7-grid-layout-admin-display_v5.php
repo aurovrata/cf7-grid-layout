@@ -304,9 +304,9 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 		</div>
   </section>
 	<section class="cf7sg-slide-ctrls">
-	<h3 class="cf7sg-uirs"><?php _e('Slide Settings','cf7-grid-layout')?></h3>
+		<h3 class="cf7sg-uirs"><?php _e('Slide Settings','cf7-grid-layout')?></h3>
     <div class="grid-controls">
-		<div class="cf7sg-uirs cf7sg-uiss display-none">
+		<div class="cf7sg-uirs cf7sg-uiss">
 					<input id="cf7sg-uiss-g" type="radio" name="cf7sg-uisst" class="cf7sg-uirs-tab" checked="true"/>
 					<label for="cf7sg-uiss-g"><span><?php _e('General','cf7-grid-layout')?></span></label>
 					<div class="cf7sg-settab">

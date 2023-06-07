@@ -11,7 +11,7 @@
   const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
   /** @since 5.0 filter out tag fields that have form generators. */
   const cf7TagGen = Object.values(cf7grid.fieldtags).filter(v => !["count","range","captchac","captchar","reflection","select"].includes(v));
-  let cf7TagRgxp, $wpcf7Editor, $grid, $gridEditor, $colTemplt, $rowTemplt; 
+  let cf7TagRgxp, $wpcf7Editor, $grid, $gridEditor, $colTemplt, $rowTemplt, $sliderTemplt; 
   //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
   let $pattern = $('<div>').html('' +
     cf7grid.preHTML + 
@@ -57,6 +57,8 @@
     let $editor = $('#cf7sg-editor');
     $colTemplt = $('<div>').html($('#grid-col').html());
     $rowTemplt = $('<div>').html($('#grid-row').html());
+		$sliderTemplt = $('<div>').html($('#grid-multistep-container').html());
+
     $editor.css('background-color',$('body').css('background-color'));
     $('#full-screen-cf7').on('click', function(){
       $editor.toggleClass('full-screen');
@@ -144,8 +146,18 @@
         //disable any non-valid options
         // $this.filterColumnControls(); do this when menu is opened instead.
       });
-      $('div.cf7sg-row', $form).not('.cf7-sg-table-footer-row, .cf7sg-slider > *').each(function(){
-        $(this).prepend( $rowTemplt.find('.grid-ctrls').clone() );
+      $('div.cf7sg-row', $form).not('.cf7-sg-table-footer-row').each(function(){
+				let $r = $(this);
+				switch(true){
+					case $r.is('.cf7sg-slider > *'): //no ctrls.
+						break;
+					case $r.is('.cf7sg-slide > *'):
+						$r.prepend($sliderTemplt.find('.cf7sg-slide-ctrls').clone());
+						$('.cf7sg-slide-ctrls .slide-title', $r).html($r.siblings('.cf7sg-slide-title').html());						
+						break;
+					default:
+        		$r.prepend( $rowTemplt.find('.grid-ctrls').clone() );
+				}
       });
       /*--------------------------------------------------- convert collapsible sections  */
       $('div.cf7sg-container.cf7sg-collapsible', $form).each(function(){
@@ -292,7 +304,23 @@
           }
       });
         /** @since 5.0  add ctrl buttons after last container*/
-        if($grid.children('.add-row-button').length==0) $grid.children().last().after($rowTemplt.find('.add-row-button').clone());
+				switch(true){
+					case $grid.children().is('.cf7sg-slider'):
+						$('.cf7sg-col.cf7sg-slider-section', $grid).append($sliderTemplt.find('.add-slide-button').clone());
+						$('.cf7sg-container.cf7sg-slide > .cf7sg-row > .cf7sg-col', $grid).append($rowTemplt.find('.add-row-button').clone());
+						//label the slides
+						let cnt = 1, lbl='';
+						$('.cf7sg-slide-ctrls .slide-label', $grid).each(function(){
+							lbl = this.innerText.replace('#', cnt);
+							this.innerText = lbl;
+							cnt++;
+						});
+						//flag the form as multiple
+						$('.cf7sg-form-ctrls', $gridEditor).addClass('multiple');
+						break;
+					default:
+						$grid.append($rowTemplt.find('.add-row-button').clone());
+					}
       }else{
         //set the first textarea as our default tag consumer
         $('textarea#wpcf7-form').attr('id','');
@@ -492,10 +520,10 @@
 					$type.filter('#svfmulti').get(0).checked=true;
 					$('.cf7sg-multi-form',$innerSection).show();
 					$slider = $('.cf7sg-col.cf7sg-slider-section',$grid);
-					$('#cf7sg-uifs-dots', $innerSection).get(0).checked = $slider.data('dots');
-					$('#cf7sg-uifs-next', $innerSection).val($slider.data('next'));
-					$('#cf7sg-uifs-prev', $innerSection).val($slider.data('prev'));
-					$('#cf7sg-uifs-submit', $innerSection).val($slider.data('submit'));
+					$('#cf7sg-uifs-dots', $innerSection).get(0).checked = $slider.attr('data-dots')==="true";
+					$('#cf7sg-uifs-next', $innerSection).val($slider.attr('data-next'));
+					$('#cf7sg-uifs-prev', $innerSection).val($slider.attr('data-prev'));
+					$('#cf7sg-uifs-submit', $innerSection).val($slider.attr('data-submit'));
 				} 
 				$innerSection.change('input', (e)=>{
 					let $t = $(e.target), type='', $s;
@@ -529,16 +557,16 @@
 							$s.children('.add-item-button').removeClass('add-field-button').addClass('add-row-button')
 							break;
 						case $t.is('#cf7sg-uifs-dots'): //dots.
-							if('undefined' !== typeof $slider && $slider.length > 0) $slider.data('dots', $t.is(':checked') );
+							if('undefined' !== typeof $slider && $slider.length > 0) $slider.attr('data-dots', $t.is(':checked') );
 							break; //noting to do here.
 						case $t.is('#cf7sg-uifs-next'): //next button.
-							if('undefined' !== typeof $slider && $slider.length > 0) $slider.data('next', $t.val());
+							if('undefined' !== typeof $slider && $slider.length > 0) $slider.attr('data-next', $t.val());
 							break;
 						case $t.is('#cf7sg-uifs-prev'): //next button.
-							if('undefined' !== typeof $slider && $slider.length > 0) $slider.data('prev', $t.val());
+							if('undefined' !== typeof $slider && $slider.length > 0) $slider.attr('data-prev', $t.val());
 							break;
 						case $t.is('#cf7sg-uifs-submit'): //submit button.
-							if('undefined' !== typeof $slider && $slider.length > 0) $slider.data('submit', $t.val());
+							if('undefined' !== typeof $slider && $slider.length > 0) $slider.attr('data-submit', $t.val());
 							break;
 					}
 				});
@@ -551,7 +579,8 @@
 
 				$innerSection.siblings('section').remove();
         $gridModal.modal();
-				
+
+				$('#cf7sg-slide-title', $innerSection).val($('.cf7sg-slide-ctrls .slide-title', $slide).html());
 				$innerSection.change('input', (e)=>{
 					let $t = $(e.target), type='', $s;
 					switch(true){
