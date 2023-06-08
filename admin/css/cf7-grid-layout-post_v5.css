@@ -263,7 +263,8 @@ textarea.grid-input {
 	display: block;
 }
 /* .dashicons.column-control:hover::before, .grid-ctrls .dashicons:hover::before {color:#0065aa} */
-#grid-form .cf7sg-col:hover > .grid-column > .cf7-field-inner {
+#grid-form .cf7sg-col:hover > .grid-column > .cf7-field-inner,
+#grid-form .cf7sg-col:hover > .grid-column-tip > .cf7-field-inner {
 	background: #e4e4e4;
 }
 #grid-form .cf7sg-container,
@@ -292,7 +293,7 @@ textarea.grid-input {
 	border-style: dashed !important;
 	border-width: 2px !important;
 }
-#grid-form :not(.cf7sg-slider) .cf7sg-row:not(.cf7-sg-table-footer-row) {
+#grid-form :not(.cf7sg-slider) .cf7sg-row {
   padding: 0 8px;
   position: relative;
 }
@@ -471,7 +472,7 @@ textarea.grid-input {
 #grid-form .row-selected .grid-ctrls{
     background-color: var(--cf7sg-row-default);
 }
-#grid-form .cf7sg-container > .cf7sg-row {
+#grid-form .cf7sg-container > .cf7sg-row:not(.cf7-sg-table-footer-row) {
   border-color: var(--cf7sg-row-default);
 }
 #grid-form .cf7sg-container.cf7sg-slide > .cf7sg-row {
@@ -1335,13 +1336,16 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 .cf7sg-switch-vertical input#svrow:checked + label {
 	background-color: var(--cf7sg-row-default);
 }
-.cf7sg-switch-vertical input#svtable:checked + label {
+.cf7sg-switch-vertical input#svtable:checked + label, 
+.cf7sg-switch-vertical input#svtable:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
 	background-color: var(--cf7sg-row-table);
 }
-.cf7sg-switch-vertical input#svcoll:checked + label {
+.cf7sg-switch-vertical input#svcoll:checked + label,
+.cf7sg-switch-vertical input#svcoll:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
 	background-color: var(--cf7sg-row-collapsible);
 }
-.cf7sg-switch-vertical input#svtabs:checked + label {
+.cf7sg-switch-vertical input#svtabs:checked + label,
+.cf7sg-switch-vertical input#svtabs:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
 	background-color: var(--cf7sg-row-tab);
 }
 .cf7sg-switch-vertical input:not(:checked):not(:disabled) + label:hover {

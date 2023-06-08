@@ -591,8 +591,8 @@
 					}
 				});
 				return true;
-			}else if( $target.is('.dashicons-admin-generic.row-control') ){ //------------------show controls modal
-				let cl = $target.closest('.ui-grid-ctrls').attr("class"),
+			}else if( $target.is('.dashicons-admin-generic.row-control') ){ //------------------show row controls modal
+				let cl = $target.closest('.grid-ctrls').attr("class"),
 				  $container = $target.closest('.cf7sg-container'), //the current row modal settings.
 					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
 					$innerSection = $gridModal.children('section.grid-ctrls').attr('class',cl),
@@ -614,7 +614,17 @@
 						let type = $innerSection.attr('class').replace('grid-ctrls', '').trim();
 						type = type.match(/cf7sg\-(.*)\-ctrls/); //tabs row.
 						$type.filter('input#sv'+type[1]).get(0).checked = true;
-						$type.not('#svrow').prop('disabled', true); //disable the row types.
+						$type.not('#svrow, #sv'+type[1]).prop('disabled', true); //disable the row types.
+						switch(type[1]){
+							case 'table':
+								$('#cf7sg-uirs-table-footer', $innerSection).get(0).checked = $container.has('.cf7-sg-table-footer-row').length>0;
+								$('#cf7sg-uirs-table-button', $innerSection).val($container.attr('data-button'));
+								break;
+							case 'coll':
+								break;
+							case 'tabs':
+								break;
+						}
 						break;
 				}
 
@@ -648,6 +658,20 @@
 						case $t.is('#conditional-grp-name'):
 							$container.attr('data-conditional-group', $t.val());
 							$grid.trigger('cf7sg-cf7tag-update'); //for other plugins.
+							break;
+						case $t.is('#cf7sg-uirs-table-footer'):
+							if($t.is(':checked')){ // insert footer row.
+								$container.addClass('cf7-sg-table-footer');
+								$container.append($('#grid-table-footer-row').html());
+							}else{
+								$container.removeClass('cf7-sg-table-footer');
+								$container.find('.cf7-sg-table-footer-row').remove();
+							}
+							break;
+						case $t.is('#cf7sg-uirs-table-button'):
+							type = 'Add Row';
+							if($t.val().length > 0) type = $t.val();
+							$container.attr('data-button', type );
 							break;
 					}
 				});
