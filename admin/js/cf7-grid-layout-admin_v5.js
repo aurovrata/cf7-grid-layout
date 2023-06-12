@@ -11,7 +11,7 @@
   const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
   /** @since 5.0 filter out tag fields that have form generators. */
   const cf7TagGen = Object.values(cf7grid.fieldtags).filter(v => !["count","range","captchac","captchar","reflection","select"].includes(v));
-  let cf7TagRgxp, $wpcf7Editor, $grid, $gridEditor, $colTemplt, $rowTemplt, $sliderTemplt; 
+  let cf7TagRgxp, $wpcf7Editor, $grid, $gridEditor, $colTemplt, $rowTemplt, $sliderTemplt, $collTemplt; 
   //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
   let $pattern = $('<div>').html('' +
     cf7grid.preHTML + 
@@ -58,6 +58,7 @@
     $colTemplt = $('<div>').html($('#grid-col').html());
     $rowTemplt = $('<div>').html($('#grid-row').html());
 		$sliderTemplt = $('<div>').html($('#grid-multistep-container').html());
+		$collTemplt = $('<div>').html($('#grid-collapsible').html());
 
     $editor.css('background-color',$('body').css('background-color'));
     $('#full-screen-cf7').on('click', function(){
@@ -111,7 +112,7 @@
       let $collapsibles = $('.cf7sg-col .cf7sg-collapsible:not(.with-toggle):first-child', $form);
       //replace columns content with textareas
       /*--------------------------------------------------- convert columns */
-      $('div.cf7sg-col', $form).not('.cf7sg-slider-section').each(function(){
+      $('div.cf7sg-col', $form).not('.cf7sg-slider-section, .cf7sg-collapsible-inner').each(function(){
         let $this = $(this), $area = $colTemplt.clone();
 
         switch(true){
@@ -155,6 +156,9 @@
 						$r.prepend($sliderTemplt.find('.cf7sg-slide-ctrls').clone());
 						$('.cf7sg-slide-ctrls .slide-title', $r).html($r.siblings('.cf7sg-slide-title').html());						
 						break;
+					case $r.is('.cf7sg-collapsible > *'):
+						$r.prepend( $collTemplt.find('.grid-ctrls').clone() );
+						break;
 					default:
         		$r.prepend( $rowTemplt.find('.grid-ctrls').clone() );
 				}
@@ -163,31 +167,19 @@
       $('div.cf7sg-container.cf7sg-collapsible', $form).each(function(){
         let $this = $(this);
         let id = $this.attr('id');
-        if(typeof id == 'undefined'){
+        if(typeof id === 'undefined' || id.length===0){
           id = randString(6);
           $this.attr('id', id); //assign a random id
         }
-        let text = $this.children('.cf7sg-collapsible-title span.cf7sg-title').text();
-        if(0==text.length){ //pre v1.8 title?.
-          text = $this.children('.cf7sg-collapsible-title').text();
+				id = $this.children('input.cf7sg-collapsible-title').attr('id');
+				if(typeof id === 'undefined' || id.length===0){
+          id = randString(6);
+          $this.children('input.cf7sg-collapsible-title').attr('id', id).attr('name',id); //assign a random id
+          $this.children('label.cf7sg-collapsible-title').attr('for', id); //assign a random id
         }
-        let $toggle = $('.toggle', $this.children('.cf7sg-collapsible-title'));
-        if($toggle.length>0){
-          $toggle = $toggle.clone();
-        }
-        //swap out HTML title element for UI title element with input fields.
-        let $title = $this.children('.cf7sg-collapsible-title');
-        $title.children().remove();
-        $title.prepend( $('.cf7sg-collapsible-title',$('#grid-collapsible')).html());
-        $('input', $title).not('[type="checkbox"]').val(text);
-        if($toggle.length>0){
-          $title.append($toggle);
-          $('input[type="checkbox"]', $title ).prop('checked', true);
-        }
-        let $ctrl = $this.children('.cf7sg-row').children('.grid-ctrls').find('.collapsible-row-label');
-        $('input', $ctrl).prop('checked', true);
-        //toggle disable the sibling input
-        $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
+        id = $this.children('label.cf7sg-collapsible-title').find('.cf7sg-title').html();
+				if(id.length>0) $this.children('.cf7sg-row').children('.grid-ctrls').find('.section-title').html(id);
+				if($this.is('.cf7sg-toggled') && $this.children('label.cf7sg-collapsible-title:has(.cf7sg-toggle-button)').length===0) $this.removeClass('cf7sg-toggled');
       });
       /*--------------------------------------------------- convert tables */
       $('div.cf7sg-container.cf7-sg-table', $form).each(function(){
@@ -254,25 +246,7 @@
         }
       });
       /** @since 3.4 enable groupings of collapsible rows */
-      $('.cf7sg-accordion-rows.cf7sg-col', $form).each(function(){
-        let $col = $(this),
-          $control = $col.children('.grid-column').addClass('enable-grouping'); //enable checkboxes.
-          /** @since 4.13.0 display auto scroll helper code */
-        $('.php-icon',$control).show().attr('data-search', 'li.cf7sg-slider');
-        if($col.is('.cf7sg-accordion-rows')){
-          $('.accordion-rows:input', $control).prop('checked', true);
-        }else{ //is .cf7sg-slider-section
-          $('.slider-rows:input', $control).prop('checked', true);
-          //check if next container is a slider control.
-          let $ctrl = $col.closest('.cf7sg-container').next();
-          if($ctrl.is('.cf7sg-container.cf7sg-slider-controls')){
-            $control = $ctrl.children('.cf7sg-row').children('.grid-ctrls');
-            $('.slider-control:input', $control).prop('checked', true);
-          }
-        }
-        //remove toggle checkbox.
-        $('input[type="checkbox"]', $col.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title') ).hide().next('span').hide();
-      });
+      // TODO
       //check if any columns have more than 2 collapsible sections.
       $collapsibles.each(function(){
         $(this).siblings('.cf7sg-collapsible').closest('.cf7sg-col').children('.grid-column').addClass('enable-grouping');
@@ -293,15 +267,20 @@
       if(cf7grid.ui){
         $('.cf7sg-col', $grid).not('.cf7sg-inner-grid, .cf7sg-slider-section').each(function(){
           let $this = $(this);
-          if($this.is()) return true;
-          // if($this.is('.cf7sg-grid')) return true;
-          // if($this.is('.cf7sg-ext-form')) return true;
-          if($this.children().is('.cf7sg-container')) return true;
-          if($this.children('.cf7sg-row').length > 1) $this.closest('.cf7sg-container').addClass('cf7sg-grid');
-          $this.html2gui();
-          if($this.is('.cf7sg-container > .cf7sg-row:first-child > .cf7sg-col')){
-            $this.append($colTemplt.find('.add-field-button').clone());
-          }
+          switch(true){
+						case $this.is('.cf7sg-collapsible-inner'): //append row buttons.
+							$this.append($rowTemplt.find('.add-row-button').clone());
+							break;
+						case $this.children().is('.cf7sg-container'):
+							break;
+						default: //convert column to UI.
+							if($this.children('.cf7sg-row').length > 1) $this.closest('.cf7sg-container').addClass('cf7sg-grid');
+							$this.html2gui();
+							if($this.is('.cf7sg-container > .cf7sg-row:first-child > .cf7sg-col')){
+								$this.append($colTemplt.find('.add-field-button').clone());
+							}
+						break;
+					}
       });
         /** @since 5.0  add ctrl buttons after last container*/
 				switch(true){
@@ -506,7 +485,7 @@
       //close any column size popups
       toggleCentredMenus($target);
       /* ---------------------------------------------------------------------------FORM CONTROLS */
-			if( $target.is('.dashicons-admin-generic.form-control') ){ //------------------show controls modal
+			if( $target.is('.dashicons-admin-generic.form-control') ){ //------------------show form controls modal
 				let $form = $target.closest('.cf7sg-form-ctrls'),
 					$slider=null,
 				  $gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
@@ -621,6 +600,13 @@
 								$('#cf7sg-uirs-table-button', $innerSection).val($container.attr('data-button'));
 								break;
 							case 'coll':
+								if($container.is('.cf7sg-toggled')){
+									$('#cf7sg-uirs-coll-tgl', $innerSection).get(0).checked = true;
+									let $tgl = $container.children('label').find('.cf7sg-toggle-button');
+									$('#cf7sg-is-toggled', $innerSection).val($tgl.attr('data-on'));
+									$('#cf7sg-isnt-toggled', $innerSection).val($tgl.attr('data-off'));
+								}
+								$('#cf7sg-coll-title', $innerSection).val($container.children('.cf7sg-collapsible-title').find('.cf7sg-title').html());
 								break;
 							case 'tabs':
 								break;
@@ -638,13 +624,13 @@
 							//convert row
 							switch(true){
 								case $t.is('#svrow'):
-									$container.convertUIRow();
+									$container = $container.convertUIRow();
 									$innerSection.attr('class','grid-ctrls cf7sg-row-ctrls');
 									$type.filter(':disabled').prop('disabled', false); //enable the row types.
 									break;
 								default:
 									type = $t.attr('id').replace('sv','');
-									$container.convertUIRow(type);
+									$container = $container.convertUIRow(type);
 									$innerSection.attr('class',`grid-ctrls cf7sg-${type}-ctrls`);
 									$type.not('#svrow').prop('disabled', true); //disable the row types.
 									break;
@@ -672,6 +658,25 @@
 							type = 'Add Row';
 							if($t.val().length > 0) type = $t.val();
 							$container.attr('data-button', type );
+							break;
+						case $t.is('#cf7sg-coll-title'): //collaspible section
+							$container.children('label.cf7sg-collapsible-title').find('.cf7sg-title').html($t.val());
+							$container.children('.cf7sg-row').children('.cf7sg-coll-ctrls').find('.control-label .section-title').html($t.val());
+							break;
+						case $t.is('#cf7sg-uirs-coll-tgl'):
+							if($t.is(':checked')){
+								$container.addClass('cf7sg-toggled');
+								$container.children('label.cf7sg-collapsible-title').append($('#grid-collapsible-with-toggle').html());
+							}else{
+								$container.removeClass('cf7sg-toggled');
+								$container.children('label.cf7sg-collapsible-title').find('.cf7sg-toggle-button').remove();
+							}
+							break;
+						case $t.is('#cf7sg-is-toggled'):
+							$container.children('label.cf7sg-collapsible-title').find('.cf7sg-toggle-button').attr('data-on', $t.val());
+							break;
+						case $t.is('#cf7sg-isnt-toggled'):
+							$container.children('label.cf7sg-collapsible-title').find('.cf7sg-toggle-button').attr('data-off', $t.val());
 							break;
 					}
 				});
@@ -1303,62 +1308,63 @@
 		return $col;
 	}
 	$.fn.convertUIRow = function(type){
-		let $row = this, id='', $added=null;
-		if(!$row.is('.cf7sg-container')) return false;
+		let $c = this, id='', $added=null;
+		if(!$c.is('.cf7sg-container')) return false;
 		if('undefined' == typeof type){ //convert back to a normal row.
 			switch(true){
-				case $row.is('.cf7-sg-table'): //convert back to a row.
-					$row.find('.cf7sg-row.cf7-sg-table').removeClass('cf7-sg-table');
-					$row.removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
-					if($row.is('.cf7-sg-table-footer')){
-						$row.find('.cf7-sg-table-footer-row').remove(); 
-						$row.removeClass('cf7-sg-table-footer');
+				case $c.is('.cf7-sg-table'): //convert back to a row.
+					$c.find('.cf7sg-row.cf7-sg-table').removeClass('cf7-sg-table');
+					$c.removeClass('cf7-sg-table').removeAttr('id').removeAttr('data-button').fireGridUpdate('remove','table-row');
+					if($c.is('.cf7-sg-table-footer')){
+						$c.find('.cf7-sg-table-footer-row').remove(); 
+						$c.removeClass('cf7-sg-table-footer');
 					}
 					break;
-				case $row.is('.cf7sg-collapsible'):
-					let $col = $row.children('.cf7sg-row').children('.cf7sg-col').children('.cf7sg-container').remove();
-					$row.after($col);
-					$row.fireGridUpdate('remove','collapsible-row');
-					$row.remove();
-					$row = $col;
+				case $c.is('.cf7sg-collapsible'):
+					let $col = $c.children('.cf7sg-row').children('.cf7sg-col').children('.cf7sg-container').remove();
+					$c.after($col);
+					$c.fireGridUpdate('remove','collapsible-row');
+					$c.remove();
+					$c = $col;
 					break;
-				case $row.is('.cf7-sg-tabs'):
-					let $panel = $row.find('.cf7-sg-panel').children('.cf7sg-container').remove();
-					$row.after($panel);
-					$row.fireGridUpdate('remove','tabbed-row');
-					$row.remove();
-					$row = $panel;
+				case $c.is('.cf7-sg-tabs'):
+					let $panel = $c.find('.cf7-sg-panel').children('.cf7sg-container').remove();
+					$c.after($panel);
+					$c.fireGridUpdate('remove','tabbed-row');
+					$c.remove();
+					$c = $panel;
 					break;					
 			}
-			$row.find('.grid-ctrls').first().attr('class','grid-ctrls cf7sg-ui-row'); //identify settings 
+			$c.find('.grid-ctrls').first().attr('class','grid-ctrls cf7sg-ui-row'); //identify settings 
 		}else{
 			switch(type){
 				case 'table':
 					id = 'cf7-sg-table-'+(new Date).getTime();
-					$row.children('.cf7sg-row').addClass('cf7-sg-table');
-					$row.addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
-					$row.find('.grid-ctrls').first().attr('class','grid-ctrls cf7sg-table-ctrls');
+					$c.children('.cf7sg-row').addClass('cf7-sg-table');
+					$c.addClass('cf7-sg-table').attr('id',id).fireGridUpdate('add','table-row');
+					$c.find('.grid-ctrls').first().attr('class','grid-ctrls cf7sg-table-ctrls');
 					break;
 				case 'coll':
-					$added = $row.insertNewRow($row, '#grid-collapsible', 'after');
-					$added.attr('id',randString(6));//.find('.add-row-button').remove();
+					$added = $c.insertNewRow($c, '#grid-collapsible', 'after');
+					$added.attr('id',randString(6));
+					$('.cf7sg-collapsible-inner',$added).first().append($rowTemplt.find('.add-row-button').clone());
 					$added.fireGridUpdate('add','collapsible-row');
-					$row = $added;
+					$c = $added;
         	break;
 				case 'tabs':
-					$added = $row.insertNewRow($row, '#grid-tabs', 'after');
+					$added = $c.insertNewRow($c, '#grid-tabs', 'after');
 
           id = 'cf7-sg-tab-'+(new Date).getTime();
           $added.attr('id',id);
-          // $row.before($('#grid-tabs').html());
-          // $row.closest('.cf7sg-col').addClass('cf7-sg-tabs');
-          // $('li a', $row.siblings('ul.cf7-sg-tabs-list')).attr('href','#'+id);
+          // $c.before($('#grid-tabs').html());
+          // $c.closest('.cf7sg-col').addClass('cf7-sg-tabs');
+          // $('li a', $c.siblings('ul.cf7-sg-tabs-list')).attr('href','#'+id);
           $added.fireGridUpdate('add','tabbed-row');
-					$row = $added;
+					$c = $added;
 					break;
 			}
 		}
-		return $row;
+		return $c;
 	}
   $.fn.trackConditionalGroups = function(s,r){
     if('undefined' == typeof s) s='group';

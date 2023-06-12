@@ -422,11 +422,25 @@ textarea.grid-input {
 #cf7-editor-grid .cf7sg-row:not(.cf7-sg-table) > .grid-ctrls .row-label {
 	display: inline;
 }
+#cf7-editor-grid .cf7sg-collapsible > .cf7sg-row > .grid-ctrls .row-label {
+	display: none;
+}
 #cf7-editor-grid .cf7sg-container.cf7sg-slide > .cf7sg-row > .grid-ctrls .slide-label {
 	display: inline;
 }
-#grid-form .slide-title:not(:empty)::before {
+#grid-form .slide-title:not(:empty)::before, 
+#grid-form .section-title:not(:empty)::before {
 	content: "- ";
+}
+#grid-form .cf7sg-collapsible.cf7sg-toggled > .cf7sg-row > .grid-ctrls .control-label::after {
+	content: '';
+	display: inline-block;
+	height: 15px;
+	width: 27px;
+	background-image: url('./image/toggle.png');
+	background-size: contain;
+	vertical-align: baseline;
+	margin-left: 15px;
 }
 #grid-form .cf7sg-slide-title {
 	display: none;
@@ -876,7 +890,8 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 .cf7sg-container.cf7sg-slider + .cf7sg-container  > .cf7sg-row .grid-ctrls .slider-control-label{
     display: inline-block;
 }
-#cf7sg-editor .cf7sg-row.cf7-sg-table > .grid-ctrls .table-label {
+#cf7sg-editor .cf7sg-row.cf7-sg-table > .grid-ctrls .table-label,
+#cf7sg-editor .cf7sg-collapsible > .cf7sg-row > .grid-ctrls .collapsible-label {
 	display: inline;
 }
 #grid-form input:disabled:hover, #grid-form .grid-controls label:hover {

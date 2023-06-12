@@ -712,19 +712,19 @@
       $('.cf7sg-row', $form).removeClass('ui-sortable').children('.grid-ctrls').remove();
 
       //remove the collapsible input
-      $('.cf7sg-container.cf7sg-collapsible', $form).each(function(){
-        let $this = $(this),cid = $this.attr('id'), $title = $this.children('.cf7sg-collapsible-title');
-        let text = $title.children('label').children('input[type="hidden"]').val();
-        $title.children('label').remove();
-        let toggle = '';
-        if($this.is('.with-toggle')){
-          toggle=' toggled';
-        }
-        text = '<span class="cf7sg-title'+toggle+'">'+text+'</span>';
-        $title.html(text + $title.html());
-      });
+      // $('.cf7sg-container.cf7sg-collapsible', $form).each(function(){
+      //   let $this = $(this),cid = $this.attr('id'), $title = $this.children('.cf7sg-collapsible-title');
+      //   let text = $title.children('label').children('input[type="hidden"]').val();
+      //   $title.children('label').remove();
+      //   let toggle = '';
+      //   if($this.is('.with-toggle')){
+      //     toggle=' toggled';
+      //   }
+      //   text = '<span class="cf7sg-title'+toggle+'">'+text+'</span>';
+      //   $title.html(text + $title.html());
+      // });
       //remove tabs inputs
-      $('ul.cf7-sg-tabs-list li label', $form).remove();
+      // $('ul.cf7-sg-tabs-list li label', $form).remove();
 
       const cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s]*)(|\s*(.[^\[]*))\]/img,
         cf7sgToggleRegex = /class:cf7sg-toggle-(.[^\s]+)/i;
@@ -739,7 +739,7 @@
           if($text.length>0){
             let text = $text.text();
             //verify if this column is within a toggled section.
-            let $toggle = $this.closest('.cf7sg-container.cf7sg-collapsible.with-toggle');
+            let $toggle = $this.closest('.cf7sg-container.cf7sg-collapsible.cf7sg-toggled');
             if($toggle.length>0){
               let cid = $toggle.attr('id');
               /**

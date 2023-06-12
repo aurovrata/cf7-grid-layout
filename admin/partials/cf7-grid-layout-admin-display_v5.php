@@ -147,12 +147,12 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 					<div class="cf7sg-uirs-ctrl"><input type="text" value="" id="cf7sg-coll-title"/></div>
 					<div class="cf7sg-uirs-label"><?php _e('Toggled','cf7-grid-layout')?></div>
 					<div class="cf7sg-uirs-ctrl">
-						<input type="checkbox" class="collapsible-toggle" /><?php _e('enable togle switch','cf7-grid-layout')?>
+						<input id="cf7sg-uirs-coll-tgl" type="checkbox" class="collapsible-toggle" /><?php _e('enable togle switch','cf7-grid-layout')?>
 						<p><em><?php _e('Fields within a toggled and collapsed section are disabled and not submitted.','cf7-grid-layout')?></em></p>
 						<div class="cf7sg-uirs-toggled">
 							<label><?php _e('Toggle labels','cf7-grid-layout')?>: <?php _e('On','cf7-grid-layout')?>-</label>
 							<input size="6" type="text" value="Yes" id="cf7sg-is-toggled"/> | 
-							<label><?php _e('off','cf7-grid-layout')?>-</label><input size="6" type="text" value="No" id=""/>
+							<label><?php _e('off','cf7-grid-layout')?>-</label><input size="6" type="text" value="No" id="cf7sg-isnt-toggled"/>
 						</div>
 					</div>
 				</div>
@@ -410,24 +410,26 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 </template>
 <template id="grid-collapsible">
   <div class="cf7sg-container cf7sg-collapsible">
-    <div class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></div>
+		<input type="checkbox" id="" name="" value="1" class="cf7sg-collapsible-title" />
+    <label for="" class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></label>
     <div class="cf7sg-row">
       <div class="ui-grid-ctrls grid-ctrls cf7sg-coll-ctrls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
-        <span class="control-label"><?php _e('Collapsible section', 'cf7-grid-layout');?></span>
+        <span class="control-label">
+					<span class="section-label"><?php _e('Collapsible section', 'cf7-grid-layout');?></span>
+					<span class="section-title"></span>
+				</span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
       </div>
-      <div class="cf7sg-col full">
+      <div class="cf7sg-col cf7sg-collapsible-inner full">
         <template class="inner-template">#grid-row</template>
       </div>
     </div>
   </div>
 </template>
 <template id="grid-collapsible-with-toggle">
-  <div class="cf7sg-toggle-button style-r" data-on="<?php echo _x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?php echo _x('No','toggle label','cf7-grid-layout')?>">
-    <input type="checkbox" class="checkbox"><div class="knobs"></div><div class="layer"></div>
-  </div>
+	<span data-on="<?php echo _x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?php echo _x('No','toggle label','cf7-grid-layout')?>" class="cf7sg-toggle-button"></span>
 </template>
 <template id="grid-tabs">
   <div class="cf7-sg-tabs cf7sg-container" id="">
