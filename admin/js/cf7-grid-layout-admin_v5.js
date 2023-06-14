@@ -11,7 +11,8 @@
   const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
   /** @since 5.0 filter out tag fields that have form generators. */
   const cf7TagGen = Object.values(cf7grid.fieldtags).filter(v => !["count","range","captchac","captchar","reflection","select"].includes(v));
-  let cf7TagRgxp, $wpcf7Editor, $grid, $gridEditor, $colTemplt, $rowTemplt, $sliderTemplt, $collTemplt; 
+	const uiTemplts = {};
+  let cf7TagRgxp, $wpcf7Editor, $grid, $gridEditor; 
   //graphics UI template pattern, @since 4.11.7 fix classes on cell element.
   let $pattern = $('<div>').html('' +
     cf7grid.preHTML + 
@@ -55,10 +56,16 @@
     //change the form id to mimic cf7 plugin custom admin page.
     /** @since 2.11.0 full screen button*/
     let $editor = $('#cf7sg-editor');
-    $colTemplt = $('<div>').html($('#grid-col').html());
-    $rowTemplt = $('<div>').html($('#grid-row').html());
-		$sliderTemplt = $('<div>').html($('#grid-multistep-container').html());
-		$collTemplt = $('<div>').html($('#grid-collapsible').html());
+		$('template').each((i,e)=>{
+			if(e.id.length > 0 && e.id.startsWith('grid')){
+				uiTemplts['#'+e.id] = $('<div>').html(e.innerHTML);
+			}
+		});
+    // $colTemplt = $('<div>').html($('#grid-col').html());
+    // $rowTemplt = $('<div>').html($('#grid-row').html());
+		// $sliderTemplt = $('<div>').html($('#grid-multistep-container').html());
+		// $collTemplt = $('<div>').html($('#grid-collapsible').html());
+		// $tabsTemplt = $('<div>').html($('#grid-tabs').html());
 
     $editor.css('background-color',$('body').css('background-color'));
     $('#full-screen-cf7').on('click', function(){
@@ -109,11 +116,11 @@
       //remove the external forms
       $('.cf7sg-external-form .cf7sg-external-form-content', $form).remove();
       //seek collapsibles for slider/accordion.
-      let $collapsibles = $('.cf7sg-col .cf7sg-collapsible:not(.with-toggle):first-child', $form);
+      // let $collapsibles = $('.cf7sg-col .cf7sg-collapsible:not(.with-toggle):first-child', $form);
       //replace columns content with textareas
       /*--------------------------------------------------- convert columns */
-      $('div.cf7sg-col', $form).not('.cf7sg-slider-section, .cf7sg-collapsible-inner').each(function(){
-        let $this = $(this), $area = $colTemplt.clone();
+      $('div.cf7sg-col', $form).not('.cf7sg-slider-section, .cf7sg-collapsible-inner, .cf7sg-tabs-panel').each(function(){
+        let $this = $(this), $area = uiTemplts['#grid-col'].clone();
 
         switch(true){
           case $this.is('.cf7sg-ext-form'):
@@ -148,19 +155,24 @@
         // $this.filterColumnControls(); do this when menu is opened instead.
       });
       $('div.cf7sg-row', $form).not('.cf7-sg-table-footer-row').each(function(){
-				let $r = $(this);
+				let $r = $(this), t;
 				switch(true){
 					case $r.is('.cf7sg-slider > *'): //no ctrls.
 						break;
 					case $r.is('.cf7sg-slide > *'):
-						$r.prepend($sliderTemplt.find('.cf7sg-slide-ctrls').clone());
+						$r.prepend(uiTemplts['#grid-multistep-container'].find('.cf7sg-slide-ctrls').clone());
 						$('.cf7sg-slide-ctrls .slide-title', $r).html($r.siblings('.cf7sg-slide-title').html());						
 						break;
 					case $r.is('.cf7sg-collapsible > *'):
-						$r.prepend( $collTemplt.find('.grid-ctrls').clone() );
+						$r.prepend( uiTemplts['#grid-collapsible'].find('.grid-ctrls').clone() );
+						break;
+					case $r.is('.cf7-sg-tabs > *'):
+						$r.prepend( uiTemplts['#grid-tabs'].find('.grid-ctrls').clone() );
+						t = $r.find('.cf7sg-tabs-panel > .cf7sg-tab-title').first().data('title');
+						$r.find('.cf7sg-tabs-ctrls > .control-label > .section-title').first().text(t);
 						break;
 					default:
-        		$r.prepend( $rowTemplt.find('.grid-ctrls').clone() );
+        		$r.prepend( uiTemplts['#grid-row'].find('.grid-ctrls').clone() );
 				}
       });
       /*--------------------------------------------------- convert collapsible sections  */
@@ -207,19 +219,7 @@
           $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v;});
         }
       });
-      //tabs
-      /*--------------------------------------------------- convert tabs TODO*/
-      $('ul.cf7-sg-tabs-list li', $form).each(function(){
-        let $this = $(this);
-        let text = $this.children('a').text();
-        $this.append($('#grid-tabs').html().find('ul li label'));
-        $('label input', $this).val(text);
-        //setup checkbox
-        let $ctrl = $this.parent().siblings('.cf7-sg-tabs-panel');
-        $ctrl = $ctrl.children('.cf7sg-row').children('.grid-ctrls' ).find('.tabs-row-label');
-        $('input.tabs-row', $ctrl).prop('checked', true);
-        $('input', $ctrl.siblings('.unique-mod')).prop('disabled', function(i,v){return !v});
-      });
+      
       //reinsert the external forms
       $('.cf7sg-external-form', $form).each(function(){
         let $extform = $(this);
@@ -248,9 +248,9 @@
       /** @since 3.4 enable groupings of collapsible rows */
       // TODO
       //check if any columns have more than 2 collapsible sections.
-      $collapsibles.each(function(){
-        $(this).siblings('.cf7sg-collapsible').closest('.cf7sg-col').children('.grid-column').addClass('enable-grouping');
-      });
+      // $collapsibles.each(function(){
+      //   $(this).siblings('.cf7sg-collapsible').closest('.cf7sg-col').children('.grid-column').addClass('enable-grouping');
+      // });
       //add the form to the grid
       if($form.children('.cf7sg-container').length >0){
         $grid.append($form.children());
@@ -269,7 +269,8 @@
           let $this = $(this);
           switch(true){
 						case $this.is('.cf7sg-collapsible-inner'): //append row buttons.
-							$this.append($rowTemplt.find('.add-row-button').clone());
+						case $this.is('.cf7sg-tabs-panel'): //append row buttons.
+							$this.append(uiTemplts['#grid-row'].find('.add-row-button').clone());
 							break;
 						case $this.children().is('.cf7sg-container'):
 							break;
@@ -277,7 +278,7 @@
 							if($this.children('.cf7sg-row').length > 1) $this.closest('.cf7sg-container').addClass('cf7sg-grid');
 							$this.html2gui();
 							if($this.is('.cf7sg-container > .cf7sg-row:first-child > .cf7sg-col')){
-								$this.append($colTemplt.find('.add-field-button').clone());
+								$this.append(uiTemplts['#grid-col'].find('.add-field-button').clone());
 							}
 						break;
 					}
@@ -285,8 +286,8 @@
         /** @since 5.0  add ctrl buttons after last container*/
 				switch(true){
 					case $grid.children().is('.cf7sg-slider'):
-						$('.cf7sg-col.cf7sg-slider-section', $grid).append($sliderTemplt.find('.add-slide-button').clone());
-						$('.cf7sg-container.cf7sg-slide > .cf7sg-row > .cf7sg-col', $grid).append($rowTemplt.find('.add-row-button').clone());
+						$('.cf7sg-col.cf7sg-slider-section', $grid).append(uiTemplts['#grid-multistep-container'].find('.add-slide-button').clone());
+						$('.cf7sg-container.cf7sg-slide > .cf7sg-row > .cf7sg-col', $grid).append(uiTemplts['#grid-row'].find('.add-row-button').clone());
 						//label the slides
 						let cnt = 1, lbl='';
 						$('.cf7sg-slide-ctrls .slide-label', $grid).each(function(){
@@ -298,7 +299,7 @@
 						$('.cf7sg-form-ctrls', $gridEditor).addClass('multiple');
 						break;
 					default:
-						$grid.append($rowTemplt.find('.add-row-button').clone());
+						$grid.append(uiTemplts['#grid-row'].find('.add-row-button').clone());
 					}
       }else{
         //set the first textarea as our default tag consumer
@@ -527,7 +528,7 @@
 							//change the add row button to add slide.
 							// $grid.siblings('.add-item-button').removeClass('add-row-button').addClass('add-slide-button');
 							//add row button to first slide.
-							// $('.cf7sg-slide.cf7sg-container > .cf7sg-row > .cf7sg-col',$s).append($rowTemplt.find('.add-row-button').clone());
+							// $('.cf7sg-slide.cf7sg-container > .cf7sg-row > .cf7sg-col',$s).append(uiTemplts['#grid-row'].find('.add-row-button').clone());
 							$slider = $('.cf7sg-slider-section.cf7sg-col',$s);
 							$slider.fireGridUpdate('add','slider-section');
 							$s = $('.cf7sg-slide',$slider).children('.cf7sg-row').children('.cf7sg-col');
@@ -609,6 +610,7 @@
 								$('#cf7sg-coll-title', $innerSection).val($container.children('.cf7sg-collapsible-title').find('.cf7sg-title').html());
 								break;
 							case 'tabs':
+								$('#cf7sg-uirs-tab-label', $innerSection).val($target.siblings('.control-label').find('.section-title').html());
 								break;
 						}
 						break;
@@ -616,7 +618,7 @@
 
 				
 				$innerSection.change('input', (e)=>{
-					let $t = $(e.target), type='';
+					let $t = $(e.target), type='', $e;
 					switch(true){
 						case $t.is('.cf7sg-uirs-tab'): //tab change.
 							break; //noting to do here.
@@ -677,6 +679,14 @@
 							break;
 						case $t.is('#cf7sg-isnt-toggled'):
 							$container.children('label.cf7sg-collapsible-title').find('.cf7sg-toggle-button').attr('data-off', $t.val());
+							break;
+						case $t.is('#cf7sg-uirs-tab-label'):
+							$target.siblings('.control-label').find('.section-title').html($t.val());
+							$e = $container.find('.cf7sg-tabs-panel > .cf7sg-tab-title').first();
+							$e.attr('data-title', $t.val());
+							type = 'title';
+							if(typeof $e.data('tplt') !== 'undefined') type = $e.data('tplt');
+							$e.html(type.replace('title',$t.val()).replace('cnt', 1));
 							break;
 					}
 				});
@@ -775,44 +785,42 @@
       */
       let $parentRow,$parentContainer, $parentColumn;
       if($target.is('.dashicons-trash.row-control')){ //--------TRASH
-         $parentContainer = $target.closest('.cf7sg-container');
-        let $parent = $parentContainer.parent();
-        $parentContainer.remove();
-        if( $parent.is('.cf7sg-col') ) { //verify is this is the last row being deleted
-          if( 0 == $parent.children('.cf7sg-container').length ){
-            //add a text area to the column
-            $parent.children('.grid-column').append('<textarea class="grid-input"></textarea>');
-          }
-        }
+         $parentContainer = $target.closest('.cf7sg-container').remove();
         return true;
       }else if($target.is('.add-row-button *')){ //-----------ADD Row
-        let $row = $target.closest('.add-row-button').prev('.cf7sg-container'),
-				  $added=null;
+        let $row = $target.closest('.add-row-button'),
+				  $added=null, id;
         if($target.is('.button *')) $target = $target.closest('.button');
         //default, last button
         // if($row.length === 0) $row = $grid.children('.cf7sg-container').last();
         switch(true){
           case $target.is('.add-row'):
-            $added = $row.insertNewRow(); //without button.
+            $added = $row.insertNewRow('','','before'); //without button.
             $added.find('.add-row-button').remove();
             break;
           case $target.is('.add-collapsible'):
-            $added = $row.insertNewRow('', '#grid-collapsible', 'after')
+            $added = $row.insertNewRow('', '#grid-collapsible', 'before')
             $added.attr('id',randString(6));//.find('.add-row-button').remove();
             $added.fireGridUpdate('add','collapsible-row');
             break;
           case $target.is('.add-table'):
-            $added = $row.insertNewRow(); //without button.
+            $added = $row.insertNewRow('','','before'); //without button.
             $added.find('.add-row-button').remove();
             $added.find('.cf7sg-row').addClass('cf7-sg-table').find('.grid-ctrls').attr('class','grid-ctrls cf7sg-table-ctrls');
             $added.addClass('cf7-sg-table').attr('id', 'cf7-sg-table-'+(new Date).getTime() )
             $added.fireGridUpdate('add','table-row');
             break;
           case $target.is('.add-tab'):
-            $added = $row.insertNewRow('','#grid-tabs', 'after');
-            $added.attr('id','cf7-sg-tab-'+(new Date).getTime());
-
-            $added.fireGridUpdate('add','tabbed-row');
+            $added = $row.insertNewRow('','#grid-tabs', 'before');
+            id=(new Date).getTime();
+						$added.attr('id','cf7sg-tab-'+id);
+			
+						$added = $added.find('.cf7sg-row > input.cf7sg-tab-radio').first();
+						$added.attr('name','cf7sg-tab-'+id);
+						$added.attr('id',id);
+						$added = $added.siblings('.cf7sg-tabs-panel');
+						$added.children('label.cf7sg-tab-title').attr('for',id);
+            $added.closest('.cf7-sg-tabs').fireGridUpdate('add','tabbed-row');
             break;
         }
         return true;
@@ -851,7 +859,7 @@
         $target = $target.closest('.add-field-button');
         if($target.siblings('.cf7sg-row').length == 0){ //convert column to grid.
           let $field = $('.cf7-field-inner, .grid-input', $parentColumn).remove(),
-            $col = $('.grid-column',$colTemplt).clone();
+            $col = $('.grid-column',uiTemplts['#grid-col']).clone();
           $parentColumn.addClass('cf7sg-grid'); //label as grid
           //cleanup new col controls.
           $('.cf7-field-inner, .grid-input',$col).remove();
@@ -1045,7 +1053,7 @@
           return false;
         }
         //add the new column
-        $newColumn.append( $colTemplt.html() );
+        $newColumn.append( uiTemplts['#grid-col'].html() );
         if(cf7grid.ui){
           $('textarea.grid-input' ,$newColumn).hide();
         }else{
@@ -1273,13 +1281,13 @@
 						$col.children('.grid-column').addClass('field-set');
 					}
 					$inner = $inner.find('.cf7-field-inner, .grid-input');
-					$col.children('.grid-column').append($inner).after($('.add-field-button', $colTemplt).clone());
+					$col.children('.grid-column').append($inner).after($('.add-field-button', uiTemplts['#grid-col']).clone());
 					break;
 				case $col.is('.cf7sg-ext-form'):
 					$('.cf7sg-external-form', $col).remove();
 					$col.removeClass('cf7sg-ext-form');
-					$col.children('.grid-column').append($('.cf7-field-inner,.grid-input', $colTemplt).clone());
-					$col.append($('.add-field-button', $colTemplt).clone());
+					$col.children('.grid-column').append($('.cf7-field-inner,.grid-input', uiTemplts['#grid-col']).clone());
+					$col.append($('.add-field-button', uiTemplts['#grid-col']).clone());
 					break;
 			}
 		}else{
@@ -1287,7 +1295,7 @@
 				case 'grid': //conver to inner grid.
 					$col.addClass('cf7sg-inner-grid');
 					//create a new column for the inner row.
-					let $c = $('.grid-column',$colTemplt).clone();
+					let $c = $('.grid-column',uiTemplts['#grid-col']).clone();
 					if($col.children('.grid-column').is('.field-set')){
 						$c.addClass('field-set');
 						$col.children('.grid-column').removeClass('field-set');
@@ -1328,7 +1336,7 @@
 					$c = $col;
 					break;
 				case $c.is('.cf7-sg-tabs'):
-					let $panel = $c.find('.cf7-sg-panel').children('.cf7sg-container').remove();
+					let $panel = $c.find('.cf7sg-tabs-panel').children('.cf7sg-container').remove();
 					$c.after($panel);
 					$c.fireGridUpdate('remove','tabbed-row');
 					$c.remove();
@@ -1347,20 +1355,23 @@
 				case 'coll':
 					$added = $c.insertNewRow($c, '#grid-collapsible', 'after');
 					$added.attr('id',randString(6));
-					$('.cf7sg-collapsible-inner',$added).first().append($rowTemplt.find('.add-row-button').clone());
+					$('.cf7sg-collapsible-inner',$added).first().append(uiTemplts['#grid-row'].find('.add-row-button').clone());
 					$added.fireGridUpdate('add','collapsible-row');
 					$c = $added;
         	break;
 				case 'tabs':
 					$added = $c.insertNewRow($c, '#grid-tabs', 'after');
-
-          id = 'cf7-sg-tab-'+(new Date).getTime();
-          $added.attr('id',id);
-          // $c.before($('#grid-tabs').html());
-          // $c.closest('.cf7sg-col').addClass('cf7-sg-tabs');
-          // $('li a', $c.siblings('ul.cf7-sg-tabs-list')).attr('href','#'+id);
-          $added.fireGridUpdate('add','tabbed-row');
+          id = (new Date).getTime();
+          $added.attr('id','cf7sg-tab-'+id);
 					$c = $added;
+          $added = $c.find('.cf7sg-row > input.cf7sg-tab-radio').first();
+					$added.attr('name','cf7sg-tab-'+id);
+					$added.attr('id',id);
+					$added = $added.siblings('.cf7sg-tabs-panel');
+					$added.children('label.cf7sg-tab-title').attr('for',id);
+					$added.append(uiTemplts['#grid-row'].find('.add-row-button').clone());
+
+          $c.fireGridUpdate('add','tabbed-row');
 					break;
 			}
 		}
@@ -1534,7 +1545,7 @@
       count =0, counth = 0,
       field = '',
       isField = false,
-      classes = $colTemplt.find('div.cf7-field-type').attr('class');
+      classes = uiTemplts['#grid-col'].find('div.cf7-field-type').attr('class');
 
     while ( (match = tagRegex.exec(search)) !== null) {
       isRequired = (match[2]+'*' === match[1]);
@@ -1774,11 +1785,13 @@
 	* action, either after|before|append to determine where the new row is to be inserted.
 	*/
   $.fn.insertNewRow = function(areaCode, type, action){
-    let $this = $(this), $newRow = $rowTemplt.clone().find('.cf7sg-container');
+    let $this = $(this), $newRow;
     if(typeof areaCode === 'undefined') areaCode ='';
-    if(typeof type === 'string' && type.trim().length > 0){ //redefine new row object.
+    if(typeof type === 'undefined' || type.trim().length === 0){ 
+			$newRow = uiTemplts['#grid-row'].find('.cf7sg-container').clone();
+		}else{ //redefine new row object.
       let selectors = type.split(' ');
-      $newRow = $($(selectors[0]).html());
+      $newRow = uiTemplts[selectors[0]].children().clone();
       if(selectors.length>1){ 
         selectors.shift();// remove first element.
         selectors = selectors.join(' ');
@@ -1818,7 +1831,6 @@
       }
       return $row;
     }
-    // $('.cf7sg-col', $row).last().prepend( $($('#grid-col').html()) ); //format grid column.
     //is areaCode text or jQuery object?
     if(inner instanceof jQuery){
 			//remove if part of dom.

@@ -413,6 +413,9 @@ textarea.grid-input {
 #cf7-editor-grid .add-item-button.add-slide-button .button{
 	display: none;
 }
+#grid-form .cf7sg-tabs-panel > .cf7sg-tab-title {
+	display: none;
+}
 #cf7-editor-grid .add-slide-button .button.add-slide {
 	display: inline-block;
 }
@@ -814,10 +817,10 @@ position: relative;
 #grid-form .cf7sg-row .cf7sg-col + .cf7sg-col > .grid-column .dashicons-trash.column-control {
     display: block;
 }
-#grid-form > .cf7sg-container:first-child >.cf7sg-row:first-child > .grid-ctrls  .dashicons-trash,
+/* #grid-form > .cf7sg-container:first-child >.cf7sg-row:first-child > .grid-ctrls  .dashicons-trash,
 #grid-form > .cf7sg-external-form:first-child > .ext-form-controls  .dashicons-trash {
   visibility:hidden;
-}
+} */
 
 .CodeMirror-wrap.cm-s-material-ocean .cm-shortcode {color: #4496ff;}
 .CodeMirror-wrap.cm-s-paraiso-light .cm-shortcode {color: blue;}

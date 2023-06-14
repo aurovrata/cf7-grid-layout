@@ -1,5 +1,6 @@
 /*! css-smart-grid 5.1.4 | MIT License | http://css.gd */
-.post-type-wpcf7_contact_form #grid-form #grid-form .cf7sg-row,  .post-type-wpcf7_contact_form #grid-form .cf7sg-col:first-child{
+.post-type-wpcf7_contact_form #grid-form #grid-form .cf7sg-row,  
+.post-type-wpcf7_contact_form #grid-form .cf7sg-col:first-child{
     margin:0;
 }
 .post-type-wpcf7_contact_form #grid-form .cf7sg-row:after,
@@ -28,7 +29,8 @@
         width: 2.12766%
     }
     .post-type-wpcf7_contact_form #grid-form .grid-ctrls + .cf7sg-col, 
-    .post-type-wpcf7_contact_form #grid-form .cf7-sg-table-footer-row > .cf7sg-col {
+    .post-type-wpcf7_contact_form #grid-form .cf7-sg-table-footer-row > .cf7sg-col,
+		.post-type-wpcf7_contact_form #grid-form .full.cf7sg-tabs-panel {
         margin-left: 0
     }
     .post-type-wpcf7_contact_form #grid-form .cf7sg-col.one.point-five {

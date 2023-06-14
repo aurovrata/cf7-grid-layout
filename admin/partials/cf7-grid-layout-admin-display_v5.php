@@ -174,6 +174,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 				<input id="cf7sg-uirs-tabs"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
 				<label for="cf7sg-uirs-tabs"><span><?php _e('Tabbed Section','cf7-grid-layout')?></span></label>
 				<div class="cf7sg-settab">
+					<div class="cf7sg-uirs-label"><?php _e('Tab label','cf7-grid-layout')?></div>
+					<div class="cf7sg-uirs-ctrl"><input type="text" id="cf7sg-uirs-tab-label" value=""/></div>
 				</div>
 			</div>
 			<div class="cf7sg-uis-col cf7sg-uirs display-none">
@@ -436,16 +438,17 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     <div class="cf7sg-row">
       <div class="ui-grid-ctrls grid-ctrls cf7sg-tabs-ctrls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
-        <span class="control-label"><?php _e('Tabbed section', 'cf7-grid-layout');?></span>
+        <span class="control-label">
+					<span class="section-label"><?php _e('Tabbed section', 'cf7-grid-layout');?></span>
+					<span class="section-title"></span>
+				</span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
       </div>
-      <div class="cf7sg-col full">
-        <input type="radio" class="display-none" id=""/>
-        <div class="cf7-sg-panel">
-          <label class="cf7sg-tab-title" for=""></label>
+			<input type="radio" class="display-none cf7sg-tab-radio" name="" value="tab-1"/>
+      <div class="cf7sg-col cf7sg-tabs-panel full">
+          <label class="cf7sg-tab-title" for="" data-tplt="title (cnt)" data-title=""></label>
           <template class="inner-template">#grid-row</template>
-        </div>
       </div>
     </div>
   </div>
