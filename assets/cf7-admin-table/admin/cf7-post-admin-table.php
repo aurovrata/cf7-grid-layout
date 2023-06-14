@@ -329,7 +329,7 @@ if(!class_exists('Cf7_WP_Post_Table')){
           $update = '';
           if( get_post_meta($post_id, '_cf7sg_managed_form', true) ){
             $version = get_post_meta($post_id, '_cf7sg_version', true);
-            if(version_compare($version, CF7SG_VERSION_FORM_UPDATE, '<')) $update = 'cf7sg-update';
+            if(version_compare($version, '5.0.0', '>=') && version_compare($version, CF7SG_VERSION_FORM_UPDATE, '<')) $update = 'cf7sg-update';
           }
           if(empty($update)){
             $errors = get_post_meta($post_id, '_config_errors', true);

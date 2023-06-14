@@ -23,13 +23,13 @@
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
-define( 'CF7_GRID_VERSION', '5.0.0beta10' );
+define( 'CF7_GRID_VERSION', '5.0.0beta11' );
 
 if(! defined('WPCF7_AUTOP') ) define('WPCF7_AUTOP', false);
 
 
 /** @since 2.6.0, NOTIFY USERS of forms requiring udpates */
-define( 'CF7SG_VERSION_FORM_UPDATE', '4.99.0');
+define( 'CF7SG_VERSION_FORM_UPDATE', '4.99.0'); //only update on release of v5.0.0
 /** @since 4.4.0, Translated locales */
 define( 'CF7SG_TRANSLATED_VERSION', '4.4.0');
 /** @since 4.14.1 Major code update, upgrade requires testing */

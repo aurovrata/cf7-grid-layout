@@ -16,3 +16,8 @@ v5.0
 - add table mail tag
 
 - move navigation slider to tophttps://wordpress.org/support/topic/slider-control-on-top-of-the-page/#post-16180037
+
+WARNINGS
+
+- if a user is upgrading from 4.x < 4.16, to 5.x then warn user to first upgrade to the last 4.x version and perform form upgrades (if any).  Explain this in an FAQ.
+

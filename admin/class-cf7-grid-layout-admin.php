@@ -1826,7 +1826,7 @@ class Cf7_Grid_Layout_Admin {
     if( !empty($grid_settings) and isset($grid_settings['update']) ){
       $warning = false;
 
-      if(isset($grid_settings['update']) and CF7SG_VERSION_FORM_UPDATE==CF7_GRID_VERSION){
+      if(isset($grid_settings['update']) and CF7SG_VERSION_FORM_UPDATE===CF7_GRID_VERSION){
         $warning = true;
       }else if(isset($grid_settings['fv']) ) {
         if(version_compare($grid_settings['fv'], CF7SG_VERSION_FORM_UPDATE, '<') ) $warning = true;
