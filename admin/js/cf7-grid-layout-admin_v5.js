@@ -1007,8 +1007,8 @@
         $target.closest('.cf7sg-container').after($('#grid-cf7-forms').html());
         $target.closest('.cf7sg-container').remove();
         return true;
-      }else if( $target.is('.dashicons-menu-alt.row-control') || $target.is('.grid-column')){ //--------------------add column
-				if($target.is('.grid-column')) $parentColumn = $target.closest('.cf7sg-col');
+      }else if( $target.is('.dashicons-plus.row-control') || $target.is('.cf7sg-col')){ //--------------------add column
+				if($target.is('.cf7sg-col')) $parentColumn = $target;
         else $parentColumn = $target.parent().siblings('.cf7sg-col').last();
         $parentRow = $parentColumn.closest('.cf7sg-row');
         let classList, idx , columns, row, newSize=0, createColumn = true, total = 0;

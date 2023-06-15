@@ -304,34 +304,35 @@ textarea.grid-input {
 	margin-top: 30px;
 	position: relative;
 }
-#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column::after {
-	content: "\f151";
+#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover::after {
+	content: "\f543";
 	position: absolute;
-	right: 0;
+	right: -4px;
 	color: var(--cf7sg-col-default);
-	top: 20px;
+	top: 0;
 	border: dashed 2px var(--cf7sg-col-default);
 	background: #fff;
-	height: calc(100% - 20px);
+	height: calc(100% - 50px);
 	font-family: dashicons;
-	padding: 15px 5px;
-	font-size: 29px;
+	padding: 25px 2px;
+	font-size: 27px;
 	box-sizing: border-box;
 	pointer-events: auto;
 	cursor: pointer;
 }
-#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row):has(.cf7sg-col:nth-child(12)) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column::after {
-	content: '';
-	width: 0;
-	height: 0;
+#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row):has(:nth-child(13)) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover::after {
+	content: none;
 }
-#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column > .cf7-field-inner {
-	width: calc(100% - 63px);
+#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column {
+	width: calc(100% - 35px);
 }
-#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row):has(.cf7sg-col:nth-child(12)) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column{
+#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row):has(:nth-child(13)) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column {
 	width: 100%;
 }
-#grid-form .grid-column > * {
+#grid-form .cf7sg-col{
+	pointer-events: none;
+}
+#grid-form .cf7sg-col > * {
 	pointer-events: auto;
 }
 #grid-form .cf7sg-container.cf7sg-slide {
@@ -502,7 +503,7 @@ textarea.grid-input {
 #grid-form .dashicons-editor-code.column-control::before {
 	font-size: 16px;
 }
-#grid-form .grid-column{position: relative; pointer-events: none;}
+#grid-form .grid-column{position: relative;}
 #grid-form .grid-ctrls:not(.grid-column) span,
 #grid-form .grid-column .dashicons {
 	line-height: 1.35rem;
@@ -780,9 +781,8 @@ position: relative;
 #grid-form  .grid-control:not(.dashicons-move){
     float: right;
 }
-#grid-form .grid-ctrls:not(.grid-column) .dashicons-menu-alt{
-    transform: rotate(90deg);
-    margin-top: 1px;
+#grid-form .grid-ctrls:not(.grid-column) .dashicons-plus::before {
+	font-size: 16px;
 }
 #grid-form span.cf7-conditional-group {
 	position: absolute;
@@ -960,7 +960,8 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #grid-form  .cf7-field-inner {
   padding: 0px 10px;
   margin: 0;
-  position: relative;
+ 	box-sizing: border-box;
+	position: relative;
 }
 #grid-form  .grid-column:hover .cf7-field-html::before {
 	content: "\f464";

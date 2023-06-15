@@ -343,7 +343,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         </span>
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
-        <span class="dashicons dashicons-menu-alt row-control grid-control"></span>
+        <span class="dashicons dashicons-plus row-control grid-control"></span>
         <span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
       </div>
       <div class="cf7sg-col full">
