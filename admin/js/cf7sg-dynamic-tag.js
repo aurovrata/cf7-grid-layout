@@ -13,6 +13,7 @@
       $single = $('input[name="singular_name"]', $form),
       $name = $('input[name="name"]', $form),
       $hasNesting = $('#enable-branches'),
+			$source = $('input[name="sections"]', $form), //source of data
       source = 'taxonomy',
       selectType = $('.list-style:checked', $form).val();
 
@@ -65,7 +66,9 @@
         }
         break;
       case $target.is('.list-style'): //---------list-type
+			if(!$target.is('#dynamic_select-select2')){
         $target.closest('td.cf7sg-dl-styles').find('span.cf7sg-se-option').hide().find(':input').prop('checked', false).val(''); //rest all/
+			}
         break;
       case $target.is('.source-tab'): //source selection.
         break;

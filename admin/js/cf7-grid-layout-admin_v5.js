@@ -24,12 +24,12 @@
   $pattern.find('label').html('((.*)('+required+'){1}|(.*))');
   $pattern.find('.info-tip').text('(\\s*.*\\s*)');
 
-  fieldPattern = $pattern.html().replace(/class="([\w\s]*)"/,'class="$1[\\s_a-zA-Z0-9-]*"');
+  fieldPattern = $pattern.html().replace(/class="([\w\s-]*)"/,'class="$1[\\s_a-zA-Z0-9-]*"');
   fieldPattern = fieldPattern.replace(/\sfor="([\w]*)"/,'(?:\\sfor="$1[\\w-]*")?');
   fieldPattern.replace('><','>\\s?<')
   // console.log('p:'+$pattern.html().replace('><','>\\s?<'));
   const templateRegex = new RegExp(fieldPattern, 'ig');
-  let seekTemplate = false, cssTemplate = 'div.field',
+  let seekTemplate = false, cssTemplate = 'div.cf7sg-field',
     $template = $('<div id="cf7sg-dummy">').append(cf7grid.preHTML+cf7grid.postHTML);
   $template = $template.children();
   if(1==$template.length && $template.find('label').length>0){
@@ -59,6 +59,7 @@
 		$('template').each((i,e)=>{
 			if(e.id.length > 0 && e.id.startsWith('grid')){
 				uiTemplts['#'+e.id] = $('<div>').html(e.innerHTML);
+				Object.keys(e.dataset).forEach(k=> uiTemplts[k] = e.dataset[k]);
 			}
 		});
     // $colTemplt = $('<div>').html($('#grid-col').html());
@@ -105,13 +106,13 @@
       /** @since 5.0 track conditional groups */
       if($grid.is('.cf7-conditional-group')){
         let r = 'cf7sgGroup'+randString(6);
-        $('.field:contains("[group ")', $form).trackConditionalGroups('group',r);
+        $('.cf7sg-field:contains("[group ")', $form).trackConditionalGroups('group',r);
         $('.cf7sg-col:contains("[group "):not(:has(:contains("[group ")))', $form).trackConditionalGroups();
         $('.cf7sg-col.cf7sg-grid:contains("[group ")', $form).trackConditionalGroups();
         //check for other conditional groups, div with group but not children with group
         $('div:contains("[group "):not(:has(:contains("[group ")))', $form).trackConditionalGroups();
         //finally reinstate conditional groups within fields.
-        $('.field:contains('+r+')', $form).trackConditionalGroups(r,'group');
+        $('.cf7sg-field:contains('+r+')', $form).trackConditionalGroups(r,'group');
       }
       //remove the external forms
       $('.cf7sg-external-form .cf7sg-external-form-content', $form).remove();
@@ -403,7 +404,7 @@
           $.modal.close();
           $('textarea.grid-input', $uif).updateGridForm();
           break;
-        case $target.is('.close-modal'): //reset modal and field.
+        case $target.is('#cf7sg-field-edit .close-modal'): //reset modal and field.
           $('#cf7sg-ui-field', $grid).attr('id','');
           $target.closest('form').find('#wpcf7-form').attr('id','');
           break;
@@ -807,7 +808,8 @@
             $added = $row.insertNewRow('','','before'); //without button.
             $added.find('.add-row-button').remove();
             $added.find('.cf7sg-row').addClass('cf7-sg-table').find('.grid-ctrls').attr('class','grid-ctrls cf7sg-table-ctrls');
-            $added.addClass('cf7-sg-table').attr('id', 'cf7-sg-table-'+(new Date).getTime() )
+            $added.addClass('cf7-sg-table').attr('id', 'cf7-sg-table-'+(new Date).getTime() );
+						$added.attr('data-button', uiTemplts['tableButton']);
             $added.fireGridUpdate('add','table-row');
             break;
           case $target.is('.add-tab'):
@@ -1278,8 +1280,8 @@
 					$col.removeClass('cf7sg-inner-grid');
 					let $inner = $col.children().not('.grid-column').remove();
 					$inner = $('.cf7sg-col',$inner).first().find('.grid-column');
-					if($inner.is('.field-set')){
-						$col.children('.grid-column').addClass('field-set');
+					if($inner.is('.cf7sg-field-set')){
+						$col.children('.grid-column').addClass('cf7sg-field-set');
 					}
 					$inner = $inner.find('.cf7-field-inner, .grid-input');
 					$col.children('.grid-column').append($inner).after($('.add-field-button', uiTemplts['#grid-col']).clone());
@@ -1297,9 +1299,9 @@
 					$col.addClass('cf7sg-inner-grid');
 					//create a new column for the inner row.
 					let $c = $('.grid-column',uiTemplts['#grid-col']).clone();
-					if($col.children('.grid-column').is('.field-set')){
-						$c.addClass('field-set');
-						$col.children('.grid-column').removeClass('field-set');
+					if($col.children('.grid-column').is('.cf7sg-field-set')){
+						$c.addClass('cf7sg-field-set');
+						$col.children('.grid-column').removeClass('cf7sg-field-set');
 					}
           $('.cf7-field-inner, .grid-input',$c).remove(); //remove the controls, and replace with target column entries.
           $c = $('<div class="cf7sg-col full"></div>').append($c);
@@ -1308,7 +1310,7 @@
 					break;
 				case 'form':
 					$col.addClass('cf7sg-ext-form');
-					if($col.children('.grid-column').is('.field-set')) $col.children('.grid-column').removeClass('field-set');
+					if($col.children('.grid-column').is('.cf7sg-field-set')) $col.children('.grid-column').removeClass('cf7sg-field-set');
 					$('.cf7-field-inner, .grid-input, .add-item-button', $col).remove();
 					$col.insertNewRow('', '#grid-cf7-forms', 'append');
 					break;
@@ -1437,7 +1439,7 @@
         $field = $this.closest('.grid-column').attr('id', 'cf7sg-ui-field');
         /** @since 5.0.0 use a modal */
         $modal.modal();
-        if(!$field.is('.field-set')){
+        if(!$field.is('.cf7sg-field-set')){
           $tagModal.modal({
             closeExisting: false
           });
@@ -1632,7 +1634,7 @@
       $parentColumn.addClass('cf7-tags-'+count);
     }
     $parent.attr('class',classes);
-    $parent.closest('.grid-column').addClass('field-set'); //flag for modal sequence.
+    $parent.closest('.grid-column').addClass('cf7sg-field-set'); //flag for modal sequence.
     /**@since 2.0.0
     * setup fields for tag specific filters/actions.
     */
@@ -1703,7 +1705,7 @@
       field = $this.siblings('div.cf7-field-type'),
       classes = field.attr('class').replace('cf7-field-type','').replace('cf7-field-inner', '').trim(),
       idx = 0;
-    field = field.find('textarea.field-entry').val(); //field
+    field = field.find('textarea.cf7sg-field-entry').val(); //field
     if(cf7grid.requiredHTML.length>0) idx=label.indexOf(cf7grid.requiredHTML)
     if($this.siblings('div.cf7-field-type').is('.required')){
       /** @since 2.10.4 fix for custom manual labels, allow replacement with empty span*/
@@ -1724,7 +1726,7 @@
     let $cell = $('<div>').append( cf7grid.preHTML + field + cf7grid.postHTML );
     $('label', $cell).html(label);
     $('.info-tip', $cell).html(tip);
-    $('.field',$cell).addClass(classes);
+    $('.cf7sg-field',$cell).addClass(classes);
     //update grid input and trigger change to udpate form
     if(cf7grid.ui) $this.html($cell.html()+'\n').trigger('change');
     else $this.val($cell.html()).trigger('change');

@@ -56,47 +56,47 @@
               <label for="<?=$id?>">
                 <input class="list-style <?=$tag_id?>" name="<?=$tag_id?>-style[]" id="<?=$id?>"  type="radio" value="<?=$s?>" <?=$checked?>/>
                 <?=$label?>
-                <?php
-                $extras = $dlo->get_style_extras($s);
-                // debug_msg($extras, "$tag_id ");
-                foreach($extras as $val => $field):
-                  $type = 'checkbox';
-                  $label = '';
-                  $attributes = 'disabled';
-                  $html='';
-                  if(is_array($field)){
-                    if(isset($field['label'])) $label = $field['label'];
-                    if(isset($field['type'])) $type = $field['type'];
-                    if(isset($field['attrs'])) $attributes = $field['attrs'];
-                    if(isset($field['html'])) $html = $field['html'];
-                  }else{
-                    $val = $s;
-                    $html = $field;
-                  }
-                  $pre='';
-                  $pst='';
-                  switch($type){
-                    case 'checkbox':
-                      $pst=$label;
-                      break;
-                    case 'number':
-                    case 'text':
-                      $pre=$label;
-                      break;
-                    }
-                 ?>
-                 <span class="cf7sg-se-option cf7sg-se-<?=$val?><?=$display_none?>">
-                   <?php if(!empty($label)):?>
-                   <label for="<?=$s?>-<?=$val?>">
-                     <?=$pre?><input id="<?=$s?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>" <?=$attributes?>/><?=$pst?>
-                   </label>
-                 <?php endif;
-                 if(!empty($html)):?>
-                   <?=$html?>
-                 <?php endif;?>
-                 </span>
-               <?php endforeach;?>
               </label>
+							<?php
+							$extras = $dlo->get_style_extras($s);
+							// debug_msg($extras, "$tag_id ");
+							foreach($extras as $val => $field):
+								$type = 'checkbox';
+								$label = '';
+								$attributes = 'disabled';
+								$html='';
+								if(is_array($field)){
+									if(isset($field['label'])) $label = $field['label'];
+									if(isset($field['type'])) $type = $field['type'];
+									if(isset($field['attrs'])) $attributes = $field['attrs'];
+									if(isset($field['html'])) $html = $field['html'];
+								}else{
+									$val = $s;
+									$html = $field;
+								}
+								$pre='';
+								$pst='';
+								switch($type){
+									case 'checkbox':
+										$pst=$label;
+										break;
+									case 'number':
+									case 'text':
+										$pre=$label;
+										break;
+									}
+								?>
+								<span class="cf7sg-se-option cf7sg-se-<?=$val?><?=$display_none?>">
+									<?php if(!empty($label)):?>
+									<label for="<?=$s?>-<?=$val?>">
+										<?=$pre?><input id="<?=$s?>-<?=$val?>" type="<?=$type?>" value="<?=$val?>" <?=$attributes?>/><?=$pst?>
+									</label>
+								<?php endif;
+								if(!empty($html)):?>
+									<?=$html?>
+								<?php endif;?>
+								</span>
+               <?php endforeach;?>
             </div>
           <?php
               $checked = '';

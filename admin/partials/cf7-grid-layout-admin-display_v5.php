@@ -331,7 +331,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 <input type="hidden" value="" id="cf7sg-tabbed-toggles" name="cf7sg-tabbed-toggles" />
 <input type="hidden" value="" id="cf7sg-grouped-toggles" name="cf7sg-grouped-toggles" />
 <!-- CF7 SG UI editor templates -->
-<template id="grid-row">
+<template id="grid-row" data-table-button="<?php /*translators: public table button label */ _e('Add Row', 'cf7-grid-layout');?>">
   <div class="cf7sg-container">
     <div class="cf7sg-row">
       <div class="ui-grid-ctrls grid-ctrls cf7sg-ui-row">
@@ -566,7 +566,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
     </div>
     <div class="cf7-field-type cf7-field-inner">
       <p class="content"><?php _e('[select a field]','cf7-grid-layout')?></p>
-      <textarea class="field-entry" placeholder="<?php _e('select a field','cf7-grid-layout')?>"></textarea>
+      <textarea class="cf7sg-field-entry" placeholder="<?php _e('select a field','cf7-grid-layout')?>"></textarea>
     </div>
     <div class="cf7-field-tip cf7-field-inner">
       <p class="content"><?php _e('describe your field','cf7-grid-layout')?></p>

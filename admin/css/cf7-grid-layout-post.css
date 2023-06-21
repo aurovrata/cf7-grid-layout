@@ -348,6 +348,9 @@ textarea.grid-input {
 	bottom: 17px;
 	left: 28px;
 }
+/* #dynamic_select-select2:checked + a + .cf7sg-se-option {
+	display: inline-block;
+} */
 .helper-list li.no-post-my-form{
   display: none;
 }

@@ -37,26 +37,18 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     //.cf7-sg-table structure, smart grid only.
     var cf7Forms = $('div.cf7-smart-grid.has-table form.wpcf7-form');
     if(cf7Forms.length){
-      $('.container.cf7-sg-table', cf7Forms).each(function(){
+      $('.cf7sg-container.cf7-sg-table', cf7Forms).each(function(){
         var $table = $(this), fid = $table.closest('div.cf7-smart-grid').attr('id'),
           oneD = [], //tabbed prefills.
-          $row = $('.row.cf7-sg-table', $table),
-          label = 'Add Row',
-          $footer = $table.next('.container.cf7-sg-table-footer');
+          $row = $('.cf7sg-row.cf7-sg-table', $table),
+          label = $row.get(0).hasAttribute('data-button') ? $table.data('button') : 'Add Row',
+          $footer = $row.next('.cf7sg-row.cf7-sg-table-footer-row');
 
         if($table[0].hasAttribute('id')){ /** @since 2.4.2 track table fields*/
           var $tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $table.attr('id'));
           $table.prepend($tracker);
         }
-        //get label for button.
-        switch(true){
-          case $table[0].hasAttribute('data-button'):
-            label = $table.data('button');
-            break;
-          case $row[0].hasAttribute('data-button'): //bw compatibility.
-            label = $row.data('button');
-            break;
-        }
+        
         //change the input and select fields to arrays for storage
         $row.find(':input').each(function(){
           let $in = $(this),
@@ -75,9 +67,9 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         if($footer.length>0){
           $footer.detach();
           $table.after($footer);
-          $footer.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="ui-button">'+label+'</a></div>');
+          $footer.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="button">'+label+'</a></div>');
         }else{
-          $table.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="ui-button">'+label+'</a></div>');
+          $table.after('<div class="cf7-sg-table-button"><a href="javascript:void(0);" class="button">'+label+'</a></div>');
         }
         //append a hidden clone of the first row which we can use to add
         $row.attr('data-row','0');

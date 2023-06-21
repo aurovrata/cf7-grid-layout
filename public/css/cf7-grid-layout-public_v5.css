@@ -194,7 +194,7 @@
  }
  .ui-state-active {color: inherit;}
  .cf7sg-container {	line-height: 1.2;}
- .cf7sg-container a.ui-button {
+ .cf7sg-container a.button {
 	color: inherit;
 }
 .cf7sg-container .cf7sg-add-tab .ui-state-default {
@@ -227,12 +227,15 @@
 }
 .cf7sg-container.cf7sg-slider-controls .slider-next{float:right;}
 .cf7sg-slider-controls > .cf7sg-row {width:100%;float:right;}
- .cf7-smart-grid.has-grid .ui-button {
+ .cf7-smart-grid.has-grid .button {
     border-radius: 3px;
     border: 1px solid #aaa;
     padding: 8px 12px;
 }
-.cf7-sg-table-button.disabled .ui-button {
+.cf7-sg-table-button .button {
+	display: inline-block;
+}
+.cf7-sg-table-button.disabled .button {
     color: gray;
     cursor: not-allowed;
     text-decoration-line: none;
@@ -294,9 +297,14 @@ ul.cf7-sg-tabs-list li[data-cf7sg="error"] {border: #d90000 solid 2px;}
     border: solid 1px #b9b9b9;
     color: #848484;
 }
-.cf7-smart-grid.has-grid div.field span.wpcf7-not-valid-tip {
+.cf7-smart-grid.has-grid div.cf7sg-field span.wpcf7-not-valid-tip {
     background: #e9e9e9;
     border-radius: 3px;
+}
+.cf7-smart-grid.has-grid .wpcf7-submit ~ .wpcf7-spinner {
+	position: absolute;
+	margin: 0 2px;
+	top: calc(50% - 12px);
 }
 span.cf7sg-validation-warning {
     font-size: 80%;
@@ -313,7 +321,7 @@ span.cf7sg-validation-warning {
     text-transform: uppercase;
     font-size: 0.9em;
 }
-.cf7-smart-grid.has-grid .field > label em {
+.cf7-smart-grid.has-grid .cf7sg-field > label em {
     color: red;
 }
 .cf7-smart-grid.has-grid .info-tip {
@@ -321,6 +329,7 @@ span.cf7sg-validation-warning {
     font-style: italic;
     color: grey;
     margin: 0 0 5px 0;
+		padding: 0 6px;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
     border-radius: 3px;
@@ -404,13 +413,13 @@ ul.cf7-sg-tabs-list {
   margin-top: 10px;
   margin-bottom: 5px;
 }
-.cf7-smart-grid .cf7sg-row.cf7-sg-table-footer {
+.cf7-smart-grid .cf7sg-row.cf7-sg-table-footer-row {
     margin-top: 5px;
 }
 .cf7-smart-grid .cf7sg-row.cf7-sg-table {
     margin-top: 3px;
 }
-.cf7-smart-grid .cf7sg-row.cf7-sg-table-footer+.cf7-sg-table-button {
+.cf7-smart-grid .cf7sg-row.cf7-sg-table-footer-row +.cf7-sg-table-button {
     margin-top: 0;
 }
 .cf7sg-row.cf7-sg-table-layout .cf7sg-col input:not([type="submit"]){
@@ -440,7 +449,7 @@ ul.cf7-sg-tabs-list {
     margin-top: -10px;
     margin-left: -5px;
 }
-.cf7-smart-grid.has-grid div.field span.wpcf7-not-valid-tip {
+.cf7-smart-grid.has-grid div.cf7sg-field span.wpcf7-not-valid-tip {
     /* display: inherit;
     position: absolute;
     right: 0;
@@ -450,9 +459,9 @@ ul.cf7-sg-tabs-list {
     line-height: 1.2em;
     /* z-index: 7777; */
 }
-.cf7-smart-grid.has-grid .field input:focus + span.wpcf7-not-valid-tip,
-.cf7-smart-grid.has-grid .field select:focus + span.wpcf7-not-valid-tip,
-.cf7-smart-grid.has-grid .field textarea:focus + span.wpcf7-not-valid-tip {
+.cf7-smart-grid.has-grid .cf7sg-field input:focus + span.wpcf7-not-valid-tip,
+.cf7-smart-grid.has-grid .cf7sg-field select:focus + span.wpcf7-not-valid-tip,
+.cf7-smart-grid.has-grid .cf7sg-field textarea:focus + span.wpcf7-not-valid-tip {
 	display: none;
 }
 span.cf7sg-validation-warning {
@@ -483,7 +492,7 @@ span.cf7sg-validation-warning {
     min-height: 120px;
     overflow: unset;
 }
-.cf7-smart-grid.has-grid .field {
+.cf7-smart-grid.has-grid .cf7sg-field {
     width: 100%;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control:not(img),
@@ -498,11 +507,11 @@ span.cf7sg-validation-warning {
 .cf7-smart-grid.has-grid .select2 {
     width: 100% !important;
 }
-.cf7-smart-grid.has-grid .field .wpcf7-form-control-wrap{
+.cf7-smart-grid.has-grid .cf7sg-field .wpcf7-form-control-wrap{
   display: inline-block;
   width: 100%;
 }
-.cf7-smart-grid.has-grid .cf7-tags-2 .field .wpcf7-form-control-wrap {
+.cf7-smart-grid.has-grid .cf7-tags-2 .cf7sg-field .wpcf7-form-control-wrap {
   max-width: 200px;
   width: 50%;
 }
@@ -510,10 +519,10 @@ span.cf7sg-validation-warning {
 .cf7sg-container .cf7-smart-grid.has-grid .cf7sg-col .cf7sg-container {
     padding: 0;
 }
-.cf7-smart-grid.has-grid .field .wpcf7-form-control-wrap + .wpcf7-form-control-wrap {
+.cf7-smart-grid.has-grid .cf7sg-field .wpcf7-form-control-wrap + .wpcf7-form-control-wrap {
     vertical-align: middle;
 }
-.cf7-smart-grid.has-grid .field > label {
+.cf7-smart-grid.has-grid .cf7sg-field > label {
     display: block;
     margin-bottom: 0;
 }

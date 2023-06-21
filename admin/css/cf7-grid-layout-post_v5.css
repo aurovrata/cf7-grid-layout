@@ -320,6 +320,15 @@ textarea.grid-input {
 	pointer-events: auto;
 	cursor: pointer;
 }
+#grid-form .cf7sg-col.cf7sg-grid > .cf7sg-row .cf7sg-col::after {
+	content: none !important;
+}
+#grid-form .cf7sg-row.cf7-sg-table > .cf7sg-col:hover::after {
+	height: 100% !important;
+}
+#grid-form .cf7-sg-table > .cf7sg-row {
+	margin-bottom: 3px;
+}
 #grid-form .cf7sg-row:not(.cf7-sg-table-footer-row):has(:nth-child(13)) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover::after {
 	content: none;
 }
