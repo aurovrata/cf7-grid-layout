@@ -972,6 +972,9 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
  	box-sizing: border-box;
 	position: relative;
 }
+#grid-form .grid-column.submit-field > .cf7-field-type {
+	padding: 3px 10px;
+}
 #grid-form  .grid-column:hover .cf7-field-html::before {
 	content: "\f464";
 	position: absolute;

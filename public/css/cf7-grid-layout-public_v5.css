@@ -419,6 +419,12 @@ ul.cf7-sg-tabs-list {
 .cf7-smart-grid .cf7sg-row.cf7-sg-table-footer-row +.cf7-sg-table-button {
     margin-top: 0;
 }
+.cf7-sg-table-footer-row > .cf7sg-col.full .info-tip{
+	padding: 0;
+}
+.cf7-smart-grid.has-grid .cf7sg-row.cf7-sg-table-footer-row > .cf7sg-col{
+	margin:0;
+}
 .cf7sg-row.cf7-sg-table-layout .cf7sg-col input:not([type="submit"]){
   width:100%;
 }
@@ -432,6 +438,10 @@ ul.cf7-sg-tabs-list {
     position: absolute;
     height: 100%;
     display:none;
+}
+[data-row="0"].cf7sg-row.cf7-sg-table .cf7sg-row-control {
+	height: 66%;
+	bottom: 0;
 }
 .cf7sg-row.cf7-sg-table .cf7sg-row-control:not(.display-none) {
     display: inline;
@@ -486,6 +496,10 @@ span.cf7sg-validation-warning {
 }
 .cf7-smart-grid.has-grid .cf7sg-field {
     width: 100%;
+}
+.hide-field-labels .cf7sg-row:not([data-row="0"]) .cf7sg-field label,
+.hide-field-labels .cf7-sg-table .info-tip {
+	display: none;
 }
 .cf7-smart-grid.has-grid .wpcf7-form-control:not(img),
 .cf7-smart-grid.has-grid .hybriddd-selected {

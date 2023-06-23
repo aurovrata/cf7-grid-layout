@@ -48,7 +48,17 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           let $tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $table.attr('id'));
           $table.prepend($tracker);
         }
-        
+        if(cf7sg[fid].table_labels){ //setup field-info tips into the table footer.
+					$table.addClass('hide-field-labels');
+					if($footer.length===0){ 
+						$footer = $row.clone();
+						$row.after($footer);
+						$footer.attr('class','cf7sg-row cf7-sg-table-footer-row');
+					}else{
+						$footer.prepend($row.clone().removeClass('cf7-sg-table'));
+					}
+					$('.cf7sg-field > *:not(.info-tip)',$footer).remove();
+				}
         //change the input and select fields to arrays for storage
         $row.find(':input').each(function(){
           let $in = $(this),
@@ -73,6 +83,8 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         // }
         //append a hidden clone of the first row which we can use to add
         $row.attr('data-row','0');
+				//add controls to the row to delete
+        $row.append('<span class="cf7sg-row-control display-none"><span class="dashicons dashicons-no-alt"></span></span>');
         $row = $row.clone().attr('class','cf7-sg-cloned-table-row');
         $row.attr('data-row','-1');
         $table.append($row.hide());
@@ -82,8 +94,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
             name = '_cf7sgcloned_'+$input.attr('name');
           $input.attr('name',name);
         });
-        //add controls to the row to delete
-        $row.append('<span class="cf7sg-row-control"><span class="dashicons dashicons-no-alt"></span></span>');
+        
         //trigger table ready event for custom scripts to change the button text
         cf7Forms.on('cf7SmartGridReady', function(e){
           $table.trigger({type:'sgTableReady', 'table-id':$table.attr('id')});
@@ -1280,11 +1291,14 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
      	$cloneRow = $('.cf7-sg-cloned-table-row', $table),
      	$new = $cloneRow.clone(), fid = $table.closest('div.cf7-smart-grid').attr('id');
 
-    $new.attr('class', $rows.first().attr('class')).attr('data-row',$rows.length);
-    if(cf7sg[fid].table_labels) $('.cf7sg-field > label',$new).remove();
+    $new.attr('class', $rows.last().attr('class')).attr('data-row',$rows.length);
     //show row so select2 init properly
 		//add the new row after the last one.
     $rows.last().after($new.show());
+		//show delete buttons
+		$('.cf7sg-row-control',$new).show();
+		if($rows.length === 1) $('.cf7sg-row-control',$rows).show();
+		
     // Polyfill for IE11 to support endsWith() - https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
     if (!String.prototype.endsWith) {
       String.prototype.endsWith = function(searchString, position) {

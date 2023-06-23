@@ -1895,7 +1895,10 @@
       if(size>-1) $cmSize.css('--cf7sg-cm-val',size);
       else{
         size = offsets.indexOf(c);
-        if(size>-1) $cmOffset.css('--cf7sg-cm-val',size);
+        if(size>-1){ 
+					$cmOffset.css('--cf7sg-cm-val',size);
+					$cmOffset.removeClass('unset');
+				}
       }
     }
   }
