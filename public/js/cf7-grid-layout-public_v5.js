@@ -1208,8 +1208,8 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
 			case 0: //do nothing, cannot remove the last row.
 				doDelete = false;
 				break;
-			case 1: //remove the delete button.
-				$rows.find('.cf7sg-row-control').remove();
+			case 1: //hide the delete button.
+				$rows.find('.cf7sg-row-control').hide();
 			default:
 				break;		
 		}
@@ -1219,8 +1219,9 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
 			//$rows are the remaining row siblings.
 			for(let rdx = idx; rdx < $rows.length; rdx++){ //re-index all those below
 				$rows.eq(rdx).attr('data-row', rdx);
-				$(':input', $rows.eq(rdx)).each(($i)=>{
-					let name = $i.attr('name'), $id,
+				$(':input', $rows.eq(rdx)).each((x,i)=>{
+					let $i = $(i),
+						name = $i.attr('name'), $id,
 						$s = $i.closest('span.wpcf7-form-control-wrap'),
 						ndx = name.lastIndexOf('_row-'),
 						sfx = (name.slice(name.length-2)==='[]') ? '[]':'';

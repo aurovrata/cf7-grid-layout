@@ -320,7 +320,8 @@ textarea.grid-input {
 	pointer-events: auto;
 	cursor: pointer;
 }
-#grid-form .cf7sg-col.cf7sg-grid > .cf7sg-row .cf7sg-col::after {
+#grid-form .cf7sg-col.cf7sg-grid > .cf7sg-row .cf7sg-col::after,
+#grid-form  .cf7sg-slide > .cf7sg-row > .cf7sg-col::after {
 	content: none !important;
 }
 #grid-form .cf7sg-row.cf7-sg-table > .cf7sg-col:hover::after {
@@ -332,7 +333,8 @@ textarea.grid-input {
 #grid-form .cf7sg-row:not(.cf7-sg-table-footer-row):has(:nth-child(13)) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover::after {
 	content: none;
 }
-#grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column {
+#grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column,
+#grid-form .cf7sg-container:not(.cf7sg-slide) > .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column + .cf7sg-external-form{
 	width: calc(100% - 35px);
 }
 #grid-form .cf7sg-row:not(.cf7-sg-table-footer-row):has(:nth-child(13)) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover .grid-column {

@@ -438,11 +438,13 @@ class Cf7_Grid_Layout_Admin {
           ) );
           $tags = array_filter($tags, function($t){ return !strpos($t, '*');});
         }
+				$pre_field = '<div class="field"><label for=""></label>';
+				if('_v5' === $ver) $pre_field = '<div class="cf7sg-field"><label for=""></label>';
         wp_localize_script(
           $this->plugin_name,
           'cf7grid',
           array(
-            'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', '<div class="cf7sg-field"><label for=""></label>', $post->post_name),
+            'preHTML' => apply_filters('cf7sg_pre_cf7_field_html', $pre_field, $post->post_name),
 						'postHTML' => apply_filters('cf7sg_post_cf7_field_html', '<p class="info-tip"></p></div>', $post->post_name),
 						'requiredHTML' => apply_filters('cf7sg_required_cf7_field_html', '<em>*</em>', $post->post_name),
 						'ui' => apply_filters('cf7sg_grid_ui', true, $post->post_name),
