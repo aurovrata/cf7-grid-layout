@@ -179,28 +179,19 @@
   margin: 3px;
 }
  /*------ style rules -----*/
+ /*conatiner spacing*/
+ .cf7sg-container .cf7-smart-grid.has-grid form > .cf7sg-container {
+	padding-bottom: 15px;
+}
  .cf7-smart-grid.has-grid .wpcf7 .ajax-loader {
 	margin: -24px 0 0 5px;
 	position: absolute;
 	top: 50%;
 }
-/* .cf7sg-container .ui-tabs-active .ui-tabs-anchor, */
-/* .cf7sg-container .ui-widget-content .ui-state-active, */
-/* .cf7sg-container .ui-widget-content .ui-state-default, */
- .cf7sg-container .ui-widget-content,
- .cf7sg-container .toggle-light .toggle-off,
-  .cf7sg-container .ui-widget-header {
-     background: transparent;
- }
- .ui-state-active {color: inherit;}
  .cf7sg-container {	line-height: 1.2;}
  .cf7sg-container a.button {
 	color: inherit;
 }
-.cf7sg-container .cf7sg-add-tab .ui-state-default {
-	border: solid 1px #aaa;
-}
- /* .cf7sg-container .ui-tabs-anchor{ background: #aaa5} */
 .cf7sg-slider-section .glider{overflow-x: hidden;padding-bottom:10px}
  .cf7sg-container .ui-widget{ font: inherit; font-size:inherit}
  .cf7sg-slider-section .slider-control.slider-prev{float:left}
@@ -240,14 +231,117 @@
     cursor: not-allowed;
     text-decoration-line: none;
 }
-ul.cf7-sg-tabs-list li .dashicons.dashicons-no-alt {
+/* tabbed section styling*/
+.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row {
+	border-bottom: 1px solid #ccc;
+	position: relative;
+}
+
+.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio {
+	display: none;
+}
+
+ul.cf7sg-tab-title {
+	display: flex;
+	align-items: stretch;
+	flex-wrap: wrap;
+	list-style: none;
+	padding: 0;
+	border-bottom: 1px solid #ccc;
+	margin: 0;
+}
+ul.cf7sg-tab-title li{
+	display: inline-block;
+}
+ul.cf7sg-tab-title label {
+	display: block;
+	margin-bottom: -1px;
+	padding: 12px 15px;
+	border: 1px solid #ccc;
+	background: #eee;
+	color: #888;
+	cursor: pointer;	
+	transition: all 0.3s;
+}
+ul.cf7sg-tab-title li:hover label {
+	border-top-color: #333;
+	color: #333;
+}
+.cf7-smart-grid.has-grid .cf7sg-tab-button.button {
+	padding: 10px 12px;
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.cf7-smart-grid.has-grid .cf7sg-tab-button.button:hover {
+	background: #F0F0F0;
+}
+.cf7sg-container .cf7-smart-grid.has-grid .cf7sg-tabs-panel {
+	display: none;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+/* As we cannot replace the numbers with variables or calls to element properties, the number of this selector parts is our tab count limit */
+.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(1):checked ~ .cf7sg-tab-title li:nth-of-type(1) label,
+.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(2):checked ~ .cf7sg-tab-title li:nth-of-type(2) label {
+	border-bottom-color: #fff;
+	border-top-color: #B721FF;
+	background: #fff;
+	color: #222;
+}
+
+.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(1):checked ~ .cf7sg-tabs-panel:nth-of-type(1),
+.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(2):checked ~ .cf7sg-tabs-panel:nth-of-type(2){
+	display: block;
+}
+/* .cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row {
+	display: flex;
+	position: relative;
+}
+.cf7sg-container .cf7-smart-grid.has-grid input.cf7sg-tab-radio {
+  position: absolute;
+  z-index: -1;
+}
+.cf7-smart-grid.has-grid input.cf7sg-tab-radio:checked + .cf7sg-tabs-panel > label.cf7sg-tab-title {
+  color: white;
+  border-bottom: 2px solid gold;
+}
+.cf7-smart-grid.has-grid input.cf7sg-tab-radio:checked + .cf7sg-tabs-panel > .cf7sg-container {
+  display: block;
+}
+
+.cf7-smart-grid.has-grid  label.cf7sg-tab-title {
+  cursor: pointer;
+  background-color: #ccd8da;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 56px;
+  transition: color 0.2s ease;
+  width: 100%;
+}
+
+.cf7-smart-grid.has-grid .cf7sg-tabs-panel {
+  width: 100%;
+}
+.cf7-smart-grid.has-grid .cf7sg-col.cf7sg-tabs-panel > .cf7sg-container {
+  position: absolute;
+  display: none;
+	left: 0;
+} */
+label.cf7sg-tab-title .dashicons.dashicons-no-alt {
     border-left: solid 1px grey;
     border-bottom: solid 1px grey;
     border-bottom-left-radius: 14px;
     border-top-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
-ul.cf7-sg-tabs-list li[data-cf7sg="error"] {border: #d90000 solid 2px;}
+label.cf7sg-tab-title[data-cf7sg="error"] {border: #d90000 solid 2px;}
+
 .cf7sg-collapsible[data-cf7sg="error"] {border-right: double 4px red;}
 .cf7sg-container.cf7sg-collapsible + .cf7sg-container > .cf7sg-row:first-child > .cf7sg-col.full > .cf7sg-container.cf7-sg-table {
     margin-top: 10px;
@@ -365,9 +459,6 @@ span.cf7sg-popup {
  .sy-slide > .cf7sg-collapsible-title {
 	margin-bottom: 10px;
 }
- .cf7sg-container .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
-  padding: .2em 1em;
-}
 .cf7sg-slide-filler .ajax-loader {
 	float: right;
 }
@@ -378,32 +469,9 @@ span.cf7sg-popup {
     display: inline;
     margin-right: 30px;
 }
-ul.cf7-sg-tabs-list li .dashicons.dashicons-no-alt {
-    position: absolute;
-    right: 0;
-}
-.cf7sg-add-tab.ui-tabs-nav .ui-tabs-anchor {
-    padding: .2em 1em;
-}
-.ui-tabs .cf7-sg-tabs-list.ui-tabs-nav .ui-tabs-anchor {
-    padding: .2em 20px;
-}
-ul.cf7-sg-tabs-list li {
-    position: relative;
-}
-.cf7-sg-tabs.ui-tabs ul.ui-tabs-nav li a:hover,
-.cf7-sg-tabs.ui-tabs ul.ui-tabs-nav li .dashicons-no-alt:hover {
-    cursor: pointer;
-}
+
  .cf7-smart-grid .dashicons{
   vertical-align: middle;
-}
-.ui-tabs .cf7sg-add-tab.ui-tabs-nav {
-    display: inline-block;
-    padding-left: 0;
-}
-ul.cf7-sg-tabs-list {
-    display: inline-block;
 }
  .cf7-smart-grid .cf7-sg-table-button {
   text-align: right;

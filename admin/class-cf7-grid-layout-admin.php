@@ -1021,6 +1021,7 @@ class Cf7_Grid_Layout_Admin {
       'class'=>1,
       'id'=>1,
       'data-*'=>1,
+			'checked'=>1,
     );
     $allowed_tags['script']=array('type'=>1);
     $cf7_key = $post->post_name;

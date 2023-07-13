@@ -37,7 +37,8 @@
 .cf7sg-container .cf7-smart-grid.has-grid .cf7sg-col.point-five{
   width:3.19149%;
 }
-.cf7sg-container .cf7-smart-grid.has-grid .cf7sg-col:first-child {
+.cf7sg-container .cf7-smart-grid.has-grid .cf7sg-col:first-child,
+.cf7sg-container .cf7-smart-grid.has-grid .cf7sg-col.full {
     margin-left: 0;
 }
 .cf7sg-container .cf7-smart-grid.has-grid .cf7sg-col.one.point-five{

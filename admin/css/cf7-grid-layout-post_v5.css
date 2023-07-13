@@ -456,7 +456,8 @@ textarea.grid-input {
 #cf7-editor-grid .add-item-button.add-slide-button .button{
 	display: none;
 }
-#grid-form .cf7sg-tabs-panel > .cf7sg-tab-title {
+#grid-form .cf7-sg-tabs > .cf7sg-row .cf7sg-tab-title,
+#grid-form .cf7-sg-tabs > .cf7sg-row .cf7sg-tab-button {
 	display: none;
 }
 #cf7-editor-grid .add-slide-button .button.add-slide {
