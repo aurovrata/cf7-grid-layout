@@ -2,6 +2,18 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+ /*colour scheme*/
+ .cf7-smart-grid.has-grid {
+	--cf7sg-tabs-border-active:#333;
+	--cf7sg-tabs-bg-active:#fff;
+	--cf7sg-tabs-bg:#eee;
+	--cf7sg-tabs-bg-hover:#F0F0F0;
+	--cf7sg-tabs-colour:#888;
+	--cf7sg-tabs-border:#ccc;
+	--cf7sg-hdd-img-bg:#0000008c;
+	--cf7sg-hdd-img-colour: #fff;
+	--cf7sg-hdd-cb-bg:#fff;
+}
  /** @since 4.11.0 layout for imagegrids */
  .cf7sg-list .cf7sg-dl.cf7sg-dc {
 	display: block;
@@ -30,8 +42,8 @@
 	padding: 2px 5px;
 	bottom: 0;
 	line-height: normal;
-	background: #0000008c;
-	color: white;
+	background: var(--cf7sg-hdd-img-bg);
+	color: var(--cf7sg-hdd-img-colour);
 	text-align: center;
 	margin: auto;
 	font-size: 18px;
@@ -81,7 +93,7 @@
 	width: 10px;
 	height: 10px;
 	margin: 4px auto;
-	background: white;
+	background: var(--cf7sg-hdd-cb-bg);
 	border-radius: 50%;
 }
 .cf7sg-imagegrid.hybrid-dropdown .hybridddcb{
@@ -107,7 +119,7 @@
 	border: solid 1px #fff0;
 }
 .cf7sg-imagegrid .cf7sg-dc .cf7sg-dc-img:before {
-  background-color: white;
+  background: white;
   color: white;
   content: " ";
   display: none;
@@ -233,7 +245,7 @@
 }
 /* tabbed section styling*/
 .cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row {
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid var(--cf7sg-tabs-border);
 	position: relative;
 }
 
@@ -242,12 +254,12 @@
 }
 
 ul.cf7sg-tab-title {
-	display: flex;
+	display: inline-flex;
 	align-items: stretch;
 	flex-wrap: wrap;
 	list-style: none;
 	padding: 0;
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid var(--cf7sg-tabs-border);
 	margin: 0;
 }
 ul.cf7sg-tab-title li{
@@ -257,15 +269,15 @@ ul.cf7sg-tab-title label {
 	display: block;
 	margin-bottom: -1px;
 	padding: 12px 15px;
-	border: 1px solid #ccc;
-	background: #eee;
-	color: #888;
+	border: 1px solid var(--cf7sg-tabs-border);
+	background: var(--cf7sg-tabs-bg);
+	color: var(--cf7sg-tabs-colour);
 	cursor: pointer;	
 	transition: all 0.3s;
 }
 ul.cf7sg-tab-title li:hover label {
-	border-top-color: #333;
-	color: #333;
+	border-top-color: var(--cf7sg-tabs-border-active);
+	color: inherit;
 }
 .cf7-smart-grid.has-grid .cf7sg-tab-button.button {
 	padding: 10px 12px;
@@ -275,7 +287,7 @@ ul.cf7sg-tab-title li:hover label {
 	right: 0;
 }
 .cf7-smart-grid.has-grid .cf7sg-tab-button.button:hover {
-	background: #F0F0F0;
+	background: var(--cf7sg-tabs-bg-hover);
 }
 .cf7sg-container .cf7-smart-grid.has-grid .cf7sg-tabs-panel {
 	display: none;
@@ -286,10 +298,10 @@ ul.cf7sg-tab-title li:hover label {
 /* As we cannot replace the numbers with variables or calls to element properties, the number of this selector parts is our tab count limit */
 .cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(1):checked ~ .cf7sg-tab-title li:nth-of-type(1) label,
 .cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(2):checked ~ .cf7sg-tab-title li:nth-of-type(2) label {
-	border-bottom-color: #fff;
-	border-top-color: #B721FF;
-	background: #fff;
-	color: #222;
+	border-bottom-color: var(--cf7sg-tabs-bg-active);
+	border-top-color: var(--cf7sg-tabs-border-active);
+	background: var(--cf7sg-tabs-bg-active);
+	color: inherit;
 }
 
 .cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(1):checked ~ .cf7sg-tabs-panel:nth-of-type(1),

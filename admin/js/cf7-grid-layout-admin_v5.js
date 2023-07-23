@@ -259,10 +259,16 @@
         $grid.html($form.html());
       }
       //set the value of each textarea as inner text
-      $('textarea', $grid).each(function(){
-        let $this = $(this);
-        $this.html($this.val());
-      });
+      // $('textarea', $grid).each(function(){
+      //   let $this = $(this);
+			// 		// field = $('<div>').html($this.val()).find('.cf7sg-field');
+      //   $this.html($this.val());
+			// 	// if(field.length>0){ 
+			// 	// 	field = field.text();
+			// 	// 	field = field.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+			// 	// 	$this.find('.cf7sg-field').text(field);
+			// 	// }
+      // });
       /*--------------------------------------------- if ui mode, then convert to gui template */
       let $textareaSelected='';
       if(cf7grid.ui){
@@ -1723,10 +1729,11 @@
       }
     }
     //tip
+		field = field.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     let $cell = $('<div>').append( cf7grid.preHTML + field + cf7grid.postHTML );
     $('label', $cell).html(label);
     $('.info-tip', $cell).html(tip);
-    $('.cf7sg-field',$cell).addClass(classes);
+    $('.cf7sg-field',$cell).addClass(classes).text(field);
     //update grid input and trigger change to udpate form
     if(cf7grid.ui) $this.html($cell.html()+'\n').trigger('change');
     else $this.val($cell.html()).trigger('change');

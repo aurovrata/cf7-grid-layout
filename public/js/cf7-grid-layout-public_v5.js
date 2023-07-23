@@ -409,30 +409,30 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     if(cf7Forms.length){
       cf7sgPanels = {}; //object to store cloned panels
       //delegate tab addition/deletion
-      cf7Forms.click('ul.ui-tabs-nav li', function(e){
+      cf7Forms.on('click','.cf7sg-tab-button', function(e){
         let $target = $(e.target);
-        let $container = $target.closest('.cf7-sg-tabs');
+        let $tab = $target.closest('.cf7-sg-tabs');
         if($target.is('.cf7sg-close-tab')){ //---------------------- close/delete tab.
-          $container.cf7sgRemoveTab();
-        }else if($target.is('.cf7sg-add-tab')){ //------------------- add tab.
-          $container.cf7sgCloneTab(true,true);
+          $tab.cf7sgRemoveTab();
+        }else { //------------------- add tab.
+          $tab.cf7sgCloneTab(true,true);
         }
       });
       $( ".cf7-sg-tabs",  cf7Forms).each(function(){
         let $tab = $(this), fid = $tab.closest('div.cf7-smart-grid').attr('id'),
-          $list = $tab.children('.cf7-sg-tabs-list'),
+          $list = $tab.find('ul.cf7sg-tab-title'), //list of tab labels
+					$radio = $tab.find('input.cf7sg-tab-radio'), //list of tab input radiofields.
+					$panel = $tab.find('.cf7sg-col.cf7sg-tabs-panel').first(),
+					$tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $tab.attr('id')), //track tabs added by user.
           oneD = [], //tabbed prefills.
           twoD = []; //tabbed and tabled prefills.
         //add a button to create more tabs
         if( 1 == $list.children('li').length){
-          $list.after('<ul class="cf7sg-add-tab ui-tabs-nav"><li class="ui-state-default ui-corner-top"><a class="cf7sg-add-tab ui-tabs-anchor"><span class="cf7sg-add-tab dashicons dashicons-plus"></span></a></li></ul>');
-          //clone the tab
-          let $panel = $tab.children('.cf7-sg-tabs-panel').first();
+          // $list.after('<ul class="cf7sg-add-tab ui-tabs-nav"><li class="ui-state-default ui-corner-top"><a class="cf7sg-add-tab ui-tabs-anchor"><span class="cf7sg-add-tab dashicons dashicons-plus"></span></a></li></ul>');
           /** @since 2.4.2 track tab fields */
-          let $tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $panel.attr('id'));
           $tab.prepend($tracker);
 
-          //add class to all fields
+          //add class to all fields and check for any prefill values.
           $panel.find(':input').each(function(){
             let $in = $(this),
               fname = $in.attr('name').replace('[]',''),
@@ -457,58 +457,54 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           //finally store a clone of the panel to be able to add new tabs
           let $clonedP = $('<div>').append($panel.clone());
           //disable all inputs in the cloned panel so they don't get submitted.
-          $(':input', $clonedP).prop('disabled', true),
-          cf7sgPanels[$panel.attr('id')] = $clonedP.html();
-          
-        }
-        //create tab.
-        $tab.tabs( {
-          create: function(e){
-            let $tab = $(this), f='', tc=0, rc=0;
-            /** @since 4.4 prefill fields */
-            for(const fname in oneD){
-              if(String(oneD[fname]) !== '[object Object]'){
-                if(cf7sg.debug) console.log(`ERROR: Prefill tab field ${fname} value should be array`);
-                return;
-              }
-              tc = 0;
-              for(const tdx in oneD[fname]){
-                f = ( tc>0 ? `${fname}_tab-${tc}`:fname );
-                if( $list.children('li').length < (tc+1) ) $tab.cf7sgCloneTab(true, false);
-                $(`:input[name=${f}]`).prefillCF7Field(fname, oneD[fname][tdx],fid);
-                tc++;
-              }
-            }
-            /* Tabbed tables*/
-            for(const fname in twoD){
-              if(String(twoD[fname]) !== '[object Object]'){
-                if(cf7sg.debug) console.log(`ERROR: Prefill tabbed table field ${fname} value should be 2D array`);
-                return;
-              }
-              let $table = null;
-              tc=0;
-              for(const tdx in twoD[fname]){
-                if(String(twoD[fname][tdx]) !== '[object Object]'){
-                  if(cf7sg.debug) console.log(`ERROR: Prefill tabbed table field ${fname} value should be 2D array`);
-                  return;
-                }
-                f = ( tc>0 ? `${fname}_tab-${tc}`:fname );
-                if( $list.children('li').length < (tc+1) ) $tab = $tab.cf7sgCloneTab(true, false);
-                //get the field's table in the current tab.
-                $table = $(`:input[name=${f}]`, $tab).closest('.container.cf7-sg-table');
-                rc=0;
-                for(const rdx in twoD[fname][tdx]){
-                  f = (rc>0 ? `${f}_row-${rc}` : f);
-                  if( $table.children( '.row.cf7-sg-table').not('.cf7-sg-cloned-table-row').length < (rc+1) ) $table.cf7sgCloneRow(false, null);
-                  $(`:input[name=${f}]`, $table).prefillCF7Field(fname, twoD[fname][tdx][rdx],fid);
-                  rc++;
-                }
-                tc++;
-              }
-            }
-            $tab.trigger('sgTabsReady')
-          } 
-        });
+          $(':input', $clonedP).prop('disabled', true);
+          cf7sgPanels[$tab.attr('id')] = $clonedP.html();
+					//prefill any values
+         let  f='', tc=0, rc=0;
+					/** @since 4.4 prefill fields */
+					for(const fname in oneD){
+						if(String(oneD[fname]) !== '[object Object]'){
+							if(cf7sg.debug) console.log(`ERROR: Prefill tab field ${fname} value should be array`);
+							return;
+						}
+						tc = 0;
+						for(const tdx in oneD[fname]){
+							f = ( tc>0 ? `${fname}_tab-${tc}`:fname );
+							if( $list.children('li').length < (tc+1) ) $tab.cf7sgCloneTab(true, false);
+							$(`:input[name=${f}]`).prefillCF7Field(fname, oneD[fname][tdx],fid);
+							tc++;
+						}
+					}
+					/* Tabbed tables*/
+					for(const fname in twoD){
+						if(String(twoD[fname]) !== '[object Object]'){
+							if(cf7sg.debug) console.log(`ERROR: Prefill tabbed table field ${fname} value should be 2D array`);
+							return;
+						}
+						let $table = null;
+						tc=0;
+						for(const tdx in twoD[fname]){
+							if(String(twoD[fname][tdx]) !== '[object Object]'){
+								if(cf7sg.debug) console.log(`ERROR: Prefill tabbed table field ${fname} value should be 2D array`);
+								return;
+							}
+							f = ( tc>0 ? `${fname}_tab-${tc}`:fname );
+							if( $list.children('li').length < (tc+1) ) $tab = $tab.cf7sgCloneTab(true, false);
+							//get the field's table in the current tab.
+							$table = $(`:input[name=${f}]`, $tab).closest('.container.cf7-sg-table');
+							rc=0;
+							for(const rdx in twoD[fname][tdx]){
+								f = (rc>0 ? `${f}_row-${rc}` : f);
+								if( $table.children( '.row.cf7-sg-table').not('.cf7-sg-cloned-table-row').length < (rc+1) ) $table.cf7sgCloneRow(false, null);
+								$(`:input[name=${f}]`, $table).prefillCF7Field(fname, twoD[fname][tdx][rdx],fid);
+								rc++;
+							}
+							tc++;
+						}
+					}
+				} 
+				
+				$tab.trigger('sgTabsReady')
       })
     }
     /** @since 4.4 prefill fields */
