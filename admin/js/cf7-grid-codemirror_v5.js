@@ -614,7 +614,7 @@
       });
 
       let tabFields = [];
-      $('.cf7sg-container.cf7-sg-tabs-panel', $formNoEmbeds).each(function(){
+      $('.cf7sg-container.cf7-sg-tabs', $formNoEmbeds).each(function(){
         /**@since 2.4.2 track each tables with unique ids and their fields*/
         let unique = $(this).attr('id'),fields = {}, search = $(this).html();
         fields[unique]=[];

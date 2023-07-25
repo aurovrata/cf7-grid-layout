@@ -264,6 +264,7 @@ ul.cf7sg-tab-title {
 }
 ul.cf7sg-tab-title li{
 	display: inline-block;
+	position: relative;
 }
 ul.cf7sg-tab-title label {
 	display: block;
@@ -279,12 +280,48 @@ ul.cf7sg-tab-title li:hover label {
 	border-top-color: var(--cf7sg-tabs-border-active);
 	color: inherit;
 }
+ul.cf7sg-tab-title li .cf7sg-tab-dismis {
+	display: none;
+}
+.cf7sg-tab-radio:not([value="tab-1"]) + ul.cf7sg-tab-title li:hover .cf7sg-tab-dismis {
+	position: absolute;
+	display: inline;
+	top: -12px;
+	right: -12px;
+	width: 24px;
+	height: 24px;
+	text-align: center;
+	cursor: not-allowed;
+	background-color: #fff;
+	border-radius: 50%;
+	color: red;
+	z-index: 1008;
+	font-size: 17px;
+}
+ul.cf7sg-tab-title label.tactive{
+	border-bottom-color: var(--cf7sg-tabs-bg-active);
+	border-top-color: var(--cf7sg-tabs-border-active);
+	background: var(--cf7sg-tabs-bg-active);
+	color: inherit;
+	display: none;
+}
+/*display the active label when radio selected.*/
+.cf7-smart-grid.has-tabs .cf7sg-tab-radio:nth-of-type(1):checked ~ .cf7sg-tab-title li:nth-of-type(1) label{
+	display: none;
+}
+.cf7-smart-grid.has-tabs .cf7sg-tab-radio:nth-of-type(1):checked ~ .cf7sg-tab-title li:nth-of-type(1) label.tactive{
+	display: block;
+}
+.cf7-smart-grid.has-tabs .cf7sg-tab-radio:nth-of-type(1):checked ~ .cf7sg-tabs-panel:nth-of-type(1){
+	display: block;
+}
 .cf7-smart-grid.has-grid .cf7sg-tab-button.button {
 	padding: 10px 12px;
 	display: inline-block;
 	position: absolute;
 	top: 0;
 	right: 0;
+	cursor: pointer;
 }
 .cf7-smart-grid.has-grid .cf7sg-tab-button.button:hover {
 	background: var(--cf7sg-tabs-bg-hover);
@@ -295,19 +332,6 @@ ul.cf7sg-tab-title li:hover label {
 	padding-bottom: 10px;
 }
 
-/* As we cannot replace the numbers with variables or calls to element properties, the number of this selector parts is our tab count limit */
-.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(1):checked ~ .cf7sg-tab-title li:nth-of-type(1) label,
-.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(2):checked ~ .cf7sg-tab-title li:nth-of-type(2) label {
-	border-bottom-color: var(--cf7sg-tabs-bg-active);
-	border-top-color: var(--cf7sg-tabs-border-active);
-	background: var(--cf7sg-tabs-bg-active);
-	color: inherit;
-}
-
-.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(1):checked ~ .cf7sg-tabs-panel:nth-of-type(1),
-.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(2):checked ~ .cf7sg-tabs-panel:nth-of-type(2){
-	display: block;
-}
 /* .cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row {
 	display: flex;
 	position: relative;

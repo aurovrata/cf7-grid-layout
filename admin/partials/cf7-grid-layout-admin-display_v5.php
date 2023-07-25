@@ -445,8 +445,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
         <span class="dashicons dashicons-admin-generic row-control grid-control"></span>
         <span class="dashicons dashicons-trash row-control grid-control"></span>
       </div>
-			<input type="radio" class="display-none cf7sg-tab-radio" id="" name="" value="tab-1" checked/>
-			<ul class="cf7sg-tab-title"><li><label for="" data-tplt="title (cnt)" data-title=""></label></li></ul>
+			<input type="radio" class="display-none cf7sg-tab-radio" id="" name="lbl-" value="tab-1" checked/>
+			<ul class="cf7sg-tab-title" data-tplt="title (cnt)" data-title=""><li><label for=""></label><span class="dashicons dashicons-dismiss cf7sg-tab-dismis"></span></li></ul>
 			<a class="cf7sg-tab-button button"><?php _e('Add tab', 'cf7-grid-layout');?></a>
 			<div class="cf7sg-col cf7sg-tabs-panel full">
 				<template class="inner-template">#grid-row</template>

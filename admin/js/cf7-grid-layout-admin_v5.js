@@ -169,7 +169,7 @@
 						break;
 					case $r.is('.cf7-sg-tabs > *'):
 						$r.prepend( uiTemplts['#grid-tabs'].find('.grid-ctrls').clone() );
-						t = $r.find('.cf7sg-tabs-panel > .cf7sg-tab-title').first().data('title');
+						t = $r.find('.cf7sg-tab-title').data('title');
 						$r.find('.cf7sg-tabs-ctrls > .control-label > .section-title').first().text(t);
 						break;
 					default:
@@ -689,7 +689,7 @@
 							break;
 						case $t.is('#cf7sg-uirs-tab-label'):
 							$target.siblings('.control-label').find('.section-title').html($t.val());
-							$e = $container.find('.cf7sg-tabs-panel > .cf7sg-tab-title').first();
+							$e = $container.find('.cf7sg-tab-title');
 							$e.attr('data-title', $t.val());
 							type = 'title';
 							if(typeof $e.data('tplt') !== 'undefined') type = $e.data('tplt');
@@ -822,13 +822,9 @@
             $added = $row.insertNewRow('','#grid-tabs', 'before');
             id=(new Date).getTime();
 						$added.attr('id','cf7sg-tab-'+id);
-			
-						$added = $added.find('.cf7sg-row > input.cf7sg-tab-radio').first();
-						$added.attr('name','cf7sg-tab-'+id);
-						$added.attr('id',id);
-						$added = $added.siblings('.cf7sg-tabs-panel');
-						$added.children('label.cf7sg-tab-title').attr('for',id);
-            $added.closest('.cf7-sg-tabs').fireGridUpdate('add','tabbed-row');
+						$added.find('input.cf7sg-tab-radio').first().attr('name','cf7sg-lbl-'+id).attr('id',id);
+						$added.find('.cf7sg-tab-title li label').attr('for',id);
+            $added.fireGridUpdate('add','tabbed-row');
             break;
         }
         return true;
@@ -1372,15 +1368,11 @@
 					$added = $c.insertNewRow($c, '#grid-tabs', 'after');
           id = (new Date).getTime();
           $added.attr('id','cf7sg-tab-'+id);
+          $added.find('input.cf7sg-tab-radio').first().attr('name','cf7sg-lbl-'+id).attr('id',id); //setup radio 
+					$added.find('.cf7sg-tab-title li label').attr('for',id); //set up label
+					$added.find('.cf7sg-tab-title').after(uiTemplts['#grid-row'].find('.add-row-button').clone()); //insert button
+          $added.fireGridUpdate('add','tabbed-row');
 					$c = $added;
-          $added = $c.find('.cf7sg-row > input.cf7sg-tab-radio').first();
-					$added.attr('name','cf7sg-tab-'+id);
-					$added.attr('id',id);
-					$added = $added.siblings('.cf7sg-tabs-panel');
-					$added.children('label.cf7sg-tab-title').attr('for',id);
-					$added.append(uiTemplts['#grid-row'].find('.add-row-button').clone());
-
-          $c.fireGridUpdate('add','tabbed-row');
 					break;
 			}
 		}

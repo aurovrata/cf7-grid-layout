@@ -409,25 +409,27 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     if(cf7Forms.length){
       cf7sgPanels = {}; //object to store cloned panels
       //delegate tab addition/deletion
-      cf7Forms.on('click','.cf7sg-tab-button', function(e){
+      cf7Forms.on('click','.cf7sg-tab-button, .cf7sg-tab-dismis', function(e){
         let $target = $(e.target);
-        let $tab = $target.closest('.cf7-sg-tabs');
-        if($target.is('.cf7sg-close-tab')){ //---------------------- close/delete tab.
-          $tab.cf7sgRemoveTab();
+        if($target.is('.cf7sg-tab-dismis')){ //---------------------- close/delete tab.
+          $target.closest('li').cf7sgRemoveTab();
         }else { //------------------- add tab.
-          $tab.cf7sgCloneTab(true,true);
+          $target.closest('.cf7-sg-tabs').cf7sgCloneTab(true,true);
         }
       });
       $( ".cf7-sg-tabs",  cf7Forms).each(function(){
-        let $tab = $(this), fid = $tab.closest('div.cf7-smart-grid').attr('id'),
+        let $tab = $(this), fid = $tab.closest('div.cf7-smart-grid').attr('id'), $lbl,
           $list = $tab.find('ul.cf7sg-tab-title'), //list of tab labels
-					$radio = $tab.find('input.cf7sg-tab-radio'), //list of tab input radiofields.
 					$panel = $tab.find('.cf7sg-col.cf7sg-tabs-panel').first(),
 					$tracker = $('<input class="cf7sg-tracker-field" value="1" type="hidden">').attr('name', $tab.attr('id')), //track tabs added by user.
           oneD = [], //tabbed prefills.
           twoD = []; //tabbed and tabled prefills.
-        //add a button to create more tabs
+        //add a style element for css.
+				$tab.append('<style>');
         if( 1 == $list.children('li').length){
+					$lbl = $list.find('label');
+					$lbl.after($lbl.clone().addClass('tactive'));
+					
           // $list.after('<ul class="cf7sg-add-tab ui-tabs-nav"><li class="ui-state-default ui-corner-top"><a class="cf7sg-add-tab ui-tabs-anchor"><span class="cf7sg-add-tab dashicons dashicons-plus"></span></a></li></ul>');
           /** @since 2.4.2 track tab fields */
           $tab.prepend($tracker);
@@ -1381,47 +1383,100 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
   //remove last tab.
   $.fn.cf7sgRemoveTab = function(){
     let $tab = $(this);
-    if(!$tab.is('div.cf7-sg-tabs')) return false;
-    let $tabList = $tab.find('.cf7-sg-tabs-list').children('li');
-    if($tabList.length>1){
-      let panelId = $tabList.last().find('a').attr('href');
-      $tab.find('div'+panelId).remove(); //remove panel
-      //if the last panel was active then activate.
-      if( $tabList.last().remove().is('.ui-state-active') ) $tab.tabs({active:$tabList.length-2}); //remove tab
-      $tab.trigger('sgTabRemoved');
-      //show last close button
-      let $lastClose = $tabList.eq($tabList.length-2).find('.cf7sg-close-tab:not(.display-none)');
-      if($lastClose.length > 0) $lastClose.show();
-      /** @since 2.4.2 udpate the tracker field*/
-      let $tracker = $tab.children('.cf7sg-tracker-field');
-      if($tracker.length) $tracker.val($tab.children('.cf7-sg-tabs-panel').length);
-    }
-    return $tab;
+    if(!$tab.is('.cf7sg-tab-title li')) return false;
+    let tabFor = $tab.find('label').attr('for'), tabIdx,
+		  $tabList = $tab.parent().find('li'), //list of tabs
+			$radios = $tab.parent().siblings('.cf7sg-tab-radio'), //list of radio buttons.
+			$panels = $tab.parent().siblings('.cf7sg-tabs-panel'); //list of panels
+		
+		$tab.remove(); //remove the tab.
+		tabIdx = $radios.filter(`#${tabFor}`).remove().val(); //remove radio button
+		tabIdx = parseInt(tabIdx.replace('tab-',''));
+		$panels.eq(tabIdx-1).remove(); //remove panel.
+		
+		//re-index existing tab panels, starting from the tabIdx (which is the next one in zero-based $panels ).
+		if(tabIdx>1) tabFor = $radios.eq(0).attr('id');
+		for(let tdx = tabIdx; tdx < $panels.length; tdx++){
+			//radio
+			if(tdx === 1){ 
+				$radios.eq(tdx).attr('id',`${tabFor}`).val(`tab-${tdx}`);
+				$tabList.eq(tdx).find('label').attr('for',`${tabFor}`);
+			}else{
+				$radios.eq(tdx).attr('id',`${tabFor}-${tdx}`).val(`tab-${tdx}`);
+				$tabList.eq(tdx).find('label').attr('for',`${tabFor}-${tdx}`);
+			}
+			//label
+			$(':input', $panels.eq(idx)).each((x,i)=>{
+				let $i = $(i),
+					name = $i.attr('name'), $id,
+					$s = $i.closest('span.wpcf7-form-control-wrap');
+				if(tdx>1){ 
+					//remove the old name class from its span.
+					$s.removeClass(name);
+					name = name.replace(`_tab-${tdx}`, `_tab-${(tdx-1)}`);
+					$s.addClass(name);
+				}else{
+					name = name.replace(`_tab-${tdx}`, '');
+				}
+				//rename
+				$i.attr('name', name); 
+				if($s.data('name')) $s.attr('data-name', name.replace('[]',''));
+				//re-id
+				name = $i.attr('id');
+				let $l=null;
+				if(name){ 
+					$id = $i;
+					$l = $id.siblings(`label[for="${name}"`);
+				}else if( $i.is('[type="radio"]') || $i.is('[type="checkbox"]') ){ 
+					name = $s.attr('id');
+					$id = $s;
+				}
+				if(name){
+					if(tdx>1){
+						name = name.replace(`_tab-${tdx}`, `_tab-${(tdx-1)}`);
+						$id.attr('id', name);
+						if($l) $l.attr('id', name);
+					}else{
+						name = name.replace(`_tab-${tdx}`, '');
+						$id.attr('id', name);
+						if($l) $l.attr('id', name);
+					}
+				}
+			});
+		}
+   
+		/** @since 2.4.2 udpate the tracker field*/
+		let $tracker = $tabList.closest('.cf7-sg-tabs').children('.cf7sg-tracker-field');
+		if($tracker.length) $tracker.val($panels.length-1);
+    return true;
   }
   //clone tabs, called on a div.cf7-sg-tabs
   $.fn.cf7sgCloneTab = function(initSelect, human){
-    if(null===human) human = false;
+    if(null===human) human = false; //flag to indicate if programmatic addition.
     let $tab = $(this);
     if(typeof initSelect === 'undefined') initSelect =true;
     /*initSelect is false if called from cf7_2_post field loading script,
     else if true whehn triggered from the front-end user event.*/
     if(!$tab.is('div.cf7-sg-tabs')) return false;
 
-    let $tabList = $tab.children('.cf7-sg-tabs-list');
-    let tabCount = $tabList.children('li').length + 1;
-    let firstTabId  = $tab.children('.cf7-sg-tabs-panel').first().attr('id');
-    let panelId = firstTabId + '-' + tabCount;
-    //create a tab clone
-    let $newTab = $tabList.children('li').first().clone();
-    $newTab.find('a').attr('href','#'+panelId).text($newTab.text()+ ' ('+ tabCount + ')');
-    $newTab.append('<span class="cf7sg-close-tab dashicons dashicons-no-alt"></span>'); //remove button
-    $newTab.removeClass('ui-tabs-active ui-state-active');
-    $tabList.find('li .cf7sg-close-tab').hide();
+    let $tabList = $tab.find('ul.cf7sg-tab-title'), //list of tab labels
+     tabCount = $tabList.children('li').length + 1,
+     tabId  = $tab.attr('id'),
+		 $radio = $tab.find('input.cf7sg-tab-radio').first().clone(), //list of tab input radiofields.
+		 iid = $radio.attr('id'),lbl, css,
+     $newTab = $tabList.children('li').first().clone(), //create a tab clone
+		 $newPanel = $( cf7sgPanels[tabId] ); //new tab panel
+		//new radio button
+		$radio.attr('name',`cf7sg-lbl-${iid}`).attr('id',`${iid}-${tabCount}`).val(`tab-${tabCount}`);
+		$tabList.before($radio);//insert the new radio button.
+		//new label
+		lbl = 'title (cnt)';
+		if(typeof $tabList.data('tplt')!== 'undefined') lbl = $tabList.data('tplt');
+		lbl = lbl.replace('title', $tabList.data('title')).replace('cnt', tabCount);
+		lbl = $newTab.find('label').attr('for',`${iid}-${tabCount}`).text(lbl);
+    // $newTab.append('<span class="cf7sg-close-tab dashicons dashicons-no-alt"></span>'); //remove button
     //append tab to list
     $tabList.append( $newTab );
-    //new panel
-    let $newPanel = $( cf7sgPanels[firstTabId] );
-    $newPanel.attr('id', panelId);
     //add input name as class to parent span
     $(':input', $newPanel).each(function(){
       let $input = $(this),
@@ -1467,21 +1522,8 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
       new HybridDropdown(this, $(this).cf7sgHybridddOptions());
     });
     //append new panel
-    $tab.append($newPanel);
-    //change all the ids of inner tabs in the new panel
-    let $innerTabs = $newPanel.find('ul.ui-tabs-nav li a');
-    $innerTabs.each(function(){
-      let $this = $(this);
-      panelId = $this.attr('href');
-      $this.attr('href', panelId+'-'+tabCount);
-      let $innerPanel = $this.closest('ul.ui-tabs-nav').siblings('div'+panelId);
-      $innerPanel.attr( 'id' , panelId.substring(1)+'-'+tabCount );
-    });
-    //enable tabs in the new panel. Deprecated.
-    $( '.cf7-sg-tabs', $newPanel ).each(function(){
-      $(this).tabs();
-    });
-
+    $tab.children('.cf7sg-row').append($newPanel);
+    
     //enable the collapsible titles & toggle buttons
     $('.cf7sg-collapsible.with-toggle', $newPanel).each(function(){
       let $section = $(this);
@@ -1534,24 +1576,31 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         }
       });
     }); //end collapsible titles.
-
-
-    $tab.tabs( "refresh" );
-    //if this was from a click, human user, then activate the tab.
-    if(human) $tab.tabs( "option", "active", -1 );
-    /** @since 1.2.2 */
-    //trigger new tab event for custom js.
-    $newPanel.trigger({type:'sgTabAdded','tab-index':tabCount-1});
-    //trigger new table ready.
-    $('.cf7-sg-table.container', $newPanel).each(function(){
+		 //trigger new table ready.
+		 $('.cf7-sg-table.container', $newPanel).each(function(){
       let $table = $(this), orgid = $table.attr('id');
       $table.attr('id',orgid+'_tab-'+(tabCount-1));
       $table.trigger({type:'sgTableReady', 'table-id':orgid,'tab-index':tabCount-1});
     });
+		//add style for the tab,
+		// $style  `.cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row .cf7sg-tab-radio:nth-of-type(2):checked ~ .cf7sg-tab-title li:nth-of-type(2) label {border-bottom-color: var(--cf7sg-tabs-bg-active); border-top-color: var(--cf7sg-tabs-border-active); background: var(--cf7sg-tabs-bg-active); color: inherit;}`
+		// $tab.append($style);
+		//if this was from a click, human user, then activate the tab.
+    if(human) $radio.get(0).checked=true;
+		/*Add styling fornew panel */
+		css = $tab.find('style').text();
+		css+=`.cf7-smart-grid.has-tabs .cf7sg-tab-radio:nth-of-type(${(tabCount)}):checked ~ .cf7sg-tab-title li:nth-of-type(${(tabCount)}) label{display: none;}`;
+		css+=`.cf7-smart-grid.has-tabs .cf7sg-tab-radio:nth-of-type(${(tabCount)}):checked ~ .cf7sg-tab-title li:nth-of-type(${(tabCount)}) label.tactive{display: block;}`;
+		css+=`.cf7-smart-grid.has-tabs .cf7sg-tab-radio:nth-of-type(${(tabCount)}):checked ~ .cf7sg-tabs-panel:nth-of-type(${(tabCount)}){display: block;}`;
+		$tab.find('style').text(css);
+    /** @since 1.2.2 */
+    //trigger new tab event for custom js.
+    $newPanel.trigger({type:'sgTabAdded','tab-index':tabCount-1});
+   
     /** @since 2.4.2 track tabs and their fields.*/
     //increment tab count tacker.
     let $tracker = $tab.children('.cf7sg-tracker-field');
-    if($tracker.length>0) $tracker.val($tab.children('.cf7-sg-tabs-panel').length);
+    if($tracker.length>0) $tracker.val(tabCount);
     return $tab;
   }
 
