@@ -1244,7 +1244,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
 					let $l=null;
 					if(name){ 
 						$id = $i;
-						$l = $id.siblings(`label[for="${name}"`);
+						$l = $id.siblings(`label[for="${name}"]`);
 					}else if( $i.is('[type="radio"]') || $i.is('[type="checkbox"]') ){ 
 						name = $s.attr('id');
 						$id = $s;
@@ -1384,29 +1384,40 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
   $.fn.cf7sgRemoveTab = function(){
     let $tab = $(this);
     if(!$tab.is('.cf7sg-tab-title li')) return false;
-    let tabFor = $tab.find('label').attr('for'), tabIdx,
-		  $tabList = $tab.parent().find('li'), //list of tabs
+    let tabFor = $tab.find('label').attr('for'), tabIdx, lbl,
+		  $tabList = $tab.parent(), //ul list of tabs
 			$radios = $tab.parent().siblings('.cf7sg-tab-radio'), //list of radio buttons.
 			$panels = $tab.parent().siblings('.cf7sg-tabs-panel'); //list of panels
 		
-		$tab.remove(); //remove the tab.
+		//label template.
+		lbl = 'title (cnt)';
+		if(typeof $tabList.data('tplt')!== 'undefined') lbl = $tabList.data('tplt');
+		if(typeof $tabList.data('title')!== 'undefined'){ 
+			lbl = lbl.replace('title', $tabList.data('title'));
+		}else{ 
+			lbl = lbl.replace('title','');
+		}
+		lbl = lbl.trim();
+		//remove hte tab and its panel.
 		tabIdx = $radios.filter(`#${tabFor}`).remove().val(); //remove radio button
 		tabIdx = parseInt(tabIdx.replace('tab-',''));
 		$panels.eq(tabIdx-1).remove(); //remove panel.
-		
 		//re-index existing tab panels, starting from the tabIdx (which is the next one in zero-based $panels ).
+		$tabList = $tabList.find('li'); //list of tabs, before removal to maintain count and order.
+		$tab.remove(); //remove the tab.
+
 		if(tabIdx>1) tabFor = $radios.eq(0).attr('id');
 		for(let tdx = tabIdx; tdx < $panels.length; tdx++){
-			//radio
+			//radio & label.
 			if(tdx === 1){ 
 				$radios.eq(tdx).attr('id',`${tabFor}`).val(`tab-${tdx}`);
-				$tabList.eq(tdx).find('label').attr('for',`${tabFor}`);
+				$tabList.eq(tdx).find('label').attr('for',`${tabFor}`).text(lbl.replace('cnt', tdx));
 			}else{
 				$radios.eq(tdx).attr('id',`${tabFor}-${tdx}`).val(`tab-${tdx}`);
-				$tabList.eq(tdx).find('label').attr('for',`${tabFor}-${tdx}`);
+				$tabList.eq(tdx).find('label').attr('for',`${tabFor}-${tdx}`).text(lbl.replace('cnt', tdx));
 			}
 			//label
-			$(':input', $panels.eq(idx)).each((x,i)=>{
+			$(':input', $panels.eq(tdx)).each((x,i)=>{
 				let $i = $(i),
 					name = $i.attr('name'), $id,
 					$s = $i.closest('span.wpcf7-form-control-wrap');
@@ -1426,7 +1437,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
 				let $l=null;
 				if(name){ 
 					$id = $i;
-					$l = $id.siblings(`label[for="${name}"`);
+					$l = $id.siblings(`label[for="${name}"]`);
 				}else if( $i.is('[type="radio"]') || $i.is('[type="checkbox"]') ){ 
 					name = $s.attr('id');
 					$id = $s;
@@ -1472,7 +1483,13 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
 		//new label
 		lbl = 'title (cnt)';
 		if(typeof $tabList.data('tplt')!== 'undefined') lbl = $tabList.data('tplt');
-		lbl = lbl.replace('title', $tabList.data('title')).replace('cnt', tabCount);
+		if(typeof $tabList.data('title')!== 'undefined'){ 
+			lbl = lbl.replace('title', $tabList.data('title'));
+		}else{ 
+			lbl = lbl.replace('title','');
+		}
+		lbl = lbl.trim();
+		lbl = lbl.replace('cnt', tabCount);
 		lbl = $newTab.find('label').attr('for',`${iid}-${tabCount}`).text(lbl);
     // $newTab.append('<span class="cf7sg-close-tab dashicons dashicons-no-alt"></span>'); //remove button
     //append tab to list
