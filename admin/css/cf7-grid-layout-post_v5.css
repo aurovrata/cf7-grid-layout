@@ -9,8 +9,9 @@
     --cf7sg-row-tab: #199932;
     --cf7sg-row-collapsible: #9261CA;
     --cf7sg-row-slide: #EBBC47;
-    --cf7sg-icon-w:20px;
-    --cf7sg-r-icon-w:20px;
+    --cf7sg-icon-w:1.1em;
+    --cf7sg-r-icon-w:1.1em;
+		--cf7sg-icon-s: 1.3em;
 }
 #cf7sg-editor.blue{
     --cf7sg-scheme-name: "blue";
@@ -232,7 +233,7 @@ textarea.grid-input {
   position: absolute;
   top: 0;
   right: 0;
-  height: 22px;
+  height: 1.5em;
 }
 #cf7-editor-grid .cf7sg-form-ctrls h3.cf7sg-form-label {
 	margin: 0;
@@ -301,7 +302,7 @@ textarea.grid-input {
 	padding: 0;
 }
 #grid-form .cf7sg-container:not(.cf7sg-slider) > .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col {
-	margin-top: 30px;
+	margin-top: 1.9em;
 	position: relative;
 }
 #grid-form .cf7sg-row:not(.cf7-sg-table-footer-row) > .cf7sg-col:not(.cf7sg-slider-section):not(.cf7sg-tabs-panel):not(.cf7sg-collapsible-inner):hover::after {
@@ -435,8 +436,10 @@ textarea.grid-input {
 	left: 28px;
 }
 /* define the UI icons width, makes it easier to modify for responsive rules */
-#cf7-editor-grid .dashicons{
-  width:var(--cf7sg-icon-w);
+#cf7-editor-grid .dashicons {
+	width: var(--cf7sg-icon-w);
+	height: var(--cf7sg-icon-w);
+	font-size: var(--cf7sg-icon-s);
 }
 /* these are defined as responsive contrls and widths can be set separately */
 #cf7-editor-grid .dashicons-ellipsis,
@@ -518,7 +521,7 @@ textarea.grid-input {
 #grid-form .grid-column{position: relative;}
 #grid-form .grid-ctrls:not(.grid-column) span,
 #grid-form .grid-column .dashicons {
-	line-height: 1.35rem;
+	line-height: 1.1rem;
 }
 #grid-form .cf7sg-collapsible-title label {
     padding-left: 4px;
@@ -604,12 +607,13 @@ textarea.grid-input {
 .cm-item.disabled {
 	color: var(--cf7sg-row-icons-hover);
 }
-#cf7-editor-grid .add-item-button:not(.add-field-button) .button{
+#cf7-editor-grid .add-item-button:not(.add-field-button) .button {
 	color: var(--cf7sg-text-color);
 	border-color: var(--cf7sg-row-icons);
-  width: calc(100%/5);
-  max-width: 120px;
-  position: relative;
+	width: calc(100%/5);
+	min-width: max-content;
+	position: relative;
+	max-width: 10em;
 }
 #cf7-editor-grid .cf7sg-inner-grid .add-item-button:not(.add-field-button) .button {
 	width: max-content;
@@ -680,7 +684,7 @@ textarea.grid-input {
 	left: 0px;
 }
 #cf7-editor-grid .centred-menu, #cf7-editor-grid  .cm-item{
-  --cf7sg-col-height: 18px;
+  --cf7sg-col-height: 1.6em;
   height: var(--cf7sg-col-height);
   vertical-align: middle;
 }
@@ -700,7 +704,7 @@ line-height: 1.3;
 	color: #222;
 	background: #fff;
 	border: 1px solid #6b6b6b;
-	height: 16px;
+	height: 1.2em;
 }
 #cf7-editor-grid .column-size,
 #cf7-editor-grid .column-offset.unset{
@@ -1266,7 +1270,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 	height: 300px;
 }
 #cf7sg-grid-modal .grid-controls > .cf7sg-uirs {
-	width: 25%;
+	width: fit-content;
 	box-sizing: border-box;
 }
 #cf7sg-grid-modal .cf7sg-ui-col .grid-controls > .cf7sg-uirs {
@@ -1311,7 +1315,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #cf7sg-grid-modal .cf7sg-uirs > label {
 	display: inline-flex;
 	width: 100%;
-	padding: 10px;
+	padding: 10px 20px;
 	box-sizing: border-box;
 	color: var(--cf7sg-row-icons);
 	border-radius: 15px 15px 0 0;

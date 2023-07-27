@@ -84,7 +84,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
         //append a hidden clone of the first row which we can use to add
         $row.attr('data-row','0');
 				//add controls to the row to delete
-        $row.append('<span class="cf7sg-row-control display-none"><span class="dashicons dashicons-no-alt"></span></span>');
+        $row.append('<span class="cf7sg-row-control display-none"><span class="dashicons dashicons-dismiss"></span></span>');
         $row = $row.clone().attr('class','cf7-sg-cloned-table-row');
         $row.attr('data-row','-1');
         $table.append($row.hide());
@@ -1294,9 +1294,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
     //show row so select2 init properly
 		//add the new row after the last one.
     $rows.last().after($new.show());
-		//show delete buttons
-		$('.cf7sg-row-control',$new).show();
-		if($rows.length === 1) $('.cf7sg-row-control',$rows).show();
+		// if($rows.length === 1) $('.cf7sg-row-control',$rows).show();
 		
     // Polyfill for IE11 to support endsWith() - https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
     if (!String.prototype.endsWith) {
@@ -1335,7 +1333,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           $span.attr('id',iid+'_row-'+$rows.length);
         }else{
           $input.attr('id', iid+'_row-'+$rows.length);
-          $span.siblings(`label[for="${iid}"`).attr('for',iid+'_row-'+$rows.length);
+          $span.siblings(`label[for="${iid}"]`).attr('for',iid+'_row-'+$rows.length);
         }
       }
       //finally enabled the select2 dropdown.

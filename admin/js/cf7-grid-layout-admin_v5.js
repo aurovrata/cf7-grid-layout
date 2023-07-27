@@ -596,6 +596,16 @@
 					case $innerSection.is('.cf7sg-ui-row'): //default row.
 						$('input#svrow', $gridModal).get(0).checked = true;
 						$type.prop('disabled', false); //disable the row types.
+						switch(true){ //check if inner row.
+							case $target.is('.cf7sg-tabs-panel *'): //inside a tabs
+								$type.filter('input#svtabs').prop('disabled', true); //cannot have tabs within tabs.
+								break; 
+							case $target.is('.cf7sg-collapsible.cf7sg-toggled *'): //collapsible with toggle 
+								$type.filter('input#svcoll').prop('disabled', true); //cannot have collapsbile within toggled.
+								$type.filter('input#svtabs').prop('disabled', true); //cannot have tabs within toggle.
+								break;
+
+						}
 						break;
 					default: //other row type.	
 						let type = $innerSection.attr('class').replace('grid-ctrls', '').trim();
@@ -1725,7 +1735,7 @@
     let $cell = $('<div>').append( cf7grid.preHTML + field + cf7grid.postHTML );
     $('label', $cell).html(label);
     $('.info-tip', $cell).html(tip);
-    $('.cf7sg-field',$cell).addClass(classes).text(field);
+    $('.cf7sg-field',$cell).addClass(classes);
     //update grid input and trigger change to udpate form
     if(cf7grid.ui) $this.html($cell.html()+'\n').trigger('change');
     else $this.val($cell.html()).trigger('change');
