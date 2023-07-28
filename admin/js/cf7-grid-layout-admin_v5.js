@@ -1021,8 +1021,8 @@
         $target.closest('.cf7sg-container').after($('#grid-cf7-forms').html());
         $target.closest('.cf7sg-container').remove();
         return true;
-      }else if( $target.is('.dashicons-plus.row-control') || $target.is('.cf7sg-col')){ //--------------------add column
-				if($target.is('.cf7sg-col')) $parentColumn = $target;
+      }else if( $target.is('.dashicons-plus.row-control') || $target.is('.cf7sg-col-add')){ //--------------------add column
+				if($target.is('.cf7sg-col-add')) $parentColumn = $target.closest('.cf7sg-col');
         else $parentColumn = $target.parent().siblings('.cf7sg-col').last();
         $parentRow = $parentColumn.closest('.cf7sg-row');
         let classList, idx , columns, row, newSize=0, createColumn = true, total = 0;

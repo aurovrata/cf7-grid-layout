@@ -574,6 +574,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
       <input type="text" placeholder="<?php _e('describe your field here','cf7-grid-layout')?>" />
     </div>
     <textarea class="grid-input display-none"></textarea>
+		<span class="cf7sg-col-add dashicons dashicons-table-col-after"></span>
   </div>
   <div class="add-item-button add-field-button">
     <span class=button>
