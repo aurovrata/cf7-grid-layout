@@ -349,9 +349,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
 
       //now enable the other collapsible rows
       cf7Forms.each(function(){
-        /** @since 3.4.0 differentiate accordion of collapsible rows*/
-        let $form = $(this),$rows = $('.cf7sg-collapsible', $form).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-accordion-rows > .cf7sg-collapsible').not('.cf7sg-slider-section >.cf7sg-collapsible');
-        $rows = $rows.add( $('.cf7sg-accordion-rows', $form) );
+        let $form = $(this),$rows = $('.cf7sg-collapsible', $form).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-slider-section >.cf7sg-collapsible');
         let promises = [];
         $rows.each(function(){
           let $row = $(this);
@@ -372,34 +370,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
                 break;
             }
           }
-          // if(!open) $row.addClass('collapsed');
-
-          let options={
-            heightStyle: "content",
-            create: function(e){
-              $(this).trigger({type:'sgCollapsibleRowsReady','section-id':cssId})
-            }
-          };
-          /** @since 3.4.0 handle accordion rows for stepped flow */
-          if($row.is('.cf7sg-accordion-rows')){
-            /** @since 4.7.1 ensure unique headers for toggle sections within accordions */
-            $row.children('.cf7sg-collapsible').children('.cf7sg-collapsible-title').addClass('accordion');
-            Object.assign(options,{header: 'div.cf7sg-collapsible-title.accordion',animate:false})
-          }else{
-            Object.assign(options,{
-              collapsible:true,
-              active:state,
-              header: '> div.cf7sg-collapsible-title',
-              activate: function(event, ui){
-                $(this).trigger('sgContentIncrease');
-              }
-            });
-          }
-          $('#'+cssId).accordion(options);
-          //listen for new content added to this accordion
-          $row.on('sgContentIncrease', function(){
-            $(this).accordion("refresh");
-          })
+          
         })
       })
       // cf7Forms

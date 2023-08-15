@@ -552,6 +552,9 @@ textarea.grid-input {
 #cf7-editor-grid .add-item-button.add-slide-button .button{
 	display: none;
 }
+#cf7-editor-grid .cf7sg-collapsible-inner .add-item-button .add-collapsible {
+	display: none !important;
+}
 #grid-form .cf7-sg-tabs > .cf7sg-row .cf7sg-tab-title,
 #grid-form .cf7-sg-tabs > .cf7sg-row .cf7sg-tab-button {
 	display: none;
@@ -818,7 +821,7 @@ display: table-row;
 #cf7-editor-grid .cm-list {
   display: table;
   position: relative;
-  z-index: 9;
+  z-index: 81;
   border-radius: 3px;
 }
 #cf7-editor-grid .show .cm-list {
@@ -1613,7 +1616,7 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
     width: 100%;
     height: 100%;
     background: #fff;
-    z-index: 18;
+    z-index: 10008;
   }
   .cf7sg-hide-grid p {
     margin-top: 10%;

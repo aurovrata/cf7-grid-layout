@@ -228,6 +228,45 @@
 	display: inline-block;
 	vertical-align: top;
 }
+.cf7sg-container .cf7-smart-grid.has-grid .cf7sg-container.cf7sg-collapsible {
+	padding: 10px;
+	border: 1px solid;
+	border-radius: 3px;
+	margin-bottom: 15px;
+}
+.cf7sg-container.cf7sg-collapsible{
+	position: relative;
+}
+input.cf7sg-collapsible-title {
+	position: absolute;
+	z-index: 0;
+	visibility: hidden;
+}
+label.cf7sg-collapsible-title {
+	position: relative;
+	z-index: 9;
+	display: block;
+}
+label.cf7sg-collapsible-title::after {
+	content: "+";
+	display: block;
+	float: right;
+	line-height: 1;
+	font-size: 150%;
+}
+input.cf7sg-collapsible-title:checked ~ label.cf7sg-collapsible-title:after {
+  content:'-';
+}
+.cf7sg-collapsible > .cf7sg-row{
+  overflow-y: hidden;
+}
+.cf7-smart-grid.has-grid .cf7sg-collapsible > .cf7sg-row > .cf7sg-collapsible-inner{
+	margin-top: -100%;
+  transition: all 0.5s ease;
+}
+.cf7-smart-grid.has-grid input.cf7sg-collapsible-title:checked ~ .cf7sg-row > .cf7sg-collapsible-inner{
+  margin-top: 0;
+}
 .cf7sg-container.cf7sg-slider-controls .slider-next{float:right;}
 .cf7sg-slider-controls > .cf7sg-row {width:100%;float:right;}
  .cf7-smart-grid.has-grid .button {
@@ -331,44 +370,6 @@ ul.cf7sg-tab-title label.tactive{
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
-
-/* .cf7-smart-grid.has-grid .cf7sg-container.cf7-sg-tabs > .cf7sg-row {
-	display: flex;
-	position: relative;
-}
-.cf7sg-container .cf7-smart-grid.has-grid input.cf7sg-tab-radio {
-  position: absolute;
-  z-index: -1;
-}
-.cf7-smart-grid.has-grid input.cf7sg-tab-radio:checked + .cf7sg-tabs-panel > label.cf7sg-tab-title {
-  color: white;
-  border-bottom: 2px solid gold;
-}
-.cf7-smart-grid.has-grid input.cf7sg-tab-radio:checked + .cf7sg-tabs-panel > .cf7sg-container {
-  display: block;
-}
-
-.cf7-smart-grid.has-grid  label.cf7sg-tab-title {
-  cursor: pointer;
-  background-color: #ccd8da;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  height: 56px;
-  transition: color 0.2s ease;
-  width: 100%;
-}
-
-.cf7-smart-grid.has-grid .cf7sg-tabs-panel {
-  width: 100%;
-}
-.cf7-smart-grid.has-grid .cf7sg-col.cf7sg-tabs-panel > .cf7sg-container {
-  position: absolute;
-  display: none;
-	left: 0;
-} */
 label.cf7sg-tab-title .dashicons.dashicons-no-alt {
     border-left: solid 1px grey;
     border-bottom: solid 1px grey;
@@ -459,18 +460,7 @@ span.cf7sg-validation-warning {
 .cf7-smart-grid.has-grid .wpcf7-form-control:not(img) {
     border-radius: 3px;
 }
-/* .cf7-smart-grid.has-grid .wpcf7-submit {
-    background: #383838;
-    border: solid 1px #383838;
-    border-radius: 3px;
-    font-size: 110%;
-    font-weight: bold;
-    color: white;
-}
-.cf7-smart-grid.has-grid .wpcf7-save {
-    background: transparent;
-    color: #383838;
-} */
+
 .cf7sg-collapsible .ui-state-default {
     background: transparent;
 }

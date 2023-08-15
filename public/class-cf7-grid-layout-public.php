@@ -289,28 +289,19 @@ class Cf7_Grid_Layout_Public {
           $dep[] ='glider-style';
           break;
         case 'has-toggles':
-          $dep[] = 'jquery-toggles-light-css';
-          $dep[] = 'cf7-jquery-ui';
-          $dep[] = 'cf7-jquery-ui-theme';
-          $dep[] = 'cf7-jquery-ui-structure';
           break;
         case 'has-date':
           $dep[] = 'cf7-jquery-ui';
         case 'has-tabs':
-          $dep[] = 'cf7-jquery-ui';
-          $dep[] = 'cf7-jquery-ui-theme';
-          $dep[] = 'cf7-jquery-ui-structure';
           break;
         case 'has-accodrion':
-          $dep[] = 'cf7-jquery-ui';
-          $dep[] = 'cf7-jquery-ui-theme';
-          $dep[] = 'cf7-jquery-ui-structure';
           break;
 
       }
     }
     wp_register_style( $this->plugin_name, $plugin_dir . "public/css{$pf}/cf7-grid-layout-public{$ver}.css", $dep, $this->version, 'all' );
-
+		debug_msg($dep);
+		//allow other plugins to easily register their styles
     do_action('smart_grid_register_styles',$airplane, $min, $resources, $cf7key, $cf7id);
 
     //script registration
@@ -530,7 +521,7 @@ class Cf7_Grid_Layout_Public {
       return $output;
     }
     //grid styling.
-    wp_enqueue_style($this->plugin_name);
+    wp_enqueue_style( $this->plugin_name );
     //load required dependencies for grid form.
     wp_enqueue_style('smart-grid');
     /** @since 4.4.0 set max-width of forms dynamically */
