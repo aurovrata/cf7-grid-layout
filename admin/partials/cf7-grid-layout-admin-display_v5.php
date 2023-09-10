@@ -148,7 +148,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 					<div class="cf7sg-uirs-label"><?php _e('Toggled','cf7-grid-layout')?></div>
 					<div class="cf7sg-uirs-ctrl">
 						<input id="cf7sg-uirs-coll-tgl" type="checkbox" class="collapsible-toggle" /><?php _e('enable togle switch','cf7-grid-layout')?>
-						<p><em><?php _e('Fields within a toggled and collapsed section are disabled and not submitted.','cf7-grid-layout')?></em></p>
+						<p class="important-info"><em><?php _e('NOTE: Fields within a toggled and collapsed section are <strong>disabled</strong> and not submitted.','cf7-grid-layout')?></em></p>
 						<div class="cf7sg-uirs-toggled">
 							<label><?php _e('Toggle labels','cf7-grid-layout')?>: <?php _e('On','cf7-grid-layout')?>-</label>
 							<input size="6" type="text" value="Yes" id="cf7sg-is-toggled"/> | 
@@ -412,8 +412,8 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
 </template>
 <template id="grid-collapsible">
   <div class="cf7sg-container cf7sg-collapsible">
-		<input type="checkbox" id="" name="" value="1" class="cf7sg-collapsible-title" />
-    <label for="" class="cf7sg-collapsible-title"><span class="cf7sg-title"></span></label>
+		<input type="checkbox" id="" value="1" class="cf7sg-collapsible-title" />
+    <label for="" class="cf7sg-collapsible-title"><span class="cf7sg-title"></span><span class="cf7sg-toggle dashicons dashicons-insert"></span></label>
     <div class="cf7sg-row">
       <div class="ui-grid-ctrls grid-ctrls cf7sg-coll-ctrls">
         <span class="dashicons dashicons-move row-control grid-control"></span>
@@ -431,7 +431,7 @@ if(is_plugin_active('cf7-conditional-fields/contact-form-7-conditional-fields.ph
   </div>
 </template>
 <template id="grid-collapsible-with-toggle">
-	<span data-on="<?php echo _x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?php echo _x('No','toggle label','cf7-grid-layout')?>" class="cf7sg-toggle-button"></span>
+	<span data-on="<?php echo _x('Yes','toggle label','cf7-grid-layout')?>" data-off="<?php echo _x('No','toggle label','cf7-grid-layout')?>" class="cf7sg-toggle"></span>
 </template>
 <template id="grid-tabs">
   <div class="cf7-sg-tabs cf7sg-container" id="">

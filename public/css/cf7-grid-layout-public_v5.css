@@ -13,6 +13,10 @@
 	--cf7sg-hdd-img-bg:#0000008c;
 	--cf7sg-hdd-img-colour: #fff;
 	--cf7sg-hdd-cb-bg:#fff;
+	--cf7sg-toggle-bg-off: #fff;
+	--cf7sg-toggle-bg-on: #fff;
+	--cf7sg-toggle-on: #fff;
+	--cf7sg-toggle-off: #fff;
 }
  /** @since 4.11.0 layout for imagegrids */
  .cf7sg-list .cf7sg-dl.cf7sg-dc {
@@ -247,15 +251,32 @@ label.cf7sg-collapsible-title {
 	z-index: 9;
 	display: block;
 }
-label.cf7sg-collapsible-title::after {
-	content: "+";
-	display: block;
+.cf7sg-collapsible:not(.cf7sg-toggled) label > .cf7sg-toggle {
+	transition:0.5s;
 	float: right;
+	font-family: dashicons;
 	line-height: 1;
-	font-size: 150%;
+	font-weight: 400;
+	font-style: normal;
+	text-decoration: inherit;
+	text-transform: none;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+	vertical-align: top;
+	text-align: center;
 }
-input.cf7sg-collapsible-title:checked ~ label.cf7sg-collapsible-title:after {
-  content:'-';
+.cf7sg-collapsible:not(.cf7sg-toggled) label > .cf7sg-toggle::before {
+	content: "\f10f";
+}
+.cf7sg-collapsible:not(.cf7sg-toggled) input.cf7sg-collapsible-title:checked ~ label > .cf7sg-toggle{
+	transform: rotate(-180deg);
+}
+.cf7sg-collapsible:not(.cf7sg-toggled) input.cf7sg-collapsible-title:checked ~ label > .cf7sg-toggle:before{
+	content:"\f14f";
 }
 .cf7sg-collapsible > .cf7sg-row{
   overflow-y: hidden;
@@ -266,6 +287,63 @@ input.cf7sg-collapsible-title:checked ~ label.cf7sg-collapsible-title:after {
 }
 .cf7-smart-grid.has-grid input.cf7sg-collapsible-title:checked ~ .cf7sg-row > .cf7sg-collapsible-inner{
   margin-top: 0;
+}
+.cf7-smart-grid.has-grid .cf7sg-collapsible-inner > .cf7sg-container:first-child {
+	margin-top: 5px;
+}
+/*Toggle CSS with text*/
+.cf7sg-collapsible.cf7sg-toggled .cf7sg-toggle {
+	width: 55px;
+	height: 22px;
+	font-size: 83%;
+	border-radius: 10px;
+	overflow: hidden;
+	transition: all 0.3s ease;
+	background: var(--cf7sg-toggle-bg-off);
+	box-shadow: 0px 0px 8px 0px rgba(17, 17, 17, 0.34) inset;
+	line-height: 0;
+	position: absolute;
+	top: 50%;
+	margin: -11px 0 0 0;
+	right: 0;
+}
+
+.cf7sg-collapsible.cf7sg-toggled .cf7sg-toggle:before{
+	content: '';
+	position: absolute;
+	top: 7px;
+	right: 20px;
+
+}
+.cf7sg-collapsible.cf7sg-toggled .cf7sg-toggle::after {
+	content: attr(data-off);
+	width: 30px;
+	height: 18px;
+	border-radius: 26px;
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	text-align: center;
+	transition: all 0.3s linear;
+	background: var(--cf7sg-toggle-off);
+	box-shadow: 0px 0px 6px -2px #111;
+	padding: 9px 0px;
+}
+
+.cf7sg-collapsible.cf7sg-toggled input.cf7sg-collapsible-title:checked  ~ label > .cf7sg-toggle{
+	background: var(--cf7sg-toggle-bg-on);
+}
+
+.cf7sg-collapsible.cf7sg-toggled input.cf7sg-collapsible-title:checked ~ label > .cf7sg-toggle:after{
+	content: attr(data-on);
+	left: 23px;
+	background: var(--cf7sg-toggle-bg-off);
+}
+
+.cf7sg-collapsible.cf7sg-toggled input.cf7sg-collapsible-title:checked  ~ label >  .cf7sg-toggle:before{
+	content: '';
+	right: auto;
+	left: 20px;
 }
 .cf7sg-container.cf7sg-slider-controls .slider-next{float:right;}
 .cf7sg-slider-controls > .cf7sg-row {width:100%;float:right;}
@@ -325,10 +403,10 @@ ul.cf7sg-tab-title li .cf7sg-tab-dismis {
 .cf7sg-tab-radio:not([value="tab-1"]) + ul.cf7sg-tab-title li:hover .cf7sg-tab-dismis {
 	position: absolute;
 	display: inline;
-	top: -12px;
-	right: -12px;
-	width: 24px;
-	height: 24px;
+	top: -8px;
+	right: -8px;
+	width: 17px;
+	height: 17px;
 	text-align: center;
 	cursor: not-allowed;
 	background-color: #fff;
@@ -469,10 +547,6 @@ span.cf7sg-validation-warning {
 }
 .cf7-smart-grid.has-grid .select2-results__option {
     font-size: 0.8em;
-}
-.cf7sg-collapsible .toggle-light .toggle-on,
-.cf7sg-collapsible .toggle-light .toggle-off {
-  font-size: 0.75em;
 }
 span.cf7sg-popup {
   background: rgba(227, 227, 227, 0.81);
@@ -643,31 +717,6 @@ span.cf7sg-validation-warning {
     right: .5em;
     left: unset;
 }
-.cf7sg-collapsible .toggle {
-  display: inline-block;
-  vertical-align: middle;
-  float: right;
-}
-.cf7sg-collapsible .toggle .toggle-inner {
-    height: auto;
-}
-
-.cf7sg-collapsible .cf7sg-title+.toggle {
-    float: none;
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    margin-top: -10px;
-}
-.cf7sg-collapsible .cf7sg-title + .toggle:dir(rtl) {
-	right: auto;
-	left: 6px;
-}
-.cf7sg-title.toggled {
-    max-width: calc(100% - 60px);
-    display: inline-block;
-    vertical-align: middle;
-}
 /*smomehow the icon accordion have a larger left padding*/
 .ui-accordion .ui-accordion-icons {
     padding-left: .7em;
@@ -713,79 +762,6 @@ a.cf7sg-button {
     border-radius: 3px;
     font-weight: bold;
     font-size: 110%;
-}
-/*Toggle CSS with text*/
-.cf7sg-toggle-button{
-	display: inline-block;
-	margin: 0px;
-	position: relative;
-}
-
-.cf7sg-toggle-button > label{
-	margin: 0px;
-	width: 100px;
-	height: 30px;
-	background: #E0E0E0;
-	border-radius: 26px;
-	overflow: hidden;
-	position: relative;
-	transition: all 0.3s ease;
-	/*box-shadow: 0px 0px 8px 0px rgba(17, 17, 17, 0.34) inset;*/
-	display: block;
-}
-
-.cf7sg-toggle-button > label:before{
-	content: '';
-	position: absolute;
-	font-size: 12px;
-	font-weight: 500;
-	top: 7px;
-	right: 20px;
-
-}
-
-.cf7sg-toggle-button > label:after{
-	content: attr(data-off);
-	width: 70px;
-	height: 16px;
-	background: #fff;
-	border-radius: 26px;
-	position: absolute;
-	left: 2px;
-	top: 2px;
-	text-align: center;
-	transition: all 0.3s ease;
-	box-shadow: 0px 0px 6px -2px #111;
-	padding: 5px 0px;
-}
-
-
-.cf7sg-toggle-button input{
-	cursor: pointer;
-	width: 50px;
-	height: 25px;
-	opacity: 0;
-	position: absolute;
-	top: 0;
-	z-index: 1;
-	margin: 0px;
-}
-
-.cf7sg-toggle-button input:checked + label{
-	background: #151515;
-	color: #fff;
-}
-
-.cf7sg-toggle-button input:checked + label:after{
-	content: attr(data-on);
-	left: 30px;
-	background: #3c3c3c;
-}
-
-.cf7sg-toggle-button input:checked + label:before{
-	content: '';
-	right: auto;
-	left: 20px;
 }
 
 @media (max-width: 480px) {

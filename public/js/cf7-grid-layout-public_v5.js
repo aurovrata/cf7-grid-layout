@@ -349,27 +349,19 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
 
       //now enable the other collapsible rows
       cf7Forms.each(function(){
-        let $form = $(this),$rows = $('.cf7sg-collapsible', $form).not('.cf7sg-collapsible.with-toggle').not('.cf7sg-slider-section >.cf7sg-collapsible');
-        let promises = [];
-        $rows.each(function(){
-          let $row = $(this);
-          let cssId = $row.attr('id');
+        let $form = $(this),$container = $('.cf7sg-collapsible', $form).not('.cf7sg-slider-section >.cf7sg-collapsible');
+        $container.each(function(){
+          let $c = $(this),
+						cssId = $c.attr('id');
           if(typeof cssId == 'undefined'){
             cssId = randString(6);
-            $row.attr('id', cssId); //assign a random id
+            $c.attr('id', cssId); //assign a random id
           }
-          let state = $row.data('open'), open =false;
-
-          if(typeof state == 'undefined'){
-            state = false;
-          }else{
-            switch(state){
-              case true:
-                state = 0;
-                open=true;
-                break;
-            }
-          }
+					$c.find('input.cf7sg-collapsible-title').attr('name',`cf7sg-collapsible-${cssId}`).val(`${cssId}`);
+					if($c.is('.cf7sg-toggled')){
+						// $c.find('.cf7sg-collapsible-title > .cf7sg-toggle').append('<span>');
+					}
+         
           
         })
       })
@@ -1621,7 +1613,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
       dataType: 'json',
       data: {
         'action':'save_grid_fields',
-        'nonce' :$('input[name="_wpnonce"]', $form).val(),
+        'nonce' :$('input[name="_cf7sg_nonce"]', $form).val(),
         'tabs_fields' : JSON.stringify(trackTabsFields),
         'table_fields' : JSON.stringify(trackTableFields),
         'id': $('input[name="_wpcf7"]', $form).val()

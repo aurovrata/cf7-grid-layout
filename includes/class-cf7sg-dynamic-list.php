@@ -739,13 +739,13 @@ if( !function_exists('cf7sg_create_dynamic_checkbox_tag') ){
     if(false === $dl){
       $dl = new CF7SG_Dynamic_List('dynamic_checkbox',__( 'dynamic-checkbox', 'cf7-grid-layout' ));
       $dl->set_styles(array(
-        'cf7sg-hybriddd'=> '<a href="https://aurovrata.github.io/hybrid-html-dropdown/">Hybrid Dropdown</a>',
-        'cf7sg-treeview'=> sprintf(__('<a href="%s">Treeview dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#hybrid-dropdown-with-treeview-selection'),
-        'cf7sg-imagehdd'=> sprintf(__('<a href="%s">Image dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images'),
-        'cf7sg-imagegrid'=> sprintf(__('<a href="%s">Image grid</a>, no dropdown','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images')
+        'cf7sg-hybriddd'=> '<a target="_blank" href="https://aurovrata.github.io/hybrid-html-dropdown/">Hybrid Dropdown</a>',
+        'cf7sg-treeview'=> sprintf(__('<a target="_blank" target="_blank" href="%s">Treeview dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#hybrid-dropdown-with-treeview-selection'),
+        'cf7sg-imagehdd'=> sprintf(__('<a target="_blank" href="%s">Image dropdown</a>','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images'),
+        'cf7sg-imagegrid'=> sprintf(__('<a target="_blank" href="%s">Image grid</a>, no dropdown','cf7-grid-layout'),'https://aurovrata.github.io/hybrid-html-dropdown/examples/#dropdown-list-with-with-custom-labels-with-images')
       ),array(
-        'cf7sg-imagehdd'=>sprintf('('.__('<a href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);'),
-        'cf7sg-imagegrid'=>sprintf('('.__('<a href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);')
+        'cf7sg-imagehdd'=>sprintf('('.__('<a target="_blank" href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);'),
+        'cf7sg-imagegrid'=>sprintf('('.__('<a target="_blank" href="%s">Filter</a> term images','cf7-grid-layout').')', 'javascript:void(0);')
       ));
       $dl->set_others_extras_radio(); //default is checkbox.
       $dl->set_others_extras(array(

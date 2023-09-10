@@ -187,12 +187,13 @@
 				id = $this.children('input.cf7sg-collapsible-title').attr('id');
 				if(typeof id === 'undefined' || id.length===0){
           id = randString(6);
-          $this.children('input.cf7sg-collapsible-title').attr('id', id).attr('name',id); //assign a random id
-          $this.children('label.cf7sg-collapsible-title').attr('for', id); //assign a random id
+          $this.children('input.cf7sg-collapsible-title').attr('id', id); //assign a random id
         }
+				$this.children('label.cf7sg-collapsible-title').attr('for', id); //assign label for id
+				//setup title
         id = $this.children('label.cf7sg-collapsible-title').find('.cf7sg-title').html();
 				if(id.length>0) $this.children('.cf7sg-row').children('.grid-ctrls').find('.section-title').html(id);
-				if($this.is('.cf7sg-toggled') && $this.children('label.cf7sg-collapsible-title:has(.cf7sg-toggle-button)').length===0) $this.removeClass('cf7sg-toggled');
+				if($this.is('.cf7sg-toggled') && $this.children('label.cf7sg-collapsible-title:has(.cf7sg-toggle[data-on])').length===0) $this.removeClass('cf7sg-toggled');
       });
       /*--------------------------------------------------- convert tables */
       $('div.cf7sg-container.cf7-sg-table', $form).each(function(){
@@ -620,7 +621,7 @@
 							case 'coll':
 								if($container.is('.cf7sg-toggled')){
 									$('#cf7sg-uirs-coll-tgl', $innerSection).get(0).checked = true;
-									let $tgl = $container.children('label').find('.cf7sg-toggle-button');
+									let $tgl = $container.children('label').find('.cf7sg-toggle');
 									$('#cf7sg-is-toggled', $innerSection).val($tgl.attr('data-on'));
 									$('#cf7sg-isnt-toggled', $innerSection).val($tgl.attr('data-off'));
 								}
@@ -685,10 +686,12 @@
 						case $t.is('#cf7sg-uirs-coll-tgl'):
 							if($t.is(':checked')){
 								$container.addClass('cf7sg-toggled');
-								$container.children('label.cf7sg-collapsible-title').append($('#grid-collapsible-with-toggle').html());
+								$e = $container.children('label.cf7sg-collapsible-title');
+								$e.find('.cf7sg-toggle').remove();
+								$e.append($('#grid-collapsible-with-toggle').html());
 							}else{
 								$container.removeClass('cf7sg-toggled');
-								$container.children('label.cf7sg-collapsible-title').find('.cf7sg-toggle-button').remove();
+								$container.children('label.cf7sg-collapsible-title').find('.cf7sg-toggle').removeAttr('data-on').removeAttr('data-off');
 							}
 							break;
 						case $t.is('#cf7sg-is-toggled'):

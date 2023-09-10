@@ -1346,6 +1346,10 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #cf7sg-grid-modal > section.cf7sg-coll-ctrls{
 	background: var(--cf7sg-row-collapsible);
 }
+#cf7sg-grid-modal > section.cf7sg-coll-ctrls p.important-info {
+	border-color: var(--cf7sg-row-collapsible);
+}
+
 #cf7sg-grid-modal > section.cf7sg-table-ctrls{
 	background: var(--cf7sg-row-table);
 }
@@ -1436,6 +1440,13 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #cf7sg-grid-modal .cf7sg-settab p{
 	margin: 0;
 	font-size: inherit;
+}
+#cf7sg-grid-modal p.important-info {
+	border: 1px solid;
+	padding: 5px 10px;
+	margin: 5px 0;
+	background-color: #e4e3e3;
+	border-radius: 3px;
 }
 #cf7sg-grid-modal .cf7sg-settab {
 	display: none;
