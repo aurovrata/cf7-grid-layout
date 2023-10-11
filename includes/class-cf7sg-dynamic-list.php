@@ -198,7 +198,7 @@ class CF7SG_Dynamic_list{
   }
   /**
   * Function to register the admin tag.
-  * called by the admin/class-cf7-grid-layout-admin.php cf7_shortcode_tags() method which is hooked to
+  * called by the admin/class-cf7sg-admin.php cf7_shortcode_tags() method which is hooked to
   * 'wpcf7_admin_init'.
   */
   public function register_cf7_tag(){
@@ -374,7 +374,7 @@ class CF7SG_Dynamic_list{
     }
     $options = array();
     $cf7_form = wpcf7_get_current_contact_form();
-    $cf7_key = get_cf7form_key($cf7_form->id());
+    $cf7_key = c2p_get_form_key($cf7_form->id());
     $filter_options = false;
     /** @since 4.11 enable branches in nesting lists */
     $branch = ($this->nesting && isset($source['taxonomy']) && is_taxonomy_hierarchical($source['taxonomy']) && $source['tree']) ? array(0):null;

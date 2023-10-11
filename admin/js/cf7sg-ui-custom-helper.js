@@ -1,6 +1,6 @@
 /*
 * Template file from CF7 Smart Grid plugin
-* cf7-grid-layout/admin/js/ui-custom-helper.js
+* cf7-grid-layout/admin/js/cf7sg-ui-custom-helper.js
 */
 var cf7sgCustomHelperModule = (function (cch) {
   // add functionality for your tag, replace 'your_plugin_tag' with the tap type.

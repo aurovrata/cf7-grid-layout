@@ -46,11 +46,11 @@ msgstr "מדריכים"
 msgid "Smart Grid Helper Tutorials "
 msgstr "מדריכים של Smart Grid"
 
-#: admin/partials/cf7-dynamic-tag-display.php:194
+#: admin/partials/cf7sg-dynamic-tag-display.php:194
 msgid "Copy the following <a href=\"javascript:void(0);\">filter</a> to your <em>functions.php</em> file."
 msgstr "העתק את ה <a href=\"javascript:void(0);\">פילטר</a>הזה ל<em>functions.php</em> file."
 
-#: admin/partials/cf7-dynamic-tag-display.php:175
+#: admin/partials/cf7sg-dynamic-tag-display.php:175
 msgid "Include post links"
 msgstr "הכלל קישורי פוסט"
 
@@ -66,50 +66,50 @@ msgstr "מדריכי וידאו אונליין"
 msgid "Customise your form"
 msgstr "התאימו אישית את הטופס שלכם"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:246
+#: admin/partials/cf7sg-form-editors.php:246
 msgid "Convert collapsible rows into sides"
 msgstr "המר שורות מתקפלות לצדדים"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:246
+#: admin/partials/cf7sg-form-editors.php:246
 msgid "Enable slider"
 msgstr "הפעל סליידר"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:245
+#: admin/partials/cf7sg-form-editors.php:245
 msgid "Group collapsible rows as jQuery accordion"
 msgstr "קבץ שורות מתקפלות כאקודיון JQuery"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:245
+#: admin/partials/cf7sg-form-editors.php:245
 msgid "Enable accordion"
 msgstr "הפעל אקורדיון"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:48
+#: admin/partials/cf7sg-form-editors.php:48
 msgid "Add custom CSS"
 msgstr "הוסף CSS מותאם אישית"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:37
-#: admin/partials/cf7-grid-layout-admin-display.php:60
+#: admin/partials/cf7sg-form-editors.php:37
+#: admin/partials/cf7sg-form-editors.php:60
 msgid "File"
 msgstr "קובץ"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:33
-#: admin/partials/cf7-grid-layout-admin-display.php:56
-#: admin/partials/cf7-grid-layout-admin-display.php:88
+#: admin/partials/cf7sg-form-editors.php:33
+#: admin/partials/cf7sg-form-editors.php:56
+#: admin/partials/cf7sg-form-editors.php:88
 msgid "Dark"
 msgstr "כהה"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:30
-#: admin/partials/cf7-grid-layout-admin-display.php:53
-#: admin/partials/cf7-grid-layout-admin-display.php:85
+#: admin/partials/cf7sg-form-editors.php:30
+#: admin/partials/cf7sg-form-editors.php:53
+#: admin/partials/cf7sg-form-editors.php:85
 msgid "Light"
 msgstr "בהיר"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:27
-#: admin/partials/cf7-grid-layout-admin-display.php:50
-#: admin/partials/cf7-grid-layout-admin-display.php:82
+#: admin/partials/cf7sg-form-editors.php:27
+#: admin/partials/cf7sg-form-editors.php:50
+#: admin/partials/cf7sg-form-editors.php:82
 msgid "Editor theme:"
 msgstr "תבנית העורך:"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:25
+#: admin/partials/cf7sg-form-editors.php:25
 msgid "Add custom JS"
 msgstr "הוסף JS מותאם אישית"
 
@@ -256,19 +256,19 @@ msgstr "טופס מוכן"
 msgid "Event: "
 msgstr "אירוע:"
 
-#: admin/partials/cf7-dynamic-tag-display.php:75
+#: admin/partials/cf7sg-dynamic-tag-display.php:75
 msgid "Enable multiple selection"
 msgstr "הפעל בחירה מרובה"
 
-#: admin/partials/cf7-dynamic-tag-display.php:72
+#: admin/partials/cf7sg-dynamic-tag-display.php:72
 msgid "Mutliple attribute"
 msgstr "תכונות מרובות"
 
-#: admin/class-cf7-grid-layout-admin.php:400
+#: admin/class-cf7sg-admin.php:400
 msgid "Filter mailTag %s"
 msgstr "פילטר תג מייל %s"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:133
+#: admin/partials/cf7sg-form-editors.php:133
 msgid "Add Row"
 msgstr "הוסף שורה"
 
@@ -301,7 +301,7 @@ msgstr "שדה ביצועים"
 msgid "Column controls"
 msgstr "בקרי עמודה"
 
-#: admin/partials/cf7-admin-editor-display.php:24
+#: admin/partials/cf7sg-admin-editor-page.php:24
 msgid "toggle full screen"
 msgstr "החלף למסך מלא"
 
@@ -313,20 +313,20 @@ msgstr "https://profiles.wordpress.org/aurovrata"
 msgid "the mail tag value."
 msgstr "ערך תג המייל"
 
-#: admin/class-cf7-grid-layout-admin.php:1209
+#: admin/class-cf7sg-admin.php:1209
 msgid "Message displayed when max tables rows reached."
 msgstr "ההודעה מוצגת כאשר מספר השורות בטבלה הגיע למקסימום."
 
-#: admin/class-cf7-grid-layout-admin.php:1250
+#: admin/class-cf7sg-admin.php:1250
 msgid "Next"
 msgstr "הבא"
 
-#: admin/class-cf7-grid-layout-admin.php:1202
+#: admin/class-cf7sg-admin.php:1202
 msgid "Hover message for disabled submit/save button"
 msgstr "עבור על ההודעה כדי לכבות את כפתור השליחה/שמירה"
 
-#: admin/partials/cf7-helper-metabox-display.php:6
-#: admin/partials/cf7-helper-metabox-display.php:20
+#: admin/partials/cf7sg-helper-metabox-display.php:6
+#: admin/partials/cf7sg-helper-metabox-display.php:20
 msgid "Toggle panel: Helper"
 msgstr "החלף פנל: מסייע Helper"
 
@@ -374,58 +374,58 @@ msgstr "תווית האפשרות"
 msgid "Filter"
 msgstr "פילטר"
 
-#: admin/partials/cf7-info-metabox-display.php:31
+#: admin/partials/cf7sg-info-metabox-display.php:31
 msgid "Manage dynamic lists"
 msgstr "ניהול רשימות דינמיות"
 
-#: admin/partials/cf7-dynamic-tag-display.php:192
+#: admin/partials/cf7sg-dynamic-tag-display.php:192
 msgid "Custom source"
 msgstr "מקור מותאם"
 
-#: admin/partials/cf7-dynamic-tag-display.php:190
+#: admin/partials/cf7sg-dynamic-tag-display.php:190
 msgid "Custom"
 msgstr "מותאם"
 
-#: admin/partials/cf7-dynamic-tag-display.php:173
+#: admin/partials/cf7sg-dynamic-tag-display.php:173
 msgid "Pages"
 msgstr "עמודים"
 
-#: admin/partials/cf7-dynamic-tag-display.php:172
+#: admin/partials/cf7sg-dynamic-tag-display.php:172
 msgid "Posts"
 msgstr "פוסטים"
 
-#: admin/partials/cf7-dynamic-tag-display.php:134
+#: admin/partials/cf7sg-dynamic-tag-display.php:134
 msgid "Select a post"
 msgstr "בחר פוסט"
 
-#: admin/partials/cf7-dynamic-tag-display.php:132
+#: admin/partials/cf7sg-dynamic-tag-display.php:132
 msgid "Post source"
 msgstr "מקור הפוסט"
 
-#: admin/partials/cf7-dynamic-tag-display.php:130
+#: admin/partials/cf7sg-dynamic-tag-display.php:130
 msgid "Post"
 msgstr "פוסט"
 
-#: admin/partials/cf7-dynamic-tag-display.php:124
+#: admin/partials/cf7sg-dynamic-tag-display.php:124
 msgid "hierarchical"
 msgstr "היררכיה"
 
-#: admin/partials/cf7-dynamic-tag-display.php:122
+#: admin/partials/cf7sg-dynamic-tag-display.php:122
 msgid "Slug"
 msgstr "מזהה כתובת"
 
-#: admin/partials/cf7-dynamic-tag-display.php:120
+#: admin/partials/cf7sg-dynamic-tag-display.php:120
 msgid "Singular Name"
 msgstr "שם יחודי"
 
-#: admin/class-cf7-grid-layout-admin.php:1012
+#: admin/class-cf7sg-admin.php:1012
 msgid "benchmark"
 msgstr "קריטריון"
 
-#: admin/class-cf7-grid-layout-admin.php:1007
+#: admin/class-cf7sg-admin.php:1007
 msgid "dynamic-dropdown"
 msgstr "תפריט נפתח דינמי"
 
-#: admin/class-cf7-grid-layout-admin.php:637
+#: admin/class-cf7sg-admin.php:637
 msgid "Actions & Filters"
 msgstr "פעולות ופילטרים"

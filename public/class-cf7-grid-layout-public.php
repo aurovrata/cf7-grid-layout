@@ -263,7 +263,7 @@ class Cf7_Grid_Layout_Public {
 						$attrs = shortcode_parse_atts( $sc[3] );
 						if ( is_array( $attrs ) && isset( $attrs['id'] ) ) {
 							$cf7id  = $attrs['id'];
-							$cf7key = get_cf7form_key( $cf7id );
+							$cf7key = c2p_get_form_key( $cf7id );
 						}
 						break;
 					case 'cf7form':
@@ -271,7 +271,7 @@ class Cf7_Grid_Layout_Public {
 						$attrs = shortcode_parse_atts( $sc[3] );
 						if ( is_array( $attrs ) && isset( $attrs['cf7key'] ) ) {
 							$cf7key = $attrs['cf7key'];
-							$cf7id  = get_cf7form_id( $cf7key );
+							$cf7id  = c2p_get_form_id( $cf7key );
 						}
 				}
 			}
@@ -824,7 +824,7 @@ class Cf7_Grid_Layout_Public {
 		wp_enqueue_script( 'js-cf7sg-benchmarking' );
 		wp_enqueue_style( 'cf7-benchmark-css' );
 		ob_start();
-		include plugin_dir_path( __FILE__ ) . '/partials/cf7-benchmark-tag.php';
+		include plugin_dir_path( __FILE__ ) . '/partials/cf7sg-benchmark-tag.php';
 		$html = ob_get_contents();
 		ob_end_clean();
 		return $html;
@@ -1157,7 +1157,7 @@ class Cf7_Grid_Layout_Public {
 		$subform_keys = get_post_meta( $form_id, '_cf7sg_sub_forms', true );
 		if ( ! empty( $subform_keys ) ) {
 			foreach ( $subform_keys as $cf7key ) {
-				$post_id      = get_cf7form_id( $cf7key );
+				$post_id      = c2p_get_form_id( $cf7key );
 				$grid_fields += self::get_grid_fields( $post_id );
 			}
 		}
@@ -1773,7 +1773,7 @@ class Cf7_Grid_Layout_Public {
 	 * @param     Array  $submitted_data    array of field-name=>value pairs submitted in form
 	 **/
 	public function save_select2_custom_options( $post_id, $cf7_key, $post_fields, $post_meta_fields, $submitted_data ) {
-		$form_id       = get_cf7form_id( $cf7_key );
+		$form_id       = c2p_get_form_id( $cf7_key );
 		$tagged_fields = get_post_meta( $form_id, '_cf7sg_select2_tagged_fields', true );
 		if ( empty( $tagged_fields ) ) {
 			return;
@@ -1977,7 +1977,7 @@ class Cf7_Grid_Layout_Public {
 		if ( 'cf7sg-form-title' === $mail_tag ) {
 			return $cf7form->title();
 		}
-		$cf7form_key    = get_cf7form_key( $cf7form->id() );
+		$cf7form_key    = c2p_get_form_key( $cf7form->id() );
 		$submitted_cf7  = WPCF7_Submission::get_instance();
 		$submitted_data = array();
 		if ( ! empty( $submitted_cf7 ) ) {
@@ -2483,7 +2483,7 @@ class Cf7_Grid_Layout_Public {
 			if ( is_a( $form, 'WPCF7_ContactForm' ) ) {
 				$submitted = WPCF7_Submission::get_instance();
 				$data      = $submitted->get_posted_data();
-				$cf7key    = get_cf7form_key( $form->id() );
+				$cf7key    = c2p_get_form_key( $form->id() );
 				$message   = apply_filters( 'cf7sg_submission_success_message', $form->message( 'mail_sent_ok' ), $data, $cf7key );
 				$url       = apply_filters( 'cf7sg_redirect_on_success', '', $data, $cf7key );
 				if ( wp_http_validate_url( $url ) ) {

@@ -121,7 +121,7 @@ class Cf7_Grid_Layout {
 		 * core plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cf7-grid-layout-loader.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wordpress-gurus-debug-api.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/wpgurus-debug-api.php';
 		/** NB @since 5.0 dynamic tags interface */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cf7sg-dynamic-list.php';
 
@@ -206,7 +206,7 @@ class Cf7_Grid_Layout {
 		// hook for adding fields to sumit action metabox.
 		$this->loader->add_filter( 'post_submitbox_misc_actions', $plugin_admin, 'cf7_post_submit_action', 10 );
 		// cusotm sanitation rules for forms.
-		$this->loader->add_filter( 'wp_kses_allowed_html', $plugin_admin, 'custom_kses_rules', 10, 2 );
+		$this->loader->add_filter( 'cf7sg_kses_allowed_html', $plugin_admin, 'custom_kses_rules', 10, 2 );
 		/** NB @since 2.1.0 make sure our dependent plugins exists.*/
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'check_plugin_dependency' );
 		/** NB @since 2.3.0 redirect post.php for form duplicate*/

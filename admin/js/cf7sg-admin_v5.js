@@ -1148,7 +1148,7 @@
       }
     });
     //before grid editor is closed, update the form with the last textarea
-    //event 'cf7grid-tab-finalise' is fired in cf7-grid-codemirror.js file
+    //event 'cf7grid-tab-finalise' is fired in cf7sg-codemirror.js file
     $grid.on('cf7grid-form-finalise', function(){
       if(cf7grid.ui){
         $('#wpcf7-form').parent().siblings('textarea.grid-input').on('change', function(){

@@ -14,31 +14,31 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#: admin/class-cf7-grid-layout-admin.php:1214
+#: admin/class-cf7sg-admin.php:1214
 msgid "Next"
 msgstr "Nächstes"
 
-#: admin/class-cf7-grid-layout-admin.php:976
+#: admin/class-cf7sg-admin.php:976
 msgid "benchmark"
 msgstr "Benchmark"
 
-#: admin/class-cf7-grid-layout-admin.php:631
+#: admin/class-cf7sg-admin.php:631
 msgid "Actions & Filters"
 msgstr "Aktionen und Filter"
 
-#: admin/class-cf7-grid-layout-admin.php:1173
+#: admin/class-cf7sg-admin.php:1173
 msgid "Message displayed when max tables rows reached."
 msgstr "Angezeigte Mitteilung, wenn die maximalen Tabellenzeilen erreicht worden sind."
 
-#: admin/class-cf7-grid-layout-admin.php:971
+#: admin/class-cf7sg-admin.php:971
 msgid "dynamic-dropdown"
 msgstr "dynamischer Dropdown"
 
-#: admin/class-cf7-grid-layout-admin.php:1166
+#: admin/class-cf7sg-admin.php:1166
 msgid "Hover message for disabled submit/save button"
 msgstr "Hover-Nachricht für einen abgeschalteten Senden- oder Speichern-Button"
 
-#: admin/partials/cf7-helper-metabox-display.php:1
+#: admin/partials/cf7sg-helper-metabox-display.php:1
 msgid "Click on a link to copy the helper snippet code and paste it in your <em>functions.php</em> file."
 msgstr "Klick auf den Link, um das Snippet zu kopieren, und füge es in deiner <em>functions.php-Datei</em> ein."
 
@@ -82,91 +82,91 @@ msgstr "durch den Benutzer hinzugefügte Option."
 msgid "Filter"
 msgstr "Filter"
 
-#: admin/partials/cf7-info-metabox-display.php:20
+#: admin/partials/cf7sg-info-metabox-display.php:20
 msgid "Manage dynamic lists"
 msgstr "Manage Dynamische Listen"
 
-#: admin/partials/cf7-dynamic-tag-display.php:173
+#: admin/partials/cf7sg-dynamic-tag-display.php:173
 msgid "Pages"
 msgstr "Seiten"
 
-#: admin/partials/cf7-dynamic-tag-display.php:190
+#: admin/partials/cf7sg-dynamic-tag-display.php:190
 msgid "Custom"
 msgstr "Benutzerdefiniert"
 
-#: admin/partials/cf7-dynamic-tag-display.php:172
+#: admin/partials/cf7sg-dynamic-tag-display.php:172
 msgid "Posts"
 msgstr "Beiträge"
 
-#: admin/partials/cf7-dynamic-tag-display.php:130
+#: admin/partials/cf7sg-dynamic-tag-display.php:130
 msgid "Post"
 msgstr "Beitrag"
 
-#: admin/partials/cf7-dynamic-tag-display.php:122
+#: admin/partials/cf7sg-dynamic-tag-display.php:122
 msgid "Slug"
 msgstr "Slug"
 
-#: admin/partials/cf7-dynamic-tag-display.php:120
+#: admin/partials/cf7sg-dynamic-tag-display.php:120
 msgid "Singular Name"
 msgstr "Einzahlform des Namens"
 
-#: admin/partials/cf7-dynamic-tag-display.php:118
+#: admin/partials/cf7sg-dynamic-tag-display.php:118
 msgid "Plural Name"
 msgstr "Mehrzahlform des Namens"
 
-#: admin/partials/cf7-dynamic-tag-display.php:117
+#: admin/partials/cf7sg-dynamic-tag-display.php:117
 msgid "New Taxonomy"
 msgstr "Neue Taxonomie"
 
-#: admin/partials/cf7-dynamic-tag-display.php:107
+#: admin/partials/cf7sg-dynamic-tag-display.php:107
 msgid "Post Categories"
 msgstr "Beitragskategorien"
 
-#: admin/partials/cf7-dynamic-tag-display.php:106
+#: admin/partials/cf7sg-dynamic-tag-display.php:106
 msgid "Post Tags"
 msgstr "Beitragstags"
 
-#: admin/partials/cf7-dynamic-tag-display.php:124
+#: admin/partials/cf7sg-dynamic-tag-display.php:124
 msgid "hierarchical"
 msgstr "Hierarchisch"
 
-#: admin/partials/cf7-dynamic-tag-display.php:134
+#: admin/partials/cf7sg-dynamic-tag-display.php:134
 msgid "Select a post"
 msgstr "Beitrag auswählen"
 
-#: admin/partials/cf7-dynamic-tag-display.php:132
+#: admin/partials/cf7sg-dynamic-tag-display.php:132
 msgid "Post source"
 msgstr "Beitragsherkunft"
 
-#: admin/partials/cf7-dynamic-tag-display.php:88
+#: admin/partials/cf7sg-dynamic-tag-display.php:88
 msgid "New Categories"
 msgstr "Neue Kategorien"
 
-#: admin/partials/cf7-dynamic-tag-display.php:87
+#: admin/partials/cf7sg-dynamic-tag-display.php:87
 msgid "Choose a Taxonomy"
 msgstr "Eine Taxonomie auswählen"
 
-#: admin/partials/cf7-dynamic-tag-display.php:83
+#: admin/partials/cf7sg-dynamic-tag-display.php:83
 msgid "Taxonomy"
 msgstr "Taxonomie"
 
-#: admin/partials/cf7-dynamic-tag-display.php:45
+#: admin/partials/cf7sg-dynamic-tag-display.php:45
 msgid "Dropdown style"
 msgstr "Dropdown-Stil"
 
-#: admin/partials/cf7-dynamic-tag-display.php:39
+#: admin/partials/cf7sg-dynamic-tag-display.php:39
 msgid "Class attribute"
 msgstr "Klassen-Attribut"
 
-#: admin/partials/cf7-dynamic-tag-display.php:33
+#: admin/partials/cf7sg-dynamic-tag-display.php:33
 msgid "Id attribute"
 msgstr "ID-Attribut"
 
-#: admin/partials/cf7-dynamic-tag-display.php:30
+#: admin/partials/cf7sg-dynamic-tag-display.php:30
 msgid "Required field"
 msgstr "Pflichtfeld"
 
-#: admin/partials/cf7-dynamic-tag-display.php:29
+#: admin/partials/cf7sg-dynamic-tag-display.php:29
 msgid "Field type"
 msgstr "Feldtyp"
 
@@ -222,72 +222,72 @@ msgstr "Gib Deinen vollständigen Namen ein"
 msgid "Name"
 msgstr "Name"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:260
+#: admin/partials/cf7sg-form-editors.php:260
 msgid "describe your field here"
 msgstr "Feldbeschreibung hier eingeben"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:259
+#: admin/partials/cf7sg-form-editors.php:259
 msgid "describe your field"
 msgstr "Beschreibe Dein Feld"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:255
+#: admin/partials/cf7sg-form-editors.php:255
 msgid "select a field"
 msgstr "Ein Feld auswählen"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:254
+#: admin/partials/cf7sg-form-editors.php:254
 msgid "[select a field]"
 msgstr "[Ein Feld auswählen]"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:249
-#: admin/partials/cf7-grid-layout-admin-display.php:250
+#: admin/partials/cf7sg-form-editors.php:249
+#: admin/partials/cf7sg-form-editors.php:250
 msgid "Field label"
 msgstr "Feldbeschriftung"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:244
+#: admin/partials/cf7sg-form-editors.php:244
 msgid "Insert form"
 msgstr "Formular einfügen"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:143
-#: admin/partials/cf7-grid-layout-admin-display.php:243
+#: admin/partials/cf7sg-form-editors.php:143
+#: admin/partials/cf7sg-form-editors.php:243
 msgid "Make grid"
 msgstr "Grid erstellen"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:241
+#: admin/partials/cf7sg-form-editors.php:241
 msgid "full wifth"
 msgstr "volle Breite"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:235
+#: admin/partials/cf7sg-form-editors.php:235
 msgid "half width"
 msgstr "halbe Breite"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:228
+#: admin/partials/cf7sg-form-editors.php:228
 msgid "Column size:"
 msgstr "Spaltengröße"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:226
-#: admin/partials/cf7-grid-layout-admin-display.php:240
+#: admin/partials/cf7sg-form-editors.php:226
+#: admin/partials/cf7sg-form-editors.php:240
 msgid "eleven (11/12<sup>ths</sup>)"
 msgstr "eleven (11/12<sup>ths</sup>)"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:193
+#: admin/partials/cf7sg-form-editors.php:193
 msgid "Click-to-copy &amp; paste in your <em>functions.php</em> file."
 msgstr "Klicken zum Kopieren&amp;Einfügen in die <em>functions.php</em>-Datei."
 
-#: admin/partials/cf7-grid-layout-admin-display.php:187
+#: admin/partials/cf7sg-form-editors.php:187
 msgid "Tab label"
 msgstr "Tab-Bezeichnung"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:180
+#: admin/partials/cf7sg-form-editors.php:180
 msgid "Section title"
 msgstr "Abschnittsbezeichnung"
 
-#: admin/class-cf7-grid-layout-admin.php:364
-#: admin/partials/cf7-grid-layout-admin-display.php:192
-#: admin/partials/cf7-grid-layout-admin-display.php:198
+#: admin/class-cf7sg-admin.php:364
+#: admin/partials/cf7sg-form-editors.php:192
+#: admin/partials/cf7sg-form-editors.php:198
 msgid "Click to copy!"
 msgstr "Klicke zum Kopieren!"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:75
+#: admin/partials/cf7sg-form-editors.php:75
 msgid "Grid"
 msgstr "Raster"
 
@@ -296,21 +296,21 @@ msgstr "Raster"
 msgid "Form"
 msgstr "Formular"
 
-#: admin/class-cf7-grid-layout-admin.php:1175
+#: admin/class-cf7sg-admin.php:1175
 #: public/class-cf7-grid-layout-public.php:377
 msgid "You have reached the maximum number of rows."
 msgstr "Sie haben die maximale Anzahl von Reihen erreicht."
 
-#: admin/class-cf7-grid-layout-admin.php:1168
+#: admin/class-cf7sg-admin.php:1168
 #: public/class-cf7-grid-layout-public.php:376
 msgid "Disabled!  To enable, check the acceptance field."
 msgstr "Abgeschaltet! Zum Einschalten bestätigen Sie das Zustimmungsfeld."
 
-#: admin/partials/cf7-info-metabox-display.php:24
+#: admin/partials/cf7sg-info-metabox-display.php:24
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: admin/partials/cf7-info-metabox-display.php:7
+#: admin/partials/cf7sg-info-metabox-display.php:7
 #: assets/cf7-admin-table/admin/cf7-post-admin-table.php:318
 msgid "Form key"
 msgstr "Formular Key"
@@ -339,23 +339,23 @@ msgstr "http://wordpress.syllogic.in"
 msgid "CF7 Smart Grid Design Extension"
 msgstr "CF7 Smart Grid Design Extension"
 
-#: admin/partials/cf7-dynamic-tag-display.php:66
+#: admin/partials/cf7sg-dynamic-tag-display.php:66
 msgid "Enable user options"
 msgstr "Nutzeroptionen aktivieren"
 
-#: admin/partials/cf7-dynamic-tag-display.php:62
+#: admin/partials/cf7sg-dynamic-tag-display.php:62
 msgid "jQuery Select2"
 msgstr "jQuery Select2"
 
-#: admin/partials/cf7-dynamic-tag-display.php:56
+#: admin/partials/cf7sg-dynamic-tag-display.php:56
 msgid "jQuery Nice Select"
 msgstr "jQuery Nice Select"
 
-#: admin/partials/cf7-dynamic-tag-display.php:50
+#: admin/partials/cf7sg-dynamic-tag-display.php:50
 msgid "HTML Select field"
 msgstr "HTML Auswahlfeld"
 
-#: admin/partials/cf7-dynamic-tag-display.php:21
+#: admin/partials/cf7sg-dynamic-tag-display.php:21
 msgid "Dynamic Select Dropdown field"
 msgstr "Dynamic Select Dropdown-Feld"
 
@@ -363,41 +363,41 @@ msgstr "Dynamic Select Dropdown-Feld"
 msgid "Portable Shortcodes"
 msgstr "Übertragbare Shortcodes"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:225
-#: admin/partials/cf7-grid-layout-admin-display.php:239
+#: admin/partials/cf7sg-form-editors.php:225
+#: admin/partials/cf7sg-form-editors.php:239
 msgid "ten (5/6<sup>ths</sup>)"
 msgstr "ten (5/6<sup>ths</sup>)"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:224
-#: admin/partials/cf7-grid-layout-admin-display.php:238
+#: admin/partials/cf7sg-form-editors.php:224
+#: admin/partials/cf7sg-form-editors.php:238
 msgid "nine (3/4<sup>ths</sup>)"
 msgstr "nine (3/4<sup>ths</sup>)"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:223
-#: admin/partials/cf7-grid-layout-admin-display.php:237
+#: admin/partials/cf7sg-form-editors.php:223
+#: admin/partials/cf7sg-form-editors.php:237
 msgid "eight (2/3<sup>rds</sup>)"
 msgstr "eight (2/3<sup>rds</sup>)"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:222
-#: admin/partials/cf7-grid-layout-admin-display.php:236
+#: admin/partials/cf7sg-form-editors.php:222
+#: admin/partials/cf7sg-form-editors.php:236
 msgid "seven (7/12<sup>ths</sup>)"
 msgstr "seven (7/12<sup>ths</sup>)"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:221
+#: admin/partials/cf7sg-form-editors.php:221
 msgid "half"
 msgstr "half"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:220
-#: admin/partials/cf7-grid-layout-admin-display.php:234
+#: admin/partials/cf7sg-form-editors.php:220
+#: admin/partials/cf7sg-form-editors.php:234
 msgid "five (5/12<sup>ths</sup>)"
 msgstr "five (5/12<sup>ths</sup>)"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:219
-#: admin/partials/cf7-grid-layout-admin-display.php:233
+#: admin/partials/cf7sg-form-editors.php:219
+#: admin/partials/cf7sg-form-editors.php:233
 msgid "four (1/3<sup>rd</sup>)"
 msgstr "four (1/3<sup>rd</sup>)"
 
-#: admin/partials/cf7-grid-layout-admin-display.php:218
-#: admin/partials/cf7-grid-layout-admin-display.php:232
+#: admin/partials/cf7sg-form-editors.php:218
+#: admin/partials/cf7sg-form-editors.php:232
 msgid "three (1/4<sup>th</sup>)"
 msgstr "three (1/4<sup>th</sup>)"

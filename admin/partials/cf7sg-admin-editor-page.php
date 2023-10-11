@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Provide a admin area view for the plugin to edit contact form 7 through the visual editor
  *
