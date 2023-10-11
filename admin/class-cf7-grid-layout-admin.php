@@ -648,7 +648,8 @@ class Cf7_Grid_Layout_Admin {
 			return;
 		}
 		// validate the nonce.
-		check_admin_referer( 'wpcf7-save-contact-form_' . $post_id, '_wpcf7nonce' );
+		wpg_debug( 'save_factory_metas' );
+		check_admin_referer( 'wpcf7-save-contact-form_' . $cf7_post_id, '_wpcf7nonce' );
 		$submits = wp_unslash( $_POST );
 
 		// get the tags used in this form.
@@ -1011,7 +1012,7 @@ class Cf7_Grid_Layout_Admin {
 		// validate the nonce.
 		check_admin_referer( 'wpcf7-save-contact-form_' . $post_id, '_wpcf7nonce' );
 		$submits = wp_unslash( $_POST );
-		// wpg_debug($_POST, 'submitted ').
+		wpg_debug( 'save_post' );
 		$args       = $_REQUEST;
 		$args['id'] = $post_id;
 
@@ -1263,10 +1264,10 @@ class Cf7_Grid_Layout_Admin {
 		// need to unhook this function so as not to loop infinitely
 		// wpg_debug($args, 'saving cf7 posts').
 		remove_action( 'save_post_wpcf7_contact_form', array( $this, 'save_post' ), 10, 3 );
+		remove_action( 'wpcf7_save_contact_form', array( $this, 'save_factory_metas'), 10, 1 );
 		// wpg_debug($args['form'],'form ').
 		/** NB @since 4.11.5 filter wp_kses ffrmo cf7 plugin v5.5 */
-		add_filter(
-			'wpcf7_kses_allowed_html',
+		add_filter( 'wpcf7_kses_allowed_html',
 			function( $cf7_tags, $context ) use ( $allowed_tags ) {
 				if ( 'form' == $context ) {
 					return array_merge( $cf7_tags, $allowed_tags );
@@ -1288,6 +1289,7 @@ class Cf7_Grid_Layout_Admin {
 			}
 		}
 		add_action( 'save_post_wpcf7_contact_form', array( $this, 'save_post' ), 10, 3 );
+		add_action( 'wpcf7_save_contact_form', array( $this, 'save_factory_metas'), 10, 1 );
 
 		/** NB @since 4.9.2 fire form saving action so as to prevent double save_post hook calls on other plugins */
 		do_action( 'cf7sg_save_post', $post_id, $post, $update );
@@ -1380,7 +1382,7 @@ class Cf7_Grid_Layout_Admin {
 	public function custom_kses_rules( $allowed, $cf7_key ) {
 		$allowed = wpcf7_kses_allowed_html(); // uses post and additional form elements.
 		/** NB @since 4.8.1 alllow custom input html*/
-		$allowed_tags['input']               = array( // add additional input html elements.
+		$allowed_tags['input'] = array( // add additional input html elements.
 			'type'        => 1,
 			'name'        => 1,
 			'placeholder' => 1,
@@ -1396,14 +1398,16 @@ class Cf7_Grid_Layout_Admin {
 			'id'          => 1,
 			'data-*'      => 1,
 		);
-		$allowed['div']                      = true;
-		$allowed['div']['data-button']       = true; // table buttons.
-		$allowed['div']['data-form']         = true; // sub-forms.
-		$allowed['div']['data-on']           = true; // toggles.
-		$allowed['div']['data-off']          = true; // toggles.
-		$allowed['div']['data-open']         = true; // accordion.
-		$allowed['div']['data-group']        = true; // accordion.
-		$allowed['div']['data-config-field'] = true; // cf7 plugin.
+		$allowed['div']       = array(
+			'class'             => 1,
+			'data-button'       => 1, // table buttons.
+			'data-form'         => 1, // sub-forms.
+			'data-on'           => 1, // toggles.
+			'data-off'          => 1, // toggles.
+			'data-open'         => 1, // accordion.
+			'data-group'        => 1, // accordion.
+			'data-config-field' => 1, // cf7 plugin.
+		);
 		return $allowed;
 	}
 	/**
@@ -1918,7 +1922,7 @@ class Cf7_Grid_Layout_Admin {
 			}
 		}
 		$screen = get_current_screen();
-		wpg_debug($screen);
+		wpg_debug( $screen );
 	}
 	/**
 	 * Add grid helper hooks for individual tags.

@@ -473,10 +473,12 @@ if ( ! class_exists( 'CF7_WP_Post_Table' ) ) {
 					$attributes .= ' ' . $key . '="' . $value . '"';
 				}
 				/** NB @since 4.4.0 diffrentiate preview forms */
-				if ( isset( $_GET['post_type'] ) && 'cf7sg_page' === $_GET['post_type'] && isset( $_GET['preview'] ) ) {
+				if ( isset( $_GET['post_type'] ) && 'cf7sg_page' === sanitize_key( $_GET['post_type'] ) && isset( $_GET['preview'] ) ) {
 					$hidden['_cf7sg_preview'] = true;
-					if ( isset( $_COOKIE[ '_cf7sg_' . $a['cf7key'] ] ) && apply_filters( 'cf7sg_preview_prefill', true, $a['cf7key'] ) ) { /** NB @since 4.15.0 */
-						$fields = array_merge( json_decode( sanitize_key( wp_unslash( $_COOKIE[ '_cf7sg_' . $a['cf7key'] ] ) ), true ), $fields );
+
+					if ( isset( $_COOKIE[ '_cf7sg_' . $a['cf7key'] ] ) && apply_filters( 'cf7sg_preview_prefill', true, $a['cf7key'] ) ) {
+						/** NB @since 4.15.0 */
+						$fields = array_merge( json_decode( wp_unslash( $_COOKIE[ '_cf7sg_' . $a['cf7key'] ] ), true ), $fields );
 					}
 				}
 				if ( ! empty( $hidden ) ) {
