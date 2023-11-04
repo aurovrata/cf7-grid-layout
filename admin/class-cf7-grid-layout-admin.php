@@ -21,6 +21,11 @@
  */
 class Cf7_Grid_Layout_Admin {
 	/**
+	 * Keys used for storing/accessing plugin metakeys
+	 */
+	public const METAKEYS = array( '_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form', '_cf7sg_script_classes', '_cf7sg_version', '_cf7sg_grid_toggled_names', '_cf7sg_grid_tabbed_toggles', '_cf7sg_grid_grouped_toggles', '_cf7sg_has_toggles', '_cf7sg_disable_jstags_comments', '_cf7sg_page_redirect', '_cf7sg_cache_redirect_data', '_cf7sg_form_page' );
+
+	/**
 	 * The ID of this plugin.
 	 *
 	 * @since    4.2.1
@@ -34,9 +39,7 @@ class Cf7_Grid_Layout_Admin {
 		'edit-tags.php' => array( 'wpcf7_contact_form' => 'post_type' ),
 		'index.php'     => '', // dashboard.
 		'plugins.php'   => '',
-	// 'options-general.php'=>'page=',
 	);
-	public const METAKEYS = array( '_cf7sg_sub_forms', '_cf7sg_grid_table_names', '_cf7sg_grid_tabs_names', '_cf7sg_has_tabs', '_cf7sg_has_tables', '_cf7sg_managed_form', '_cf7sg_script_classes', '_cf7sg_version', '_cf7sg_grid_toggled_names', '_cf7sg_grid_tabbed_toggles', '_cf7sg_grid_grouped_toggles', '_cf7sg_has_toggles', '_cf7sg_disable_jstags_comments', '_cf7sg_page_redirect', '_cf7sg_cache_redirect_data', '_cf7sg_form_page' );
 	/**
 	 * The ID of this plugin.
 	 *
@@ -95,7 +98,7 @@ class Cf7_Grid_Layout_Admin {
 	 */
 	public function popular_extentions_scripts() {
 		$screen = get_current_screen();
-		if ( empty( $screen ) || $this->cf7_post_type() != $screen->post_type ) {
+		if ( empty( $screen ) || $this->cf7_post_type() !== $screen->post_type ) {
 			return;
 		}
 		$plugin_dir = plugin_dir_url( __DIR__ );
@@ -103,7 +106,7 @@ class Cf7_Grid_Layout_Admin {
 		switch ( $screen->base ) {
 			case 'post':
 				$page_hook = '';
-				if ( 'add' == $screen->action ) {
+				if ( 'add' === $screen->action ) {
 					$page_hook = 'contact_page_wpcf7-new';
 				} else {
 					$page_hook = 'toplevel_page_wpcf7';
@@ -126,13 +129,12 @@ class Cf7_Grid_Layout_Admin {
 	 */
 	public function print_extentions_scripts() {
 		$screen = get_current_screen();
-		if ( empty( $screen ) || $this->cf7_post_type() != $screen->post_type ) {
+		if ( empty( $screen ) || $this->cf7_post_type() !== $screen->post_type ) {
 			return;
 		}
 		global $plugin_page;
 		$plugin_page = 'wpcf7';
 	}
-
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -141,7 +143,7 @@ class Cf7_Grid_Layout_Admin {
 	 * @param String $page current page handle.
 	 */
 	public function enqueue_styles( $page ) {
-		if ( 'plugins.php' == $page ) {
+		if ( 'plugins.php' === $page ) {
 			/** NB @since 4.1.0 */
 			wp_enqueue_style( 'plugin-update', plugin_dir_url( __DIR__ ) . 'admin/css/cf7sg-plugin-update.css', array(), $this->version, 'all' );
 			return;
@@ -154,26 +156,29 @@ class Cf7_Grid_Layout_Admin {
 		$screen     = get_current_screen();
 		$plugin_dir = plugin_dir_url( __DIR__ );
 
-		if ( empty( $screen ) || $this->cf7_post_type() != $screen->post_type ) {
+		if ( empty( $screen ) || $this->cf7_post_type() !== $screen->post_type ) {
 			return;
 		}
 		switch ( $screen->base ) {
 			case 'post':
 				global $post;
 				$ver = '';
-				if ( 'post-new.php' == $page ) {
-					$ver = '_v5';
+				if ( 'post-new.php' === $page ) {
+					$ver = '-v5';
 				} else {
 					$ver = get_post_meta( $post->ID, '_cf7sg_version', true );
-					$ver = version_compare( $ver, '5.0dev', '>=' ) ? '_v5' : '';
+					$ver = version_compare( $ver, '5.0dev', '>=' ) ? '-v5' : '';
 				}
-				if ( '_v5' === $ver ) { // user of jqeury modal.
+				if ( '-v5' === $ver ) { // user of jqeury modal.
 					wp_enqueue_style( 'jquery-modal', $plugin_dir . 'assets/modal/jquery.modal.min.css', array(), '0.9.2', 'all' );
+					wp_enqueue_style( 'smart-grid-css', $plugin_dir . 'assets/css.gs/flex-grid-admin.css', array(), $this->version, 'all' );
+				} else {
+					wp_enqueue_style( 'smart-grid-css', $plugin_dir . 'assets/css.gs/smart-grid.admin.css', array(), $this->version, 'all' );
 				}
 				wp_enqueue_style( 'cf7-grid-post-css', $plugin_dir . "admin/css/cf7sg-grid-layout-post{$ver}.css", array(), $this->version, 'all' );
 				wp_enqueue_style( 'cf7-grid-post-edit', $plugin_dir . 'admin/css/cf7sg-grid-post-edit.css', array(), $this->version, 'all' );
 				$colour = get_user_meta( get_current_user_id(), 'admin_color', true );
-				if ( ! empty( $colour ) && $colour != 'fresh' ) {
+				if ( ! empty( $colour ) && 'fresh' !== $colour ) {
 					wp_enqueue_style( 'cf7-grid-colours-user-css', $plugin_dir . "admin/css/cf7sg-admin-colours-{$colour}.css", array(), $this->version, 'all' );
 				}
 				// dynamic tag.
@@ -188,7 +193,6 @@ class Cf7_Grid_Layout_Admin {
 				wp_enqueue_style( 'codemirror-foldgutter-css', $plugin_dir . 'assets/codemirror/addon/fold/foldgutter.css', array(), $this->version, 'all' );
 				wp_enqueue_style( 'codemirror-dialog-css', $plugin_dir . 'assets/codemirror/addon/dialog/dialog.css', array(), $this->version, 'all' );
 				wp_enqueue_style( 'codemirror-matchesonscrollbar-css', $plugin_dir . 'assets/codemirror/addon/search/matchesonscrollbar.css', array(), $this->version, 'all' );
-				wp_enqueue_style( 'smart-grid-css', $plugin_dir . "assets/css.gs/smart-grid.admin{$ver}.css", array(), $this->version, 'all' );
 				wp_enqueue_style( 'dashicons' );
 				wp_enqueue_style( 'select2-style', $plugin_dir . 'assets/select2/css/select2.min.css', array(), $this->version, 'all' );
 				/** NB @since 4.4.0 Enabled user style enqueue */
@@ -241,12 +245,12 @@ class Cf7_Grid_Layout_Admin {
 				global $post;
 				$ver = '';
 				if ( 'post-new.php' === $page ) {
-					$ver = '_v5';
+					$ver = '-v5';
 				} else {
 					$ver = get_post_meta( $post->ID, '_cf7sg_version', true );
-					$ver = version_compare( $ver, '5.0dev', '>=' ) ? '_v5' : '';
+					$ver = version_compare( $ver, '5.0dev', '>=' ) ? '-v5' : '';
 				}
-				if ( '_v5' === $ver ) { // user of jqeury modal.
+				if ( '-v5' === $ver ) { // user of jqeury modal.
 					wp_enqueue_script( 'jquery-modal', $plugin_dir . 'assets/modal/jquery.modal.min.js', array( 'jquery' ), '0.9.2', 'all' );
 				}
 				/** Register codemirror editor & addons. */
@@ -394,7 +398,7 @@ class Cf7_Grid_Layout_Admin {
 						);
 				}
 				$pre_field = '<div class="field"><label for=""></label>';
-				if ( '_v5' === $ver ) {
+				if ( '-v5' === $ver ) {
 					$pre_field = '<div class="cf7sg-field"><label for=""></label>';
 				}
 				wp_localize_script(
@@ -848,7 +852,7 @@ class Cf7_Grid_Layout_Admin {
 		if ( ! $cf7_form ) {
 			$args     = apply_filters( 'cf7sg_new_cf7_form_template_arguments', array() );
 			$cf7_form = WPCF7_ContactForm::get_template( $args );
-			$ver      = '_v5'; // new forms are by default v5.
+			$ver      = apply_filters( 'cf7sg_new_cf7_form_version_5', true ) ? '_v5' : ''; // new forms are by default v5.
 		} else {
 			$ver = get_post_meta( $post_id, '_cf7sg_version', true );
 			$ver = version_compare( $ver, '5.0dev', '>=' ) ? '_v5' : '';
@@ -865,7 +869,7 @@ class Cf7_Grid_Layout_Admin {
 	 * @param      WP_Post $post    post object being edited/created.
 	 **/
 	public function cf7_post_submit_action( $post ) {
-		if ( $this->cf7_post_type() == $post->post_type ) {
+		if ( $this->cf7_post_type() === $post->post_type ) {
 			do_action( 'wpcf7_admin_misc_pub_section', $post->ID );
 		}
 	}
@@ -904,7 +908,7 @@ class Cf7_Grid_Layout_Admin {
 	 * @param      WPCF7_Contact_Form $form_obj     .
 	 **/
 	public function grid_editor_panel_v5( $form_obj ) {
-		require_once plugin_dir_path( __FILE__ ) . '/partials/cf7sg-form-editors_v5.php';
+		require_once plugin_dir_path( __FILE__ ) . '/partials/cf7sg-form-editors-v5.php';
 	}
 	/**
 	 * Display a metabox to redirect form submission to a page.
@@ -1264,10 +1268,11 @@ class Cf7_Grid_Layout_Admin {
 		// need to unhook this function so as not to loop infinitely
 		// wpg_debug($args, 'saving cf7 posts').
 		remove_action( 'save_post_wpcf7_contact_form', array( $this, 'save_post' ), 10, 3 );
-		remove_action( 'wpcf7_save_contact_form', array( $this, 'save_factory_metas'), 10, 1 );
+		remove_action( 'wpcf7_save_contact_form', array( $this, 'save_factory_metas' ), 10, 1 );
 		// wpg_debug($args['form'],'form ').
 		/** NB @since 4.11.5 filter wp_kses ffrmo cf7 plugin v5.5 */
-		add_filter( 'wpcf7_kses_allowed_html',
+		add_filter(
+			'wpcf7_kses_allowed_html',
 			function( $cf7_tags, $context ) use ( $allowed_tags ) {
 				if ( 'form' == $context ) {
 					return array_merge( $cf7_tags, $allowed_tags );
@@ -1289,7 +1294,7 @@ class Cf7_Grid_Layout_Admin {
 			}
 		}
 		add_action( 'save_post_wpcf7_contact_form', array( $this, 'save_post' ), 10, 3 );
-		add_action( 'wpcf7_save_contact_form', array( $this, 'save_factory_metas'), 10, 1 );
+		add_action( 'wpcf7_save_contact_form', array( $this, 'save_factory_metas' ), 10, 1 );
 
 		/** NB @since 4.9.2 fire form saving action so as to prevent double save_post hook calls on other plugins */
 		do_action( 'cf7sg_save_post', $post_id, $post, $update );
@@ -1398,7 +1403,7 @@ class Cf7_Grid_Layout_Admin {
 			'id'          => 1,
 			'data-*'      => 1,
 		);
-		$allowed['div']       = array(
+		$allowed['div']        = array(
 			'class'             => 1,
 			'data-button'       => 1, // table buttons.
 			'data-form'         => 1, // sub-forms.
@@ -1421,7 +1426,7 @@ class Cf7_Grid_Layout_Admin {
 	public function default_cf7_form( $template, $prop ) {
 		switch ( $prop ) {
 			case 'form':
-				$template = '<div class="cf7sg-container"><div class="cf7sg-row"><div class="cf7sg-col full"></div></div></div>';
+				$template = '';
 				break;
 			case 'mail':
 			case 'mail_2':

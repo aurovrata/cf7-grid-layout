@@ -10,196 +10,209 @@
  * @package    Cf7_Grid_Layout
  * @subpackage Cf7_Grid_Layout/admin/partials
  */
- $screen = get_current_screen();
+
+$screen = get_current_screen();
 ?>
 <?php do_action( 'wpcf7_admin_warnings', 'wpcf7', wpcf7_current_action(), null ); ?>
-<?php do_action( 'wpcf7_admin_notices' , 'wpcf7', wpcf7_current_action(), null ); ?>
-<?php //do_action( 'wpcf7_admin_menu' ); //is this needed?  Fires bulk validation on cf7 update?>
+<?php do_action( 'wpcf7_admin_notices', 'wpcf7', wpcf7_current_action(), null ); ?>
+<?php // do_action( 'wpcf7_admin_menu' ); //is this needed?  Fires bulk validation on cf7 update. ?>
 <?php
-if('add' == $screen->action) do_action( 'load-contact_page_wpcf7-new' );
-else do_action( 'load-toplevel_page_wpcf7' );
+if ( 'add' === $screen->action ) {
+	do_action( 'load-contact_page_wpcf7-new' );
+} else {
+	do_action( 'load-toplevel_page_wpcf7' );
+}
 $colour = get_user_meta( get_current_user_id(), 'admin_color', true );
-if(empty($colour)) $colour = 'default';
+if ( empty( $colour ) ) {
+	$colour = 'default';
+}
 ?>
-<div id="cf7sg-editor" class="<?=$colour?>">
-  <div style="position:relative">
-    <a id="full-screen-cf7" class="button" href="javascript:void(0)"><span><?= __('toggle full screen','cf7-grid-layout')?></span></a>
-  </div>
-  <input type="hidden" id="is-cf7sg-form" name="is_cf7sg_form" value="true" />
-  <input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
-  <input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />
-  <?php wp_nonce_field( 'wpcf7-save-contact-form_' .  $post_id, '_wpcf7nonce' ); ?>
+<div id="cf7sg-editor" class="<?php echo esc_attr( $colour ); ?>">
+	<div style="position:relative">
+	<a id="full-screen-cf7" class="button" href="javascript:void(0)"><span><?php esc_html_e( 'toggle full screen', 'cf7-grid-layout' ); ?></span></a>
+	</div>
+	<input type="hidden" id="is-cf7sg-form" name="is_cf7sg_form" value="true" />
+	<input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />
+	<input type="hidden" id="active-tab" name="active-tab" value="<?php echo isset( $_GET['active-tab'] ) ? (int) $_GET['active-tab'] : '0'; ?>" />
+	<?php wp_nonce_field( 'wpcf7-save-contact-form_' . $post_id, '_wpcf7nonce' ); ?>
 
-  <div id="contact-form-editor">
-    <div class="loading-screen"><h2><?= __('Loading form editor ...','cf7-grid-layout')?><span class="spinner"></span></h2></div>
-    <div class="keyboard-interaction"><?php echo sprintf( esc_html( __cf7sg( '%s keys switch panels') ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
+	<div id="contact-form-editor">
+	<div class="loading-screen"><h2><?php esc_html_e( 'Loading form editor ...', 'cf7-grid-layout' ); ?><span class="spinner"></span></h2></div>
+	<div class="keyboard-interaction"><?php echo sprintf( esc_html( __cf7sg( '%s keys switch panels' ) ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
 
-  <?php
+	<?php
 
-  	$editor = new WPCF7_Editor( $cf7_form );
-  	$panels = array();
+	$editor = new WPCF7_Editor( $cf7_form );
+	$panels = array();
 
-  	if ( current_user_can( 'wpcf7_edit_contact_form', $post_id ) ) {
-  		$panels = array(
-  			'form-panel' => array(
-  				'title' => __cf7sg( 'Form' ),
-  				'callback' => array($this, "grid_editor_panel{$ver}") ),
-  			'mail-panel' => array(
-  				'title' => __cf7sg( 'Mail' ),
-  				'callback' => 'wpcf7_editor_panel_mail' ),
-  			'messages-panel' => array(
-  				'title' => __cf7sg( 'Messages' ),
-  				'callback' => 'wpcf7_editor_panel_messages' ) );
+	if ( current_user_can( 'wpcf7_edit_contact_form', $post_id ) ) {
+		$panels = array(
+			'form-panel'     => array(
+				'title'    => __cf7sg( 'Form' ),
+				'callback' => array( $this, "grid_editor_panel{$ver}" ),
+			),
+			'mail-panel'     => array(
+				'title'    => __cf7sg( 'Mail' ),
+				'callback' => 'wpcf7_editor_panel_mail',
+			),
+			'messages-panel' => array(
+				'title'    => __cf7sg( 'Messages' ),
+				'callback' => 'wpcf7_editor_panel_messages',
+			),
+		);
 
-  		$additional_settings = trim( $cf7_form->prop( 'additional_settings' ) );
-  		$additional_settings = explode( "\n", $additional_settings );
-  		$additional_settings = array_filter( $additional_settings );
-  		$additional_settings = count( $additional_settings );
+		$additional_settings = trim( $cf7_form->prop( 'additional_settings' ) );
+		$additional_settings = explode( "\n", $additional_settings );
+		$additional_settings = array_filter( $additional_settings );
+		$additional_settings = count( $additional_settings );
 
-  		$panels['additional-settings-panel'] = array(
-  			'title' => $additional_settings
-  				? sprintf(
-  					__cf7sg( 'Additional Settings (%d)' ),
-  					$additional_settings )
-  				: __cf7sg( 'Additional Settings' ),
-  			'callback' => 'wpcf7_editor_panel_additional_settings' );
-  	}
-    /**
-    * filter to add/remove panels from the cf7 post editor
-    * @param Array $panel array of panels presented as tabs in the editor, $id => array( 'title' => $panel_title, 'callback' => $callback_function).  The $callback_function must be a valid function to echo the panel html script.
-    */
-  	$panels = apply_filters( 'wpcf7_editor_panels', $panels );
+		$panels['additional-settings-panel'] = array(
+			'title'    => $additional_settings
+				? sprintf(
+					__cf7sg( 'Additional Settings (%d)' ),
+					$additional_settings
+				)
+				: __cf7sg( 'Additional Settings' ),
+			'callback' => 'wpcf7_editor_panel_additional_settings',
+		);
+	}
+	/**
+	* Filter to add/remove panels from the cf7 post editor
+	*
+	* @param Array $panel array of panels presented as tabs in the editor, $id => array( 'title' => $panel_title, 'callback' => $callback_function).  The $callback_function must be a valid function to echo the panel html script.
+	*/
+	$panels = apply_filters( 'wpcf7_editor_panels', $panels );
 
-  	foreach ( $panels as $id => $panel ) {
-  		$editor->add_panel( $id, $panel['title'], $panel['callback'] );
-  	}
+	foreach ( $panels as $pid => $panel ) {
+		$editor->add_panel( $pid, $panel['title'], $panel['callback'] );
+	}
 
-  	$editor->display();
-  ?>
-  </div><!-- #contact-form-editor -->
+	$editor->display();
+	?>
+	</div><!-- #contact-form-editor -->
 
-  <form action="" class="dummy-form" data-id="dummy">
-    <!-- DUMMY FORM to prevent some wp-core scripts from tempering with cf7 tags forms printed below-->
-  </form>
-  <?php  
-  $tag_generator = WPCF7_TagGenerator::get_instance(); 
-  if('_v5' === $ver):?>
-    <div id="cf7sg-modal" class="cf7-tag-generators display-none">
-      <form id="cf7sg-field-edit">
-        <div class="cf7sg-modal-input cf7sg-row">
-          <div class="cf7sg-col three">
-            <span><?=__('Field label','cf7-grid-layout')?></span>
-          </div>
-          <div class="cf7sg-col nine">
-            <input type="text" id="cf7sg-modal-label"/>
-            <p><?=__('The label field is displayed before the field, but is optional','cf7-grid-layout')?></p>
-          </div>
-        </div>
-        <div class="cf7sg-modal-input cf7sg-row">
-          <div class="cf7sg-col three">
-            <span><?=__('Field tag','cf7-grid-layout')?></span>
-          </div>
-          <div class="cf7sg-col nine">
-            <textarea name="_cf7sg_modal_tag" rows="2"></textarea>
-          </div>
-        </div>
-        <div class="cf7sg-modal-input cf7sg-row">
-          <div class="cf7sg-col offset-eight one-third">
-            <a class="button cf7sg-edit-shortcode" href="javascript:void(0);"><?=__('Edit shortcode','cf7-grid-layout')?></a>
-          </div>
-        </div>
-        <div class="cf7sg-modal-input cf7sg-row">
-          <div class="cf7sg-col three">
-            <span><?=__('Field description','cf7-grid-layout')?></span>
-          </div>
-          <div class="cf7sg-col nine">
-            <input type="text" id="cf7sg-modal-desc"/>
-            <p><?=__('The field description is displayed after the field, but is optional','cf7-grid-layout')?></p>
-          </div>
-        </div>
-        <div class="cf7sg-modal-input cf7sg-row">
-          <div class="cf7sg-col offset-four one-third">
-            <div class="cf7sg-tag-update">
-              <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
-            </div>
-          </div>
-        </div>
-      </form>  
-      <div id="cf7sg-tag-list">
-        <h3><?= __('Select a field', 'cf7-grid-layout');?></h3>
-        <?php $tag_generator->print_buttons(); ?>
-        <span class="custom-tags"></span>
-        <p>or insert</p>
-        <a class="button custom-html" href="javascript:void(0);"><?= __('Custom HTML', 'cf7-grid-layout')?></a>
-      </div>
-      <div id="cf7sg-custom-tag">
-        <form>
-          <h3><?= __('Custom CF7 field tag', 'cf7-grid-layout');?></h3>
-          <div class="cf7sg-modal-input cf7sg-row">
-            <textarea name="_cf7sg_modal_custom_tag" rows="2"></textarea>
-          </div>
-          <div class="cf7sg-col offset-eight one-third">
-            <div class="cf7sg-tag-update">
-              <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div id="cf7sg-custom-html">
-        <form>
-          <h3><?= __('Custom HTML', 'cf7-grid-layout');?></h3>
-          <div class="cf7sg-modal-input cf7sg-row">
-            <div class="cf7sg-col full"><textarea name="_cf7sg_modal_custom" rows="10"></textarea></div>
-          </div>
-          <div class="cf7sg-modal-input cf7sg-row">
-            <div class="cf7sg-col offset-eight one-third">
-              <div class="cf7sg-tag-update">
-                <a class="button button-primary" href="javascript:void(0);"><?=__('Update','cf7-grid-layout')?></a>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  <?php endif; //_v5 ?>
+	<form action="" class="dummy-form" data-id="dummy">
+	<!-- DUMMY FORM to prevent some wp-core scripts from tempering with cf7 tags forms printed below-->
+	</form>
+	<?php
+	$tag_generator = WPCF7_TagGenerator::get_instance();
+	if ( '_v5' === $ver ) :
+		?>
+	<div id="cf7sg-modal" class="cf7-tag-generators display-none">
+		<form id="cf7sg-field-edit">
+		<div class="cf7sg-modal-input cf7sg-row">
+			<div class="cf7sg-col three">
+			<span><?php esc_html_e( 'Field label', 'cf7-grid-layout' ); ?></span>
+			</div>
+			<div class="cf7sg-col nine">
+			<input type="text" id="cf7sg-modal-label"/>
+			<p><?php esc_html_e( 'The label field is displayed before the field, but is optional', 'cf7-grid-layout' ); ?></p>
+			</div>
+		</div>
+		<div class="cf7sg-modal-input cf7sg-row">
+			<div class="cf7sg-col three">
+			<span><?php esc_html_e( 'Field tag', 'cf7-grid-layout' ); ?></span>
+			</div>
+			<div class="cf7sg-col nine">
+			<textarea name="_cf7sg_modal_tag" rows="2"></textarea>
+			</div>
+		</div>
+		<div class="cf7sg-modal-input cf7sg-row">
+			<div class="cf7sg-col offset-eight one-third">
+			<a class="button cf7sg-edit-shortcode" href="javascript:void(0);"><?php esc_html_e( 'Edit shortcode', 'cf7-grid-layout' ); ?></a>
+			</div>
+		</div>
+		<div class="cf7sg-modal-input cf7sg-row">
+			<div class="cf7sg-col three">
+			<span><?php esc_html_e( 'Field description', 'cf7-grid-layout' ); ?></span>
+			</div>
+			<div class="cf7sg-col nine">
+			<input type="text" id="cf7sg-modal-desc"/>
+			<p><?php esc_html_e( 'The field description is displayed after the field, but is optional', 'cf7-grid-layout' ); ?></p>
+			</div>
+		</div>
+		<div class="cf7sg-modal-input cf7sg-row">
+			<div class="cf7sg-col offset-four one-third">
+			<div class="cf7sg-tag-update">
+				<a class="button button-primary" href="javascript:void(0);"><?php esc_html_e( 'Update', 'cf7-grid-layout' ); ?></a>
+			</div>
+			</div>
+		</div>
+		</form>  
+		<div id="cf7sg-tag-list">
+		<h3><?php esc_html_e( 'Select a field', 'cf7-grid-layout' ); ?></h3>
+			<?php $tag_generator->print_buttons(); ?>
+		<span class="custom-tags"></span>
+		<p>or insert</p>
+		<a class="button custom-html" href="javascript:void(0);"><?php esc_html_e( 'Custom HTML', 'cf7-grid-layout' ); ?></a>
+		</div>
+		<div id="cf7sg-custom-tag">
+		<form>
+			<h3><?php esc_html_e( 'Custom CF7 field tag', 'cf7-grid-layout' ); ?></h3>
+			<div class="cf7sg-modal-input cf7sg-row">
+			<textarea name="_cf7sg_modal_custom_tag" rows="2"></textarea>
+			</div>
+			<div class="cf7sg-col offset-eight one-third">
+			<div class="cf7sg-tag-update">
+				<a class="button button-primary" href="javascript:void(0);"><?php esc_html_e( 'Update', 'cf7-grid-layout' ); ?></a>
+			</div>
+			</div>
+		</form>
+		</div>
+		<div id="cf7sg-custom-html">
+		<form>
+			<h3><?php esc_html_e( 'Custom HTML', 'cf7-grid-layout' ); ?></h3>
+			<div class="cf7sg-modal-input cf7sg-row">
+			<div class="cf7sg-col full"><textarea name="_cf7sg_modal_custom" rows="10"></textarea></div>
+			</div>
+			<div class="cf7sg-modal-input cf7sg-row">
+			<div class="cf7sg-col offset-eight one-third">
+				<div class="cf7sg-tag-update">
+				<a class="button button-primary" href="javascript:void(0);"><?php esc_html_e( 'Update', 'cf7-grid-layout' ); ?></a>
+				</div>
+			</div>
+			</div>
+		</form>
+		</div>
+	</div>
+	<?php endif; // _v5 ?>
 
-  <div id="cf7-taggenerator-forms">
-    <?php $tag_generator->print_panels( $cf7_form );?>
-  </div>
-  <?php
-  	do_action( 'wpcf7_admin_footer', $cf7_form );
+	<div id="cf7-taggenerator-forms">
+	<?php $tag_generator->print_panels( $cf7_form ); ?>
+	</div>
+	<?php
+	do_action( 'wpcf7_admin_footer', $cf7_form );
 
-    $dropdowns = get_option('_cf7sg_dynamic_dropdown_taxonomy',array());
-    $show_dropdown = array();
-    if( isset($dropdowns[$post_id]) ){
-      $show_dropdown = $dropdowns[$post_id];
-    }
-  ?>
-  <script type="text/javascript">
-  (function( $ ) {
-  	'use strict';
-    //hide the taxonomy metabox not used on this page.
-    $(document).ready(function() {
-      <?php
-      $slugs = array();
+	$dropdowns     = get_option( '_cf7sg_dynamic_dropdown_taxonomy', array() );
+	$show_dropdown = array();
+	if ( isset( $dropdowns[ $post_id ] ) ) {
+		$show_dropdown = $dropdowns[ $post_id ];
+	}
+	?>
+	<script type="text/javascript">
+	(function( $ ) {
+		'use strict';
+		//hide the taxonomy metabox not used on this page.
+		$(document).ready(function() {
+			<?php
+			$slugs = array();
 
-      foreach($dropdowns as $id => $all_lists){
-        //if($id == $post_id) continue;
-        foreach($all_lists as $slug => $taxonomy){
-          if(isset($slugs[$slug])){
-            continue;
-          }
-          if( $taxonomy['hierarchical'] ){
-            $hide_id = $slug.'div';
-          }else{
-            $hide_id = 'tagsdiv-'.$slug;
-          }
+			foreach ( $dropdowns as $pid => $all_lists ) {
+				foreach ( $all_lists as $slug => $txmy ) {
+					if ( isset( $slugs[ $slug ] ) ) {
+						continue;
+					}
+					if ( $txmy['hierarchical'] ) {
+						$hide_id = $slug . 'div';
+					} else {
+						$hide_id = 'tagsdiv-' . $slug;
+					}
 
-          echo '$("#' . $hide_id . '").hide();'.PHP_EOL;
-        }
-      }
-      ?>
-    });
-  })( jQuery );
-  </script>
+					echo '$("#' . esc_attr( $hide_id ) . '").hide();' . PHP_EOL;
+				}
+			}
+			?>
+		});
+	})( jQuery );
+	</script>
 </div>

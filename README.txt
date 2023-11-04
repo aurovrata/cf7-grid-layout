@@ -367,3 +367,4 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 * use of better modal UI in admin editor.
 * use of pure CSS toggles and tabs.
 * use of WordPress core colour scheme for admin UI.
+* new filter to change default version `cf7sg_new_cf7_form_version_5`, return false for previous.

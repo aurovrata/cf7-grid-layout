@@ -5,10 +5,11 @@
   * Javascript to handle grid editor
   * Event 'cf7sg-form-change' fired on #contact-form-editor element when codemirror changes occur
   */
-  const offsets = ['offset-one','offset-two', 'offset-three', 'offset-four', 'offset-five', 'offset-six', 'offset-seven', 'offset-eight', 'offset-nine', 'offset-ten', 'offset-eleven'],
-    columnsizes = ['one', 'two', 'one-fourth', 'one-third', 'five', 'one-half', 'seven', 'two-thirds', 'nine', 'ten', 'eleven', 'full'],
-    columnLabels={'one':'1/12','two':'1/6', 'one-fourth':'1/4', 'one-third':'1/3', 'five':'5/12', 'one-half':'1/2', 'seven':'7/12', 'two-thirds':'2/3', 'nine':'3/4', 'ten':'5/6', 'eleven':'11/12', 'full':'Full'};
-  const cf7FieldRgxp = '^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$';
+  const offsets = ['off-1','off-2', 'off-3', 'off-4', 'off-5', 'off-6', 'off-7', 'off-8', 'off-9', 'off-10', 'off-11'],
+    columnsizes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+    columnLabels={'1':'1/12','2':'1/6', '3':'1/4', '4':'1/3', '5':'5/12', '6':'1/2', '7':'7/12', '8':'2/3', '9':'3/4', '10':'5/6', '11':'11/12', 'full':'Full'};
+	const flexClassRegex = new RegExp('^sgc(?:-sm|-md|-lg){0,1}-([0-9,\\-,a-z]+)$');
+  const cf7FieldRgxp = new RegExp('^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$');
   /** @since 5.0 filter out tag fields that have form generators. */
   const cf7TagGen = Object.values(cf7grid.fieldtags).filter(v => !["count","range","captchac","captchar","reflection","select"].includes(v));
 	const uiTemplts = {};
@@ -95,7 +96,7 @@
     function buildGridForm(){
       let formhtml = $wpcf7Editor.text();
       if(0===formhtml.length){
-        formhtml = '<div class="cf7sg-container"><div class="cf7sg-row"><div class="cf7sg-col full"></div></div></div>';
+        formhtml = uiTemplts['#grid-default-form'].children().clone();
       }
       let $form = $('<div>').append( formhtml );
       let isGrid = true; //return value.
@@ -1031,17 +1032,10 @@
         let classList, idx , columns, row, newSize=0, createColumn = true, total = 0;
         let sizes = [], $newColumn = $('<div class="cf7sg-col"></div>');
         //is the row filled up?
-        //first check if the current column fills the entire row
-        if( $parentColumn.is('.full') ){
-          total = 12;
-          columns = 1;
-          sizes[0] = columnsizes.length - 1; //ie 11, the last value
-        }else{
-          row = $parentRow.getRowSize();
-          total = row.length;
-          sizes = row.cols;
-          columns = sizes.length;
-        }
+				row = $parentRow.getRowSize();
+				total = row.length;
+				sizes = row.cols;
+				columns = sizes.length;
         if(12 == total) {
           newSize = Math.floor( total/(columns + 1) ) - 1 ;
           if(newSize < 0 ){ //max columns reached
@@ -1077,6 +1071,7 @@
         }else{
           $('div.cf7-field-inner', $newColumn).hide();
         }
+				$newColumn.addClass('sgc-12'); /* TODO: by default columns are full size on mobile screens */
         $newColumn.changeColumnSize('',columnsizes[newSize]);
         $parentColumn.after($newColumn);
         return true;
@@ -1567,7 +1562,7 @@
       tag = match[2];
       field='';
       if(match.length>3){
-        fMatch = (new RegExp(cf7FieldRgxp)).exec(match[3]);
+        fMatch = (cf7FieldRgxp).exec(match[3]);
         if(fMatch && fMatch[1]){
           field = fMatch[1];
           isField = true;
@@ -1758,24 +1753,32 @@
     });
   }
   $.fn.getRowSize = function(){
-    let size, off, idx, foundSize, classList,total = 0;
+    let size, cl, idx, foundSize, isFull, classList,total = 0;
     let sizes = [0];
     $(this).children('.cf7sg-col').each(function(index){
       classList = $(this).attr('class').split(/\s+/);
-      foundSize = false;
+      foundSize = isFull = false;
       for(idx=0;idx<classList.length; idx++){
-        size = $.inArray(classList[idx], columnsizes);
-        off = $.inArray(classList[idx], offsets);
-        if(size > -1){
+				cl = classList[idx];
+				if(0!==cl.indexOf('sgc')) continue; //unknown class
+				if('sgc-12' === cl ){
+					isFull = true;
+					continue;
+				} 
+				cl = cl.match(flexClassRegex);
+				if(0===cl.indexOf('off')){ //offset
+					total += $.inArray(classList[idx], offsets) + 1;
+				}else{
+        	size = $.inArray(classList[idx], columnsizes);
           foundSize = true;
           sizes[index] = size;
           total += size + 1;
+					break; //no need to look further.
         }
-        if(off > -1) total+= off+1;
       }
-      if(!foundSize){ //by default a colum which is not set set is treated as 1
-        sizes[index] = 0;
-        total += 1;
+      if(!foundSize){ //by default a column which is not set set is treated as 1
+				sizes[index] = isFull ? 11: 0;
+				total += isFull ? 12 : 1;
       }
     });
     return {'length':total, 'cols':sizes};
@@ -1884,9 +1887,15 @@
 	$.fn.changeColumnDim = function(oldSize, newSize, menu){
 		if(!this.is('.cf7sg-col')) return false;
 		if(['offset','size'].indexOf(menu) === -1) return false;
-
-    if(oldSize.length > 0) this.removeClass(oldSize);
-    if(newSize.length > 0) this.addClass(newSize);
+		/* TODO: enable responsive layout for (sm|md|lg) */
+    if(oldSize.length > 0){ 
+			let classes = ['sm','md','lg'].map((s)=>{ return `sgc-${s}-${oldSize}`});
+			this.removeClass(classes);
+		}
+    if(newSize.length > 0){ 
+			let classes = ['sm','md','lg'].map((s)=>{ return `sgc-${s}-${newSize}`});
+			this.addClass(classes);
+		}
     let $sizeItem = this.children('.grid-column').find(`.column-${menu} .cm-item[data-cmv="${newSize}"]`);
     $sizeItem.closest('.centred-menu').css('--cf7sg-cm-val',$sizeItem.data('cmi'));
   }
