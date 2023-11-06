@@ -101,38 +101,38 @@ if ( empty( $colour ) ) {
 	<div id="cf7sg-modal" class="cf7-tag-generators display-none">
 		<form id="cf7sg-field-edit">
 		<div class="cf7sg-modal-input cf7sg-row">
-			<div class="cf7sg-col three">
+			<div class="cf7sg-col sgc-3">
 			<span><?php esc_html_e( 'Field label', 'cf7-grid-layout' ); ?></span>
 			</div>
-			<div class="cf7sg-col nine">
+			<div class="cf7sg-col sgc-9">
 			<input type="text" id="cf7sg-modal-label"/>
 			<p><?php esc_html_e( 'The label field is displayed before the field, but is optional', 'cf7-grid-layout' ); ?></p>
 			</div>
 		</div>
 		<div class="cf7sg-modal-input cf7sg-row">
-			<div class="cf7sg-col three">
+			<div class="cf7sg-col sgc-3">
 			<span><?php esc_html_e( 'Field tag', 'cf7-grid-layout' ); ?></span>
 			</div>
-			<div class="cf7sg-col nine">
+			<div class="cf7sg-col sgc-9">
 			<textarea name="_cf7sg_modal_tag" rows="2"></textarea>
 			</div>
 		</div>
 		<div class="cf7sg-modal-input cf7sg-row">
-			<div class="cf7sg-col offset-eight one-third">
+			<div class="cf7sg-col sgc-off-8 sgc-4">
 			<a class="button cf7sg-edit-shortcode" href="javascript:void(0);"><?php esc_html_e( 'Edit shortcode', 'cf7-grid-layout' ); ?></a>
 			</div>
 		</div>
 		<div class="cf7sg-modal-input cf7sg-row">
-			<div class="cf7sg-col three">
+			<div class="cf7sg-col sgc-3">
 			<span><?php esc_html_e( 'Field description', 'cf7-grid-layout' ); ?></span>
 			</div>
-			<div class="cf7sg-col nine">
+			<div class="cf7sg-col sgc-9">
 			<input type="text" id="cf7sg-modal-desc"/>
 			<p><?php esc_html_e( 'The field description is displayed after the field, but is optional', 'cf7-grid-layout' ); ?></p>
 			</div>
 		</div>
 		<div class="cf7sg-modal-input cf7sg-row">
-			<div class="cf7sg-col offset-four one-third">
+			<div class="cf7sg-col sgc-off-4 sgc-4">
 			<div class="cf7sg-tag-update">
 				<a class="button button-primary" href="javascript:void(0);"><?php esc_html_e( 'Update', 'cf7-grid-layout' ); ?></a>
 			</div>
@@ -152,7 +152,7 @@ if ( empty( $colour ) ) {
 			<div class="cf7sg-modal-input cf7sg-row">
 			<textarea name="_cf7sg_modal_custom_tag" rows="2"></textarea>
 			</div>
-			<div class="cf7sg-col offset-eight one-third">
+			<div class="cf7sg-col sgc-off-8 sgc-4">
 			<div class="cf7sg-tag-update">
 				<a class="button button-primary" href="javascript:void(0);"><?php esc_html_e( 'Update', 'cf7-grid-layout' ); ?></a>
 			</div>
@@ -163,10 +163,10 @@ if ( empty( $colour ) ) {
 		<form>
 			<h3><?php esc_html_e( 'Custom HTML', 'cf7-grid-layout' ); ?></h3>
 			<div class="cf7sg-modal-input cf7sg-row">
-			<div class="cf7sg-col full"><textarea name="_cf7sg_modal_custom" rows="10"></textarea></div>
+			<div class="cf7sg-col sgc-12"><textarea name="_cf7sg_modal_custom" rows="10"></textarea></div>
 			</div>
 			<div class="cf7sg-modal-input cf7sg-row">
-			<div class="cf7sg-col offset-eight one-third">
+			<div class="cf7sg-col sgc-off-8 sgc-4">
 				<div class="cf7sg-tag-update">
 				<a class="button button-primary" href="javascript:void(0);"><?php esc_html_e( 'Update', 'cf7-grid-layout' ); ?></a>
 				</div>

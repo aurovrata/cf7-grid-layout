@@ -373,7 +373,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		<span class="dashicons dashicons-plus row-control grid-control"></span>
 		<span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
 		</div>
-		<div class="cf7sg-col sgc-full">
+		<div class="cf7sg-col sgc-12">
 		<template class="inner-template">#grid-col</template>
 		</div>
 	</div>
@@ -458,7 +458,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		<span class="dashicons dashicons-admin-generic row-control grid-control"></span>
 		<span class="dashicons dashicons-trash row-control grid-control"></span>
 		</div>
-		<div class="cf7sg-col cf7sg-collapsible-inner sgc-full">
+		<div class="cf7sg-col cf7sg-collapsible-inner sgc-12">
 		<template class="inner-template">#grid-row</template>
 		</div>
 	</div>
@@ -482,7 +482,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 			<input type="radio" class="display-none cf7sg-tab-radio" id="" name="lbl-" value="tab-1" checked/>
 			<ul class="cf7sg-tab-title" data-tplt="title (cnt)" data-title=""><li><label for=""></label><span class="dashicons dashicons-dismiss cf7sg-tab-dismis"></span></li></ul>
 			<a class="cf7sg-tab-button button"><?php esc_html_e( 'Add tab', 'cf7-grid-layout' ); ?></a>
-			<div class="cf7sg-col cf7sg-tabs-panel sgc-full">
+			<div class="cf7sg-col cf7sg-tabs-panel sgc-12">
 				<template class="inner-template">#grid-row</template>
 		</div>
 	</div>
@@ -490,7 +490,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 </template>
 <template id="grid-table-footer-row">
 	<div class="cf7sg-row cf7-sg-table-footer-row">
-	<div class="cf7sg-col sgc-full">
+	<div class="cf7sg-col sgc-12">
 		<div class="grid-column-tip">
 		<div class="cf7-field-tip cf7-field-inner">
 			<p class="content" style=""><?php esc_html_e( 'describe your table here', 'cf7-grid-layout' ); ?></p>
@@ -505,7 +505,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 <template id="grid-multistep-container">
 	<div class="cf7sg-container cf7sg-slider">
 	<div class="cf7sg-row">
-		<div class="cf7sg-col sgc-full cf7sg-slider-section" data-next="" data-prev="" data-submit="<?php esc_attr_e( 'Submit', 'cf7-grid-layout' ); ?>" data-dots="true">
+		<div class="cf7sg-col sgc-12 cf7sg-slider-section" data-next="" data-prev="" data-submit="<?php esc_attr_e( 'Submit', 'cf7-grid-layout' ); ?>" data-dots="true">
 		<div class="cf7sg-container cf7sg-slide" id="">
 			<div class="cf7sg-slide-title"><span class="cf7sg-title"></span></div>
 			<div class="cf7sg-row">
@@ -520,7 +520,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 				<span class="dashicons dashicons-no-alt row-control grid-control"></span>
 				<span class="dashicons dashicons-trash row-control grid-control"></span>
 			</div>
-			<div class="cf7sg-col sgc-full">
+			<div class="cf7sg-col sgc-12">
 				<template class="inner-template">#grid-row</template>
 			</div>
 			</div>
