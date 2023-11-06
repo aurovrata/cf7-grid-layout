@@ -379,6 +379,9 @@ textarea.grid-input {
 #cf7-editor-grid .grid-column:hover > *{
 	border-right: solid 0.3em var(--cf7sg-col-default);
 }
+#cf7-editor-grid .cf7sg-grid .grid-column:hover > * {
+	border: none;
+}
 #cf7-editor-grid .grid-column > .cf7sg-col-add.dashicons {
 	opacity: 0;
 	position: absolute;
@@ -428,6 +431,10 @@ textarea.grid-input {
 #cf7-editor-grid .grid-column:hover > .cf7sg-col-add.dashicons {
 	opacity: 1;
 	right: -1.7em;
+}
+#cf7-editor-grid .cf7sg-grid .grid-column:hover > .cf7sg-col-add.dashicons {
+	opacity: 0;
+	right: 0;
 }
 
 #grid-form .cf7sg-col.cf7sg-grid > .cf7sg-row .cf7sg-col::after,
@@ -936,7 +943,7 @@ position: relative;
 #grid-form .cf7sg-container > .cf7sg-row > .cf7sg-col > .cf7sg-row .grid-column:hover > .cf7sg-responsive .dashicons-editor-code {
 	display: inline-block;
 	position: absolute;
-	z-index: 2;
+	z-index: 33;
 	right: 0;
   background-color: none;
 }
@@ -1304,6 +1311,13 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
   z-index: 18;
   min-width: 162px;
   right: 0;
+}
+#grid-form .cf7sg-col.cf7sg-grid .cf7sg-col .grid-column:hover > .cf7sg-responsive {
+	position: relative;
+	top: 0;
+	border: none;
+	z-index: 33;
+	float: right;
 }
 #grid-form .sgc-lg-1 > .grid-column .cf7sg-responsive {
 	display: none;
