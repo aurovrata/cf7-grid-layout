@@ -19,3 +19,5 @@ Similarly to the column layouts, any offsets will have 3 classes added (`sgc-sm-
 ### Responsive layouts
 
 in a future version of this plugin, users will be able to change the column layout for each screen size.
+
+When selecting a screen size, only allow users to change the column size, but not the number of columns.  Number of columns is set in general (large screen mode) and then the size they render to on smaller screens can be changed.

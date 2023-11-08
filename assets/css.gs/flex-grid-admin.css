@@ -23,8 +23,8 @@
   flex-direction: cf7sg-row;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-right: -0.5rem;
-  margin-left: -0.5rem;
+  /* margin-right: -0.5rem;
+  margin-left: -0.5rem; */
 }
 
 .cf7sg-row.cf7sg-align-reverse {

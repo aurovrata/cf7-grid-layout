@@ -8,7 +8,8 @@
   const offsets = ['off-1','off-2', 'off-3', 'off-4', 'off-5', 'off-6', 'off-7', 'off-8', 'off-9', 'off-10', 'off-11'],
     columnsizes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
     columnLabels={'1':'1/12','2':'1/6', '3':'1/4', '4':'1/3', '5':'5/12', '6':'1/2', '7':'7/12', '8':'2/3', '9':'3/4', '10':'5/6', '11':'11/12', 'full':'Full'};
-	const flexClassRegex = new RegExp('^sgc(?:-sm|-md|-lg){0,1}-([0-9,\\-,a-z]+)$');
+	const lgAlignClasses = ['cf7sg-align-top-lg', 'cf7sg-align-middle-lg','cf7sg-align-bottom-lg'];
+	const flexlgClassRegex = new RegExp('^sgc-lg(?:-off){0,1}-([0-9]+)$');
   const cf7FieldRgxp = new RegExp('^([^\\s=\"\':]+)([\\s]+(([^\"]+\\s)+)?(\\"source:([^\\s\":]+)?(:[^\\s]*)?\\")?\\s?(\\"slug:([^\\s\":]+)(:[^\\s]*)?\\")?(?:.*)?)?$');
   /** @since 5.0 filter out tag fields that have form generators. */
   const cf7TagGen = Object.values(cf7grid.fieldtags).filter(v => !["count","range","captchac","captchar","reflection","select"].includes(v));
@@ -585,7 +586,7 @@
 				  $container = $target.closest('.cf7sg-container'), //the current row modal settings.
 					$gridModal=  $('#cf7sg-grid-modal').html($('#cf7sg-grid-modal-tpl').html()),
 					$innerSection = $gridModal.children('section.grid-ctrls').attr('class',cl),
-					$type = $('.cf7sg-switch-vertical > input', $innerSection);
+					$type = $('.cf7sg-switch-vertical:not(.alignment) > input', $innerSection);
 				
 				$innerSection.siblings('section').remove();
         $gridModal.modal();
@@ -606,7 +607,12 @@
 								$type.filter('input#svcoll').prop('disabled', true); //cannot have collapsbile within toggled.
 								$type.filter('input#svtabs').prop('disabled', true); //cannot have tabs within toggle.
 								break;
-
+							case $container.children('.cf7sg-row').is('.cf7sg-align-middle-lg'):
+								$('input#svmiddle', $innerSection).get(0).checked = true;
+								break;
+							case $container.children('.cf7sg-row').is('.cf7sg-align-bottom-lg'):
+								$('input#svbottom', $innerSection).get(0).checked = true;
+								break;
 						}
 						break;
 					default: //other row type.	
@@ -641,6 +647,10 @@
 					switch(true){
 						case $t.is('.cf7sg-uirs-tab'): //tab change.
 							break; //noting to do here.
+						case $t.is('.cf7sg-uirs-valign'): //change row type.
+								type = $t.attr('id').replace('sv','');
+								$container.children('.cf7sg-row').removeClass(lgAlignClasses).addClass(`cf7sg-align-${type}-lg`);
+							break;
 						case $t.is('.cf7sg-uirs-rowtype'): //change row type.
 							//convert row
 							switch(true){
@@ -1765,15 +1775,19 @@
 					isFull = true;
 					continue;
 				} 
-				cl = cl.match(flexClassRegex);
-				if(0===cl.indexOf('off')){ //offset
-					total += $.inArray(classList[idx], offsets) + 1;
-				}else{
-        	size = $.inArray(classList[idx], columnsizes);
-          foundSize = true;
-          sizes[index] = size;
-          total += size + 1;
-					break; //no need to look further.
+				cl = cl.match(flexlgClassRegex);
+				switch(true){
+					case null === cl:
+						break;  //other class;
+					case cl[0].indexOf('off') > 0: //offset
+						total += parseInt(cl[1]);
+						break;
+					case false === foundSize:
+        		size = parseInt(cl[1])-1;
+          	foundSize = true;
+          	sizes[index] = size;
+          	total += size+1;
+						break; 
         }
       }
       if(!foundSize){ //by default a column which is not set set is treated as 1

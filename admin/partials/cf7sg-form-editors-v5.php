@@ -142,7 +142,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		<h3 class="display-none cf7sg-uics"><?php esc_html_e( 'Column Settings', 'cf7-grid-layout' ); ?></h3>
 		<h3 class="display-none cf7sg-uiss"><?php esc_html_e( 'Slide Settings', 'cf7-grid-layout' ); ?></h3>
 		<h3 class="display-none cf7sg-uifs"><?php esc_html_e( 'Form Settings', 'cf7-grid-layout' ); ?></h3>
-	<div class="grid-controls">
+		<div class="grid-controls">
 			<div class="cf7sg-uirs">
 					<input id="cf7sg-uirs-g" type="radio" name="cf7sg-uirst" checked="checked" class="cf7sg-uirs-tab"/>
 					<label for="cf7sg-uirs-g"><span><?php esc_html_e( 'General', 'cf7-grid-layout' ); ?></span></label>
@@ -175,7 +175,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 					<div class="cf7sg-uirs-label"><?php esc_html_e( 'Toggled', 'cf7-grid-layout' ); ?></div>
 					<div class="cf7sg-uirs-ctrl">
 						<input id="cf7sg-uirs-coll-tgl" type="checkbox" class="collapsible-toggle" /><?php esc_html_e( 'enable togle switch', 'cf7-grid-layout' ); ?>
-						<p class="important-info"><em><?php esc_html_e( 'NOTE: Fields within a toggled and collapsed section are <strong>disabled</strong> and not submitted.', 'cf7-grid-layout' ); ?></em></p>
+						<p class="important-info"><em><?php esc_html_e( 'NOTE: Fields within a toggled collapsed sections are conditional, even if marked as required. Only if the user toggles the section open are the fields submitted and validated.', 'cf7-grid-layout' ); ?></em></p>
 						<div class="cf7sg-uirs-toggled">
 							<label><?php esc_html_e( 'Toggle labels', 'cf7-grid-layout' ); ?>: <?php esc_html_e( 'On', 'cf7-grid-layout' ); ?>-</label>
 							<input size="6" type="text" value="Yes" id="cf7sg-is-toggled"/> | 
@@ -277,6 +277,30 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 						<div class="cf7sg-uirs-cg">
 							<label for="conditional-grp-name"><?php esc_html_e( 'Group name', 'cf7-grid-layout' ); ?></label>
 							<input type="text" id="conditional-grp-name"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="cf7sg-uirs cf7sg-uirs-align">
+				<input id="cf7sg-uirs-align"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
+				<label for="cf7sg-uirs-align">
+					<span class="cf7sg-uirs"><?php esc_html_e( 'Align Row', 'cf7-grid-layout' ); ?></span>
+					<!-- <span class="display-none cf7sg-uics"><?php esc_html_e( 'Conditional Column', 'cf7-grid-layout' ); ?></span> -->
+				</label>
+				<div class="cf7sg-settab">
+					<div class="cf7sg-uirs-label"><?php esc_html_e( 'Alignment', 'cf7-grid-layout' ); ?></div>
+					<div class="cf7sg-uirs-ctrl">
+						<p><?php esc_html_e( 'Vertical row alignment', 'cf7-grid-layout' ); ?></p>
+						<div class="cf7sg-switch-vertical alignment">
+							<input id="svtop" type="radio" name="cf7sg-valign-switch" checked="checked" class="cf7sg-uirs-valign"/>
+							<label for="svtop"><?php esc_html_e( 'Top', 'cf7-grid-layout' ); ?></label>
+							<input id="svmiddle" type="radio" name="cf7sg-valign-switch" class="cf7sg-uirs-valign"/>
+							<label for="svmiddle"><?php esc_html_e( 'Middle', 'cf7-grid-layout' ); ?></label>
+							<input id="svbottom" type="radio" name="cf7sg-valign-switch" class="cf7sg-uirs-valign"/>
+							<label for="svbottom"><?php esc_html_e( 'Bottom', 'cf7-grid-layout' ); ?></label>
+							<span class="cf7sg-toggle-outside">
+								<span class="cf7sg-toggle-inside"></span>
+							</span>
 						</div>
 					</div>
 				</div>
