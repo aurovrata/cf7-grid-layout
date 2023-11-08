@@ -953,10 +953,19 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
           // console.log(e.detail);
           cf7.querySelectorAll( '.cf7sg-response-output' ).forEach( div => {
             let msg = e.detail.apiResponse.message;
-            if(msg.indexOf('cf7sg->redirect:')==0){
-              location = msg.replace('cf7sg->redirect:', '');
+						console.log(e.detail.apiResponse);
+						if('undefined' != typeof e.detail.apiResponse.cf7sgResponse){
+							msg = e.detail.apiResponse.cf7sgResponse
+            if('undefined' != typeof msg.redirect ){
+              location = msg.redirect;
               return false; //exit forEach.
-      			}else div.innerHTML = `${msg}<div class="wpcf7-response-output"></div>`;
+      			}else if('undefined' != typeof msg[e.detail.apiResponse.status])
+							msg = msg[e.detail.apiResponse.status];
+						}else{
+							msg = e.detail.apiResponse.message;
+						}
+						div.innerHTML = `${msg}<div class="wpcf7-response-output"></div>`;
+
       		})
         }
       })

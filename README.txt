@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitive fields, form custom JavaScript
 Requires at least: 4.7
 Requires PHP: 5.6
-Tested up to: 6.1.1
-Stable tag: trunk
+Tested up to: 6.4.0
+Stable tag: 4.15.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -355,6 +355,10 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 24. (24) Redirect your form on submission to one of your existing pages and retrieve the submitted values from a transient field.
 
 == Changelog ==
+= 4.15.5 =
+* fix for custom HTML rich response messages.
+* deprecated filter 'cf7sg_submission_success_message'
+* new filter 'cf7sg_submission_response'
 = 4.15.4 =
 * fix dynamic field validation.
 = 4.15.3 =

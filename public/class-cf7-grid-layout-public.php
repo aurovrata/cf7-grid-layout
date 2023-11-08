@@ -2147,21 +2147,28 @@ class Cf7_Grid_Layout_Public {
   }
   /**
   * Enable HTML messages in cf7 submission messages.
-  * Hooked on 'wpcf7_mail_sent' action fired after the submission response has been set.
-  *@since 4.11.0
+  * Hooked on 'wpcf7_submission_result' action fired after the submission response has been set.
+  *@since 4.15.5
   *@param WPCF7_ContactForm $form cfy form
   */
-  public function change_submission_msg($form){
-    if(has_filter('cf7sg_submission_success_message') || has_filter('cf7sg_redirect_on_success')){
-      if(is_a($form, 'WPCF7_ContactForm')){
+  public function change_submission_msg($results, $submitted){
+    if(has_filter('cf7sg_submission_response') || has_filter('cf7sg_submission_success_message') || has_filter('cf7sg_redirect_on_success')){
+
+      if(is_a($submitted, 'WPCF7_Submission')){
         $submitted = WPCF7_Submission::get_instance();
         $data = $submitted->get_posted_data();
+				$form = $submitted->get_contact_form();
+				$status = $submitted->get_status();
         $cf7key = get_cf7form_key( $form->id() );
-        $message = apply_filters('cf7sg_submission_success_message', $form->message( 'mail_sent_ok' ), $data, $cf7key);
+        $message = apply_filters_deprecated('cf7sg_submission_success_message', array( $results['message'], $data, $cf7key ), '',__( 'this filter is no longer available', 'cf7-grid-layout' ) );
+				$message = apply_filters('cf7sg_submission_response', $message, $status, $data, $cf7key);
+				$results['cf7sgResponse'][$status] =  $message;
         $url = apply_filters('cf7sg_redirect_on_success', '', $data, $cf7key);
-        if(wp_http_validate_url($url)) $message = 'cf7sg->redirect:' . $url;
-        $submitted->set_response( $message );
+        if(!empty($url) && wp_http_validate_url($url)){
+					$results['cf7sgResponse']['redirect'] = $url;
+				}
       }
+			return $results;
     }
   }
 }
