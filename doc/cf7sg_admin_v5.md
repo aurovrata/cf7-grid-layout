@@ -21,3 +21,9 @@ Similarly to the column layouts, any offsets will have 3 classes added (`sgc-sm-
 in a future version of this plugin, users will be able to change the column layout for each screen size.
 
 When selecting a screen size, only allow users to change the column size, but not the number of columns.  Number of columns is set in general (large screen mode) and then the size they render to on smaller screens can be changed.
+
+When switching to responsive mode on the UI editor,
+
+`$.fn.setColumnUIControl` will need to be called to reset the column dropdown fields to the selected screen size classes.
+`$.fn.filterColumnControls` do the menus need to be filtered ?  as no longer maintaining 12 col sizes.
+`if( $target.is('.centred-menu.column-setting *') ) { //----- show column sizes`  so display the column menu and change the column size will need to deal with the curretn screen size classes.

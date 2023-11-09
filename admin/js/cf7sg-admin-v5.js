@@ -920,13 +920,35 @@
           }else if( $menu.is('.column-size') ){
             validation = columnsizes;
           }
-          let classList = $parentColumn.get(0).classList;
+          let classList = $parentColumn.get(0).classList, 
+						classValidation = validation.map((i)=>{ return `sgc-lg-${i}`}),
+						size        = 12, 
+						hasMd  = false,
+						hasSm  = false,
+						classes     = null,
+						preClasses  = ['lg', 'md', 'sm'];
+
           for(let idx=0; idx<classList.length; idx++){
-            if(validation.indexOf(classList.item(idx)) > -1){
-              $parentColumn.removeClass(classList.item(idx));
+						size = classValidation.indexOf(classList.item(idx)); 
+            if( size > -1){
+							hasMd = $parentColumn.is(`.sgc-md-${validation[size]}`);
+							hasSm = $parentColumn.is(`.sgc-sm-${validation[size]}`);
+							if(!hasMd || !hasSm){
+								preClasses = preClasses.filter((i)=>{ 
+									if(!hasMd && 'md'==i) return false;
+									if(!hasSm && 'sm'==i) return false;
+									return true;
+								});
+							}
+							classes = preClasses.map((s)=>{ return `sgc-${s}-${size+1}`});
+              $parentColumn.removeClass(classes); //clean up the column of old classes
+							break; //don't expect more classes.
             }
           }
-          $parentColumn.addClass($target.data('cmv'));
+					//add the new classes.
+					size = $target.data('cmv');
+					classes = preClasses.map((s)=>{ return `sgc-${s}-${size}`});
+          $parentColumn.addClass(classes);
         }else{//filter the option list before opening
           $parentColumn.filterColumnControls();
         }
@@ -1918,23 +1940,28 @@
     if(!this.is('.cf7sg-col') ) return false;
 
     let $col = $(this), classes = $col.get(0).classList,
+		  foundSize = false, 
       $cmSize = $col.children('.grid-column').find('.column-size'),
       $cmOffset = $col.children('.grid-column').find('.column-offset');
     
-    $cmSize.css('--cf7sg-cm-val',0);//default for no classes
+    $cmSize.css('--cf7sg-cm-val',11);//default for no classes, assuming sgc-12
     $cmOffset.css('--cf7sg-cm-val',0);//default for no classes
     for(let idx = 0; idx<classes.length; idx++){
       let c = classes.item(idx), size=0;
       if('cf7sg-col'==c) continue;
-      size = columnsizes.indexOf(c);
-      if(size>-1) $cmSize.css('--cf7sg-cm-val',size);
-      else{
-        size = offsets.indexOf(c);
-        if(size>-1){ 
-					$cmOffset.css('--cf7sg-cm-val',size);
+			c = c.match(flexlgClassRegex);
+			switch(true){
+				case null === c:
+					continue; //look for next class;
+				case c[0].indexOf('off') > 0: //offset
+					$cmOffset.css('--cf7sg-cm-val', parseInt(c[1]) -1 );
 					$cmOffset.removeClass('unset');
-				}
-      }
+					break;
+				case false === foundSize :
+					$cmSize.css('--cf7sg-cm-val', parseInt(c[1]) -1 );
+					foundSize = true;
+					break;
+			}
     }
   }
 	/** funtion to filter column settings size/offset dropdown list. */

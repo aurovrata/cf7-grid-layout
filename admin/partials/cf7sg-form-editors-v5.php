@@ -88,7 +88,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		<li><a class="button" href="#cf7-editor-grid"><?php esc_html_e( 'Grid', 'cf7-grid-layout' ); ?></a></li>
 		<li><a class="button" href="#cf7-codemirror">&lt;HTML/&gt;</a></li>
 	</ul>
-	<div id="cf7-editor-grid" style="--cf7sg-col-label:'<?php esc_html_e( 'Col', 'cf7-grid-layout' ); ?>'">
+	<div id="cf7-editor-grid" style="--cf7sg-col-label:'<?php /* esc_attr_e( 'Col', 'cf7-grid-layout' ); */ ?>'">
 		<div class="cf7sg-hide-grid display-none">
 		<p class="full-ui"><?php esc_html_e( 'Please toggle to full screen mode to edit this form', 'cf7-grid-layout' ); ?></p>
 		<p class="no-ui display-none"><?php esc_html_e( 'Your device screen is too small to edit this form, use the HTML editor instead.', 'cf7-grid-layout' ); ?></p>
@@ -135,6 +135,15 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 			<div class="cf7sg-col sgc-12"></div>
 		</div>
 	</div>
+	<div class="cf7sg-container">
+	<div class="cf7sg-row">
+		<div class="cf7sg-col sgc-12 sgc-lg-4 sgc-md-4 sgc-sm-4 sgc-lg-off-8 sgc-md-off-8 sgc-sm-off-8 cf7sgfocus">
+			<div class="cf7sg-field"><label for=""></label>[submit "<?php /* translators: form submit field label */ esc_attr_e( 'Submit', 'cf7-grid-layout' ); ?>"]
+				<p class="info-tip"></p>
+			</div>
+		</div>
+	</div>
+</div>
 </template>
 <template id="cf7sg-grid-modal-tpl">
 	<section class="grid-ctrls">
@@ -213,34 +222,34 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl">
 						<select id="cf7sg-uisc-off">
 							<option value=""><?php esc_html_e( 'no offset', 'cf7-grid-layout' ); ?></option>
-							<option value="off-1">1/12</option>
-							<option value="off-2">1/6</option>
-							<option value="off-3"><?php esc_html_e( 'one quarter', 'cf7-grid-layout' ); ?></option>
-							<option value="off-4"><?php esc_html_e( 'one third', 'cf7-grid-layout' ); ?></option>
-							<option value="off-5">5/12</option>
-							<option value="off-6"><?php esc_html_e( 'one half', 'cf7-grid-layout' ); ?></option>
-							<option value="off-7">7/12</option>
-							<option value="off-8"><?php esc_html_e( 'two thirds', 'cf7-grid-layout' ); ?></option>
-							<option value="off-9"><?php esc_html_e( 'three quarters', 'cf7-grid-layout' ); ?></option>
-							<option value="off-10">5/6</option>
-							<option value="off-11">11/12</option>
+							<option value="off-1">1</option>
+							<option value="off-2">2</option>
+							<option value="off-3">3 (1/4)</option>
+							<option value="off-4">4 (1/3)</option>
+							<option value="off-5">5</option>
+							<option value="off-6">6 (1/2)</option>
+							<option value="off-7">7</option>
+							<option value="off-8">8 (2/3)</option>
+							<option value="off-9">9 (3/4)</option>
+							<option value="off-10">10</option>
+							<option value="off-11">11</option>
 						</select>
 					</div>
 					<div class="cf7sg-uirs-label"><?php esc_html_e( 'Column width', 'cf7-grid-layout' ); ?></div>
 					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl">
 						<select id="cf7sg-uisc-size">
-							<option value="1">1/12</option>
-							<option value="2">1/6</option>
-							<option value="3"><?php esc_html_e( 'one quarter', 'cf7-grid-layout' ); ?></option>
-							<option value="4"><?php esc_html_e( 'one third', 'cf7-grid-layout' ); ?></option>
-							<option value="5">5/12</option>
-							<option value="6"><?php esc_html_e( 'one half', 'cf7-grid-layout' ); ?></option>
-							<option value="7">7/12</option>
-							<option value="8"><?php esc_html_e( 'two thirds', 'cf7-grid-layout' ); ?></option>
-							<option value="9"><?php esc_html_e( 'three quarters', 'cf7-grid-layout' ); ?></option>
-							<option value="10">5/6</option>
-							<option value="11">11/12</option>
-							<option value="12"><?php esc_html_e( 'full', 'cf7-grid-layout' ); ?></option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3 (1/4)</option>
+							<option value="4">4 (1/3)</option>
+							<option value="5">5</option>
+							<option value="6">6 (1/2)</option>
+							<option value="7">7</option>
+							<option value="8">8 (2/3)</option>
+							<option value="9">9 (3/4)</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12 (<?php esc_html_e( 'full', 'cf7-grid-layout' ); ?>)</option>
 						</select>
 					</div>
 					<div class="cf7sg-uirs-label"><?php esc_html_e( 'Column layout', 'cf7-grid-layout' ); ?></div>
@@ -586,34 +595,34 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		<div class="column-offset centred-menu column-setting unset" style="--cf7sg-cm-val:0">
 			<div class="cm-list">
 			<div class="cm-item" data-cmi="0" data-cmv="">[.]</div>
-			<div class="cm-item" data-cmi="1" data-cmv="off-1">[1/12]</div>
-			<div class="cm-item" data-cmi="2" data-cmv="off-two">[1/6]</div>
-			<div class="cm-item" data-cmi="3" data-cmv="off-3">[1/4]</div>
-			<div class="cm-item" data-cmi="4" data-cmv="off-4">[1/3]</div>
-			<div class="cm-item" data-cmi="5" data-cmv="off-5">[5/12]</div>
-			<div class="cm-item" data-cmi="6" data-cmv="off-6">[1/2]</div>
-			<div class="cm-item" data-cmi="7" data-cmv="off-7">[7/12]</div>
-			<div class="cm-item" data-cmi="8" data-cmv="off-8">[2/3]</div>
-			<div class="cm-item" data-cmi="9" data-cmv="off-9">[3/4]</div>
-			<div class="cm-item" data-cmi="10" data-cmv="off-10">[5/6]</div>
-			<div class="cm-item" data-cmi="11" data-cmv="off-11">[11/12]</div>
+			<div class="cm-item" data-cmi="1" data-cmv="off-1">[1]</div>
+			<div class="cm-item" data-cmi="2" data-cmv="off-two">[2]</div>
+			<div class="cm-item" data-cmi="3" data-cmv="off-3">[3]</div>
+			<div class="cm-item" data-cmi="4" data-cmv="off-4">[4]</div>
+			<div class="cm-item" data-cmi="5" data-cmv="off-5">[5]</div>
+			<div class="cm-item" data-cmi="6" data-cmv="off-6">[6]</div>
+			<div class="cm-item" data-cmi="7" data-cmv="off-7">[7]</div>
+			<div class="cm-item" data-cmi="8" data-cmv="off-8">[8]</div>
+			<div class="cm-item" data-cmi="9" data-cmv="off-9">[9]</div>
+			<div class="cm-item" data-cmi="10" data-cmv="off-10">[10]</div>
+			<div class="cm-item" data-cmi="11" data-cmv="off-11">[11]</div>
 			</div>
 		</div>
 		<span class="popup-helper  display-none"><?php esc_html_e( 'Column offset', 'cf7-grid-layout' ); ?></span>
 		<div class="column-size centred-menu column-setting" style="--cf7sg-cm-val:11">
 			<div class="cm-list">
-			<div class="cm-item" data-cmi="0" data-cmv="1">1/12</div>
-			<div class="cm-item" data-cmi="1" data-cmv="2">1/6</div>
-			<div class="cm-item" data-cmi="2" data-cmv="3">1/4</div>
-			<div class="cm-item" data-cmi="3" data-cmv="4">1/3</div>
-			<div class="cm-item" data-cmi="4" data-cmv="5">5/12</div>
-			<div class="cm-item" data-cmi="5" data-cmv="6">1/2</div>
-			<div class="cm-item" data-cmi="6" data-cmv="7">7/12</div>
-			<div class="cm-item" data-cmi="7" data-cmv="8">2/3</div>
-			<div class="cm-item" data-cmi="8" data-cmv="9">3/4</div>
-			<div class="cm-item" data-cmi="9" data-cmv="10">5/6</div>
-			<div class="cm-item" data-cmi="10" data-cmv="11">11/12</div>
-			<div class="cm-item" data-cmi="11" data-cmv="12">Full</div>
+			<div class="cm-item" data-cmi="0" data-cmv="1">1</div>
+			<div class="cm-item" data-cmi="1" data-cmv="2">2</div>
+			<div class="cm-item" data-cmi="2" data-cmv="3">3 (1/4)</div>
+			<div class="cm-item" data-cmi="3" data-cmv="4">4 (1/3)</div>
+			<div class="cm-item" data-cmi="4" data-cmv="5">5</div>
+			<div class="cm-item" data-cmi="5" data-cmv="6">6 (1/2)</div>
+			<div class="cm-item" data-cmi="6" data-cmv="7">7</div>
+			<div class="cm-item" data-cmi="7" data-cmv="8">8 (2/3)</div>
+			<div class="cm-item" data-cmi="8" data-cmv="9">9 (3/4)</div>
+			<div class="cm-item" data-cmi="9" data-cmv="10">10</div>
+			<div class="cm-item" data-cmi="10" data-cmv="11">11</div>
+			<div class="cm-item" data-cmi="11" data-cmv="12">12 (<?php esc_html_e( 'full', 'cf7-grid-layout' ); ?>)</div>
 			</div>
 		</div>
 		<span class="popup-helper display-none"><?php esc_html_e( 'Column size', 'cf7-grid-layout' ); ?></span>
