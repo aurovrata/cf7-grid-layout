@@ -138,8 +138,8 @@ label.grouping-option:hover + span.popup{
 	left: auto;
 	font-weight: normal;
 }
-#grid-form .js-help + .cf7sg-helper-list{margin-top:39px;}
-span.js-icon.column-control{
+/* #grid-form .js-help + .cf7sg-helper-list{margin-top:39px;} */
+/* span.js-icon.column-control{
   background-image: url('./image/js-sprite.png');
 width: 13px;
 display: inline-block;
@@ -154,7 +154,7 @@ display: inline-block;
 height: 13px;
 background-size: 200%;
 margin-top: 2px;}
-.php-icon.column-control:hover {background-position-x: 26px;}
+.php-icon.column-control:hover {background-position-x: 26px;} */
 
 /*
 grid layout
@@ -464,13 +464,13 @@ textarea.grid-input {
 #grid-form .cf7sg-tag-dynamic_select:last-child {
     margin: 0;
 }
-#grid-form .cf7sg-helper-list {
+/* #grid-form .cf7sg-helper-list {
     margin: 0;
     margin-top: 44px;
     padding: 2px 5px 8px 5px;
     background: white;
-}
-#grid-form .php-icon {
+} */
+/* #grid-form .php-icon {
     position: relative;
 }
 #grid-form .php-icon + div.helper-popup,
@@ -480,7 +480,7 @@ textarea.grid-input {
     background: #d8d8d8;
     border: solid 1px #787878;
     width: max-content;
-}
+} */
 #grid-form .helper-popup p {
     margin: 0;
     position: absolute;

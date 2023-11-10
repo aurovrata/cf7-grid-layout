@@ -1677,45 +1677,30 @@
     * setup fields for tag specific filters/actions.
     */
     //for each tag get corresponding set of filters.
-    let helperUsed = false, jsHelperUsed=false,len = type.length, jlen=0;
-    search = '';
+		search = '';
     // console.log(hooks);
-    for (let i = 0; i < len; i++) {
-      for (let j=0, jlen = hooks[i].length; j<jlen; j++){
+    for (let i = 0; i < type.length; i++) {
+      for (let j=0; j < hooks[i].length; j++){
         search += 'li.'+hooks[i][j]+',';
       }
       search = search.slice(0,-1); //remove last ','
       if($( search ,$('#fieldhelperdiv')).length>0){
-        //this tag has some filters.
-        if(helperUsed){
-          let $clone = $helper.clone();
-          $helper.after($clone);
-          $helper = $clone;
-        }
-        helperUsed = true;
         $helper.attr('data-field', fields[i]);
         $helper.attr('data-tag', type[i]);
         $helper.attr('data-search', search);
-        $helper.show();
+        // $helper.show();
       }
       //js helpers.
-      search='', jlen = jshooks[i].length;
-      for (let j=0; j<jlen; j++){
+      search='';
+      for (let j=0; j < jshooks[i].length; j++){
         search += 'li.'+jshooks[i][j]+',';
       }
       search = search.slice(0,-1); //remove last ','
       if($( search ,$('#fieldhelperjs')).length>0){
-        //this tag has some filters.
-        if(jsHelperUsed){
-          let $clone = $jshelper.clone();
-          $jshelper.after($clone);
-          $jshelper = $clone;
-        }
-        jsHelperUsed = true;
         $jshelper.attr('data-field', fields[i]);
         $jshelper.attr('data-tag', type[i]);
         $jshelper.attr('data-search', search);
-        $jshelper.show();
+        // $jshelper.show();
       }
     }
     if(isSubmit){

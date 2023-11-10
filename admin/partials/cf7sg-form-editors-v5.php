@@ -404,7 +404,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		<span class="dashicons dashicons-admin-generic row-control grid-control"></span>
 		<span class="dashicons dashicons-trash row-control grid-control"></span>
 		<span class="dashicons dashicons-plus row-control grid-control"></span>
-		<span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
+		<span class="php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
 		</div>
 		<div class="cf7sg-col sgc-12">
 		<template class="inner-template">#grid-col</template>
@@ -549,7 +549,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 				<span class="slide-title"></span>
 				</span>
 				<span class="dashicons dashicons-admin-generic row-control grid-control"></span>
-				<span class="dashicons php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
+				<span class="php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
 				<span class="dashicons dashicons-no-alt row-control grid-control"></span>
 				<span class="dashicons dashicons-trash row-control grid-control"></span>
 			</div>
@@ -569,11 +569,11 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 	</div>
 	</div>
 </template>
-<template id="grid-helper">
+<!-- <template id="grid-helper">
 	<span class="dashicons dashicons-no-alt"></span>
 	<span class="copy-helper"><?php esc_html_e( 'Click to copy!', 'cf7-grid-layout' ); ?></span>
 	<p><?php esc_html_e( 'Click-to-copy &amp; paste in your <em>functions.php</em> file.', 'cf7-grid-layout' ); ?></p>
-	<ul class="cf7sg-helper-list"></ul>
+	<ul class="cf7sg-helper-list"></ul> -->
 </template>
 <template id="grid-js-helper">
 	<span class="dashicons dashicons-no-alt"></span>
@@ -629,11 +629,11 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		</span>
 		<span class="dashicons dashicons-admin-generic column-control grid-control"></span>
 		<span class="dashicons dashicons-trash column-control grid-control"></span>
-		<span class="dashicons php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
-		<span class="js-icon column-control grid-control" style="display:none;"></span>
 		<span class="dashicons dashicons-editor-code column-control grid-control"></span>
 	</span>
 	<span class="dashicons dashicons-ellipsis column-control grid-control display-none"></span>
+	<span class="php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
+	<span class="js-icon column-control grid-control" style="display:none;"></span>
 	<div class="cf7-field-label cf7-field-inner">
 		<p class="content"><?php esc_html_e( 'Field label', 'cf7-grid-layout' ); ?></p>
 		<input type="text" placeholder="<?php esc_html_e( 'Field label', 'cf7-grid-layout' ); ?>"/>
