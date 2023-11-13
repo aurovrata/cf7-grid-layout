@@ -1,17 +1,28 @@
 <?php
-//helper snippets
-/*
-Available replacement varaibles:
-{$form_key}  - unique form key.
-{$form_key_slug}  - unique form key slug for function names.
-($field_type) - tag field id, eg dynamic_select.
-($field_name) - unique field name.
-($field_name_slug) - unique field name slug for function names.
-[dqt] - double quote for html attributes.
-*/
+/**
+ * PHP hooks helper links for code snipets, displayed on the js codemirror tab.
+ * Available replacement varaibles:
+ * {$form_key}  - unique form key.
+ * {$form_key_slug}  - unique form key slug for function names.
+ * ($field_type) - tag field id, eg dynamic_select.
+ * ($field_name) - unique field name.
+ * ($field_name_slug) - unique field name slug for function names.
+ * [dqt] - double quote for html attributes.
+ *
+ * @link       http://syllogic.in
+ * @since      4.0.0
+ *
+ * @package    CF7SmartGrid
+ * @subpackage CF7SmartGrid/admin/partials/helpers
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 $post_my_form_only = ' no-post-my-form';
-if(is_plugin_active( 'post-my-contact-form-7/cf7-2-post.php' )){
-  $post_my_form_only='';
+if ( is_plugin_active( 'post-my-contact-form-7/cf7-2-post.php' ) ) {
+	$post_my_form_only = '';
 }
 ?>
 <li class="cf7sg-tag-dynamic_list-post">
@@ -28,11 +39,11 @@ function {$field_name_slug}_dynamic_list($query_args, $tag, $cf7_key){
   //$query_args array to filter query arguments used to populate dynamic dropdown of posts.
   //these arguments are passed to the function get_posts($query_args). (codex: https://codex.wordpress.org/Template_Tags/get_posts)
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
-    return $query_args;
+	return $query_args;
   }
   //setup your custom query...
   return $query_args;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('query arguments to retrieve posts for dynamic dropdown.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'query arguments to retrieve posts for dynamic dropdown.', 'cf7-grid-layout' ); ?>
 </li>
 <li class="cf7sg-tag-dynamic_list-taxonomy">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_option_label','{$field_name_slug}_dynamic_option_label',10,4);
@@ -47,10 +58,10 @@ function {$field_name_slug}_dynamic_list($query_args, $tag, $cf7_key){
 function {$field_name_slug}_dynamic_option_label($label, $term, $tag, $cf7_key){
   //these are the label users will see when the dropdown opens.
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
-    return $label;
+	return $label;
   }
   return $label;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option label.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'the option label.', 'cf7-grid-layout' ); ?>
 </li>
 <li class="cf7sg-tag-dynamic_list-taxonomy">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_taxonomy_query','{$field_name_slug}_taxonomy_query',10,4);
@@ -66,14 +77,14 @@ function {$field_name_slug}_dynamic_option_label($label, $term, $tag, $cf7_key){
 function {$field_name_slug}_taxonomy_query($args, $tag, $cf7_key, $branch){
   //these are the label users will see when the dropdown opens.
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
-    return $args;
+	return $args;
   }
   //use only the child terms of a parent.
   if($args['parent']!=0) $args=null;
   // or if you want to list only the 2nd level of your tree,
   if(count($args)>2) $args=null;
   return $args;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the taxonomy query.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'the taxonomy query.', 'cf7-grid-layout' ); ?>
 </li>
 <li class="cf7sg-tag-dynamic_list-taxonomy cf7sg_filter_taxonomy_images">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_options_attributes','{$field_name_slug}_dynamic_option_attributes',10,4);
@@ -89,14 +100,14 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $term, $tag, 
   //these are the optional attributes you can add to your dynamic list option when populating from taxonomy terms.
   //this is especially useful in the context of select2 fields, as much richer options can be built.
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
-    return $attributes;
+	return $attributes;
   }
   //example: $attributes['class'] = array($term->slug);
   //if this is a dynamic_checkbox with imagegrid option selected, then you will will need to provide image sources for each term,
   //$attributes['data-thumbnail'] = <url of image>
 
   return $attributes;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('options attributes.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'options attributes.', 'cf7-grid-layout' ); ?>
 </li>
 <li class="cf7sg-tag-dynamic_list-post">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_option_label','{$field_name_slug}_dynamic_option_label',10,4);
@@ -111,11 +122,11 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $term, $tag, 
 function {$field_name_slug}_dynamic_option_label($label, $post, $tag, $cf7_key){
   //these are the label users will see when the dropdown opens.
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
-    return $label;
+	return $label;
   }
   //setup a custom label
   return $label;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option label.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'the option label.', 'cf7-grid-layout' ); ?>
 </li>
 <li class="cf7sg-tag-dynamic_list-post">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_list_options_attributes','{$field_name_slug}_dynamic_option_attributes',10,4);
@@ -131,13 +142,13 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $post, $tag, 
   //these are the optional attributes you can add to your dynamic list option when populating from existing posts.
   //this is especially useful in the conctext of select2 fields, as much richer options can be built.
   if('{$form_key}'!==$cf7_key || '{$field_name}' !==$tag->name){
-    return $attributes;
+	return $attributes;
   }
   //example: $attributes['class'] = array('author-'.$post->post_author);
   //if you selected the Image Grid option on dynamic_checkbox field, the plugin inserts the post featured image as,
   //$attributes['data-thumbnail'] = <url of 'thumbnail' sized image> which you can change if you want.
   return $attributes;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the option attributes.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'the option attributes.', 'cf7-grid-layout' ); ?>
 </li>
 <li class="cf7sg-tag-dynamic_list">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_{$field_type}_default_value','{$field_name_slug}_dynamic_default_option',10,3);
@@ -150,13 +161,13 @@ function {$field_name_slug}_dynamic_option_attributes($attributes, $post, $tag, 
 */
 function {$field_name_slug}_dynamic_default_option($default_label, $tag, $cf7_key){
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
-    return $default_label;
+	return $default_label;
   }
   $default_label = 'Please select an option...';
   return $default_label;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the default option label.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'the default option label.', 'cf7-grid-layout' ); ?>
 </li>
-<li class="cf7sg-tag-dynamic_select-post-tags <?=$post_my_form_only?>">
+<li class="cf7sg-tag-dynamic_select-post-tags <?php echo esc_attr( $post_my_form_only ); ?>">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_new_post','{$field_name_slug}_select2_newpost',10,7);
 /**
 * Filter custom options from tag enabled select2 dynamic-dropdown fields
@@ -187,14 +198,14 @@ function {$field_name_slug}_select2_newpost($post_name, $field, $title, $post_ty
   $submitted_data array of other submitted $field=>$value pairs.
   */
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $field){
-    return $default;
+	return $default;
   }
   //create your new post using wp_insert_post();
   $post_name = 'new_submision';
   return $post_name;
-}" href="javascript:void(0);"><?=__('Insert','cf7-grid-layout')?></a> <?=__('user added post.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Insert', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'user added post.', 'cf7-grid-layout' ); ?>
 </li>
-<li class="cf7sg-tag-dynamic_select-post-tags <?=$post_my_form_only?>">
+<li class="cf7sg-tag-dynamic_select-post-tags <?php echo esc_attr( $post_my_form_only ); ?>">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_new_term','{$field_name_slug}_select2_newterm',10,7);
 /**
 * Filter custom options from tag enabled select2 dynamic-select fields
@@ -210,13 +221,13 @@ function {$field_name_slug}_select2_newpost($post_name, $field, $title, $post_ty
 */
 function {$field_name_slug}_select2_newpost($term_name, $field, $taxonomy, $submitted_data, $cf7_key){
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $field){
-    return $default;
+	return $default;
   }
   //change the name if need be.
   return $term_name;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('user added term.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'user added term.', 'cf7-grid-layout' ); ?>
 </li>
-<li class="cf7sg-tag-dynamic_select-filter <?=$post_my_form_only?>">
+<li class="cf7sg-tag-dynamic_select-filter <?php echo esc_attr( $post_my_form_only ); ?>">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_dynamic_dropdown_filter_select2_submission','{$field_name_slug}_select2_filter_values',10,4);
 /**
 * Filter custom otions from tag enabled select2 dynamic-dropdown fields
@@ -239,11 +250,11 @@ function {$field_name_slug}_select2_filter_values($values, $field, $submitted_da
   $submitted_data array of other submitted $field=>$value pairs.
   */
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $field){
-    return $values;
+	return $values;
   }
   //do something...
   return $values;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('user added option.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'user added option.', 'cf7-grid-layout' ); ?>
 </li>
 <li class="cf7sg-tag-dynamic_list-filter cf7sg_filter_source">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_custom_{$field_type}','{$field_name_slug}_dynamic_options',10,3);
@@ -256,19 +267,19 @@ function {$field_name_slug}_select2_filter_values($values, $field, $submitted_da
 */
 function {$field_name_slug}_dynamic_options($options, $tag, $cf7_key){
   if('{$form_key}'!==$cf7_key || '{$field_name}' !== $tag->name){
-    return $options;
+	return $options;
   }
   //these are the label users will see when the dropdown opens.
   //you can group your options if need be. Let's assume you have an array of arrays of data to display in groups.
   $data = ... //fetch your data, either from the database or some other source.
   foreach($data as $value=>$label){
-    $options[$value]=$label;
-    //if you are displaying more complex select2 fields, or imagegrid for dynamic checkbox, then add extra parameters into a 2nd array of attributes,
-    $options['values'][$value]=$label;
-    $options['attributes'][$values]= array('data-thumbnail'=>'<image url>');
+	$options[$value]=$label;
+	//if you are displaying more complex select2 fields, or imagegrid for dynamic checkbox, then add extra parameters into a 2nd array of attributes,
+	$options['values'][$value]=$label;
+	$options['attributes'][$values]= array('data-thumbnail'=>'<image url>');
   }
   return $options;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('custom options .','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'custom options .', 'cf7-grid-layout' ); ?>
 </li>
 <li class="cf7sg-tag-dynamic_list cf7sg-tag-dynamic_list cf7sg-tag-radio cf7sg-tag-checkbox cf7sg-tag-select cf7sg-tag-acceptance">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_mail_tag_{$field_type}','{$field_name_slug}_mail_tag_value',10,3);
@@ -286,7 +297,7 @@ function {$field_name_slug}_mail_tag_value($replaced, $name, $cf7_key){
   //$replaced is the value inserted in the mail if you have used this field as a mail tag.
   $replaced; //this is currently set to the selected value and is a slug, you need to programmatically fetch your value and set it up.
   return $replaced;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('the mail tag value.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'the mail tag value.', 'cf7-grid-layout' ); ?>
 </li>
 <li class="cf7sg-slider">
   <a class="helper" data-cf72post="add_filter( 'cf7sg_slider_auto_scroll','{$form_key}_slider_auto_scroll',10,2);
@@ -302,5 +313,5 @@ function {$form_key}_slider_auto_scroll($scroll, $cf7_key){
   if('{$form_key}'!==$cf7_key) return $scroll;
   $scroll = false; //disable auto scroll.
   return $scroll;
-}" href="javascript:void(0);"><?=__('Disable','cf7-grid-layout')?></a> <?=__('the auto scroll on slide change.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Disable', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'the auto scroll on slide change.', 'cf7-grid-layout' ); ?>
 </li>

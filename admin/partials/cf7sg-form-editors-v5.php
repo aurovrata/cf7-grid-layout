@@ -290,6 +290,30 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 					</div>
 				</div>
 			</div>
+			<div class="cf7sg-uirs cf7sg-uirs-hooks display-none">
+				<input id="cf7sg-uirs-col"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
+				<label for="cf7sg-uirs-col"><span><?php esc_html_e( 'Advanced', 'cf7-grid-layout' ); ?></span></label>
+				<div class="cf7sg-settab">
+					<div class="cf7sg-uirs-label cf7sg-uirs-php"><?php esc_html_e( 'PHP Filters', 'cf7-grid-layout' ); ?></div>
+					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl cf7sg-uirs-php">
+						<span class="copy-helper"><?php esc_html_e( 'Click to copy!', 'cf7-grid-layout' ); ?></span>
+						<p><?php esc_html_e( 'Click-to-copy &amp; paste in your <em>functions.php</em> file.', 'cf7-grid-layout' ); ?></p>
+						<ul class="cf7sg-helper-list"></ul>
+					</div>
+					<div class="cf7sg-uirs-label cf7sg-uirs-js"><?php esc_html_e( 'JS Filters', 'cf7-grid-layout' ); ?></div>
+					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl cf7sg-uirs-js">
+						<span class="copy-helper"><?php esc_html_e( 'Click to copy!', 'cf7-grid-layout' ); ?></span>
+						<p class="js-help">
+							<?php
+							$jspath = "&lt;theme folder&gt;/js/{$cf7_key}.js";
+							/* translators: path to file*/
+							echo sprintf( esc_html__( 'Click-to-copy &amp; paste in file: %s', 'cf7-grid-layout' ), '<em>' . esc_attr( $jspath ) . '</em>' );
+							?>
+						</p>
+						<ul class="cf7sg-helper-list"></ul>
+					</div>
+				</div>
+			</div>
 			<div class="cf7sg-uirs cf7sg-uirs-align">
 				<input id="cf7sg-uirs-align"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
 				<label for="cf7sg-uirs-align">
@@ -401,10 +425,10 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 			<span class="table-label display-none"><?php esc_html_e( 'Table', 'cf7-grid-layout' ); ?></span>
 			<span class="collapsible-label display-none"><?php esc_html_e( 'Collapsible section', 'cf7-grid-layout' ); ?></span>
 		</span>
+		<span class="php-icon cf7sg-hook row-control display-none" data-field="" data-tag="" data-search=""></span>
 		<span class="dashicons dashicons-admin-generic row-control grid-control"></span>
 		<span class="dashicons dashicons-trash row-control grid-control"></span>
 		<span class="dashicons dashicons-plus row-control grid-control"></span>
-		<span class="php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
 		</div>
 		<div class="cf7sg-col sgc-12">
 		<template class="inner-template">#grid-col</template>
@@ -548,8 +572,8 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 				<span class="slide-label"><?php /* translators: the # will be replaced by a number */ esc_html_e( 'Slide #', 'cf7-grid-layout' ); ?></span>
 				<span class="slide-title"></span>
 				</span>
+				<span class="php-icon cf7sg-hook row-control display-none" data-field="" data-tag="" data-search=""></span>
 				<span class="dashicons dashicons-admin-generic row-control grid-control"></span>
-				<span class="php-icon row-control display-none" data-field="" data-tag="" data-search=""></span>
 				<span class="dashicons dashicons-no-alt row-control grid-control"></span>
 				<span class="dashicons dashicons-trash row-control grid-control"></span>
 			</div>
@@ -575,7 +599,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 	<p><?php esc_html_e( 'Click-to-copy &amp; paste in your <em>functions.php</em> file.', 'cf7-grid-layout' ); ?></p>
 	<ul class="cf7sg-helper-list"></ul> -->
 </template>
-<template id="grid-js-helper">
+<!-- <template id="grid-js-helper">
 	<span class="dashicons dashicons-no-alt"></span>
 	<span class="copy-helper"><?php esc_html_e( 'Click to copy!', 'cf7-grid-layout' ); ?></span>
 	<p class="js-help">
@@ -586,10 +610,12 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		?>
 	</p>
 	<ul class="cf7sg-helper-list"></ul>
-</template>
+</template> -->
 <template id="grid-col">
 	<div class="grid-column ui-grid-ctrls cf7sg-ui-col">
 	<span class="dashicons dashicons-move column-control grid-control"></span>
+	<span class="php-icon cf7sg-hook column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
+	<span class="js-icon cf7sg-hook column-control grid-control" style="display:none;"></span>
 	<span class="cf7sg-responsive">
 		<span class="column-label column-control">
 		<div class="column-offset centred-menu column-setting unset" style="--cf7sg-cm-val:0">
@@ -632,8 +658,6 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		<span class="dashicons dashicons-editor-code column-control grid-control"></span>
 	</span>
 	<span class="dashicons dashicons-ellipsis column-control grid-control display-none"></span>
-	<span class="php-icon column-control" data-field="" data-tag="" data-search="" style="display:none;"></span>
-	<span class="js-icon column-control grid-control" style="display:none;"></span>
 	<div class="cf7-field-label cf7-field-inner">
 		<p class="content"><?php esc_html_e( 'Field label', 'cf7-grid-layout' ); ?></p>
 		<input type="text" placeholder="<?php esc_html_e( 'Field label', 'cf7-grid-layout' ); ?>"/>

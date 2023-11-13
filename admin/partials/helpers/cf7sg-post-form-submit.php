@@ -1,3 +1,19 @@
+<?php
+/**
+ * PHP hooks helper links for code snipets, displayed on the js codemirror tab.
+ *
+ * @link       http://syllogic.in
+ * @since      4.0.0
+ *
+ * @package    CF7SmartGrid
+ * @subpackage CF7SmartGrid/admin/partials/helpers
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+?>
+
 <li>
   <a class="helper" data-cf72post="add_filter( 'cf7sg_validate_submission','validate_field_submission',10,3);
 function validate_field_submission($validation_errors, $submission, $cf7_key){
@@ -8,28 +24,28 @@ function validate_field_submission($validation_errors, $submission, $cf7_key){
   $cf7_key unique form key to identify your form, $cf7_id is its post_id.
   */
   if('{$form_key}'==$cf7_key ){
-    //$validation_errors is an array of field-names=>error messages.
-    //these include the simple validation exposed in the CF7 plugin for required fields/special field formats.
-    if(isset($validation_errors['location-city']) && $submission['location-city'] === 'Chennai'){
-      $validation_errors['location-city'] = 'location cannot be Chennai!';
-    }
-    //for fields within tables, these are stored as arrays, one for each row.
-    foreach($validation_errors['my-table-field1'] as $row_index=>$error){
-      if(isset($submission['my-table-field1'][$row_index]) && $submission['my-table-field1'][$row_index]>5){
-        $validation_errors['my-table-field1'][$row_index] = 'value should be less than 5';
-      }
-    }
-    //for fields in tables that are within tab sections, these are stored as 2-dimensional arrays.
-    foreach($validation_errors['my-table-field1'] as $tab_index=>$e_array){
-      foreach($e_array as $row_index => $error){
-        if(isset($submission['my-table-field1'][$tab_index][$row_index]) && $submission['my-table-field1'][$tab_index][$row_index]>5){
-          $validation_errors['my-table-field1'][$tab_index][$row_index] = 'value should be less than 5';
-        }
-      }
-    }
+	//$validation_errors is an array of field-names=>error messages.
+	//these include the simple validation exposed in the CF7 plugin for required fields/special field formats.
+	if(isset($validation_errors['location-city']) && $submission['location-city'] === 'Chennai'){
+	  $validation_errors['location-city'] = 'location cannot be Chennai!';
+	}
+	//for fields within tables, these are stored as arrays, one for each row.
+	foreach($validation_errors['my-table-field1'] as $row_index=>$error){
+	  if(isset($submission['my-table-field1'][$row_index]) && $submission['my-table-field1'][$row_index]>5){
+		$validation_errors['my-table-field1'][$row_index] = 'value should be less than 5';
+	  }
+	}
+	//for fields in tables that are within tab sections, these are stored as 2-dimensional arrays.
+	foreach($validation_errors['my-table-field1'] as $tab_index=>$e_array){
+	  foreach($e_array as $row_index => $error){
+		if(isset($submission['my-table-field1'][$tab_index][$row_index]) && $submission['my-table-field1'][$tab_index][$row_index]>5){
+		  $validation_errors['my-table-field1'][$tab_index][$row_index] = 'value should be less than 5';
+		}
+	  }
+	}
   }
   return $validation_errors;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('custom form submission validation of any field.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'custom form submission validation of any field.', 'cf7-grid-layout' ); ?>
 </li>
 <li>
   <a class="helper" data-cf72post="add_filter( 'cf7sg_annotate_mail_attach_grid_files','annotate_mail_attachments',10,6);
@@ -46,12 +62,12 @@ function annotate_mail_attachments($label, $field, $file_name, $tab, $row, $cf7_
   /* this filter is used to annotate complex file field submissions such as tables or tabs or tables within tabs.  The index of the attachment in the mail is given to better annotate your attachments.  Annotations are appended at the end of the mail body and you should take care to add newline/html breaks for your own clarity.  The row and tab indexes are provided to help you identify from which file field the attachment is coming from.  A null value for $tab/$row is passed for field types which are neither. So table fields would have $row either as an empty string or a zero-based value. Empty are first rows.  In case a field is table within a tab, then the field from the first row of the first tab would have both $tab and $row as empty strings.
   */
   if('{$form_key}'!==$cf7_key){
-    return $label;
+	return $label;
   }
   //for example a file field in a table within a tabbed section.
   $label = '<div>('.$field.'['.$tab.']['.$row.'])</div>';
   return $label;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('mail annotation for complex array file field attachments.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'mail annotation for complex array file field attachments.', 'cf7-grid-layout' ); ?>
 </li>
 <li>
   <a class="helper" data-cf72post="add_filter( 'cf7sg_mailtag_grid_fields','insert_table_in_mail',10,5);
@@ -67,7 +83,7 @@ function annotate_mail_attachments($label, $field, $file_name, $tab, $row, $cf7_
 */
 function insert_table_in_mail($html, $field, $data, $cf7_key, $table_in_tab){
   if('{$form_key}'!==$cf7_key){ //always validate the form being submitted.
-    return $html;
+	return $html;
   }
   $build = true;
   $pre = $table_in_tab ? '<ul style=&quot;list-style-type:none;display:inline-block;float:left;padding:5px&quot;>':'';
@@ -78,50 +94,50 @@ function insert_table_in_mail($html, $field, $data, $cf7_key, $table_in_tab){
   $keys = array_keys($data);
 
   while($build){
-    switch($field){ //if either of fields present in the table...
-      case 'field-one':
-        $label = 'First';
-        break;
-      case 'field-two':
-        $label = 'Second';
-        break;
-      case 'field-three':
-        $label = 'Third';
-        break;
-      default: //else this isn't a field we want in the table.
-        $build=false;
-        break;
-    }
-    if($build){
-      $html .=$pre.'<ul style=&quot;list-style-type:none;border-right:1px solid black;display:'.$display.'block;'.$float.'padding:5px&quot;>';
-      $col = $data;
-      if($table_in_tab){
-        $col = $data[$keys[$tabIdx]];
-        $tabIdx++;
-        $label .='('.$tabIdx.')';
-        $build = $tabIdx < count($data);
-        $pre = ''; //reset now.
-        if(!$build) $end='</ul>'; //last loop, hence close.
-      }
-      $html .='<li style=&quot;background-color:lightgray;margin:0;padding:3px 5px&quot;>'.$label.'</li>';
-      foreach($col as $key=>$value){
-        $html .='<li style=&quot;margin:0px;padding:3px 5px&quot;>'.$value.'</li>';
-      }
-      $html .='</ul>'.$end;
-    }
+	switch($field){ //if either of fields present in the table...
+	  case 'field-one':
+		$label = 'First';
+		break;
+	  case 'field-two':
+		$label = 'Second';
+		break;
+	  case 'field-three':
+		$label = 'Third';
+		break;
+	  default: //else this isn't a field we want in the table.
+		$build=false;
+		break;
+	}
+	if($build){
+	  $html .=$pre.'<ul style=&quot;list-style-type:none;border-right:1px solid black;display:'.$display.'block;'.$float.'padding:5px&quot;>';
+	  $col = $data;
+	  if($table_in_tab){
+		$col = $data[$keys[$tabIdx]];
+		$tabIdx++;
+		$label .='('.$tabIdx.')';
+		$build = $tabIdx < count($data);
+		$pre = ''; //reset now.
+		if(!$build) $end='</ul>'; //last loop, hence close.
+	  }
+	  $html .='<li style=&quot;background-color:lightgray;margin:0;padding:3px 5px&quot;>'.$label.'</li>';
+	  foreach($col as $key=>$value){
+		$html .='<li style=&quot;margin:0px;padding:3px 5px&quot;>'.$value.'</li>';
+	  }
+	  $html .='</ul>'.$end;
+	}
   }
   return $html;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('Tabled/Tabbed mail tags','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'Tabled/Tabbed mail tags', 'cf7-grid-layout' ); ?>
 </li>
 <li>
   <a class="helper" data-cf72post="add_filter( 'cf7sg_valid_form_submission','valid_data_submission',10,3);
 function validate_field_submission( $submission, $cf7_key, $form_id){
   if('{$form_key}'==$cf7_key ){
-    //$submission is an array of all submited data, including files.
-    //if you have a file field called upload, you can get the file as
-    //$file_path = $submission['upload'][0];   //this can be an array fo arrays if it is a repetitive field.
+	//$submission is an array of all submited data, including files.
+	//if you have a file field called upload, you can get the file as
+	//$file_path = $submission['upload'][0];   //this can be an array fo arrays if it is a repetitive field.
   }
-}" href="javascript:void(0);"><?=__('Action','cf7-grid-layout')?></a> <?=__('to access valid submit data.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Action', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'to access valid submit data.', 'cf7-grid-layout' ); ?>
 </li>
 <li>
   <a class="helper" data-cf72post="add_filter( 'cf7sg_submission_success_message','change_submission_response',10,3);
@@ -134,10 +150,10 @@ function validate_field_submission( $submission, $cf7_key, $form_id){
 */
 function change_submission_response($message, $data, $cf7key){
   if('{$form_key}'==$cf7key ){
-    $message = 'thank you, please track your request <a href=[dqt]http://google.com[dqt]>here</a>';
+	$message = 'thank you, please track your request <a href=[dqt]http://google.com[dqt]>here</a>';
   }
   return $message;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('submission response.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'submission response.', 'cf7-grid-layout' ); ?>
 </li>
 <li>
   <a class="helper" data-cf72post="add_filter( 'cf7sg_redirect_on_success','redirect_on_success',10,3);
@@ -149,13 +165,13 @@ function change_submission_response($message, $data, $cf7key){
 */
 function redirect_on_success($url, $data, $cf7key){
   if('{$form_key}'==$cf7key ){
-    $url = esc_url(home_url('/my-custom-page/'));
-    //if you need to redirect to your localhost url (for debug purpose),
-    //you will also need to force the url validation that follows this filter.
-    add_filter('http_request_host_is_external', function($allow, $host, $filtered_url) use($url){
-      return $filtered_url === $url;
-    });
+	$url = esc_url(home_url('/my-custom-page/'));
+	//if you need to redirect to your localhost url (for debug purpose),
+	//you will also need to force the url validation that follows this filter.
+	add_filter('http_request_host_is_external', function($allow, $host, $filtered_url) use($url){
+	  return $filtered_url === $url;
+	});
   }
   return $url;
-}" href="javascript:void(0);"><?=__('Filter','cf7-grid-layout')?></a> <?=__('redirect on submit.','cf7-grid-layout')?>
+}" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'redirect on submit.', 'cf7-grid-layout' ); ?>
 </li>

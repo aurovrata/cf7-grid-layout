@@ -756,6 +756,9 @@
 						$type.filter('#svcgrid').prop('disabled',true);
 						break;
 				}
+				//setup hooks tabs if any
+				let hooks = $target.parent('.cf7sg-responsive').siblings(".php-icon");
+				$innerSection.setupCF7SGHooks(hooks);
 
 				//listen for changes
 				let colSize =  $('#cf7sg-uisc-size',	$innerSection).val(),
@@ -954,37 +957,8 @@
         }
         $menu.toggleClass('show'); //toggle menu.
         return true;
-      }else if( $target.is('.php-icon.column-control') ) { //--------show hooks
-        let $helper =$('<div class="helper-popup">').html( $('#grid-helper').html()),
-          $copy = $('.copy-helper', $helper),
-          field = $target.data('field'),
-          tag = $target.data('tag'),
-          search = $target.data('search'),
-          $hooks = $(search, '#fieldhelperdiv').clone();
-        $target.after($helper)
-        $('.cf7sg-helper-list', $helper).append($hooks);
-        $('a.helper', $helper).each(function(){
-          new Clipboard($(this)[0], {
-            text: function(trigger) {
-              let $target = $(trigger);
-              let text = $target.data('cf72post');
-              //get post slug
-              let key = $('#post_name').val();
-              text = text.replace(/\{\$form_key\}/gi, key);
-              text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
-              text = text.replace(/\{\$field_name\}/gi, field);
-              text = text.replace(/\{\$field_name_slug\}/gi, field.replace(/\-/g,'_'));
-              text = text.replace(/\{\$field_type\}/gi, tag);
-              text = text.replace(/\[dqt\]/gi, '"');
-              return text;
-            }
-          });
-          $(this).append($copy.clone());
-        });
-        $helper.click('a.helper, .dashicons-no-alt', function(e){
-          $(this).remove();
-        });
-        return true;
+      // }else if( $target.is('.php-icon.column-control') ) { //--------show hooks
+        
       }else if( $target.is('.js-icon.column-control') ) { //--------show js hooks
         let $helper =$('<div class="helper-popup">').html( $('#grid-js-helper').html()),
           $copy = $('.copy-helper', $helper),
@@ -1313,6 +1287,46 @@
     });
   }
   /* some function definitions...*/
+	$.fn.setupCF7SGHooks = function($hook){
+		let $modal = $(this);
+		if( ! $modal.is('section.grid-ctrls')) return false;
+		if( 0 == $hook.length || ! $hook.is('.cf7sg-hook') ) return false;
+
+		let field = $hook.data('field'),
+			tag     = $hook.data('tag'),
+      search  = $hook.data('search'),
+      $copy = $('.cf7sg-uirs-php > .copy-helper', $modal),
+			$list  = $(search, '#fieldhelperdiv').clone();
+
+		if($list.length>0){ 
+			$modal.addClass('cf7sg-hook')
+		}else{
+			return false;
+		}
+		$('.cf7sg-uirs-php > .cf7sg-helper-list', $modal).append($list);
+		$('a.helper', $list).each(function(){
+			new Clipboard($(this)[0], {
+				text: function(trigger) {
+					let $target = $(trigger);
+					let text = $target.data('cf72post');
+					//get post slug
+					let key = $('#post_name').val();
+					text = text.replace(/\{\$form_key\}/gi, key);
+					text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
+					text = text.replace(/\{\$field_name\}/gi, field);
+					text = text.replace(/\{\$field_name_slug\}/gi, field.replace(/\-/g,'_'));
+					text = text.replace(/\{\$field_type\}/gi, tag);
+					text = text.replace(/\[dqt\]/gi, '"');
+					return text;
+				}
+			});
+			$(this).append($copy.clone());
+		});
+		$list.click('a.helper, .dashicons-no-alt', function(e){
+			$(this).remove();
+		});
+		return true;
+	}
 	$.fn.convertUIColumn = function(type){
 		let $col = this, id='', $added=null;
 		if(!$col.is('.cf7sg-col')) return false;
