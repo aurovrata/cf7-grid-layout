@@ -1322,9 +1322,9 @@
 			});
 			$(this).append($copy.clone());
 		});
-		$list.click('a.helper, .dashicons-no-alt', function(e){
-			$(this).remove();
-		});
+		// $list.click('a.helper, .dashicons-no-alt', function(e){
+		// 	$(this).remove();
+		// });
 		return true;
 	}
 	$.fn.convertUIColumn = function(type){
