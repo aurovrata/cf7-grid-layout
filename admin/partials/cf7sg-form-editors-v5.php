@@ -292,7 +292,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 			</div>
 			<div class="cf7sg-uirs cf7sg-uirs-hooks display-none">
 				<input id="cf7sg-uirs-adv"  type="radio" name="cf7sg-uirst" class="cf7sg-uirs-tab"/>
-				<label for="cf7sg-uirs-adv"><span><?php esc_html_e( 'Advanced', 'cf7-grid-layout' ); ?></span></label>
+				<label for="cf7sg-uirs-adv"><span><?php /* translators: custom php hooks */ esc_html_e( 'Custom', 'cf7-grid-layout' ); ?></span></label>
 				<div class="cf7sg-settab">
 					<div class="cf7sg-uirs-label cf7sg-uirs-php"><?php esc_html_e( 'PHP Filters', 'cf7-grid-layout' ); ?></div>
 					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl cf7sg-uirs-php">
@@ -300,8 +300,8 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 						<p><?php echo wp_kses( __( 'Click-to-copy &amp; paste in your <em>functions.php</em> file.', 'cf7-grid-layout' ), array( 'em' => 1 ) ); ?></p>
 						<ul class="cf7sg-helper-list"></ul>
 					</div>
-					<div class="cf7sg-uirs-label cf7sg-uirs-js"><?php esc_html_e( 'JS Filters', 'cf7-grid-layout' ); ?></div>
-					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl cf7sg-uirs-js">
+					<div class="cf7sg-uirs-label cf7sg-uirs-js"  style="display:none"><?php esc_html_e( 'JS Filters', 'cf7-grid-layout' ); ?></div>
+					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl cf7sg-uirs-js" style="display:none">
 						<span class="copy-helper"><?php esc_html_e( 'Click to copy!', 'cf7-grid-layout' ); ?></span>
 						<p class="js-help">
 							<?php

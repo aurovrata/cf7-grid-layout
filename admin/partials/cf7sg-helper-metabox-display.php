@@ -1,60 +1,77 @@
-<p><?=__('Click on a link to copy the helper snippet code and paste it in your <em>functions.php</em> file.','cf7-grid-layout')?></p>
+<?php
+/**
+ * Metabox for listing php filters
+ *
+ * This file is used to markup the admin-facing aspects of the plugin.
+ *
+ * @link       http://syllogic.in
+ * @since      1.0.0
+ *
+ * @package    Cf7_Grid_Layout
+ * @subpackage Cf7_Grid_Layout/admin/partials
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+?>
+<p><?php echo wp_kses( __( 'Click on a link to copy the helper snippet code and paste it in your <em>functions.php</em> file.', 'cf7-grid-layout' ), array( 'em' => 1 ) ); ?></p>
 <div id="helperdiv" class="postbox">
-  <div class="postbox-header">
-    <h2><span><?=__('Pre-form-loading hooks','cf7-grid-layout')?></span></h2>
-      <div class="handle-actions hide-if-no-js">
-        <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?=__('Toggle panel: Helper','cf7-grid-layout')?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
-    </div>
-  </div>
-  <div class="inside">
-    <p><?=__('Hooks fired prior to the form loading','cf7-grid-layout')?></p>
-    <ol class="cf7sg-hooks helper-list">
-      <?php  require_once plugin_dir_path( __FILE__ ) .'helpers/cf7sg-pre-form-load.php'; ?>
-    </ol>
-  </div>
+	<div class="postbox-header">
+	<h2><span><?php esc_html_e( 'Pre-form-loading hooks', 'cf7-grid-layout' ); ?></span></h2>
+		<div class="handle-actions hide-if-no-js">
+		<button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?php esc_html_e( 'Toggle panel: Helper', 'cf7-grid-layout' ); ?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
+	</div>
+	</div>
+	<div class="inside">
+	<p><?php esc_html_e( 'Hooks fired prior to the form loading', 'cf7-grid-layout' ); ?></p>
+	<ol class="cf7sg-hooks helper-list">
+		<?php require_once plugin_dir_path( __FILE__ ) . 'helpers/cf7sg-pre-form-load.php'; ?>
+	</ol>
+	</div>
 </div>
 <div id="submithelperdiv" class="postbox">
-  <div class="postbox-header">
-    <h2 class="hndle ui-sortable-handle"><span><?=__('Post-form-submit hooks','cf7-grid-layout')?></span></h2>
-    <div class="handle-actions hide-if-no-js">
-      <button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?=__('Toggle panel: Helper','cf7-grid-layout')?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
-    </div>
-  </div>
-  <div class="inside">
-    <p><?=__('Hooks fired after the form is submitted','cf7-grid-layout')?></p>
-    <ol class="cf7sg-hooks helper-list">
-      <?php  require_once plugin_dir_path( __FILE__ ) .'helpers/cf7sg-post-form-submit.php'; ?>
-    </ol>
-  </div>
+	<div class="postbox-header">
+	<h2 class="hndle ui-sortable-handle"><span><?php esc_html_e( 'Post-form-submit hooks', 'cf7-grid-layout' ); ?></span></h2>
+	<div class="handle-actions hide-if-no-js">
+		<button type="button" class="handlediv button-link" aria-expanded="true"><span class="screen-reader-text"><?php esc_html_e( 'Toggle panel: Helper', 'cf7-grid-layout' ); ?></span><span class="toggle-indicator" aria-hidden="true"></span></button>
+	</div>
+	</div>
+	<div class="inside">
+	<p><?php esc_html_e( 'Hooks fired after the form is submitted', 'cf7-grid-layout' ); ?></p>
+	<ol class="cf7sg-hooks helper-list">
+		<?php require_once plugin_dir_path( __FILE__ ) . 'helpers/cf7sg-post-form-submit.php'; ?>
+	</ol>
+	</div>
 </div>
 <div id="fieldhelperdiv" class="postbox" style="display:none;">
-  <ul class="cf7sg-hooks helper-list">
-    <?php do_action('cf7sg_ui_grid_helper_hooks') ?>
-  </ul>
+	<ul class="cf7sg-hooks helper-list">
+	<?php do_action( 'cf7sg_ui_grid_helper_hooks' ); ?>
+	</ul>
 </div>
 <!-- @since 3.3.0 -->
 <div id="fieldhelperjs" class="postbox" style="display:none;">
-  <ul class="cf7sg-hooks helper-list">
-    <?php do_action('cf7sg_ui_grid_js_helper_hooks') ?>
-  </ul>
+	<ul class="cf7sg-hooks helper-list">
+	<?php do_action( 'cf7sg_ui_grid_js_helper_hooks' ); ?>
+	</ul>
 </div>
 <script type="text/javascript">
 (function($){
 	$(document).ready( function(){
-    $('.helper-list li a', $('#helperdiv, #submithelperdiv')).each(function(){
-      new Clipboard($(this)[0], {
-        text: function(trigger) {
-          var $target = $(trigger);
-          var text = $target.data('cf72post');
-          //get post slug
-          var key = $('#post_name').val();
-          text = text.replace(/\{\$form_key\}/gi, key);
-          text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
-          text = text.replace(/\[dqt\]/gi, '"');
-          return text;
-        }
-      });
-    });
-  });
+	$('.helper-list li a', $('#helperdiv, #submithelperdiv')).each(function(){
+		new Clipboard($(this)[0], {
+		text: function(trigger) {
+			var $target = $(trigger);
+			var text = $target.data('cf72post');
+			//get post slug
+			var key = $('#post_name').val();
+			text = text.replace(/\{\$form_key\}/gi, key);
+			text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
+			text = text.replace(/\[dqt\]/gi, '"');
+			return text;
+		}
+		});
+	});
+	});
 })(jQuery)
 </script>

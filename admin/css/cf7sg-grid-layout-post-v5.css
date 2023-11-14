@@ -1411,7 +1411,8 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 
 #cf7sg-grid-modal .cf7sg-uirs-hooks .helper{
-position: relative;
+	position: relative;
+	color: var(--cf7sg-row-default);
 }
 #cf7sg-grid-modal .cf7sg-uirs-hooks .copy-helper {
 	display: none;
