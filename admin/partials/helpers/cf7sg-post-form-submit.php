@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <li>
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_validate_submission','validate_field_submission',10,3);
+	<a class="helper" data-cf72post="add_filter( 'cf7sg_validate_submission','validate_field_submission',10,3);
 function validate_field_submission($validation_errors, $submission, $cf7_key){
   /* $submission an array of <field-name>=>$value pairs one for each submitted field.
   tabbed/tabled sections fields have arrays as $values.
@@ -48,7 +48,7 @@ function validate_field_submission($validation_errors, $submission, $cf7_key){
 }" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'custom form submission validation of any field.', 'cf7-grid-layout' ); ?>
 </li>
 <li>
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_annotate_mail_attach_grid_files','annotate_mail_attachments',10,6);
+	<a class="helper" data-cf72post="add_filter( 'cf7sg_annotate_mail_attach_grid_files','annotate_mail_attachments',10,6);
   /**
   * @param string $label an empty text to filter.
   * @param string $field the name of the file field being attached
@@ -70,7 +70,7 @@ function annotate_mail_attachments($label, $field, $file_name, $tab, $row, $cf7_
 }" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'mail annotation for complex array file field attachments.', 'cf7-grid-layout' ); ?>
 </li>
 <li>
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_mailtag_grid_fields','insert_table_in_mail',10,5);
+	<a class="helper" data-cf72post="add_filter( 'cf7sg_mailtag_grid_fields','insert_table_in_mail',10,5);
 /**
 * this filter is used to build an html formated string to rpelace a mail tag of a field that is in a table or tab structure. NOTE: this filter is only fired if the mail format is set to html.
 * In case the field is in a table that is within a tab, then the $data field will be an array of arrays.
@@ -130,7 +130,7 @@ function insert_table_in_mail($html, $field, $data, $cf7_key, $table_in_tab){
 }" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'Tabled/Tabbed mail tags', 'cf7-grid-layout' ); ?>
 </li>
 <li>
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_valid_form_submission','valid_data_submission',10,3);
+	<a class="helper" data-cf72post="add_filter( 'cf7sg_valid_form_submission','valid_data_submission',10,3);
 function validate_field_submission( $submission, $cf7_key, $form_id){
   if('{$form_key}'==$cf7_key ){
 	//$submission is an array of all submited data, including files.
@@ -140,7 +140,7 @@ function validate_field_submission( $submission, $cf7_key, $form_id){
 }" href="javascript:void(0);"><?php esc_html_e( 'Action', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'to access valid submit data.', 'cf7-grid-layout' ); ?>
 </li>
 <li>
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_submission_success_message','change_submission_response',10,3);
+	<a class="helper" data-cf72post="add_filter( 'cf7sg_submission_success_message','change_submission_response',10,3);
 /*
 * filter the response message for a successfull submission including HTML markup.
 * @param String $message to submit
@@ -156,7 +156,7 @@ function change_submission_response($message, $data, $cf7key){
 }" href="javascript:void(0);"><?php esc_html_e( 'Filter', 'cf7-grid-layout' ); ?></a> <?php esc_html_e( 'submission response.', 'cf7-grid-layout' ); ?>
 </li>
 <li>
-  <a class="helper" data-cf72post="add_filter( 'cf7sg_redirect_on_success','redirect_on_success',10,3);
+	<a class="helper" data-cf72post="add_filter( 'cf7sg_redirect_on_success','redirect_on_success',10,3);
 /*
 * @param String $url to redirect to
 * @param Array $data $field_name=>$value pair of submitted data.

@@ -1599,6 +1599,16 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 #svtabs:checked ~ .cf7sg-toggle-outside .cf7sg-toggle-inside {
   top: 96px;
 }
+/* sortable styling */
+.sortable-state-highlight{
+	height: 100%;
+	min-height: 90px;
+	margin-top: 25px;
+	border: dashed 2px var(--cf7sg-row-icons-hover);
+	min-width: 20px;
+	line-height: 1.2em;
+	/* background-color: var(--cf7sg-col-default); */
+}
 /* Responsive screens */
 @media (max-width:1854px) {
   #grid-form .sgc-lg-2 > .grid-column .cf7sg-responsive {

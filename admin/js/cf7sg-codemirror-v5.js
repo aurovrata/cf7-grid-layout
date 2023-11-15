@@ -260,7 +260,7 @@
               let cf7TagRegexp = /\[(.[^\s]*)\s*(.[^\s\]]*)[\s\[]*(.[^\[]*\"source:([^\s]*)\"[\s^\[]*|[.^\[]*(?!\"source:)[^\[]*)\]/img;
               //reset form fields.
               formFields={};
-              $('.field', $form).each(function(){
+              $('.cf7sg-field', $form).each(function(){
                 let $field = $(this), search = $field.text(), match = cf7TagRegexp.exec(search);
                 while(null != match && match.length>2){
                   switch(match[1].replace('*','')){
@@ -273,8 +273,8 @@
                       break;//tags with no fields of interest.
                     default:
                       formFields[match[2]] = [match[2],match[0]];
-                      if($field.is('.cf7-sg-tabs .field')) formFields[match[2]][0] += '_tab';
-                      if($field.is('.cf7sg-container.cf7-sg-table .field')) formFields[match[2]][0] += '_row';
+                      if($field.is('.cf7-sg-tabs .cf7sg-field')) formFields[match[2]][0] += '_tab';
+                      if($field.is('.cf7sg-container.cf7-sg-table .cf7sg-field')) formFields[match[2]][0] += '_row';
                       if(match[0].indexOf('class:select2')>0){
                         $('#field-events li.select2', $jsTags).addClass('show-events');
                       }

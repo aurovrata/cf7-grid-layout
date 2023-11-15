@@ -1185,14 +1185,15 @@
     //make columns sortable
     sortableRows();
     //make rows sortable
-    $('.cf7sg-col', $grid).sortable({
-      //placeholder: "ui-state-highlight",
-      handle:'.grid-ctrls > .dashicons-move',
-      axis: 'y',
-      //containment:'parent',
-      items: '> .cf7sg-container', //.cf7sg-col.cf7-sg-tabs > .cf7sg-row',
-      helper:'clone'
-    });
+    // $('.cf7sg-col:not(.cf7sg-inner-grid)', $grid).sortable({
+    //   //placeholder: "ui-state-highlight",
+    //   handle:'.grid-ctrls > .dashicons-move',
+    //   axis: 'y',
+    //   placeholder:'.cf7sg-row',
+		// 	forcePlaceholderSize: true,
+    //   items: '> .cf7sg-container', //.cf7sg-col.cf7-sg-tabs > .cf7sg-row',
+    //   helper:'clone'
+    // });
     //grid is ready
     $wpcf7Editor.trigger('grid-ready');
   }); //end document ready
@@ -1264,6 +1265,8 @@
       connectWith: '.cf7sg-row',
       helper:'clone',
       items: '> .cf7sg-col',
+			cancel: '.cf7sg-inner-grid',
+			placeholder: 'sortable-state-highlight',
       receive: function( event, ui ) {
         //ui.item validate column size relative to new row columns.
         //ui.sender original row. cnacel if column does not fit in new row.

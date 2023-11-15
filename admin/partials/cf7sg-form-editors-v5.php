@@ -20,7 +20,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 	$cf7_conditional = 'cf7-conditional-group';
 }
 ?>
-<?php require_once plugin_dir_path( __FILE__ ) . 'helpers/cf7sg-js-events.php'; ?>
+<?php require_once plugin_dir_path( __FILE__ ) . 'helpers/cf7sg-js-events-v5.php'; ?>
 <div id="editors">
 	<?php
 	$editor_disable  = ( 'post-new.php' === $pagenow ) ? ' disabled' : '';
