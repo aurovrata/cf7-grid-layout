@@ -236,7 +236,7 @@ class Cf7_Grid_Layout_Admin {
 			return;
 		}
 		$screen = get_current_screen();
-		if ( $this->cf7_post_type() != $screen->post_type ) {
+		if ( $this->cf7_post_type() !== $screen->post_type ) {
 			return;
 		}
 
@@ -313,7 +313,7 @@ class Cf7_Grid_Layout_Admin {
 						$user_theme = 'paraiso-light';
 						update_user_meta( get_current_user_id(), '_cf7sg_cm_theme', 'light' );
 					} else {
-						$user_theme = ( 'light' == $user_theme ? 'paraiso-light' : 'material-ocean' );
+						$user_theme = ( 'light' === $user_theme ? 'paraiso-light' : 'material-ocean' );
 					}
 				}
 				$cm_js_light   = apply_filters( 'cf7sg_admin_js_editor_theme', '' );
@@ -346,7 +346,7 @@ class Cf7_Grid_Layout_Admin {
 				}
 				// enqueue the cf7 scripts.
 				/** NB @since 4.11.5 force loading of current form for cf7 plugin error handling */
-				if ( 'auto-draft' != $post->post_status ) {
+				if ( 'auto-draft' !== $post->post_status ) {
 					WPCF7_ContactForm::get_instance( $post );
 				}
 
@@ -543,10 +543,12 @@ class Cf7_Grid_Layout_Admin {
 			$args['labels']['filter_items_list']     = 'Filter forms list';
 			$args['labels']['items_list_navigation'] = 'Forms list navigation';
 			$args['labels']['items_list']            = 'Forms list';
-			/** NB @since 2.8.1  fix missing delete_posts notices*/
-			// $args['capabilities']['delete_posts']= 'wpcf7_delete_posts';
-			/** NB @since 3.0.0 enable better capability management */
-			// $args['capability_type'] = 'page';
+			/** NB @since 2.8.1  fix missing delete_posts notices
+			 * $args['capabilities']['delete_posts']= 'wpcf7_delete_posts';
+			*/
+			/** NB @since 3.0.0 enable better capability management
+			 * $args['capability_type'] = 'page';
+			*/
 
 			$args['map_meta_cap']                           = true; // allow finer capability mapping.
 			$args['capabilities']['edit_post']              = 'wpcf7_edit_contact_form';
@@ -561,7 +563,6 @@ class Cf7_Grid_Layout_Admin {
 			$args['capabilities']['publish_posts']          = 'wpcf7_publish_contact_forms';
 			$args['capabilities']['read_private_posts']     = 'wpcf7_publish_contact_forms';
 
-			// wpg_debug($args).
 		}
 		return $args;
 	}
@@ -587,7 +588,6 @@ class Cf7_Grid_Layout_Admin {
 		}
 		/** NB @since 5.0 register dynamic_select list */
 		do_action( 'cf7sg_register_dynamic_lists' );
-		// wpg_debug('created dynamic select ').
 	}
 	/**
 	 * Function to regsiter dynamic dropdown taxonomies
@@ -693,7 +693,6 @@ class Cf7_Grid_Layout_Admin {
 				}
 				$created_taxonomies[ $taxonomy['slug'] ] = $taxonomy;
 			}
-			// wpg_debug($created_taxonomies, 'created ').
 			$post_lists  = array();
 			$saved_lists = array();
 			$system_list = array();
@@ -702,7 +701,6 @@ class Cf7_Grid_Layout_Admin {
 			foreach ( $dropdowns as $id => $lists ) {
 				$saved_lists = array_merge( $saved_lists, $lists );
 			}
-			// wpg_debug($dynamic_fields, 'dynamic ').
 			foreach ( $dynamic_fields as $tag ) {
 				if ( isset( $tag['values'] ) ) {
 					$slug = '';
@@ -800,7 +798,9 @@ class Cf7_Grid_Layout_Admin {
 	 * @since 1.0.0
 	 */
 	public function edit_page_metabox() {
-		// add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args).
+		/**
+		 * Codex: add_meta_box( string $id, string $title, callable $callback, string $screen, string $context, string $priority, array $callback_args).
+		 */
 		if ( post_type_exists( $this->cf7_post_type() ) ) {
 			add_meta_box(
 				'meta-box-main-cf7-editor',
@@ -1160,7 +1160,6 @@ class Cf7_Grid_Layout_Admin {
 		/** NB @since 3.0.0 track script classes for loading for js/css in front-end */
 		$classes = sanitize_text_field( $submits['cf7sg-script-classes'] );
 		$classes = explode( ',', trim( $classes, ',' ) );
-		// wpg_debug($classes, 'script classes').
 		update_post_meta( $post_id, '_cf7sg_script_classes', $classes );
 		/** NB @since 2.3.0 the duplicate functionality has been instored and therefore any new meta fields added to this plugin needs to be added to the duplication properties too.*/
 		/** NB @since 4.0.0 save user theme pref */
@@ -1181,7 +1180,8 @@ class Cf7_Grid_Layout_Admin {
 				$path = get_stylesheet_directory();
 				if ( ! empty( $submits['cf7sg_js_file'] ) || ! empty( $submits['cf7sg_prev_js_file'] ) ) {
 					// check if the file name is changed.
-					if ( ! empty( $submits['cf7sg_prev_js_file'] ) && ( $fp = realpath( ABSPATH . sanitize_text_field( $submits['cf7sg_prev_js_file'] ) ) ) !== false ) {
+					$fp = realpath( ABSPATH . sanitize_text_field( $submits['cf7sg_prev_js_file'] ) );
+					if ( ! empty( $submits['cf7sg_prev_js_file'] ) && ! $fp ) {
 						$path_match = preg_match( '/^' . preg_quote( "$path/js/", '/' ) . '[^\s!?.\/#*]+\.js$/', $fp );
 						if ( $path_match && ! unlink( $fp ) ) {
 							debug_msg( 'CF7SG ADMIN: unable to delete file ' . $submits['cf7sg_prev_js_file'] );
@@ -1200,7 +1200,8 @@ class Cf7_Grid_Layout_Admin {
 				// save css file.
 				if ( ! empty( $submits['cf7sg_css_file'] ) || ! empty( $submits['cf7sg_prev_css_file'] ) ) {
 					// check if the file is changed.
-					if ( ! empty( $submits['cf7sg_prev_css_file'] ) && ( $fp = realpath( ABSPATH . $submits['cf7sg_prev_css_file'] ) ) !== false ) {
+					$fp = realpath( ABSPATH . $submits['cf7sg_prev_css_file'] );
+					if ( ! empty( $submits['cf7sg_prev_css_file'] ) && ! $fp ) {
 						$path_match = preg_match( '/^' . preg_quote( "$path/css/", '/' ) . '[^\s!?.\/#*]+\.css$/', $fp );
 						if ( $path_match && ! unlink( $fp ) ) {
 							debug_msg( 'CF7SG ADMIN: unable to delete file ' . $submits['cf7sg_prev_css_file'] );
@@ -1215,12 +1216,8 @@ class Cf7_Grid_Layout_Admin {
 						debug_msg( "CF7SG ADMIN: unable to delete file $path/css/{$cf7_key}.css" );
 					}
 				}
-			} else { // wrong creds.
-				// TODO handle error.
-			}
-		} else { // only ftp?
-			// TODO handle error.
-		}
+			} //else  wrong creds (TODO handle error).
+		} //else only ftp? (TODO handle alternative).
 		// jstags comments.
 		if ( empty( $submits['cf7sg_jstags_comments'] ) ) {
 			update_post_meta( $post->ID, '_cf7sg_disable_jstags_comments', 1 );
@@ -1902,8 +1899,7 @@ class Cf7_Grid_Layout_Admin {
 
 		/** NB @since 3.1.3  redirect cf7 plugin pages*/
 		global $pagenow;
-		// wpg_debug("page: $pagenow").
-		if ( $pagenow === 'admin.php' && isset( $_GET['page'] ) ) {
+		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) ) {
 			$url = '';
 			switch ( $_GET['page'] ) {
 				case 'wpcf7-new':
@@ -1911,7 +1907,7 @@ class Cf7_Grid_Layout_Admin {
 					break;
 				case 'wpcf7':
 					if ( isset( $_GET['post'] ) ) {
-						$url = "post.php?post={$_GET['post']}&action=edit&classic-editor";
+						$url = 'post.php?post=' . sanitize_key( $_GET['post'] ) . '&action=edit&classic-editor';
 					} else {
 						$url = 'edit.php?post_type=wpcf7_contact_form';
 					}
@@ -1921,13 +1917,11 @@ class Cf7_Grid_Layout_Admin {
 				wp_redirect( admin_url( $url ) );
 				exit;
 			}
-		} elseif ( $pagenow === 'edit.php' && isset( $_GET['post_type'] ) && $this->cf7_post_type() == $_GET['post_type'] ) { /** NB @since 4.11.5 buld validate */
-			if ( isset( $_POST['action'] ) && 'validate' == $_POST['action'] && function_exists( 'wpcf7_load_bulk_validate_page' ) ) {
+		} elseif ( 'edit.php' === $pagenow && isset( $_GET['post_type'] ) && $this->cf7_post_type() === $_GET['post_type'] ) { /** NB @since 4.11.5 buld validate */
+			if ( isset( $_POST['action'] ) && 'validate' === $_POST['action'] && function_exists( 'wpcf7_load_bulk_validate_page' ) ) {
 				wpcf7_load_bulk_validate_page( 'wpcf7', 'validate' );
 			}
 		}
-		$screen = get_current_screen();
-		wpg_debug( $screen );
 	}
 	/**
 	 * Add grid helper hooks for individual tags.
@@ -1943,15 +1937,12 @@ class Cf7_Grid_Layout_Admin {
 	 * Hooked to 'wpcf7_collect_mail_tags'
 	 *
 	 * @since 4.0.0
-	 * @param string $param text_description
-	 * @return string text_description
+	 * @param Array $mailtags array of mail tags.
+	 * @return Array  array of mail tags.
 	 */
 	public function setup_cf7_mailtags( $mailtags ) {
-		// wpg_debug($mailtags, 'mail tags ');
-		// return $mailtags;
 		$contact_form = WPCF7_ContactForm::get_current();
 		$fields       = get_post_meta( $contact_form->id(), '_cf7sg_grid_toggled_names', true );
-		// update_post_meta($post_id, '_cf7sg_grid_tabbed_toggles', $ttgls);
 		if ( ! empty( $fields ) ) {
 			$toggles = array_keys( $fields );
 			$groups  = get_post_meta( $contact_form->id(), '_cf7sg_grid_grouped_toggles', true );
@@ -1990,16 +1981,16 @@ class Cf7_Grid_Layout_Admin {
 		$grid_settings = get_option( self::CF7SG_OPTION, array() );
 		// if plugin settings exists and this is not an update, then no need to run.
 		$notices = array();
-		if ( ! empty( $grid_settings ) and isset( $grid_settings['update'] ) ) {
+		if ( ! empty( $grid_settings ) && isset( $grid_settings['update'] ) ) {
 			$warning = false;
 
-			if ( isset( $grid_settings['update'] ) and CF7SG_VERSION_FORM_UPDATE === CF7_GRID_VERSION ) {
+			if ( isset( $grid_settings['update'] ) && CF7SG_VERSION_FORM_UPDATE === CF7_GRID_VERSION ) {
 				$warning = true;
 			} elseif ( isset( $grid_settings['fv'] ) ) {
 				if ( version_compare( $grid_settings['fv'], CF7SG_VERSION_FORM_UPDATE, '<' ) ) {
 					$warning = true;
 				}
-			} else { // check the forms directly
+			} else { // check the forms directly.
 				global $wpdb;
 				$post_type = $this->cf7_post_type();
 				$result    = $wpdb->get_col(
@@ -2014,7 +2005,7 @@ class Cf7_Grid_Layout_Admin {
 				$ver       = '';
 				foreach ( $result as $v ) {
 					$ver = explode( '.', $v );
-					if ( ( $ver[0] * 1.0 ) >= 5 and version_compare( $v, CF7SG_VERSION_FORM_UPDATE, '<' ) ) {
+					if ( ( $ver[0] * 1.0 ) >= 5 && version_compare( $v, CF7SG_VERSION_FORM_UPDATE, '<' ) ) {
 						$warning = true;
 					}
 					if ( $warning ) {
@@ -2059,16 +2050,16 @@ class Cf7_Grid_Layout_Admin {
 			);
 		}
 		/** NB @since 4.11.5 add admin notices for bulk cf7 validation */
-		// check if cf7 found issues:
+		// check if cf7 found issues.
 
 		if ( method_exists( 'WPCF7', 'get_option' ) ) {
 			$result = WPCF7::get_option( 'bulk_validate' );
 			if ( ! empty( $result ) ) {
-				$has_errors = ( isset( $result['count_invalid'] ) and $result['count_invalid'] > 0 );
+				$has_errors = ( isset( $result['count_invalid'] ) && $result['count_invalid'] > 0 );
 				$is_old     = ( defined( 'WPCF7_ConfigValidator::last_important_update' ) &&
 				isset( $result['version'] ) &&
 				version_compare( $result['version'], WPCF7_ConfigValidator::last_important_update, '<' ) );
-				if ( $is_old or $has_errors ) {
+				if ( $is_old || $has_errors ) {
 					   ob_start();
 					   wpcf7_admin_bulk_validate_page();
 					   $html = ob_get_contents();
@@ -2077,8 +2068,9 @@ class Cf7_Grid_Layout_Admin {
 					if ( $is_old ) {
 						$msg = __( 'CF7 plugin udpate requires you to revalidate your forms.', 'cf7-grid-layout' );
 					} elseif ( $has_errors ) {
-						$msg = sprintf( /* translators : %s is number of forms */
-							__( 'You have %s form(s) with errors flagged below, fix those before attempting to revalidate your forms', 'cf7-grid-layout' ),
+						$msg = sprintf(
+							/* translators: %s is number of forms */
+							esc_html__( 'You have %s form(s) with errors flagged below, fix those before attempting to revalidate your forms', 'cf7-grid-layout' ),
 							$result['count_invalid']
 						);
 					}
@@ -2116,14 +2108,14 @@ class Cf7_Grid_Layout_Admin {
 
 		$notify = false;
 		$rule   = self::$admin_notice_pages[ $pagenow ];
-		if ( $pagenow == 'post.php' ) {
+		if ( 'post.php' === $pagenow ) {
 			$screen = get_current_screen();
-			if ( $this->cf7_post_type() == $screen->post_type ) {
+			if ( $this->cf7_post_type() === $screen->post_type ) {
 				$notify = true;
 			}
-		} elseif ( ! empty( $rule ) and is_array( $rule ) ) {
+		} elseif ( ! empty( $rule ) && is_array( $rule ) ) {
 			foreach ( $rule as $key => $type ) {
-				if ( isset( $_GET[ $type ] ) and $_GET[ $type ] == $key ) {
+				if ( isset( $_GET[ $type ] ) && $_GET[ $type ] === $key ) {
 					$notify = true;
 				}
 			}
@@ -2132,12 +2124,12 @@ class Cf7_Grid_Layout_Admin {
 		}
 
 		if ( ! $notify ) {
-			return; // rules don't match;
+			return; // rules don't match.
 		}
 
 		// do we have any notices to display?
 		foreach ( $notices as $id => $notice ) {
-			if ( isset( $notice['pages'] ) and ! in_array( $pagenow, $notice['pages'] ) ) {
+			if ( isset( $notice['pages'] ) && ! in_array( $pagenow, $notice['pages'], true ) ) {
 				continue;
 			}
 			$time    = isset( $notice['time'] ) ? $notice['time'] : 'forever';
@@ -2151,11 +2143,14 @@ class Cf7_Grid_Layout_Admin {
 				$notice['html'] = '';
 			}
 			?>
-	  <style>.notice .inline-top{display: inline-block;vertical-align: top;margin-right: 10px;max-width: 300px;}</style>
-			<div data-dismissible="<?php echo $dismiss; ?>" class="notice <?php echo $notice['type']; ?> is-dismissible cf7sg-notice">
-			<?php echo empty( $notice['msg'] ) ? '' : '<p>' . $notice['msg'] . '</p>'; ?>
-			<?php echo $notice['html']; ?>
-	  </div>
+		<style>.notice .inline-top{display: inline-block;vertical-align: top;margin-right: 10px;max-width: 300px;}</style>
+		<div data-dismissible="<?php echo esc_attr( $dismiss ); ?>" class="notice <?php echo esc_attr( $notice['type'] ); ?> is-dismissible cf7sg-notice">
+			<?php
+			$msg  = empty( $notice['msg'] ) ? '' : '<p>' . $notice['msg'] . '</p>';
+			$msg .= $notice['html'];
+			echo wp_kses( $msg, 'post' );
+			?>
+		</div>
 			<?php
 			/** NB @since 4.7.1 dismiss notices once displayed */
 			unset( $notices[ $id ] );
@@ -2163,13 +2158,13 @@ class Cf7_Grid_Layout_Admin {
 		}
 	}
 	/**
-	 * ajax request to validate plugin update.
+	 * Ajax request to validate plugin update.
 	 * Hooked on 'wp_ajax_validate_cf7sg_version_update'
 	 *
 	 * @since 4.1.0
 	 */
 	public function validate_cf7sg_version_update() {
-		if ( ! isset( $_POST['nonce'] ) or ! wp_verify_nonce( $_POST['nonce'], 'cf7sg_udpate_plugin' ) ) {
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'cf7sg_udpate_plugin' ) ) {
 			echo 'error, nonce failed, try to reload the page.';
 			wp_die();
 		}
@@ -2186,12 +2181,17 @@ class Cf7_Grid_Layout_Admin {
 		update_option( self::CF7SG_OPTION, $grid_settings );
 		$update_msg = __( 'Version validated, thank you!', 'cf7-grid-layout' );
 		if ( $warning ) {
-			$link = admin_url( 'edit.php?post_type=wpcf7_contact_form' );
 			/* translators: %s link to form table */
 			$update_msg = __( 'You need to <strong>update</strong> your <a href="%s">forms</a>', 'cf7-grid-layout' );
-			$update_msg = sprintf( $update_msg, $link );
+			$update_msg = sprintf( $update_msg, admin_url( 'edit.php?post_type=wpcf7_contact_form' ) );
 		}
-		echo $update_msg;
+		echo wp_kses(
+			$update_msg,
+			array(
+				'a'      => array( 'href' ),
+				'strong' => array(),
+			)
+		);
 		wp_die();
 	}
 
@@ -2200,14 +2200,13 @@ class Cf7_Grid_Layout_Admin {
 	 * Hooked to 'upgrader_post_install'.
 	 *
 	 * @since 4.1.0
-	 * @param array $param text_description
-	 * @param array $extras text_description
-	 * @param array $result text_description
-	 * @return array responses for the upgrade process
+	 * @param Boolean $response array of msgs.
+	 * @param Array   $extras plugin parametrs.
+	 * @param Array   $result upgrade attributes.
+	 * @return Boolean responses for the upgrade process.
 	 */
 	public function post_plugin_upgrade( $response, $extras, $result ) {
-		if ( ( isset( $response['destination_name'] ) and 'cf7-grid-layout' == $response['destination_name'] )
-		or ( isset( $extras['plugin'] ) and 'cf7-grid-layout/cf7-grid-layout.php' == $extras['plugin'] ) ) {
+		if ( isset( $result['destination_name'] ) && 'cf7-grid-layout' === $result['destination_name'] && $response ) {
 			$grid_settings           = get_option( self::CF7SG_OPTION, array() );
 			$grid_settings['update'] = true;
 			update_option( self::CF7SG_OPTION, $grid_settings );
@@ -2219,11 +2218,8 @@ class Cf7_Grid_Layout_Admin {
 	 * hooked on action 'init'.
 	 *
 	 * @since 4.3.0
-	 * @param string $param text_description
-	 * @return string text_description
 	 */
-	// Register Custom Post Type
-	function register_form_preview_posttype() {
+	public function register_form_preview_posttype() {
 
 		$labels  = array(
 			'name'               => _x( 'CF7 Forms', 'Post Type General Name', 'cf7-grid-layout' ),
@@ -2273,8 +2269,8 @@ class Cf7_Grid_Layout_Admin {
 	 * Hoooked to ''
 	 *
 	 * @since 4.4.0
-	 * @param string $param text_description
-	 * @return string text_description
+	 * @param Array $trans translation plugin version.
+	 * @return Array of plugin version number.
 	 */
 	public function load_translation_files( $trans ) {
 		$trans[ $this->plugin_name ] = CF7SG_TRANSLATED_VERSION;

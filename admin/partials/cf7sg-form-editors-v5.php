@@ -297,7 +297,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 					<div class="cf7sg-uirs-label cf7sg-uirs-php"><?php esc_html_e( 'PHP Filters', 'cf7-grid-layout' ); ?></div>
 					<div class="cf7sg-uirs-ctrl cf7sg-uics-ctrl cf7sg-uirs-php">
 						<span class="copy-helper"><?php esc_html_e( 'Click to copy!', 'cf7-grid-layout' ); ?></span>
-						<p><?php echo wp_kses( __( 'Click-to-copy &amp; paste in your <em>functions.php</em> file.', 'cf7-grid-layout' ), array( 'em' => 1 ) ); ?></p>
+						<p><?php echo wp_kses( __( 'Click-to-copy &amp; paste in your <em>functions.php</em> file.', 'cf7-grid-layout' ), array( 'em' => array() ) ); ?></p>
 						<ul class="cf7sg-helper-list"></ul>
 					</div>
 					<div class="cf7sg-uirs-label cf7sg-uirs-js"  style="display:none"><?php esc_html_e( 'JS Filters', 'cf7-grid-layout' ); ?></div>
@@ -386,7 +386,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 						<p>
 							<em>
 							<?php
-							echo wp_kses( __( 'On the last slide, the <em>next</em> slide button is replaced with the form submit button', 'cf7-grid-layout' ), array( 'em' => 1 ) );
+							echo wp_kses( __( 'On the last slide, the <em>next</em> slide button is replaced with the form submit button', 'cf7-grid-layout' ), array( 'em' => array() ) );
 							?>
 							</em>
 						</p>
