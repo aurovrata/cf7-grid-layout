@@ -2455,16 +2455,16 @@ class Cf7_Grid_Layout_Public {
 		add_action(
 			'smart_grid_enqueue_scripts',
 			function( $cf7_key, $atts, $classes ) {
-				// check for classes set in get_form_classes() method in CF7SG_Dynamic_list class.
-				if ( in_array( 'has-select2', $classes ) ) {
+				// check for classes set in get_form_classes() method in CF7SG_Dynamic_List class.
+				if ( in_array( 'has-select2', $classes, true ) ) {
 					wp_enqueue_style( 'select2-style' );
 					wp_enqueue_script( 'jquery-select2' );
 				}
-				if ( in_array( 'has-nice-select', $classes ) ) {
+				if ( in_array( 'has-nice-select', $classes, true ) ) {
 					wp_enqueue_style( 'jquery-nice-select-css' );
 					wp_enqueue_script( 'jquery-nice-select' );
 				}
-				if ( in_array( 'has-hybriddd', $classes ) ) {
+				if ( in_array( 'has-hybriddd', $classes, true ) ) {
 					wp_enqueue_style( 'hybriddd-style' );
 					wp_enqueue_script( 'hybriddd-js' );
 				}

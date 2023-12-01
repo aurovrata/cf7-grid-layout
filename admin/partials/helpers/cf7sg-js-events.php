@@ -46,9 +46,9 @@ let $form = $(e.delegateTarget), $table = $(e.target), rIdx = e['row'], $row= $t
 		<li><?php esc_html_e( 'Event: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-cf72post="/* event fired when a table row has been deleted, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgRowDeleted', '.container.cf7-sg-table', function(e){
-  //$form current form jquery object.
-  //$table table jquery object.
-  let $form = $(e.delegateTarget), $table = $(e.target);
+	//$form current form jquery object.
+	//$table table jquery object.
+	let $form = $(e.delegateTarget), $table = $(e.target);
 });" href="javascript:void(0);"><?php esc_html_e( 'row removed', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Function: ', 'cf7-grid-layout' ); ?>
@@ -88,26 +88,26 @@ $table.cf7sgRemoveRow(); /* remove last row. */" href="javascript:void(0);"><?ph
 		<li><?php esc_html_e( 'Event: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-cf72post="/* event fired once the tabs has been initialised, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabsReady', function(e){
-  //$form current form jquery object.
-  //$tabs tabs jquery object.
-  let $form = $(this), $tabs = $(e.target);
+	//$form current form jquery object.
+	//$tabs tabs jquery object.
+	let $form = $(this), $tabs = $(e.target);
 });" href="javascript:void(0);"><?php esc_html_e( 'tabs ready', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Event: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-cf72post="/* event fired when a new tab is added, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabAdded', '.cf7-sg-tabs-panel', function(e){
-  //$form current form jquery object.
-  //$panel newly added panel jquery object.
-  //$panel.attr('id') == <initial-id>-<tIdx> where tab index (tIdx) is greater than 0.
-  let $form = $(this), $panel = $(e.target), tIdx = e['tab-index'];
+	//$form current form jquery object.
+	//$panel newly added panel jquery object.
+	//$panel.attr('id') == <initial-id>-<tIdx> where tab index (tIdx) is greater than 0.
+	let $form = $(this), $panel = $(e.target), tIdx = e['tab-index'];
 });" href="javascript:void(0);"><?php esc_html_e( 'tab added', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Event: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-cf72post="/* event fired when a new tab is removed, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgTabRemoved', '.cf7-sg-tabs', function(e){
-  //$form current form jquery object.
-  //$tabs tab jquery object from which the panel was removed.
-  let $form = $(this), $tabs = $(e.target);
+	//$form current form jquery object.
+	//$tabs tab jquery object from which the panel was removed.
+	let $form = $(this), $tabs = $(e.target);
 });" href="javascript:void(0);"><?php esc_html_e( 'tab removed', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Function: ', 'cf7-grid-layout' ); ?>
@@ -147,38 +147,38 @@ $tabs.cf7sgCountTabs(); /* tab count. */" href="javascript:void(0);"><?php esc_h
 		<li><?php esc_html_e( 'Event: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-cf72post="/* event fired once the collapsible rows (accordion/toggle/sections) have been initialised */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgCollapsibleRowsReady', function(e){
-  let $form = $(this), $section = $(e.target);
+	let $form = $(this), $section = $(e.target);
 });" href="javascript:void(0);"><?php esc_html_e( 'section ready', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Event: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-cf72post="/* event fired when a collapsible section (accordion/toggle/section) is activated, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'accordionactivate', function(e, ui){
-  //this event is fired if the section is either closed or opened.
-  //for single collapsed sections,
-  //  when openned, ui.oldPanel is empty and ui.newPanel is the current opened panel.
-  //  when closed, ui.oldPanel is the currently closed panel and ui.newPanel is empty.
-  //for accordion with multile rows,
-  //  ui.oldPanel is the previous panel (else empty if first actiation), ui.newPanel is the current opened panel.
-  //see https://api.jqueryui.com/accordion/#event-activate for more details.
-  let $form = $(this), $section = $(e.target);
-  switch(true){
+	//this event is fired if the section is either closed or opened.
+	//for single collapsed sections,
+	//  when openned, ui.oldPanel is empty and ui.newPanel is the current opened panel.
+	//  when closed, ui.oldPanel is the currently closed panel and ui.newPanel is empty.
+	//for accordion with multile rows,
+	//  ui.oldPanel is the previous panel (else empty if first actiation), ui.newPanel is the current opened panel.
+	//see https://api.jqueryui.com/accordion/#event-activate for more details.
+	let $form = $(this), $section = $(e.target);
+	switch(true){
 	case $section.is('.with-toggle'):
-	  //this is a toggled section, identify it by its CSS id $this.attr('id').
-	  break;
+		//this is a toggled section, identify it by its CSS id $this.attr('id').
+		break;
 	case $section.is('.cf7sg-accordion-rows'):
-	  //this is an accordion with multiple collapsible sections, identify it by its CSS id $this.attr('id')
-	  break;
+		//this is an accordion with multiple collapsible sections, identify it by its CSS id $this.attr('id')
+		break;
 	default: //this is a single collapsible section.
-	  //identify it by its CSS id $this.attr('id')
-	  break;
+		//identify it by its CSS id $this.attr('id')
+		break;
 	}
 });" href="javascript:void(0);"><?php esc_html_e( 'section activated', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Function: ', 'cf7-grid-layout' ); ?>
 		<a class="helper all-fields" data-cf72post="
-  // $section is the collapsible section jquery object.
-  // you can either pass true (open, activate), or false (close) to the function.
-  $section.activateCF7sgCollapsibleSection(true);/* toggle open/close a collapsible section. */" href="javascript:void(0);"><?php esc_html_e( 'open/close section', 'cf7-grid-layout' ); ?></a>
+	// $section is the collapsible section jquery object.
+	// you can either pass true (open, activate), or false (close) to the function.
+	$section.activateCF7sgCollapsibleSection(true);/* toggle open/close a collapsible section. */" href="javascript:void(0);"><?php esc_html_e( 'open/close section', 'cf7-grid-layout' ); ?></a>
 		</li>
 	</ul>
 	</li>
@@ -187,37 +187,37 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'accordionactivate', function(e,
 		<li><?php esc_html_e( 'Event: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-cf72post="/* event fired once the slider has been initialised, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgSliderReady','.cf7sg-slider-section', function(e){
-  // $form is the form jquery object.
-  //the $slider is the div.cf7sg-slider-section element jquery object.
-  //slides is the total number of slides.
-  let $form = $(e.delegateTarget), $slider = $(this), slides = e.total;
+	// $form is the form jquery object.
+	//the $slider is the div.cf7sg-slider-section element jquery object.
+	//slides is the total number of slides.
+	let $form = $(e.delegateTarget), $slider = $(this), slides = e.total;
 });" href="javascript:void(0);"><?php esc_html_e( 'slider ready', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Event: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-cf72post="/* event fired when a new slide is active, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgSlideChange','.cf7sg-slider-section', function(e){
-  //slide indexes are 0 based.
-  //e['current'] holds the index of the current slide
-  //e['last'] holds the index of the last slide.
-  //you can add a CSS id to each div.container.cf7sg-collapsible elements
-  //  whithin the div.cf7sg-slider-section element to uniquely identify each slide $slide.attr('id');
-  // $form is the form jquery object.
-  let $form = $(e.delegateTarget), $slider=$(this), $slide = $(e.target),
+	//slide indexes are 0 based.
+	//e['current'] holds the index of the current slide
+	//e['last'] holds the index of the last slide.
+	//you can add a CSS id to each div.container.cf7sg-collapsible elements
+	//  whithin the div.cf7sg-slider-section element to uniquely identify each slide $slide.attr('id');
+	// $form is the form jquery object.
+	let $form = $(e.delegateTarget), $slider=$(this), $slide = $(e.target),
 	current = e.current, last = e.last;
 });" href="javascript:void(0);"><?php esc_html_e( 'on slide change', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Function: ', 'cf7-grid-layout' ); ?>
 		<a class="helper slider-fields" data-cf72post="
-  // $slider is the slider jquery object. Function can be chained.
-  //index can either be empty/null, which will move to the next slide.
-  //a positive index of an existing slide to move (slide index is 0 based) or,
-  // -1 to move to the previous slide.
-  $slider.sgChangeSlide(index);/* change slides. */" href="javascript:void(0);"><?php esc_html_e( 'change slide', 'cf7-grid-layout' ); ?></a>
+	// $slider is the slider jquery object. Function can be chained.
+	//index can either be empty/null, which will move to the next slide.
+	//a positive index of an existing slide to move (slide index is 0 based) or,
+	// -1 to move to the previous slide.
+	$slider.sgChangeSlide(index);/* change slides. */" href="javascript:void(0);"><?php esc_html_e( 'change slide', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Function: ', 'cf7-grid-layout' ); ?>
 		<a class="helper slider-fields" data-cf72post="
-  // $slider is the slider jquery object.  The slide index is 0 based,
-  let idx = $slider.sgCurrentSlide();/* get the current slide index. */" href="javascript:void(0);"><?php esc_html_e( 'current slide index', 'cf7-grid-layout' ); ?></a>
+	// $slider is the slider jquery object.  The slide index is 0 based,
+	let idx = $slider.sgCurrentSlide();/* get the current slide index. */" href="javascript:void(0);"><?php esc_html_e( 'current slide index', 'cf7-grid-layout' ); ?></a>
 		</li>
 	</ul>
 	</li>
@@ -226,25 +226,25 @@ $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'sgSlideChange','.cf7sg-slider-s
 		<li><?php esc_html_e( 'Event: ', 'cf7-grid-layout' ); ?>
 		<a class="helper all-fields" data-cf72post="/* event fired when a field changes value, click to insert helper code into your js file. */
 $('#cf7sg-form-{$cf7_key} form.wpcf7-form').on( 'change',':input', function(e){
-  let $form = $(e.delegateTarget), $field=$(this), fieldName = $field.attr('name');
-  {$array_field_extraction}
-  // $form is the form jquery object.
-  // $field is the input field jquery object.
-  //
-  switch(fieldName){{$list_of_fields}}
+	let $form = $(e.delegateTarget), $field=$(this), fieldName = $field.attr('name');
+	{$array_field_extraction}
+	// $form is the form jquery object.
+	// $field is the input field jquery object.
+	//
+	switch(fieldName){{$list_of_fields}}
 });" href="javascript:void(0);"><?php esc_html_e( 'value change', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Function: ', 'cf7-grid-layout' ); ?>
 		<a class="helper all-fields" data-cf72post="
-  // $form is the form jquery object.
-  // fieldName is the name of the field you need to retrieve.
-  // you can use tab/row indexes to retrieve fields in tabbed sections and/or table structures.
-  $field = $form.getCF7field(fieldName);/* function to retrieve a form field. */
-  //if your field is in a tabbed/table structure OR a table within a tabbed section,
-  //$form.getCF7field(fieldName, {'row':1,'tab':1}) - retrieves field on row 2 of tab 2.
-  //$form.getCF7field(fieldName, {'row':0}) - field on first row OR all first row fields on all tabs.
-  //$form.getCF7field(fieldName, {'tab':1}) - field in first tab OR fields of all rows on first tab.
-  //$form.getCF7field(fieldName) - field in form OR all fields of all rows on all tabs." href="javascript:void(0);"><?php esc_html_e( 'get form field', 'cf7-grid-layout' ); ?></a>
+	// $form is the form jquery object.
+	// fieldName is the name of the field you need to retrieve.
+	// you can use tab/row indexes to retrieve fields in tabbed sections and/or table structures.
+	$field = $form.getCF7field(fieldName);/* function to retrieve a form field. */
+	//if your field is in a tabbed/table structure OR a table within a tabbed section,
+	//$form.getCF7field(fieldName, {'row':1,'tab':1}) - retrieves field on row 2 of tab 2.
+	//$form.getCF7field(fieldName, {'row':0}) - field on first row OR all first row fields on all tabs.
+	//$form.getCF7field(fieldName, {'tab':1}) - field in first tab OR fields of all rows on first tab.
+	//$form.getCF7field(fieldName) - field in form OR all fields of all rows on all tabs." href="javascript:void(0);"><?php esc_html_e( 'get form field', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li><?php esc_html_e( 'Function: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-cf72post="
@@ -257,20 +257,20 @@ $field.cf7sgWarning(message, timeout); /* function to display a dismissible fiel
 //set custom options on your select2 field at instantiation.
 //for a list of options: https://select2.org/configuration/options-api
 var cf7sgCustomSelect2Templates = (function (ccs2t) {
-  {$select2_fields}
-  return ccs2t;
+	{$select2_fields}
+	return ccs2t;
 }(cf7sgCustomSelect2Templates || {}));
- /* set custom options for the seect2 fields. */" href="javascript:void(0);"><?php esc_html_e( 'custom options', 'cf7-grid-layout' ); ?></a>
+/* set custom options for the seect2 fields. */" href="javascript:void(0);"><?php esc_html_e( 'custom options', 'cf7-grid-layout' ); ?></a>
 		</li>
 		<li class="display-none hybriddd"><?php esc_html_e( 'HybridDropdown: ', 'cf7-grid-layout' ); ?>
 		<a class="helper" data-insert="end" data-cf72post="
 //set custom options on your HybridDropdown field at instantiation.
 //for a list of options: https://aurovrata.github.io/hybrid-html-dropdown/options/#options
 var cf7sgCustomHybridddTemplates = (function (cchddt) {
-  {$hybriddd_fields}
-  return cchddt;
+	{$hybriddd_fields}
+	return cchddt;
 }(cf7sgCustomHybridddTemplates || {}));
- /* set custom options for the HybridDropdown fields. */" href="javascript:void(0);"><?php esc_html_e( 'custom options', 'cf7-grid-layout' ); ?></a>
+/* set custom options for the HybridDropdown fields. */" href="javascript:void(0);"><?php esc_html_e( 'custom options', 'cf7-grid-layout' ); ?></a>
 		</li>
 	</ul>
 	</li>

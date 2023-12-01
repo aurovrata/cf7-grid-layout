@@ -88,7 +88,7 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 		<li><a class="button" href="#cf7-editor-grid"><?php esc_html_e( 'Grid', 'cf7-grid-layout' ); ?></a></li>
 		<li><a class="button" href="#cf7-codemirror">&lt;HTML/&gt;</a></li>
 	</ul>
-	<div id="cf7-editor-grid" style="--cf7sg-col-label:'<?php /* esc_attr_e( 'Col', 'cf7-grid-layout' ); */ ?>'">
+	<div id="cf7-editor-grid" style="--cf7sg-col-label:'<?php /** NB esc_attr_e( 'Col', 'cf7-grid-layout' ); */ ?>'">
 		<div class="cf7sg-hide-grid display-none">
 		<p class="full-ui"><?php esc_html_e( 'Please toggle to full screen mode to edit this form', 'cf7-grid-layout' ); ?></p>
 		<p class="no-ui display-none"><?php esc_html_e( 'Your device screen is too small to edit this form, use the HTML editor instead.', 'cf7-grid-layout' ); ?></p>

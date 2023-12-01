@@ -216,7 +216,7 @@ class Cf7_Grid_Layout_Admin {
 	public function enqueue_scripts( $page ) {
 
 		$plugin_dir = plugin_dir_url( __DIR__ );
-		if ( in_array( $page, array( 'toplevel_page_wpcf7', 'contact_page_wpcf7-new' ) ) ) {
+		if ( in_array( $page, array( 'toplevel_page_wpcf7', 'contact_page_wpcf7-new' ), true ) ) {
 			wp_enqueue_script( $this->plugin_name, $plugin_dir . 'admin/js/cf7sg-grid-layout-admin.js', array( 'jquery' ), $this->version, true );
 			return;
 		}
@@ -327,7 +327,7 @@ class Cf7_Grid_Layout_Admin {
 						$user_js_theme = 'paraiso-light';
 						update_user_meta( get_current_user_id(), '_cf7sg_js_cm_theme', 'light' );
 					} else {
-						$user_js_theme = ( 'light' == $user_js_theme ? 'paraiso-light' : 'material-ocean' );
+						$user_js_theme = ( 'light' === $user_js_theme ? 'paraiso-light' : 'material-ocean' );
 					}
 				}
 				$cm_css_light   = apply_filters( 'cf7sg_admin_css_editor_theme', '' );
@@ -341,7 +341,7 @@ class Cf7_Grid_Layout_Admin {
 						$user_css_theme = 'paraiso-light';
 						update_user_meta( get_current_user_id(), '_cf7sg_css_cm_theme', 'light' );
 					} else {
-						$user_css_theme = ( 'light' == $user_css_theme ? 'paraiso-light' : 'material-ocean' );
+						$user_css_theme = ( 'light' === $user_css_theme ? 'paraiso-light' : 'material-ocean' );
 					}
 				}
 				// enqueue the cf7 scripts.
@@ -1233,7 +1233,7 @@ class Cf7_Grid_Layout_Admin {
 			'post_content' => $content,
 			'post_status'  => 'draft',
 			'post_type'    => 'cf7sg_page',
-		// 'post_name' => sanitize_title( $title ),
+		/** NB: 'post_name' => sanitize_title( $title ); */
 		);
 		/** NB @since 4.6.0 redirect on submit */
 		if ( isset( $submits['cf7sg_page_redirect'] ) ) {
@@ -1261,17 +1261,15 @@ class Cf7_Grid_Layout_Admin {
 		if ( ! is_wp_error( $preview_id ) ) {
 			update_post_meta( $post->ID, '_cf7sg_form_page', $preview_id );
 		}
-		// save wpcf7 form
-		// need to unhook this function so as not to loop infinitely
-		// wpg_debug($args, 'saving cf7 posts').
+		// save wpcf7 form.
+		// need to unhook this function so as not to loop infinitely.
 		remove_action( 'save_post_wpcf7_contact_form', array( $this, 'save_post' ), 10, 3 );
 		remove_action( 'wpcf7_save_contact_form', array( $this, 'save_factory_metas' ), 10, 1 );
-		// wpg_debug($args['form'],'form ').
 		/** NB @since 4.11.5 filter wp_kses ffrmo cf7 plugin v5.5 */
 		add_filter(
 			'wpcf7_kses_allowed_html',
 			function( $cf7_tags, $context ) use ( $allowed_tags ) {
-				if ( 'form' == $context ) {
+				if ( 'form' === $context ) {
 					return array_merge( $cf7_tags, $allowed_tags );
 				}
 				return $cf7_tags;
@@ -1526,7 +1524,7 @@ class Cf7_Grid_Layout_Admin {
 	 *
 	 * @since 4.11.0
 	 * @param String             $tag_id dynamic list tag id.
-	 * @param CF7SG_Dynamic_list $dlo dynamic list object.
+	 * @param CF7SG_Dynamic_List $dlo dynamic list object.
 	 * @param WPCF7_Contact_Form $form cf7 form object.
 	 * @param Array              $args cf7 form shortcode attributes.
 	 */
@@ -1541,12 +1539,12 @@ class Cf7_Grid_Layout_Admin {
 	 * @param String $tag_id dynamic list tag id.
 	 */
 	public function add_taxonomy_imagegrid_hook( $tag_id ) {
-		if ( 'dynamic_checkbox' != $tag_id ) {
+		if ( 'dynamic_checkbox' !== $tag_id ) {
 			return;
 		}
 		?>
 	<p class="imagegrid-filter display-none filter-hook">
-	  <strong><?php echo esc_html__( 'Filter imagegrid image sources', 'cf7-grid-layout' ); ?></strong><br />
+		<strong><?php echo esc_html__( 'Filter imagegrid image sources', 'cf7-grid-layout' ); ?></strong><br />
 		<?php
 		echo sprintf(
 			wp_kses( /* translators: set of class dynamically populated */
@@ -1596,7 +1594,7 @@ class Cf7_Grid_Layout_Admin {
 						}
 					}
 				}
-				if ( false != strpos( $class, 'nice-select' ) || false != strpos( $class, 'ui-select' ) ) {
+				if ( false !== strpos( $class, 'nice-select' ) || false !== strpos( $class, 'ui-select' ) ) {
 					$form_classes[] = 'has-nice-select';
 				}
 				break;
@@ -1622,9 +1620,15 @@ class Cf7_Grid_Layout_Admin {
 	public function check_plugin_dependency() {
 		// if either the polylang for the cf7 plugin is not active anymore, deactive this extension.
 		if ( ! is_plugin_active( 'contact-form-7/wp-contact-form-7.php' ) ) {
-			// && is_plugin_active("cf7-grid-layout/cf7-grid-layout.php").
 			deactivate_plugins( 'cf7-grid-layout/cf7-grid-layout.php' );
-			wp_die( '<p><strong>CF7 smart Grid-layout Extension</strong> requires <strong>Contact Form 7</strong> plugin, and has therefore been deactivated!</p><a href="' . esc_url( network_admin_url( 'plugins.php' ) ) . '">Return to Plugins</a></a>' );
+			wp_die(
+				sprintf(
+					/* translators: %1$s name of this plugin, %2$s CF7 plugin name*/
+					'<p>' . esc_html__( ' %1$s extension requires %2$s plugin, and has therefore been deactivated!', 'cf7-grid-layout' ) . '</p><a href="' . esc_url( network_admin_url( 'plugins.php' ) ) . '">' . esc_html__( 'Return to Plugins page', 'cf7-grid-layout' ) . '</a>',
+					'<strong>CF7 Smart Grid-layout </strong>',
+					'<strong>Contact Form 7</strong>'
+				)
+			);
 		}
 	}
 	/**
@@ -1660,7 +1664,7 @@ class Cf7_Grid_Layout_Admin {
 	 */
 	public function pretty_admin_pointers( $hook_suffix ) {
 		$screen = get_current_screen();
-		if ( ! isset( $screen ) || $this->cf7_post_type() != $screen->post_type || in_array( $hook_suffix, array( 'post.php', 'post-new.php' ), true ) ) {
+		if ( ! isset( $screen ) || $this->cf7_post_type() !== $screen->post_type || in_array( $hook_suffix, array( 'post.php', 'post-new.php' ), true ) ) {
 			return;
 		}
 		$enqueue_pointer = false;
@@ -1671,8 +1675,8 @@ class Cf7_Grid_Layout_Admin {
 		$helpers            = array();
 		/**
 		* Filter to add custom pointers for user iterface.
-	  *
-		* @var array $pointers an array of $pointer_id=>array($content, $arrow, $valign) key/value pairs to filter.  The key is the pointer id to identify which ones the user has dismissed.  The value is an array with the message $content, the position of the $arrow (left|right|top|bottom), the vertical alignment ($valign) of the box (center|top|bottom).
+		*
+		* @var Array $pointers an array of $pointer_id=>array($content, $arrow, $valign) key/value pairs to filter.  The key is the pointer id to identify which ones the user has dismissed.  The value is an array with the message $content, the position of the $arrow (left|right|top|bottom), the vertical alignment ($valign) of the box (center|top|bottom).
 		* @return array an array of pointers, which will be checked agains the current user.
 		*/
 		$filter_pointers = apply_filters( 'cf7sg_plugin_pointers-' . $screen->id, array(), $dismissed_pointers );
@@ -1715,26 +1719,26 @@ class Cf7_Grid_Layout_Admin {
 	public function edit_pointers( $pointers, $dismissed ) {
 		ob_start();
 		/* update forms */
-		if ( ! in_array( 'update_forms_pointer', $dismissed ) ) {
+		if ( ! in_array( 'update_forms_pointer', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-update-forms.php';
 			$content                          = ob_get_contents();
 			$pointers['update_forms_pointer'] = array( $content, 'left', 'center', '' );
 			ob_clean();
 		}
 		/* tutorials */
-		if ( ! in_array( 'tutorials_pointer', $dismissed ) ) {
+		if ( ! in_array( 'tutorials_pointer', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-tutorials.php';
 			$content                       = ob_get_contents();
 			$pointers['tutorials_pointer'] = array( $content, 'left', 'center', 'a[href="admin.php?page=cf7sg_help"]' );
 			ob_clean();
-		} elseif ( ! in_array( 'new_tutorials_pointer', $dismissed ) ) {   /* new tutorials */
+		} elseif ( ! in_array( 'new_tutorials_pointer', $dismissed, true ) ) {   /* new tutorials */
 			include_once 'partials/pointers/cf7sg-pointer-tutorial-advance.php';
 			$content                           = ob_get_contents();
 			$pointers['new_tutorials_pointer'] = array( $content, 'left', 'center', 'a[href="admin.php?page=cf7sg_help"]' );
 			ob_clean();
 		}
 		/* shortcodes */
-		if ( ! in_array( 'cf7sg_shortcodes', $dismissed ) ) {
+		if ( ! in_array( 'cf7sg_shortcodes', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-shortcodes.php';
 			$content                      = ob_get_contents();
 			$pointers['cf7sg_shortcodes'] = array( $content, 'top', 'top', '' );
@@ -1755,7 +1759,7 @@ class Cf7_Grid_Layout_Admin {
 	public function post_pointers( $pointers, $dismissed ) {
 		ob_start();
 		/* full screen button */
-		if ( ! in_array( 'full_screen', $dismissed ) ) {
+		if ( ! in_array( 'full_screen', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-editor-full-screen.php';
 			$content = ob_get_contents();
 			// content / arrow [top,bottom,left,right] / box align [top,bottom,center] / css selector.
@@ -1763,56 +1767,56 @@ class Cf7_Grid_Layout_Admin {
 			ob_clean();
 		}
 		/* editor_tabs */
-		if ( ! in_array( 'editor_tabs', $dismissed ) ) {
+		if ( ! in_array( 'editor_tabs', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-editor-tabs.php';
 			$content                 = ob_get_contents();
 			$pointers['editor_tabs'] = array( $content, 'right', 'center', '#form-editor-tabs>ul>li.ui-tabs-active' );
 			ob_clean();
 		}
 		/* row_controls */
-		if ( ! in_array( 'row_controls', $dismissed ) ) {
+		if ( ! in_array( 'row_controls', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-editor-rows-control.php';
 			$content                  = ob_get_contents();
 			$pointers['row_controls'] = array( $content, 'right', 'center', '#grid-form>.container>.row>.row-controls' );
 			ob_clean();
 		}
 		/* preview form */
-		if ( ! in_array( 'preview_form', $dismissed ) ) {
+		if ( ! in_array( 'preview_form', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-editor-preview-form.php';
 			$content                  = ob_get_contents();
 			$pointers['preview_form'] = array( $content, 'right', 'center', '#preview-form-link' );
 			ob_clean();
 		}
 		/* column controls */
-		if ( ! in_array( 'column_controls', $dismissed ) ) {
+		if ( ! in_array( 'column_controls', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-editor-column-control.php';
 			$content                     = ob_get_contents();
 			$pointers['column_controls'] = array( $content, 'left', 'center', '#grid-form > .container:first-child > .row > .columns:first-child > .grid-column > span.icon-code' );
 			ob_clean();
 		}
 		/*dynamic-dropdown pointer*/
-		if ( ! in_array( 'dynamic_dropdown', $dismissed ) ) {
+		if ( ! in_array( 'dynamic_dropdown', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-dropdown.php';
 			$content                      = ob_get_contents();
 			$pointers['dynamic_dropdown'] = array( $content, 'left', 'center', '#top-tags>#tag-generator-list > a[title*="dynamic-dropdown"]' );
 			ob_clean();
 		}
 		/*dynamic-checkbox pointer*/
-		if ( ! in_array( 'dynamic_checkbox', $dismissed ) ) {
+		if ( ! in_array( 'dynamic_checkbox', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-tag-dynamic-checkbox.php';
 			$content                      = ob_get_contents();
 			$pointers['dynamic_checkbox'] = array( $content, 'left', 'center', '#top-tags>#tag-generator-list > a[title*="dynamic-checkbox"]' );
 			ob_clean();
 		}
 		/* #optional-editors */
-		if ( ! in_array( 'js_css_editors', $dismissed ) ) {
+		if ( ! in_array( 'js_css_editors', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointers-editor-optional-js-css.php';
 			$content                    = ob_get_contents();
 			$pointers['js_css_editors'] = array( $content, 'left', 'center', '#optional-editors' );
 			ob_clean();
 		}
 		/*benchmark pointer*/
-		if ( ! in_array( 'benchmark', $dismissed ) ) {
+		if ( ! in_array( 'benchmark', $dismissed, true ) ) {
 			include_once 'partials/pointers/cf7sg-pointer-tag-benchmark.php';
 			$content               = ob_get_contents();
 			$pointers['benchmark'] = array( $content, 'left', 'center', '#top-tags>#tag-generator-list > a[title*="benchmark"]' );
@@ -1868,7 +1872,6 @@ class Cf7_Grid_Layout_Admin {
 		if ( isset( $post['ID'] ) && ! current_user_can( $post_type_object->cap->publish_posts, $post['ID'] ) && 'publish' === $data['post_status'] ) {
 			$data['post_status'] = 'pending';
 		}
-		// wpg_debug('post status '.$data['post_status']).
 		return $data;
 	}
 	/**
@@ -1994,13 +1997,15 @@ class Cf7_Grid_Layout_Admin {
 				global $wpdb;
 				$post_type = $this->cf7_post_type();
 				$result    = $wpdb->get_col(
-					"SELECT pm.meta_value FROM {$wpdb->postmeta} as pm
-          INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id INNER JOIN {$wpdb->postmeta} as pmf on pmf.post_id = pm.post_id
-          WHERE pmf.meta_key = '_cf7sg_managed_form'
-          AND pmf.meta_value = 1
-          AND p.post_type = '{$post_type}'
-          AND pm.meta_key = '_cf7sg_version'
-        "
+					$wpdb->prepare(
+						"SELECT pm.meta_value FROM {$wpdb->postmeta} as pm
+						INNER JOIN {$wpdb->posts} as p on p.ID = pm.post_id INNER JOIN {$wpdb->postmeta} as pmf on pmf.post_id = pm.post_id
+						WHERE pmf.meta_key = '_cf7sg_managed_form'
+						AND pmf.meta_value = 1
+						AND p.post_type = %s
+						AND pm.meta_key = '_cf7sg_version'",
+						$post_type
+					)
 				);
 				$ver       = '';
 				foreach ( $result as $v ) {
@@ -2060,11 +2065,11 @@ class Cf7_Grid_Layout_Admin {
 				isset( $result['version'] ) &&
 				version_compare( $result['version'], WPCF7_ConfigValidator::last_important_update, '<' ) );
 				if ( $is_old || $has_errors ) {
-					   ob_start();
-					   wpcf7_admin_bulk_validate_page();
-					   $html = ob_get_contents();
-					   ob_end_clean();
-					   $msg = '';
+					ob_start();
+					wpcf7_admin_bulk_validate_page();
+					$html = ob_get_contents();
+					ob_end_clean();
+					$msg = '';
 					if ( $is_old ) {
 						$msg = __( 'CF7 plugin udpate requires you to revalidate your forms.', 'cf7-grid-layout' );
 					} elseif ( $has_errors ) {
@@ -2258,7 +2263,7 @@ class Cf7_Grid_Layout_Admin {
 			'has_archive'         => false,
 			'exclude_from_search' => true,
 			'publicly_queryable'  => true,
-			// 'query_var'             => 'sgcf7',
+			/** REMOVED: 'query_var'             => 'sgcf7', */
 			'rewrite'             => $rewrite,
 		);
 		register_post_type( 'cf7sg_page', $args );
