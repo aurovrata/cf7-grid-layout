@@ -972,8 +972,18 @@ if ( ! function_exists( 'cf7sg_create_dynamic_checkbox_tag' ) ) {
 			);
 			$dl->allow_nesting(); // flag as able to handle hierarchical lists.
 			$dl->set_allowed_html(
-				'a'     = array( 'href', 'target' ),
-				'input' = array( 'type', 'class', 'value', 'min' )
+				array(
+					'a'     => array(
+						'href' => true, 
+						'target' => true
+					),
+					'input' => array(
+						'type' => true,
+						'class' => true,
+						'value' => true,
+						'min' => true
+					),
+				)
 			);
 		}
 		return $dl;

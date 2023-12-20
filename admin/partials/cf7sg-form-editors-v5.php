@@ -575,8 +575,8 @@ if ( is_plugin_active( 'cf7-conditional-fields/contact-form-7-conditional-fields
 			<div class="grid-ctrls cf7sg-slide-ctrls">
 				<span class="dashicons dashicons-move row-control grid-control"></span>
 				<span class="control-label">
-				<span class="slide-label"><?php /* translators: the # will be replaced by a number */ esc_html_e( 'Slide #', 'cf7-grid-layout' ); ?></span>
-				<span class="slide-title"></span>
+					<span class="slide-label"><?php /* translators: the # will be replaced by a number */ esc_html_e( 'Slide #', 'cf7-grid-layout' ); ?></span>
+					<span class="slide-title"></span>
 				</span>
 				<span class="php-icon cf7sg-hook row-control display-none" data-field="" data-tag="" data-search=""></span>
 				<span class="dashicons dashicons-admin-generic row-control grid-control"></span>

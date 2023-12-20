@@ -1601,13 +1601,16 @@ div#form-editor-tabs > ul.ui-tabs-nav li {
 }
 /* sortable styling */
 .sortable-state-highlight{
-	height: 100%;
+	height: 140px;
 	min-height: 90px;
 	margin-top: 25px;
 	border: dashed 2px var(--cf7sg-row-icons-hover);
 	min-width: 20px;
 	line-height: 1.2em;
 	/* background-color: var(--cf7sg-col-default); */
+}
+.cf7sg-slider-section.ui-sortable .sortable-state-highlight{
+	height: 250px;
 }
 /* Responsive screens */
 @media (max-width:1854px) {

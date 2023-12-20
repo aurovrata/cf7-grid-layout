@@ -39,7 +39,7 @@ if ( empty( $colour ) ) {
 
 	<div id="contact-form-editor">
 	<div class="loading-screen"><h2><?php esc_html_e( 'Loading form editor ...', 'cf7-grid-layout' ); ?><span class="spinner"></span></h2></div>
-	<div class="keyboard-interaction"><?php echo sprintf( esc_html( __cf7sg( '%s keys switch panels' ) ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
+	<div class="keyboard-interaction"><?php echo sprintf( esc_html(__( '%s keys switch panels', 'contact-form-7' ) ), '<span class="dashicons dashicons-leftright"></span>' ); ?></div>
 
 	<?php
 
@@ -49,15 +49,15 @@ if ( empty( $colour ) ) {
 	if ( current_user_can( 'wpcf7_edit_contact_form', $post_id ) ) {
 		$panels = array(
 			'form-panel'     => array(
-				'title'    => __cf7sg( 'Form' ),
+				'title'    =>__( 'Form', 'contact-form-7' ),
 				'callback' => array( $this, "grid_editor_panel{$ver}" ),
 			),
 			'mail-panel'     => array(
-				'title'    => __cf7sg( 'Mail' ),
+				'title'    =>__( 'Mail', 'contact-form-7' ),
 				'callback' => 'wpcf7_editor_panel_mail',
 			),
 			'messages-panel' => array(
-				'title'    => __cf7sg( 'Messages' ),
+				'title'    =>__( 'Messages', 'contact-form-7' ),
 				'callback' => 'wpcf7_editor_panel_messages',
 			),
 		);
@@ -70,10 +70,10 @@ if ( empty( $colour ) ) {
 		$panels['additional-settings-panel'] = array(
 			'title'    => $additional_settings
 				? sprintf(
-					__cf7sg( 'Additional Settings (%d)' ),
+					__( 'Additional Settings (%d)', 'contact-form-7' ),
 					$additional_settings
 				)
-				: __cf7sg( 'Additional Settings' ),
+				:__( 'Additional Settings', 'contact-form-7' ),
 			'callback' => 'wpcf7_editor_panel_additional_settings',
 		);
 	}

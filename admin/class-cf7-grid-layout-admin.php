@@ -448,8 +448,8 @@ class Cf7_Grid_Layout_Admin {
 
 		$hook = add_submenu_page(
 			'wpcf7',
-			__cf7sg( 'Edit Contact Form' ),
-			__cf7sg( 'Add New' ),
+			__( 'Edit Contact Form', 'contact-form-7' ),
+			__( 'Add New', 'contact-form-7' ),
 			'wpcf7_edit_contact_forms',
 			'post-new.php?post_type=wpcf7_contact_form'
 		);
@@ -804,7 +804,7 @@ class Cf7_Grid_Layout_Admin {
 		if ( post_type_exists( $this->cf7_post_type() ) ) {
 			add_meta_box(
 				'meta-box-main-cf7-editor',
-				__cf7sg( 'Edit Contact Form' ),
+				__( 'Edit Contact Form', 'contact-form-7' ),
 				array( $this, 'main_editor_metabox_display' ),
 				$this->cf7_post_type(),
 				'normal',
@@ -812,7 +812,7 @@ class Cf7_Grid_Layout_Admin {
 			);
 			add_meta_box(
 				'meta-box-cf7-info',
-				__cf7sg( 'Information' ),
+				__( 'Information', 'contact-form-7' ),
 				array( $this, 'info_metabox_display' ),
 				$this->cf7_post_type(),
 				'side',
@@ -1265,7 +1265,7 @@ class Cf7_Grid_Layout_Admin {
 		// need to unhook this function so as not to loop infinitely.
 		remove_action( 'save_post_wpcf7_contact_form', array( $this, 'save_post' ), 10, 3 );
 		remove_action( 'wpcf7_save_contact_form', array( $this, 'save_factory_metas' ), 10, 1 );
-		/** NB @since 4.11.5 filter wp_kses ffrmo cf7 plugin v5.5 */
+		/** NB @since 4.11.5 filter wp_kses from cf7 plugin v5.5 */
 		add_filter(
 			'wpcf7_kses_allowed_html',
 			function( $cf7_tags, $context ) use ( $allowed_tags ) {
@@ -1399,14 +1399,8 @@ class Cf7_Grid_Layout_Admin {
 			'data-*'      => 1,
 		);
 		$allowed['div']        = array(
-			'class'             => 1,
-			'data-button'       => 1, // table buttons.
-			'data-form'         => 1, // sub-forms.
-			'data-on'           => 1, // toggles.
-			'data-off'          => 1, // toggles.
-			'data-open'         => 1, // accordion.
-			'data-group'        => 1, // accordion.
-			'data-config-field' => 1, // cf7 plugin.
+			'class'  => 1,
+			'data-*' => 1, // table/sliders/tabs/forms.
 		);
 		return $allowed;
 	}

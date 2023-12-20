@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $post, $pagenow;
 $cf7_key = $post->post_name;
 ?>
-<h2><?php echo esc_html( __cf7sg( 'Form' ) ); ?></h2>
+<h2><?php echo esc_html(__( 'Form', 'contact-form-7' ) ); ?></h2>
 <div id="top-tags" class="cf7-tag-generators">
 <?php
 	$tag_generator = WPCF7_TagGenerator::get_instance();

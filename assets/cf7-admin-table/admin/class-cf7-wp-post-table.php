@@ -405,7 +405,7 @@ if ( ! class_exists( 'CF7_WP_Post_Table' ) ) {
 					$actions['copy'] = sprintf(
 						'<a href="%1$s">%2$s</a>',
 						esc_url( $copy_link ),
-						esc_html( __cf7sg( 'Duplicate' ) )
+						esc_html(__( 'Duplicate', 'contact-form-7' ) )
 					);
 				}
 			}

@@ -11,7 +11,7 @@
  * Plugin URI:        https://wordpress.org/plugins/cf7-grid-layout/
  * GitHub Plugin URI: https://github.com/aurovrata/cf7-grid-layout
  * Description:       Enabled responsive grid layout designs for Contact Form 7 forms.
- * Version:           5.0.0beta13
+ * Version:           5.0.0rc1
  * Author:            Aurovrata V.
  * Author URI:        https://profiles.wordpress.org/aurovrata
  * License:           GPL-2.0+
@@ -19,21 +19,24 @@
  * Text Domain:       cf7-grid-layout
  * Domain Path:       /languages
  */
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
-define( 'CF7_GRID_VERSION', '5.0.0beta13' );
+define( 'CF7_GRID_VERSION', '5.0.0rc1' );
 
-if(! defined('WPCF7_AUTOP') ) define('WPCF7_AUTOP', false);
+if ( ! defined( 'WPCF7_AUTOP' ) ) {
+	define( 'WPCF7_AUTOP', false );
+}
 
 
-/** @since 2.6.0, NOTIFY USERS of forms requiring udpates */
-define( 'CF7SG_VERSION_FORM_UPDATE', '4.99.0'); //only update on release of v5.0.0
-/** @since 4.4.0, Translated locales */
-define( 'CF7SG_TRANSLATED_VERSION', '4.4.0');
-/** @since 4.14.1 Major code update, upgrade requires testing */
-define( 'CF7SG_MAJOR_UPDATE_VERSION', '5.0.0');
+/** NB @since 2.6.0, NOTIFY USERS of forms requiring udpates */
+define( 'CF7SG_VERSION_FORM_UPDATE', '4.99.0' ); // only update on release of v5.0.0.
+/** NB @since 4.4.0, Translated locales */
+define( 'CF7SG_TRANSLATED_VERSION', '4.4.0' );
+/** NB @since 4.14.1 Major code update, upgrade requires testing */
+define( 'CF7SG_MAJOR_UPDATE_VERSION', '5.0.0' );
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-cf7-grid-layout-activator.php
@@ -71,13 +74,8 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-cf7-grid-layout.php';
  * @since    1.0.0
  */
 function run_cf7_grid_layout() {
-	$plugin = new Cf7_Grid_Layout(CF7_GRID_VERSION);
+	$plugin = new Cf7_Grid_Layout( CF7_GRID_VERSION );
 	$plugin->run();
 
 }
 run_cf7_grid_layout();
-
-//get cf7 translation strings.
-function __cf7sg($string){
-  return __($string, 'contact-form-7');
-}

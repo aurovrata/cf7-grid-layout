@@ -96,6 +96,7 @@
     */
     function buildGridForm(){
       let formhtml = $wpcf7Editor.text();
+			console.log(formhtml);
       if(0===formhtml.length){
         formhtml = uiTemplts['#grid-default-form'].children().clone();
       }
@@ -164,7 +165,7 @@
 						break;
 					case $r.is('.cf7sg-slide > *'):
 						$r.prepend(uiTemplts['#grid-multistep-container'].find('.cf7sg-slide-ctrls').clone());
-						$('.cf7sg-slide-ctrls .slide-title', $r).html($r.siblings('.cf7sg-slide-title').html());						
+						$('.cf7sg-slide-ctrls .slide-title', $r).html($r.siblings('.cf7sg-slide-title').children('.cf7sg-title').html());						
 						break;
 					case $r.is('.cf7sg-collapsible > *'):
 						$r.prepend( uiTemplts['#grid-collapsible'].find('.grid-ctrls').clone() );
@@ -575,7 +576,7 @@
 					let $t = $(e.target), type='', $s;
 					switch(true){
 						case $t.is('#cf7sg-slide-title'): //title change.
-							$('.cf7sg-slide-title', $slide).html($t.val());
+							$('.cf7sg-slide-title > .cf7sg-title', $slide).html($t.val());
 							$('.cf7sg-slide-ctrls .slide-title', $slide).html($t.val());
 							break;
 					}
@@ -1254,42 +1255,65 @@
       }
     }
   }
+
   function sortableRows( $newRow='' ){
-    if($newRow.length>0 && !$newRow.is('.cf7sg-slider')){
-      $('.cf7sg-row.ui-sortable', $grid).sortable('destroy');
-    }
-    $('.cf7sg-row', $grid).sortable({
-      //placeholder: "ui-state-highlight",
-      //containment:'.cf7sg-row',
-      handle:'.grid-column > .dashicons-move',
-      connectWith: '.cf7sg-row',
-      helper:'clone',
-      items: '> .cf7sg-col',
+		//if multislide form, lets make slides sortable
+		$('.cf7sg-slider-section', $grid).sortableCF7SGSlider();
+
+		//reset the sortable list of columns withn rows.
+		$('.cf7sg-row.ui-sortable', $grid).sortable('destroy');
+		$('.cf7sg-row', $grid).sortable({
+			//placeholder: "ui-state-highlight",
+			//containment:'.cf7sg-row',
+			handle:'.grid-column > .dashicons-move',
+			connectWith: '.cf7sg-row', // allows columns to be sorted/placed in other rows
+			helper:'clone',
+			items: '> .cf7sg-col', // sortable elements, columns
 			cancel: '.cf7sg-inner-grid',
 			placeholder: 'sortable-state-highlight',
-      receive: function( event, ui ) {
-        //ui.item validate column size relative to new row columns.
-        //ui.sender original row. cnacel if column does not fit in new row.
-        //$targetRow has more than 12 columns then cancel.
-        let $targetRow = $(event.target);//receiving row
-        let row = $targetRow.getRowSize();
+			receive: function( event, ui ) {
+				//ui.item validate column size relative to new row columns.
+				//ui.sender original row. cnacel if column does not fit in new row.
+				//$targetRow has more than 12 columns then cancel.
+				let $targetRow = $(event.target);//receiving row
+				let row = $targetRow.getRowSize();
 
-        if( row.length > 12){
-          ui.sender.sortable('cancel');
-          let $warning = $('<span class="cf7sg-warning">Not enough space in this row to add column</span>');
-          $targetRow.after($warning);
-          $warning.delay(2000).fadeOut('slow', function(){
-            $(this).remove();
-          });
-        }else{
-          //make sure the row controls is at the end.
-          let control = $targetRow.children('.grid-ctrls').remove();
-          $targetRow.append(control);
-        }
-      }
-    });
+				if( row.length > 12){
+					ui.sender.sortable('cancel');
+					let $warning = $('<span class="cf7sg-warning">Not enough space in this row to add column</span>');
+					$targetRow.after($warning);
+					$warning.delay(2000).fadeOut('slow', function(){
+						$(this).remove();
+					});
+				}else{
+					//make sure the row controls is at the end.
+					let control = $targetRow.children('.grid-ctrls').remove();
+					$targetRow.append(control);
+				}
+			}
+		});
   }
   /* some function definitions...*/
+	$.fn.sortableCF7SGSlider = function(){
+		let $sld = $(this);
+		if( !$sld.is('.cf7sg-slider-section')) return false;
+
+		$sld.filter('.ui-sortable').sortable('destroy'); //terminate previous sortable list
+
+		$sld.sortable({
+			handle:'.cf7sg-slide-ctrls > .dashicons-move',
+			helper:'clone',
+			items: '> .cf7sg-slide',
+			placeholder: 'sortable-state-highlight',
+			update: function( event, ui ) {
+				//ui.item renumber all slides.
+				let lbl = uiTemplts['#grid-multistep-container'].find('.slide-label').text();
+				$sld.children('.cf7sg-slide').each((i,e)=>{
+					e.querySelector('* > .cf7sg-row > .cf7sg-slide-ctrls .slide-label').textContent = lbl.replace('#',(i+1));
+				});
+			}
+		});
+	}
 	$.fn.setupCF7SGHooks = function($hook){
 		let $modal = $(this);
 		if( ! $modal.is('section.grid-ctrls')) return false;
