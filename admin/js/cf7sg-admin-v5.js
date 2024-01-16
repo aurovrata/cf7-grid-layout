@@ -96,7 +96,7 @@
     */
     function buildGridForm(){
       let formhtml = $wpcf7Editor.text();
-			console.log(formhtml);
+			// console.log(formhtml);
       if(0===formhtml.length){
         formhtml = uiTemplts['#grid-default-form'].children().clone();
       }
@@ -1652,7 +1652,7 @@
           break;
         case 'textarea'==tag:
           if( match[0].search(/\s[0-9]{0,3}x[0-9]{1,3}\s?/ig) <0){
-            let cf7sc = match[0].replace(match[3],match[3]+' x5'); //textarea prefill.
+            let cf7sc = match[0].replace(field,field + ' x5'); //textarea prefill.
             cf7sc = search.replace(match[0], cf7sc);
             $this.val(cf7sc);
           }
