@@ -513,7 +513,7 @@ var cf7sgCustomHybridddTemplates = (function (cchddt) {return cchddt;}(cf7sgCust
       var $form= $(this), fid = $form.attr('id');
       if( !objEmpty( cf7sg[fid],['prefill'] ) ){
         Object.keys(cf7sg[fid].prefill).forEach(function(f){
-          var $f = $('.'+f+' :input', $form);
+          var $f = $('[data-name="'+f+'"] :input', $form);
           if(0==$f.length) $f = $(':input[name="'+f+'"]', $form); /* hidden field fix */
           $f.prefillCF7Field(cf7sg[fid].prefill[f], fid);
         })

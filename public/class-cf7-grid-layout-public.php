@@ -2219,7 +2219,7 @@ class Cf7_Grid_Layout_Public {
 				}
 				$html .= '<option value="' . $value . '"' . $attributes . '>' . $details[0] . '</option>' . PHP_EOL;
 			}
-		} else {
+		} else { // options is an html string of a list of options. 
 			$html .= $options; // pre 4.10.0 backward compatibility.
 		}
 		$html .= '</select>' . PHP_EOL;
