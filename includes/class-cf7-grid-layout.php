@@ -141,7 +141,7 @@ class Cf7_Grid_Layout {
 		*
 		* @since 4.0.2
 		*/
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . '/assets/persist-admin-notices/persist-admin-notices-dismissal.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . '/assets/persist-admin-notices/class-pand.php';
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.

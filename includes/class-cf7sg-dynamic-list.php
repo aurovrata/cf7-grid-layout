@@ -209,10 +209,10 @@ class CF7SG_Dynamic_List {
 		return $this->styles;
 	}
 	/**
-	 * get extra fields associated with a given style field to display in the tag manager form.
+	 * Get extra fields associated with a given style field to display in the tag manager form.
 	 *
 	 * @since 4.11.0
-	 * @param String $style style id
+	 * @param String $style style id.
 	 */
 	public function get_style_extras( $style ) {
 		$extras = array();
@@ -225,19 +225,18 @@ class CF7SG_Dynamic_List {
 		return $extras;
 	}
 	/**
-	 * get extra fields associated with a given style field to display in the tag manager form.
+	 * Get extra fields associated with a given style field to display in the tag manager form.
 	 *
 	 * @since 4.11.0
-	 * @param String $style style id
 	 */
 	public function get_other_extras() {
 		return $this->other_extras;
 	}
 	/**
-	 * get the extra fields type
+	 * Get the extra fields type
 	 *
 	 * @since 4.11.0
-	 * @return String checkbox | radio
+	 * @return String checkbox | radio.
 	 */
 	public function get_other_extras_type() {
 		return $this->other_extras_type;
@@ -256,16 +255,20 @@ class CF7SG_Dynamic_List {
 	}
 
 	/**
-	 * function to register and track newly created dynamic list.
+	 * Function to register and track newly created dynamic list.
 	 */
 	protected function register() {
 		if ( ! isset( self::$instances ) ) {
 			self::$instances = array();
 		}
 		self::$instances[ $this->tag_id ] = $this;
-		// debug_msg(self::$instances, 'registration ');
+		// wpg_debug(self::$instances, 'registration ').
 	}
-
+	/**
+	 * CF7SG_Dynamic_List factory method
+	 *
+	 * @param String $tag_id string handle id for required object, dynamic_checkbox | dynamic_select.
+	 */
 	public static function get_instances( $tag_id = null ) {
 		if ( ! isset( self::$instances ) ) {
 			self::$instances = array();
@@ -274,8 +277,8 @@ class CF7SG_Dynamic_List {
 		if ( isset( $tag_id ) ) {
 			$instance = isset( self::$instances[ $tag_id ] ) ? self::$instances[ $tag_id ] : false;
 		}
-		// debug_msg(self::$instances, 'get isntances ');
-		// debug_msg($instance, 'get isntance '.$tag_id);
+		// wpg_debug(self::$instances, 'get isntances ').
+		// wpg_debug($instance, 'get isntance '.$tag_id).
 		return $instance;
 	}
 	/**
@@ -287,9 +290,9 @@ class CF7SG_Dynamic_List {
 		if ( class_exists( 'WPCF7_TagGenerator' ) ) {
 			$tag_generator = WPCF7_TagGenerator::get_instance();
 			$tag_generator->add(
-				$this->tag_id, // tag id
-				$this->label, // tag button label
-				array( $this, 'admin_tag_generator' ) // callback
+				$this->tag_id, // tag id.
+				$this->label, // tag button label.
+				array( $this, 'admin_tag_generator' ) // callback.
 			);
 		}
 	}
@@ -299,7 +302,7 @@ class CF7SG_Dynamic_List {
 	 * This function is called by cf7 plugin, and is registered with a hooked function above
 	 *
 	 * @since 4.10.0
-	 * @param WPCF7_ContactForm $contact_form the cf7 form object
+	 * @param WPCF7_ContactForm $contact_form the cf7 form object.
 	 * @param array             $args arguments for this form.
 	 */
 	public function admin_tag_generator( $contact_form, $args = '' ) {
@@ -330,12 +333,12 @@ class CF7SG_Dynamic_List {
 			$terms = get_terms( $taxonomy, $args );
 		}
 		if ( is_wp_error( $terms ) ) {
-			debug_msg( 'Taxonomy ' . $taxonomy . ' does not exist' );
+			wpg_debug( 'Taxonomy ' . $taxonomy . ' does not exist' );
 			return '';
 		} elseif ( empty( $terms ) ) {
 			return '';
 		}
-		if ( 0 == $parent ) {
+		if ( 0 === $parent ) {
 			$class = 'parent';
 		} else {
 			$class = 'child';
@@ -360,11 +363,11 @@ class CF7SG_Dynamic_List {
 	 */
 	public function register_cf7_shortcode() {
 		if ( function_exists( 'wpcf7_add_form_tag' ) ) {
-			// dynamic select
+			// dynamic select.
 			wpcf7_add_form_tag(
 				array( $this->tag_id, $this->tag_id . '*' ),
 				array( $this, 'get_shortcode_html' ),
-				true // has name
+				true // has name.
 			);
 		}
 	}
@@ -384,7 +387,7 @@ class CF7SG_Dynamic_List {
 		}
 		$attrs = array();
 		if ( empty( $tag->values ) ) {
-			debug_msg( $tag, "CF7SG ERROR: malformed {$this->tag_id} tag, unable to retrieve values" );
+			wpg_debug( $tag, "CF7SG ERROR: malformed {$this->tag_id} tag, unable to retrieve values" );
 		}
 		foreach ( $tag->values as $values ) {
 			if ( false === stripos( $values, 'data-' ) ) {
@@ -413,14 +416,14 @@ class CF7SG_Dynamic_List {
 		}
 		$source = array();
 		if ( empty( $tag->values ) ) {
-			debug_msg( $tag, "CF7SG ERROR: malformed {$this->tag_id} tag, unable to retrieve values" );
+			wpg_debug( $tag, "CF7SG ERROR: malformed {$this->tag_id} tag, unable to retrieve values" );
 		}
 		foreach ( $tag->values as $values ) {
 			if ( 0 === strpos( $values, 'slug:' ) ) {
 				$source['source']   = 'taxonomy';
 				$s                  = explode( ':', $values );
 				$source['taxonomy'] = $s[1];
-				$source['tree']     = isset( $s[2] ) && 'tree' == $s[2]; /** @since 4.11 */
+				$source['tree']     = isset( $s[2] ) && 'tree' === $s[2]; /** NB @since 4.11 */
 			}
 			if ( 0 === strpos( $values, 'source:post' ) ) {
 				$source['source'] = 'post';
@@ -443,17 +446,17 @@ class CF7SG_Dynamic_List {
 		return $source;
 	}
 	/**
-	 * function to display the html field in the form.
+	 * Function to display the html field in the form.
 	 *
 	 * @since 4.10.0
-	 * @param String $field_name the tag field name designated in the tag help screen
+	 * @param String $field_name the tag field name designated in the tag help screen.
 	 * @return String a set of html fields to capture the googleMap information
 	 */
 	public function get_shortcode_html( $field_name ) {
 		$tag = new WPCF7_FormTag( $field_name );
-		// debug_msg($tag, 'tag object ');
+		// wpg_debug($tag, 'tag object ').
 		$source = $this->get_dynamic_attributes( $tag );
-		/** @since 4.11.0 enable data attributes */
+		/** NB @since 4.11.0 enable data attributes */
 		$data_attrs = $this->get_data_attributes( $tag );
 
 		$validation_error = wpcf7_get_validation_error( $tag->name );
@@ -465,7 +468,7 @@ class CF7SG_Dynamic_List {
 
 		$id       = $tag->get_id_option();
 		$selected = $tag->get_default_option();
-		// attributes to be added to the dropdown select field
+		// attributes to be added to the dropdown select field.
 		$select_attributes = '';
 		// capture any attributes to be added to individual options in dropdpwn list.
 		$option_attrs = array();
@@ -481,16 +484,16 @@ class CF7SG_Dynamic_List {
 		$cf7_form       = wpcf7_get_current_contact_form();
 		$cf7_key        = c2p_get_form_key( $cf7_form->id() );
 		$filter_options = false;
-		/** @since 4.11 enable branches in nesting lists */
+		/** NB @since 4.11 enable branches in nesting lists */
 		$branch = ( $this->nesting && isset( $source['taxonomy'] ) && is_taxonomy_hierarchical( $source['taxonomy'] ) && $source['tree'] ) ? array( 0 ) : null;
 		if ( ! empty( $tag->values ) ) {
-			if ( 'taxonomy' == $source['source'] ) {
+			if ( 'taxonomy' === $source['source'] ) {
 				$options = $this->get_taxonomy_terms( $source, $branch, $tag, $cf7_key );
 
-				// if(!empty($options)) $selected = array_key_first($options);
+				// if(!empty($options)) $selected = array_key_first($options).
 
 				$filter_options = true;
-			} elseif ( 'post' == $source['source'] ) {
+			} elseif ( 'post' === $source['source'] ) {
 				$args = array(
 					'post_type'      => $source['post'],
 					'post_status'    => 'publish',
@@ -498,7 +501,7 @@ class CF7SG_Dynamic_List {
 				);
 				if ( ! empty( $source['taxonomy'] ) ) {
 					$tax = array();
-					if ( sizeof( $source['taxonomy'] ) > 1 ) {
+					if ( count( $source['taxonomy'] ) > 1 ) {
 						$tax['relation'] = 'AND';
 					}
 					foreach ( $source['taxonomy'] as $term => $taxonomy ) {
@@ -535,7 +538,7 @@ class CF7SG_Dynamic_List {
 				$args = apply_filters( 'cf7sg_dynamic_list_post_query', $args, $tag->name, $cf7_key );
 
 				$posts = get_posts( $args );
-				// debug_msg($posts, 'post query ');
+				// wpg_debug($posts, 'post query ').
 				if ( ! empty( $posts ) ) {
 					$post_taxonomies = get_object_taxonomies( $source['post'] );
 
@@ -552,8 +555,8 @@ class CF7SG_Dynamic_List {
 						 * @return String $label option label value.
 						 * @since 2.0.0
 						*/
-						$label        = $post->post_title;
-						$label        = apply_filters_deprecated(
+						$label      = $post->post_title;
+						$label      = apply_filters_deprecated(
 							'cf7sg_dynamic_dropdown_option_label',
 							array(
 								$label,
@@ -564,10 +567,10 @@ class CF7SG_Dynamic_List {
 							'4.11.0',
 							"cf7sg_{$this->tag_id}_option_label"
 						);
-						  $label      = apply_filters( "cf7sg_{$this->tag_id}_option_label", $label, $post, $tag, $cf7_key );
-						  $attributes = array();
+						$label      = apply_filters( "cf7sg_{$this->tag_id}_option_label", $label, $post, $tag, $cf7_key );
+						$attributes = array();
 						if ( isset( $other_attrs['permalinks'] ) ) {
-							  $attributes['data-permalink'] = get_permalink( $post );
+							$attributes['data-permalink'] = get_permalink( $post );
 						}
 						if ( isset( $other_attrs['thumbnails'] ) ) {
 							$size                         = apply_filters( "cf7sg_{$this->tag_id}_image_size", 'thumbnail', $post, $tag, $cf7_key );
@@ -584,17 +587,17 @@ class CF7SG_Dynamic_List {
 							'4.11.0',
 							"cf7sg_{$this->tag_id}_options_attributes"
 						);
-						  /**
-						   * Filter dropdown options  attributes.
-					   *
-						   * @param Array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
-						   * @param mixed either WP_Post or WP_Term object being used to populate this option.
-						   * @param WPCF7_FormTag $tag the field name being populated.
-						   * @param String $cf7_key  the form unique key.
-						   * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
-						   * @since 4.11.0
-						  */
-						  $filter_attributes = apply_filters( "cf7sg_{$this->tag_id}_options_attributes", $filter_attributes, $post, $tag, $cf7_key );
+						/**
+						 * Filter dropdown options  attributes.
+						 *
+						 * @param Array $attributes an array of <attribute>=>$value pairs which will be used for populating select options, instead of a string $value, an array of values can be passed such as classes.
+						 * @param mixed either WP_Post or WP_Term object being used to populate this option.
+						 * @param WPCF7_FormTag $tag the field name being populated.
+						 * @param String $cf7_key  the form unique key.
+						 * @return Array array of $value=>$name pairs which will be used for populating select options attributes.
+						 * @since 4.11.0
+						 */
+						$filter_attributes = apply_filters( "cf7sg_{$this->tag_id}_options_attributes", $filter_attributes, $post, $tag, $cf7_key );
 						if ( is_array( $filter_attributes ) ) {
 							if ( isset( $filter_attributes['class'] ) ) {
 								if ( ! is_array( $filter_attributes['class'] ) ) {
@@ -607,27 +610,27 @@ class CF7SG_Dynamic_List {
 						} else {
 							$filter_attributes = array( 'class' => array( 'cf7sg-dl' ) );
 						}
-						  // setup classes for existing post terms.
+						// setup classes for existing post terms.
 						if ( apply_filters( "cf7sg_{$this->tag_id}_include_post_terms_as_class", true, $tag, $cf7_key ) ) {
 							foreach ( $post_taxonomies as $tx ) {
 								$ts = get_the_terms( $post, $tx );
 								if ( $ts && ! is_wp_error( $ts ) ) {
 									foreach ( $ts as $t ) {
-										  $filter_attributes['class'][] = "$tx-$t->slug";
+										$filter_attributes['class'][] = "$tx-$t->slug";
 									}
 								}
 							}
 						}
 
 						if ( is_array( $filter_attributes ) ) {
-							  $attributes = array_merge( $attributes, $filter_attributes );
+							$attributes = array_merge( $attributes, $filter_attributes );
 						}
 
 						$options[ $post->post_name ] = array( $label, $attributes, array() );
 					}
 				}
 				$filter_options = true;
-			} elseif ( 'filter' == $source['source'] ) {
+			} elseif ( 'filter' === $source['source'] ) {
 				$options = apply_filters_deprecated(
 					'cf7sg_dynamic_dropdown_custom_options',
 					array(
@@ -641,7 +644,7 @@ class CF7SG_Dynamic_List {
 				if ( empty( $options ) ) {
 					$options = array();
 				}
-				/** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
+				/** NB @since 4.11.0 more versatile to allow plugins to customise the option attributes */
 				$custom_options = apply_filters( "cf7sg_custom_{$this->tag_id}", array(), $tag, $cf7_key );
 
 				if ( ! empty( $custom_options ) ) {
@@ -663,7 +666,7 @@ class CF7SG_Dynamic_List {
 		}
 
 		$tag_name = sanitize_html_class( $tag->name );
-		/** @since 3.3.0 enable custom attributes on select element*/
+		/** NB @since 3.3.0 enable custom attributes on select element*/
 		$attributes = apply_filters_deprecated(
 			'cf7sg_dynamic_dropdown_attributes',
 			array( array(), $tag->name, $cf7_key ),
@@ -676,14 +679,14 @@ class CF7SG_Dynamic_List {
 		}
 		$attributes['name'] = $tag->name;
 
-		/** @since 4.0 */
+		/** NB @since 4.0 */
 		if ( isset( $other_attrs['permalinks'] ) ) {
 			$class .= ' cf7sg-permalinks';
 		}
 		$attributes['class'] = $class;
 
 		/**
-		* @since 2.2 allows custom filtered $options to be an html string.
+		* NB @since 2.2 allows custom filtered $options to be an html string.
 		*/
 		if ( ! is_array( $options ) && ! is_string( $options ) ) {
 			$options = array();
@@ -739,8 +742,10 @@ class CF7SG_Dynamic_List {
 	 * Retrieve terms to list in dynamic lists.
 	 *
 	 * @since 4.11.0
-	 * @param Array $source array of taxonomy attributes.
-	 * @param Array $branch array of term IDs representing the current branch.
+	 * @param Array     $source array of taxonomy attributes.
+	 * @param Array     $branch array of term IDs representing the current branch.
+	 * @param WPCF7_Tag $tag field tag object.
+	 * @param String    $cf7_key form unique key (form post slug).
 	 * @return Array array of WP_Term objects.
 	 */
 	protected function get_taxonomy_terms( $source, $branch, $tag, $cf7_key ) {
@@ -774,7 +779,7 @@ class CF7SG_Dynamic_List {
 			$terms = get_terms( $source['taxonomy'], $taxonomy_query );
 		}
 		if ( is_wp_error( $terms ) ) {
-			debug_msg( $terms, 'Unable to retrieve taxonomy <em>' . $source['taxonomy'] . '</em> terms' );
+			wpg_debug( $terms, 'Unable to retrieve taxonomy <em>' . $source['taxonomy'] . '</em> terms' );
 			$terms = array();
 		} else {
 			foreach ( $terms as $term ) {
@@ -823,7 +828,7 @@ class CF7SG_Dynamic_List {
 					'4.11.0',
 					"cf7sg_{$this->tag_id}_options_attributes"
 				);
-				/** @since 4.11.0 more versatile to allow plugins to customise the option attributes */
+				/** NB @since 4.11.0 more versatile to allow plugins to customise the option attributes */
 				$attributes = apply_filters( "cf7sg_{$this->tag_id}_options_attributes", $attributes, $term, $tag, $cf7_key );
 				if ( is_array( $attributes ) ) {
 					if ( isset( $attributes['class'] ) ) {
@@ -853,12 +858,12 @@ class CF7SG_Dynamic_List {
 	 * Function to update form classes to track dependencies.
 	 *
 	 * @since 4.11.0
-	 * @param      mixed  $class    array of classes or string to set class for form and dependency loading .
-	 * @param      Object $cf7_form    cf7 post id against which set the c$lass .
+	 * @param mixed  $class    array of classes or string to set class for form and dependency loading .
+	 * @param String $cf7_id    cf7 post id against which set the $class .
 	 **/
 	public function update_form_classes( $class, $cf7_id = null ) {
 		if ( empty( $cf7_id ) ) {
-			// get latest form
+			// get latest form.
 			if ( function_exists( 'wpcf7_get_current_contact_form' ) ) {
 				$cf7_form = wpcf7_get_current_contact_form();
 				if ( ! empty( $cf7_form ) ) {
@@ -867,7 +872,7 @@ class CF7SG_Dynamic_List {
 			}
 		}
 		if ( empty( $cf7_id ) ) {
-			debug_msg( 'Unable to get Contact Form 7 ID to set class: ' . $class );
+			wpg_debug( 'Unable to get Contact Form 7 ID to set class: ' . $class );
 			return;
 		}
 		$classes = get_post_meta( $cf7_id, '_cf7sg_classes', true );
@@ -882,11 +887,15 @@ class CF7SG_Dynamic_List {
 			$classes[ $class ] = true;
 		}
 		update_post_meta( $cf7_id, '_cf7sg_classes', $classes );
-		return;
 	}
 }
 
 if ( ! function_exists( 'cf7sg_get_dynamic_lists' ) ) {
+	/**
+	 * Function to retrieve a CF7SG_Dynamic_List object.
+	 *
+	 * @param String $tag_id the handle id for the dynamic list object, dynamic_checkbox | dynamic_select.
+	 */
 	function cf7sg_get_dynamic_lists( $tag_id = null ) {
 		return CF7SG_Dynamic_List::get_instances( $tag_id );
 	}
@@ -974,14 +983,14 @@ if ( ! function_exists( 'cf7sg_create_dynamic_checkbox_tag' ) ) {
 			$dl->set_allowed_html(
 				array(
 					'a'     => array(
-						'href' => true, 
-						'target' => true
+						'href'   => true,
+						'target' => true,
 					),
 					'input' => array(
-						'type' => true,
+						'type'  => true,
 						'class' => true,
 						'value' => true,
-						'min' => true
+						'min'   => true,
 					),
 				)
 			);

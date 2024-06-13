@@ -133,6 +133,11 @@ class Cf7_Grid_Layout_Admin {
 			return;
 		}
 		global $plugin_page;
+		/** NB: The CF7 plugin uses oudated custom admin pages which breaks WP admin compatibility.
+		 * This plugin forces the CF7 administration processes back into WP core territory allowing users to leverage wp functionality.
+		 * Some CF7 plugin extensions, unable to rely on wp admin functionality have to use unconventional methods to identify the CF7 admin pages 
+		 * in order to enqueue their resources, such as the global $plugin_page.  Therefore, to ensure these extensions continue to work, 
+		 * the plugin page needs to be hardcoded to the CF7 handle id */
 		$plugin_page = 'wpcf7';
 	}
 

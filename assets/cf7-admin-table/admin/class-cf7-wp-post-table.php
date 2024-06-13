@@ -405,7 +405,7 @@ if ( ! class_exists( 'CF7_WP_Post_Table' ) ) {
 					$actions['copy'] = sprintf(
 						'<a href="%1$s">%2$s</a>',
 						esc_url( $copy_link ),
-						esc_html(__( 'Duplicate', 'contact-form-7' ) )
+						esc_html__( 'Duplicate', 'contact-form-7' )
 					);
 				}
 			}
@@ -478,7 +478,7 @@ if ( ! class_exists( 'CF7_WP_Post_Table' ) ) {
 
 					if ( isset( $_COOKIE[ '_cf7sg_' . $a['cf7key'] ] ) && apply_filters( 'cf7sg_preview_prefill', true, $a['cf7key'] ) ) {
 						/** NB @since 4.15.0 */
-						$fields = array_merge( json_decode( wp_unslash( $_COOKIE[ '_cf7sg_' . $a['cf7key'] ] ), true ), $fields );
+						$fields = array_merge( json_decode( sanitize_key( $_COOKIE[ '_cf7sg_' . $a['cf7key'] ] ), true ), $fields );
 					}
 				}
 				if ( ! empty( $hidden ) ) {
