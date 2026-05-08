@@ -368,7 +368,15 @@ class Cf7_Grid_Layout_Admin {
         }
         //enqueue the cf7 scripts.
         /** @since 4.11.5 force loading of current form for cf7 plugin error handling */
-        if('auto-draft'!=$post->post_status) WPCF7_ContactForm::get_instance($post);
+        $form = $post;
+        
+        if('auto-draft'==$post->post_status){ //new form.
+          $form = WPCF7_ContactForm::get_template();
+        }
+        WPCF7_ContactForm::get_instance($form);
+   
+        // debug_msg($post, 'POST: ');
+        // debug_msg($screen, 'SCREEN: ');
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
         wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
         wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs', 'cf7-codemirror-js' ), $this->version, true );
@@ -413,10 +421,10 @@ class Cf7_Grid_Layout_Admin {
             'dynamicTags' => array_keys($lists)
           )
         );
-        wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
-        wp_enqueue_script( 'cf7sg-dynamic-checkbox-js', $plugin_dir . 'admin/js/cf7sg-dynamic-checkbox.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
-        wp_enqueue_script( 'cf7sg-dynamic-select-js', $plugin_dir . 'admin/js/cf7sg-dynamic-select.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
-        wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin-taggenerator' ), $this->version, true );
+        wp_enqueue_script( 'cf7sg-dynamic-tag-js', $plugin_dir . 'admin/js/cf7sg-dynamic-tag.js', array('jquery','wpcf7-admin' ), $this->version, true );
+        wp_enqueue_script( 'cf7sg-dynamic-checkbox-js', $plugin_dir . 'admin/js/cf7sg-dynamic-checkbox.js', array('jquery','wpcf7-admin' ), $this->version, true );
+        wp_enqueue_script( 'cf7sg-dynamic-select-js', $plugin_dir . 'admin/js/cf7sg-dynamic-select.js', array('jquery','wpcf7-admin' ), $this->version, true );
+        wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin' ), $this->version, true );
         /** @since 3.2.0 */
         wp_enqueue_script('cf7sg-mail-tag-js', $plugin_dir.'admin/js/mail-tag-helper.js', array('jquery','jquery-clibboard'));
         wp_localize_script('cf7sg-mail-tag-js','mailTagHelper',
@@ -862,6 +870,7 @@ class Cf7_Grid_Layout_Admin {
    * @param      WPCF7_Contact_Form    $form_post     .
   **/
   public function grid_editor_panel($form_post){
+    // debug_msg($form_post->prop( 'form' ),'form load');
     require_once plugin_dir_path( __FILE__ )  . '/partials/cf7-grid-layout-admin-display.php';
   }
   /**
@@ -954,11 +963,11 @@ class Cf7_Grid_Layout_Admin {
     }
 
     // debug_msg($_POST, 'submitted ');
-    $args = $_REQUEST;
+    $args = wp_unslash( $_REQUEST );
   	$args['id'] = $post_id;
 
-  	$args['title'] = isset( $_POST['post_title'] ) ? sanitize_text_field($_POST['post_title'], 'Contact Form', 'save') : null;
-  	$args['locale'] = isset( $_POST['wpcf7-locale'] ) ? sanitize_text_field($_POST['wpcf7-locale']) : null;
+  	$args['title'] = isset( $args['post_title'] ) ? sanitize_text_field($args['post_title'], 'Contact Form', 'save') : null;
+  	$args['locale'] = isset( $args['wpcf7-locale'] ) ? sanitize_text_field($args['wpcf7-locale']) : null;
   	$args['form'] = '';
     $allowed_tags = wp_kses_allowed_html( 'post' ); //filtered in function below.
     /** @since 4.8.1 alllow custom input html*/
@@ -972,16 +981,18 @@ class Cf7_Grid_Layout_Admin {
     $allowed_tags['script']=array('type'=>1);
     $cf7_key = $post->post_name;
     $allowed_tags = apply_filters('cf7sg_kses_allowed_html',$allowed_tags, $cf7_key);
-    if(isset( $_POST['wpcf7-form'] )){
-      $args['form'] = wp_kses($_POST['wpcf7-form'], $allowed_tags);
+
+    // debug_msg($args['wpcf7-form'],'form saved');
+    if(isset( $args['wpcf7-form'] )){
+      $args['form'] = wp_kses($args['wpcf7-form'], $allowed_tags);
     }
-  	$args['mail'] = isset( $_POST['wpcf7-mail'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail'] ): array();
-  	$args['mail_2'] = isset( $_POST['wpcf7-mail-2'] ) ? wpcf7_sanitize_mail( $_POST['wpcf7-mail-2'] ): array();
-  	$args['messages'] = isset( $_POST['wpcf7-messages'] ) ? $_POST['wpcf7-messages'] : array();
+  	$args['mail'] = isset( $args['wpcf7-mail'] ) ? wpcf7_sanitize_mail( $args['wpcf7-mail'] ): array();
+  	$args['mail_2'] = isset( $args['wpcf7-mail-2'] ) ? wpcf7_sanitize_mail( $args['wpcf7-mail-2'] ): array();
+  	$args['messages'] = isset( $args['wpcf7-messages'] ) ? $args['wpcf7-messages'] : array();
 	foreach($args['messages'] as $key=>$value){
 		$args['messages'][$key] = sanitize_text_field($value);
 	}
-  	$args['additional_settings'] = isset( $_POST['wpcf7-additional-settings'] ) ? sanitize_textarea_field($_POST['wpcf7-additional-settings']) : '';
+  	$args['additional_settings'] = isset( $args['wpcf7-additional-settings'] ) ? sanitize_textarea_field($args['wpcf7-additional-settings']) : '';
 
 
     //save sub-forms if any
@@ -1156,6 +1167,7 @@ class Cf7_Grid_Layout_Admin {
       return $cf7_tags;
     },1001,2);
     $contact_form = wpcf7_save_contact_form( $args );
+    // debug_msg($contact_form->prop('form'), 'form-saved');
     /** @since 4.11.5 cf7 plugin validate form */
     if(function_exists('wpcf7_validate_configuration') &&
       method_exists('WPCF7_ConfigValidator','validate') &&
@@ -1260,6 +1272,7 @@ class Cf7_Grid_Layout_Admin {
   * @param string $prop  the template property required.
   */
   public function default_cf7_form($template, $prop){
+    // debug_msg($prop, 'prop: ').
 	  if($prop !== 'form') return $template;
     include( plugin_dir_path( __FILE__ ) . '/partials/cf7-default-form.php');
     return $template;
@@ -1305,7 +1318,8 @@ class Cf7_Grid_Layout_Admin {
       $tag_generator->add(
         'benchmark', //tag id
         __( 'benchmark', 'cf7_2_post' ), //tag button label
-        array($this,'benchmark_tag_generator') //callback
+        array($this,'benchmark_tag_generator'), //callback
+        array('version'=>'2')
       );
     }
     /** @since 4.10.0 abstract out dynamic lists */

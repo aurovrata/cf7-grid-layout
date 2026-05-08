@@ -203,7 +203,7 @@ class Cf7_Grid_Layout {
 		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'delete_post' );
 		// ajax load cf7 form content.
 		$this->loader->add_action( 'wp_ajax_get_cf7_content', $plugin_admin, 'get_cf7_content' );
-		// hook for adding fields to sumit action metabox.
+		// hook for adding fields to submit action metabox.
 		$this->loader->add_filter( 'post_submitbox_misc_actions', $plugin_admin, 'cf7_post_submit_action', 10 );
 		// cusotm sanitation rules for forms.
 		$this->loader->add_filter( 'wp_kses_allowed_html', $plugin_admin, 'custom_kses_rules', 10, 2 );

@@ -207,7 +207,8 @@ class CF7SG_Dynamic_list{
       $tag_generator->add(
         $this->tag_id, //tag id
         $this->label, //tag button label
-        array($this,'admin_tag_generator') //callback
+        array($this,'admin_tag_generator'), //callback
+        array('version'=>'2')
       );
     }
   }

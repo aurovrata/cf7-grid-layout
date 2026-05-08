@@ -144,7 +144,7 @@ $cf7_key = $post->post_name;
             <?=__('Slider control','cf7-grid-layout')?>
             <input type="checkbox" class="slider-control" />
           </label>
-          <a class="display-none button make-grid row-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
+          <button type="button" commandfor="--make-grid" class="display-none button make-grid row-control"><?= __('Make grid', 'cf7-grid-layout');?></button>
         </div>
       </div>
     </div>
@@ -244,8 +244,8 @@ $cf7_key = $post->post_name;
         <option value="eleven"><?=__('eleven (11/12<sup>ths</sup>)','cf7-grid-layout')?></option>
         <option value="full" selected><?=__('full width','cf7-grid-layout')?></option>
       </select>
-      <a id="new-row" class="button make-grid column-control" href="javascript:void(0);"><?= __('Make grid', 'cf7-grid-layout');?></a>
-      <a class="button external-form" href="javascript:void(0);"><?= __('Insert form', 'cf7-grid-layout');?></a>
+      <button type="button" commandfor="--make-grid" id="new-row" class="button make-grid column-control"><?= __('Make grid', 'cf7-grid-layout');?></button>
+      <button type="button" commandfor="--insert-fo\" class="button external-form"><?= __('Insert form', 'cf7-grid-layout');?></button>
       <label class="display-none accordion-label grouping-option"><input type="checkbox" name="grouping-option" class="accordion-rows column-control" /><?=__('Enable accordion','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Group collapsible rows as jQuery accordion','cf7-smart-grid')?></span>
       <label class="display-none slider-label grouping-option"><input type="checkbox" name="grouping-option" class="slider-rows column-control" /><?=__('Enable slider','cf7-smart-grid')?></label><span class="popup display-none"><?= __('Convert collapsible rows into sides','cf7-smart-grid')?></span>
     </div>

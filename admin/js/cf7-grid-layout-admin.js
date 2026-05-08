@@ -69,8 +69,12 @@
     $rowControl = $('#top-grid-controls');
     /** @since v5.0 improved cf7 tag regex pattern. */
     cf7TagRgxp = ['hidden']; //by default no hidden button.
-    $('form.tag-generator-panel .insert-box input.tag').each((i,el)=>{
-      cf7TagRgxp.push(el.name);
+    /** @since 4.20.0 tag generator html structure change 
+     * from: form.tag-generator-panel .insert-box input.tag
+     * to: #top-tags span button
+    */
+    $('#top-tags span button').each((i,el)=>{
+      cf7TagRgxp.push(el.dataset['target'].replace('tag-generator-panel-',''));
     });
     cf7TagRgxp = cf7TagRgxp.join('|');
     cf7TagRgxp = '\\[(('+cf7TagRgxp+')\\*?)(?:[\\s](.*?))?(?:[\\s](\\/))?\\]';

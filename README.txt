@@ -3,9 +3,9 @@ Contributors: aurovrata, StrangeTech, altworks, Birmania, netzgestaltung
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EDV4MEJLPT4VY
 Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitive fields, form custom JavaScript
 Requires at least: 4.7
-Requires PHP: 5.6
-Tested up to: 6.5.4
-Stable tag: 4.15.8
+Requires PHP: 7.4
+Tested up to: 6.9.4
+Stable tag: 4.16.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -355,6 +355,9 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 24. (24) Redirect your form on submission to one of your existing pages and retrieve the submitted values from a transient field.
 
 == Changelog ==
+= 4.16.0 =
+* fix form editor issues due to changes in CF7 plugin tag generator update.
+* use `button` element instead of void links for UI editor buttons
 = 4.15.8 =
 * fix prefill input field selection.
 = 4.15.7 =
