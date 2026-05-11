@@ -1,7 +1,7 @@
 === Smart Grid-Layout Design for Contact Form 7 ===
 Contributors: aurovrata, StrangeTech, altworks, Birmania, netzgestaltung
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EDV4MEJLPT4VY
-Tags: contact form 7 module, form custom styling, contact form 7 extension, responsive forms, multi-step form, form builder, multi-slide slider form, repetitive fields, form custom JavaScript
+Tags: contact form 7 extension, form builder, multi-step form, repetitive fields, 
 Requires at least: 4.7
 Requires PHP: 7.4
 Tested up to: 6.9.4
@@ -9,7 +9,7 @@ Stable tag: 4.16.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugins allow pure CSS responsive grid layouts for contact form 7.  It enables rich interlinking of your CMS data via taxonomy/posts populated dropdown fields.  It also enables modular design of complex forms.
+Pure CSS responsive grid layouts for contact form 7.  It enables rich interlinking of your CMS data via taxonomy/posts populated dropdown fields.
 
 == Description ==
 
