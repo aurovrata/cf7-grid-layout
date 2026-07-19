@@ -187,7 +187,7 @@ class Cf7_Grid_Layout_Public {
 						$attrs = shortcode_parse_atts( $sc[3] );
 						if ( is_array( $attrs ) && isset( $attrs['id'] ) ) {
 							  $cf7id  = $attrs['id'];
-							  $cf7key = get_cf7form_key( $cf7id );
+							  $cf7key = cf7sg_get_form_key( $cf7id );
 						}
 						break;
 					case 'cf7form':
@@ -195,7 +195,7 @@ class Cf7_Grid_Layout_Public {
 						$attrs = shortcode_parse_atts( $sc[3] );
 						if ( is_array( $attrs ) && isset( $attrs['cf7key'] ) ) {
 							$cf7key = $attrs['cf7key'];
-							$cf7id  = get_cf7form_id( $cf7key );
+							$cf7id  = cf7sg_get_form_id( $cf7key );
 						}
 				}
 			}
@@ -402,7 +402,7 @@ class Cf7_Grid_Layout_Public {
 		return $autop;
 	}
 	/**
-	 * Enqueue scripts requried for cf7 shortcode
+	 * Enqueue scripts required for cf7 shortcode
 	 * hooked on 'do_shortcode_tag',
 	 *
 	 * @since 1.0.0
@@ -1091,7 +1091,7 @@ class Cf7_Grid_Layout_Public {
 		$subform_keys = get_post_meta( $form_id, '_cf7sg_sub_forms', true );
 		if ( ! empty( $subform_keys ) ) {
 			foreach ( $subform_keys as $cf7Key ) {
-				$post_id      = get_cf7form_id( $cf7Key );
+				$post_id      = cf7sg_get_form_id( $cf7Key );
 				$grid_fields += self::get_grid_fields( $post_id );
 			}
 		}
@@ -1720,7 +1720,7 @@ class Cf7_Grid_Layout_Public {
 	 * @param     Array  $submitted_data    array of field-name=>value pairs submitted in form
 	 **/
 	public function save_select2_custom_options( $post_id, $cf7_key, $post_fields, $post_meta_fields, $submitted_data ) {
-		$form_id       = get_cf7form_id( $cf7_key );
+		$form_id       = cf7sg_get_form_id( $cf7_key );
 		$tagged_fields = get_post_meta( $form_id, '_cf7sg_select2_tagged_fields', true );
 		if ( empty( $tagged_fields ) ) {
 			return;
@@ -1920,7 +1920,7 @@ class Cf7_Grid_Layout_Public {
 			return $replaced;
 		}
 
-		$cf7form_key    = get_cf7form_key( $cf7form->id() );
+		$cf7form_key    = cf7sg_get_form_key( $cf7form->id() );
 		$submitted_cf7  = WPCF7_Submission::get_instance();
 		$submitted_data = array();
 		if ( ! empty( $submitted_cf7 ) ) {
@@ -2068,7 +2068,7 @@ class Cf7_Grid_Layout_Public {
 		$attachments = $components['attachments'];
 		foreach ( $tags as $tag ) {
 			$name = $tag['name'];
-			if ( false === strpos( $template, "[${name}]" ) ) {
+			if ( false === strpos( $template, "[{$name}]" ) ) {
 				continue; // not attached.
 			}
 			$field_type = self::field_type( $name, $cf7form->id() );
@@ -2428,7 +2428,7 @@ class Cf7_Grid_Layout_Public {
 				$data                                = $submitted->get_posted_data();
 				$form                                = $submitted->get_contact_form();
 				$status                              = $submitted->get_status();
-				$cf7key                              = get_cf7form_key( $form->id() );
+				$cf7key                              = cf7sg_get_form_key( $form->id() );
 				$message                             = apply_filters_deprecated( 'cf7sg_submission_success_message', array( $results['message'], $data, $cf7key ), '', __( 'this filter is no longer available', 'cf7-grid-layout' ) );
 				$message                             = apply_filters( 'cf7sg_submission_response', $message, $status, $data, $cf7key );
 				$results['cf7sgResponse'][ $status ] = $message;

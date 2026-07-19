@@ -218,17 +218,18 @@ class Cf7_Grid_Layout_Admin {
         );
         /** @since 3.1.2 initialise codemirror after library load and parse as attribute to anonymous functtion in cf7-grid-codemirror.js */
         wp_add_inline_script('cf7-codemirror-js',
-        'const cmInitialSettings = {
-          value:"",autoCloseTags:true,
-          extraKeys: {"Ctrl-Space": "autocomplete", "Ctrl-/": "toggleComment", "Ctrl-J": "toMatchingTag"},
-          lineNumbers: true, styleActiveLine: true,
-          matchBrackets: true, tabSize:2, lineWrapping: true, addModeClass: true,
-          foldGutter: true, autofocus:false,
-          gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        }
-        const codeMirror_5_32 = CodeMirror(document.getElementById("cf7-codemirror"),cmInitialSettings);
-        const cssCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-css-codemirror"),cmInitialSettings);
-        const jsCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-js-codemirror"),cmInitialSettings);');
+          'const cmInitialSettings = {
+            value:"",autoCloseTags:true,
+            extraKeys: {"Ctrl-Space": "autocomplete", "Ctrl-/": "toggleComment", "Ctrl-J": "toMatchingTag"},
+            lineNumbers: true, styleActiveLine: true,
+            matchBrackets: true, tabSize:2, lineWrapping: true, addModeClass: true,
+            foldGutter: true, autofocus:false,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+          }
+          const codeMirror_5_32 = CodeMirror(document.getElementById("cf7-codemirror"),cmInitialSettings);
+          const cssCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-css-codemirror"),cmInitialSettings);
+          const jsCodeMirror_5_32 = CodeMirror(document.getElementById("cf7-js-codemirror"),cmInitialSettings);'
+        );
         //matchtags.
         wp_enqueue_script( 'codemirror-closetag-js',
           $plugin_dir . 'assets/codemirror/addon/edit/closetag.js',
@@ -1225,8 +1226,8 @@ class Cf7_Grid_Layout_Admin {
   			$new_form->save();
         self::duplicate_form_properties($_GET['post'],$new_form->id());
         /** @since 4.11 duplicate js/css files */
-        $new_key = get_cf7form_key($new_form->id());
-        $key = get_cf7form_key($form->id());
+        $new_key = cf7sg_get_form_key($new_form->id());
+        $key = cf7sg_get_form_key($form->id());
         $path = get_stylesheet_directory();
         $js_file = "$path/js/{$key}.js";
         if( file_exists($js_file) ){
@@ -1736,7 +1737,7 @@ class Cf7_Grid_Layout_Admin {
       foreach($toggles as $tgl) $mailtags[]= 'cf7sg-toggle-'.$tgl;
     }
     //add a general form tag.
-    $mailtags[]= 'cf7sg-form-'.get_cf7form_key($contact_form->id());
+    $mailtags[]= 'cf7sg-form-'.cf7sg_get_form_key($contact_form->id());
     return $mailtags;
   }
   /**

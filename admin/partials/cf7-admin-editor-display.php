@@ -22,7 +22,7 @@ else do_action( 'load-toplevel_page_wpcf7' );
 ?>
 <div id="cf7sg-editor">
     <div style="position:relative">
-      <a id="full-screen-cf7" class="button" href="javascript:void(0)"><span><?= __('toggle full screen','cf7-grid-layout')?></span></a>
+      <button id="full-screen-cf7" class="button"><span><?= __('toggle full screen','cf7-grid-layout')?></span></button>
     </div>
   <input type="hidden" id="is-cf7sg-form" name="is_cf7sg_form" value="true" />
   <input type="hidden" id="wpcf7-locale" name="wpcf7-locale" value="<?php echo esc_attr( $cf7_form->locale() ); ?>" />

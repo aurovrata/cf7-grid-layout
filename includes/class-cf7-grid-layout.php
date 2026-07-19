@@ -135,7 +135,7 @@ class Cf7_Grid_Layout {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cf7-grid-layout-admin.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'assets/cf7-admin-table/cf7-admin-table-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'assets/cf7-admin-table/cf7sg-admin-table-loader.php';
 		/**
 		* Persist admin notices:
 		 *
@@ -274,7 +274,7 @@ class Cf7_Grid_Layout {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_styles_and_scripts', 9, 0 );
 		$this->loader->add_action( 'wp_print_scripts', $plugin_public, 'dequeue_cf7_scripts', 100 );
 		$this->loader->add_action( 'wp_print_styles', $plugin_public, 'dequeue_cf7_styles', 100 );
-		$this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'cf7_shortcode_request', 5, 3 );
+		$this->loader->add_filter( 'do_shortcode_tag', $plugin_public, 'cf7_shortcode_request', 5, 100 );
 
 		// save grid fields.
 		$this->loader->add_action( 'wp_ajax_nopriv_save_grid_fields', $plugin_public, 'save_grid_fields' );

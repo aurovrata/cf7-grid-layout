@@ -22,7 +22,9 @@ $cf7_key = $post->post_name;
   ?>
 
   <div id="optional-editors">
-    <a class="button jstab cf7sg-cmtab<?=$jscm_required.$editor_disable?>" href="javascript:void(0);"><?=__('Add custom JS','cf7-grid-layout')?></a>
+    <a class="button jstab cf7sg-cmtab<?=$jscm_required.$editor_disable?>" href="#">
+      <?=__('Add custom JS','cf7-grid-layout')?>
+</a>
     <div id="cf7-js-codemirror" class="display-none">
       <div  class="codemirror-theme"><?=__('Editor theme:','cf7-grid-layout')?>
         <?php $user_js_theme = get_user_meta(get_current_user_id(),'_cf7sg_js_cm_theme', true); ?>
@@ -45,7 +47,9 @@ $cf7_key = $post->post_name;
         ?>
       </textarea>
     </div>
-    <a class="button csstab cf7sg-cmtab<?=$csscm_required.$editor_disable?>" href=""><?=__('Add custom CSS','cf7-grid-layout')?></a>
+    <a class="button csstab cf7sg-cmtab<?=$csscm_required.$editor_disable?>" href="#">
+      <?=__('Add custom CSS','cf7-grid-layout')?>
+    </a>
     <div id="cf7-css-codemirror" class="display-none">
       <div  class="codemirror-theme"><?=__('Editor theme:','cf7-grid-layout')?>
         <?php $user_css_theme = get_user_meta(get_current_user_id(),'_cf7sg_css_cm_theme', true); ?>
@@ -144,7 +148,7 @@ $cf7_key = $post->post_name;
             <?=__('Slider control','cf7-grid-layout')?>
             <input type="checkbox" class="slider-control" />
           </label>
-          <button type="button" commandfor="--make-grid" class="display-none button make-grid row-control"><?= __('Make grid', 'cf7-grid-layout');?></button>
+          <a type="button" href="#" commandfor="--make-grid" class="display-none button make-grid row-control"><?= __('Make grid', 'cf7-grid-layout');?></a>
         </div>
       </div>
     </div>

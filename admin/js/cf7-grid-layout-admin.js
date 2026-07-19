@@ -57,7 +57,8 @@
     /** @since 2.11.0 full screen button*/
     let $editor = $('#cf7sg-editor') ;
     $editor.css('background-color',$('body').css('background-color'));
-    $('#full-screen-cf7').on('click', function(){
+    $('#full-screen-cf7').on('click', function(e){
+      e.preventDefault();
       $editor.toggleClass('full-screen');
       $(this).toggleClass('full-screen');
       // if($editor.is('.full-screen')) $editor.width($('#wpbody').width());

@@ -9,6 +9,10 @@
 	margin-top: 8px;
   z-index:2;
 }
+#cf7sg-editor button.button {
+	min-height: 35px;
+    line-height: 2;
+}
 .cf7sg-tutorial {
 	width: 100%;
 	min-height: 200px;
@@ -67,7 +71,10 @@
 #contact-form-editor .loading-screen .spinner{visibility: visible; float:none}
 #contact-form-editor .loading-screen .js-error p {text-align: left;font-size: 15px}
 #contact-form-editor .loading-screen .error {color: #b90101}
-#optional-editors a.button {font-weight: bold;}
+#optional-editors a.button {
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
 #js-tags > li.show-events:not(#last-item) {
 	display: inline-block;
 	vertical-align: top;
@@ -621,6 +628,7 @@ textarea.grid-input {
 	background-color: #818a99;
 	color: white;
 	min-height: 25px;
+    line-height: 2;
 }
 div#form-editor-tabs > ul.ui-tabs-nav li {
     padding: 0;

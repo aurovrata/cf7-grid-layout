@@ -299,7 +299,7 @@
         let $this = $(this);
         $this.each(function(activate){
           let $this = $(this), ref, $theme, $text, cm, theme, $cm, mode,regex;
-          if(!$this.is('a.button.cf7sg-cmtab')) return $this;
+          if(!$this.is('.button.cf7sg-cmtab')) return $this;
 
           ref = '#'+$this.next('div.display-none').attr('id');
           $this.attr('href',ref);
@@ -360,7 +360,10 @@
       //add requried cm editors.
       $('a.cf7sg-cmtab.required', $optionals).createNewCMEditor();
       //else listen for user requirement.
-      $optionals.click('a.cf7sg-cmtab',function(e){ $(e.target).createNewCMEditor(true) });
+      $optionals.click('a.cf7sg-cmtab',function(e){ 
+        e.preventDefault();
+        $(e.target).createNewCMEditor(true)
+      });
 
       jscme.on('changes', function(e, changes){
         jsInsertAtLine = false;
