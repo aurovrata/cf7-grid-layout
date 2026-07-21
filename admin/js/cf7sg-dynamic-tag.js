@@ -1,20 +1,21 @@
 
 (function( $ ) {
   'use strict';
+  let $form, tagname, $tab, $is_cat, $taxonomy, $plural, $single, $name, $hasNesting, source, selectType, key;
 
   $('.cf7sg-dynamic-list-tag-manager').change(':input', function(e){
-    let $target = $(e.target),
-      $form = $target.closest('.cf7sg-dynamic-list-tag-manager'),
-      tagname = $form.data('tag'),
-      $tab = $('input[name="sections"]:checked', $form),
-      $is_cat = $('input[name="is_hierarchical"]', $form),
-      $taxonomy = $('input[name="taxonomy_slug"]', $form),
-      $plural = $('input[name="plural_name"]', $form),
-      $single = $('input[name="singular_name"]', $form),
-      $name = $('input[name="name"]', $form),
-      $hasNesting = $('#enable-branches'),
-      source = 'taxonomy',
-      selectType = $('.list-style:checked', $form).val();
+    let $target = $(e.target);
+    if( !$form ) $form = $target.closest('.cf7sg-dynamic-list-tag-manager');
+    if( !tagname ) tagname = $form.data('tag');
+    if( !$tab ) $tab = $('input[name="sections"]:checked', $form);
+    if( !$is_cat ) $is_cat = $('input[name="is_hierarchical"]', $form);
+    if( !$taxonomy ) $taxonomy = $('input[name="taxonomy_slug"]', $form);
+    if( !$plural ) $plural = $('input[name="plural_name"]', $form);
+    if( !$single ) $single = $('input[name="singular_name"]', $form);
+    if( !$name ) $name = $('input[name="name"]', $form);
+    if( !$hasNesting ) $hasNesting = $('#enable-branches');
+    source = 'taxonomy';
+    selectType = $('.list-style:checked', $form).val();
 
     switch(true){
       case $target.is('select.post-list'):
@@ -85,20 +86,6 @@
         $a.attr('data-cf72post', $('#fieldhelperdiv li.'+this.classList+' a').data('cf72post') );
         $a.addClass('init').addClass('helper');
       }
-      new Clipboard($a[0], {
-        text: function(t) {
-          let $f = $(t);
-          let text = $f.data('cf72post');
-          //get post slug
-          let key = $('#post_name').val();
-          text = text.replace(/\{\$form_key\}/gi, key);
-          text = text.replace(/\{\$field_type\}/gi, tagname);
-          text = text.replace(/\{\$field_name\}/gi, $name.val());
-          text = text.replace(/\{\$field_name_slug\}/gi, $name.val().replace(/\-/g,'_'));
-          text = text.replace(/\[dqt\]/gi, '"');
-          return text;
-        }
-      })
     });
     //update tag field.
     let $req = $('input[name="required"]', $form),
@@ -158,17 +145,40 @@
     if($req.is(':checked')) tagname = tagname+'*';
     $tag.val('[' + tagname +' '+ $name.val() + multiple + postimgs + postlinks + id +' '+ classes + values + dataAttr +']');
   });
+  //helper code clicks.
+  $('.cf7sg-dynamic-list-tag-manager').on('click', 'a.helper', async (e)=> {
+    e.preventDefault();
+    let $f      = $(e.target),
+      text    = $f.data('cf72post');
 
+    if( !$form ) $form   = $f.closest('.cf7sg-dynamic-list-tag-manager');
+    if( !tagname ) tagname = $form.data('tag');
+    if( !$name ) $name   = $('input[name="name"]', $form);
+    if( !key ) key     = $('#post_name').val();
+
+    text = text.replace(/\{\$form_key\}/gi, key);
+    text = text.replace(/\{\$field_type\}/gi, tagname);
+    text = text.replace(/\{\$field_name\}/gi, $name.val());
+    text = text.replace(/\{\$field_name_slug\}/gi, $name.val().replace(/\-/g,'_'));
+    text = text.replace(/\[dqt\]/gi, '"');
+    try {	
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      console.error('Failed to copy helper text: ', err);
+    }
+  });
   //udpate the new category if created
   $('.cf7sg-dynamic-tag-submit .button').on('click', function(){
-    let $form = $(this).closest('form'),
-      tag = $form.data('id'),
-      $is_cat = $('input[name="is_hierarchical"]', $form),
-      $taxonomy = $('input[name="taxonomy_slug"]', $form),
-      $plural = $('input[name="plural_name"]', $form),
-      $single = $('input[name="singular_name"]', $form),
-      $select = $('select.taxonomy-list', $form),
-      $option = $select.find('option:selected');
+    let $select, $option,
+      tag = $form.data('id');
+    
+    if (!$form ) $form = $(this).closest('form');
+    if (!$is_cat ) $is_cat = $('input[name="is_hierarchical"]', $form);
+    if (!$taxonomy ) $taxonomy = $('input[name="taxonomy_slug"]', $form);
+    if (!$plural ) $plural = $('input[name="plural_name"]', $form);
+    if (!$single ) $single = $('input[name="singular_name"]', $form);
+    $select = $('select.taxonomy-list', $form);
+    $option = $select.find('option:selected');
 
     if($option.is('.cf7sg-new-taxonomy') ){
       $option.after('<option data-name="'+$single.val()+'" value="'+$taxonomy.val()+'">'+$plural.val()+'</option>');

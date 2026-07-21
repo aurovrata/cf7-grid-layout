@@ -41,19 +41,20 @@
 <script type="text/javascript">
 (function($){
 	$(document).ready( function(){
-    $('.helper-list li a', $('#helperdiv, #submithelperdiv')).each(function(){
-      new Clipboard($(this)[0], {
-        text: function(trigger) {
-          var $target = $(trigger);
-          var text = $target.data('cf72post');
-          //get post slug
-          var key = $('#post_name').val();
-          text = text.replace(/\{\$form_key\}/gi, key);
-          text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
-          text = text.replace(/\[dqt\]/gi, '"');
-          return text;
-        }
-      });
+    $('#helperdiv, #submithelperdiv').on('click', 'a.helper', async (e)=> {
+      e.preventDefault();
+      let $target = $(e.target),
+        text = $target.data('cf72post'),
+        key = $('#post_name').val();
+
+      text = text.replace(/\{\$form_key\}/gi, key);
+      text = text.replace(/\{\$form_key_slug\}/gi, key.replace(/\-/g,'_'));
+      text = text.replace(/\[dqt\]/gi, '"');
+      try {	
+        await navigator.clipboard.writeText(text);
+      } catch (err) {
+        console.error('Failed to copy helper text: ', err);
+      } 
     });
   });
 })(jQuery)

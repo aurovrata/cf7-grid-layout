@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: contact form 7 extension, form builder, multi-step form, repetitive fields, 
 Requires at least: 4.7
 Requires PHP: 7.4
-Tested up to: 6.9.4
-Stable tag: 4.16.0
+Tested up to: 7.0.2
+Stable tag: 4.17.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,7 +15,7 @@ Pure CSS responsive grid layouts for contact form 7.  It enables rich interlinki
 
 The plugin uses the [smart-grid](http://origin.css.gd/) CSS plugin to build beautiful form layouts.  It introduces a graphical editor to design your forms, as well as a coloured html syntax editor built using the excellent CodeMirror editor.  It is now possible to design smart layouts with ease.
 
-v4.0 introduces a tutorial sections within the dashboard for quick reference to various YouTube tutorials.  For a full list of available tutorials visit this playlist.
+v4.0 introduced a tutorial sections within the dashboard for quick reference to various YouTube tutorials.  For a full list of available tutorials visit this playlist.
 
 [youtube https://www.youtube.com/playlist?list=PLblJwjs_dFBsynXEstrV3fCIC7GBmK9HW]
 
@@ -355,6 +355,8 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 24. (24) Redirect your form on submission to one of your existing pages and retrieve the submitted values from a transient field.
 
 == Changelog ==
+= 4.17.0 = 
+* replace clipboard.js plugin with HTML Clipboard API.
 = 4.16.0 =
 * fix form editor issues due to changes in CF7 plugin tag generator update.
 * use `button` element instead of void links for UI editor buttons

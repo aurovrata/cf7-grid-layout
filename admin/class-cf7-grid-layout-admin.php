@@ -379,7 +379,6 @@ class Cf7_Grid_Layout_Admin {
         // debug_msg($post, 'POST: ');
         // debug_msg($screen, 'SCREEN: ');
         wpcf7_admin_enqueue_scripts( 'wpcf7' );
-        wp_enqueue_script('jquery-clibboard', $plugin_dir . 'assets/clipboard/clipboard.min.js', array('jquery'),$this->version,true);
         wp_enqueue_script( 'cf7-grid-codemirror-js', $plugin_dir . 'admin/js/cf7-grid-codemirror.js', array( 'jquery', 'jquery-ui-tabs', 'cf7-codemirror-js' ), $this->version, true );
         wp_localize_script(
           'cf7-grid-codemirror-js',
@@ -427,7 +426,7 @@ class Cf7_Grid_Layout_Admin {
         wp_enqueue_script( 'cf7sg-dynamic-select-js', $plugin_dir . 'admin/js/cf7sg-dynamic-select.js', array('jquery','wpcf7-admin' ), $this->version, true );
         wp_enqueue_script( 'cf7-benchmark-tag-js', $plugin_dir . 'admin/js/cf7-benchmark-tag.js', array('jquery','wpcf7-admin' ), $this->version, true );
         /** @since 3.2.0 */
-        wp_enqueue_script('cf7sg-mail-tag-js', $plugin_dir.'admin/js/mail-tag-helper.js', array('jquery','jquery-clibboard'));
+        wp_enqueue_script('cf7sg-mail-tag-js', $plugin_dir.'admin/js/mail-tag-helper.js', array('jquery'));
         wp_localize_script('cf7sg-mail-tag-js','mailTagHelper',
           array(
             'msg'=>__('Click to copy!','cf7-grid-layout'),
