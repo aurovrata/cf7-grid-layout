@@ -1,6 +1,4 @@
 <?php
-use voku\helper\HtmlDomParser;
-
 /**
  * The public-facing functionality of the plugin.
  *
@@ -436,7 +434,7 @@ class Cf7_Grid_Layout_Public {
 		if ( empty( $class ) ) {
 			$class = array();
 		}
-		// debug_msg($class, "$cf7_id form classes ");
+		// wpg_debug($class, "$cf7_id form classes ");
 		// check classes required for sub-forms.
 		$sub_forms     = array();
 		$use_grid_js   = false;
@@ -488,7 +486,7 @@ class Cf7_Grid_Layout_Public {
 		if ( ! empty( $form ) ) {
 			$messages = $form->prop( 'messages' );
 		} else {
-			debug_msg( "CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id" );
+			wpg_debug( "CF7SG FROM ERROR: unable to retrieve cf7 form $cf7_id" );
 		}
 		// setup classes and id for wrapper.
 		$css_id = '';
@@ -539,7 +537,7 @@ class Cf7_Grid_Layout_Public {
 			wp_enqueue_script( $this->plugin_name );
 
 			$localise = $this->localise_script();
-			// debug_msg($localise, 'local ');
+			// wpg_debug($localise, 'local ');
 			add_action(
 				'wp_footer',
 				function() use ( $localise ) {
@@ -597,7 +595,7 @@ class Cf7_Grid_Layout_Public {
 			$cf7_form = $form_raw = '';
 			foreach ( $sub_forms as $post_obj ) {
 				// check form saved date, if sub-form is newer, we need to udpate it.
-				if ( strtotime( $post_obj->post_modified ) > $form_time ) {
+				if ( true ) { //strtotime( $post_obj->post_modified ) > $form_time ) {
 					if ( empty( $cf7_form ) ) {
 						$cf7_form = WPCF7_ContactForm::get_instance( $cf7_id );
 						$form_raw = '';
@@ -693,17 +691,41 @@ class Cf7_Grid_Layout_Public {
 		// Create a new DOM document
 		$cf7_key      = $sub_form_post->post_name;
 		$sub_form_raw = get_post_meta( $sub_form_post->ID, '_form', true );
+		$form		  = $form_raw;
+		/** NB @since 4.18.0 remove deprecated Simple HTML Dom library and use native PHP DOMDocument instead. */
+
 		// PHP DOM plugin.
-		/** NB @since 3.2.0 use Simple HTML Dom library */
-		require_once plugin_dir_path( __DIR__ ) . 'assets/simple-html-dom/autoload.php';
+		$dom = new DOMDocument();
+		// Suppress warnings caused by malformed HTML structure
+		@$dom->loadHTML('<div id="cf7sg-domdocument">' . $form_raw. '</div>' );
+		//use Xpath to search for sub form.
+		$xpath = new DOMXPath($dom);
+		$query  = '//*[@id="cf7sg-form-'.$cf7_key.'"]';
+		$element = $xpath->query($query)->item(0);
 
-		$dom = HtmlDomParser::str_get_html( $form_raw );
-		// reset the inner form.
-		$element = $dom->find( '#cf7sg-form-' . $cf7_key );
+		if ($element) {
+			while ($element->hasChildNodes()) {
+				$element->removeChild($element->firstChild);
 
-		$element[0]->innertext = $sub_form_raw;
-
-		return $dom->outertext;
+			}
+			// Step 2: Create a fragment with new sub form.
+			$fragment = $dom->createDocumentFragment();
+			
+			// Note: appendXML requires valid XML/HTML syntax to parse successfully
+			if ($fragment->appendXML($sub_form_raw)) {
+				$element->appendChild($fragment);
+			}
+			//get the original form container, with your the DOMDOcument wrapper.
+			$query  = '//*[@id="cf7sg-domdocument"]';
+			$element = $xpath->query($query)->item(0);
+			if($element) {
+				$form = '';
+				foreach ($element->childNodes as $child) {
+					$form .= $dom->saveHTML($child);
+				}
+			}
+		} 
+		return $form;
 	}
 
 	/**
@@ -724,7 +746,7 @@ class Cf7_Grid_Layout_Public {
 			/** NB @since 4.10.0 abstract out dynamic lists */
 			do_action( 'cf7sg_register_dynamic_lists' );
 			$lists = cf7sg_get_dynamic_lists();
-			// debug_msg($lists, 'dynamic lists ');
+			// wpg_debug($lists, 'dynamic lists ');
 			foreach ( $lists as $l ) {
 				$l->register_cf7_shortcode();
 			}
@@ -793,7 +815,7 @@ class Cf7_Grid_Layout_Public {
 			foreach ( $table_fields as $field ) {
 				$sanitised_table_fields[] = sanitize_text_field( $field );
 			}
-			// debug_msg($grid_fields, $cf7_id);
+			// wpg_debug($grid_fields, $cf7_id);
 			update_post_meta( $cf7_id, '_cf7sg_grid_tabs_names', $sanitised_tab_fields );
 			update_post_meta( $cf7_id, '_cf7sg_grid_table_names', $sanitised_table_fields );
 			wp_send_json_success( array( 'message' => 'saved fields' ) );
@@ -811,22 +833,22 @@ class Cf7_Grid_Layout_Public {
 	 * @return  Array    filtered submitted data.
 	 **/
 	public function setup_grid_values( $data ) {
-		// debug_msg($data, 'CF7 processed data ');
+		// wpg_debug($data, 'CF7 processed data ');
 		$cf7form = WPCF7_ContactForm::get_current();
-		// debug_msg($_POST);
+		// wpg_debug($_POST);
 		if ( empty( $cf7form ) ) {
 			if ( isset( $_POST['_wpcf7'] ) ) {
 				$cf7_id  = $_POST['_wpcf7'];
 				$cf7form = WPCF7_ContactForm::get_instance( $cf7_id );
 				if ( empty( $cf7form ) ) {
-					debug_msg( 'CF7SG ERROR: fn setup_grid_values() is unable to load submitted form' );
+					wpg_debug( 'CF7SG ERROR: fn setup_grid_values() is unable to load submitted form' );
 					return $data;
 				}
 			}
 		}
 		$cf7_id        = $cf7form->id();
 		$this->form_id = $cf7_id;
-		// debug_msg($grid_fields, 'grid fields...');
+		// wpg_debug($grid_fields, 'grid fields...');
 
 		foreach ( $cf7form->scan_form_tags() as $tag ) {
 			if ( empty( $tag->name ) ) {
@@ -859,7 +881,7 @@ class Cf7_Grid_Layout_Public {
 					break;
 			}
 		}
-		// debug_msg($data, 'data consolidated');
+		// wpg_debug($data, 'data consolidated');
 		// add toggled sections as submitted values.
 		$groups = get_post_meta( $this->form_id, '_cf7sg_grid_grouped_toggles', true );
 		if ( ! empty( $groups ) ) {
@@ -873,8 +895,8 @@ class Cf7_Grid_Layout_Public {
 			}
 			$data += self::$array_toggled_panels[ $this->form_id ];
 		}
-		// debug_msg($data, 'consolidated + submitted: ');
-		// debug_msg($_POST);
+		// wpg_debug($data, 'consolidated + submitted: ');
+		// wpg_debug($_POST);
 		return $data;
 	}
 	/**
@@ -891,13 +913,13 @@ class Cf7_Grid_Layout_Public {
 		if ( isset( $_POST['_wpcf7'] ) ) {
 			$cf7_id = $_POST['_wpcf7'];
 		} else {
-			debug_msg( 'CF7SG ERROR: fn consolidate_grid_submissions() is unable to load submitted form' );
+			wpg_debug( 'CF7SG ERROR: fn consolidate_grid_submissions() is unable to load submitted form' );
 		}
 		$is_used    = false;
 		$field_name = $field_tag['name'];
 		$field_type = $field_tag['basetype'];
 		$origin     = self::$array_grid_fields[ $cf7_id ][ $field_name ][0];// array(origin,type);
-		// debug_msg($origin, "$field_name origin ");
+		// wpg_debug($origin, "$field_name origin ");
 		$values           = array();
 		$regex            = '';
 		$submitted_fields = array();
@@ -967,7 +989,7 @@ class Cf7_Grid_Layout_Public {
 				break;
 		}
 		$purge_fields[ $field_name ] = true;
-		// debug_msg($purge_fields, 'purging ');
+		// wpg_debug($purge_fields, 'purging ');
 		$data = array_udiff_uassoc(
 			$data,
 			$purge_fields,
@@ -1179,7 +1201,7 @@ class Cf7_Grid_Layout_Public {
 	 * @param WPCF7_ContactForm $form form object.
 	 */
 	function cf7_swv_schemas_repetitive_fields( $schema, $form ) {
-		// debug_msg($schema, 'schema...');
+		// wpg_debug($schema, 'schema...');
 		// setup the form id
 		$this->form_id  = $form->id();
 		$submitted      = null;
@@ -1188,7 +1210,7 @@ class Cf7_Grid_Layout_Public {
 		if ( method_exists( 'WPCF7_Submission', 'get_instance' ) ) {
 			$submitted = WPCF7_Submission::get_instance();
 		} else {
-			debug_msg( 'WPCF7_Submission::get_instance() method no longer available' );
+			wpg_debug( 'WPCF7_Submission::get_instance() method no longer available' );
 		}
 		if ( empty( $submitted ) ) {
 			return;
@@ -1273,13 +1295,13 @@ class Cf7_Grid_Layout_Public {
 			$rules[ $rule['field'] ][] = $r;
 		}
 		if ( ! class_exists( 'WPCF7_SWV_Schema' ) ) {
-			debug_msg( 'CF7SG PUBLIC: Cannot find class WPCF7_SWV_Schema, quitting validation' );
+			wpg_debug( 'CF7SG PUBLIC: Cannot find class WPCF7_SWV_Schema, quitting validation' );
 			return;
 		}
 
-		// debug_msg($added_tags, 'added tags...');
-		// debug_msg($removed_tags, 'removed tags...');
-		// debug_msg($valid_tags, 'valid tags...');
+		// wpg_debug($added_tags, 'added tags...');
+		// wpg_debug($removed_tags, 'removed tags...');
+		// wpg_debug($valid_tags, 'valid tags...');
 		// validate the extra schemas once validation by CF7 is done.
 		add_filter(
 			'wpcf7_validate',
@@ -1348,9 +1370,9 @@ class Cf7_Grid_Layout_Public {
 							break;
 					}
 				}
-				// debug_msg($validation, 'validation ');
-				// debug_msg($f_validation, 'f validation ');
-				// debug_msg($valid_tags, 'valid tags ');
+				// wpg_debug($validation, 'validation ');
+				// wpg_debug($f_validation, 'f validation ');
+				// wpg_debug($valid_tags, 'valid tags ');
 				return $this->filter_validation( $f_validation, $valid_tags, null );
 			},
 			1,
@@ -1399,7 +1421,7 @@ class Cf7_Grid_Layout_Public {
 		if ( method_exists( 'WPCF7_ContactForm', 'get_current' ) ) { /** NB @since 4.12.8 */
 			$cf7form = WPCF7_ContactForm::get_current();
 		} else {
-			debug_msg( 'WPCF7_ContactForm::get_current() method no longer available' );
+			wpg_debug( 'WPCF7_ContactForm::get_current() method no longer available' );
 		}
 		if ( empty( $cf7form ) ) {
 			return $result;
@@ -1408,7 +1430,7 @@ class Cf7_Grid_Layout_Public {
 		if ( method_exists( 'WPCF7_Submission', 'get_instance' ) ) {
 			$submitted = WPCF7_Submission::get_instance();
 		} else {
-			debug_msg( 'WPCF7_Submission::get_instance() method no longer available' );
+			wpg_debug( 'WPCF7_Submission::get_instance() method no longer available' );
 		}
 		if ( empty( $submitted ) ) {
 			return $result;
@@ -1417,7 +1439,7 @@ class Cf7_Grid_Layout_Public {
 		if ( class_exists( 'WPCF7_Validation' ) ) {
 			$result = new WPCF7_Validation();
 		} else {
-			debug_msg( 'new WPCF7_Validation() constructor no longer available' );
+			wpg_debug( 'new WPCF7_Validation() constructor no longer available' );
 			return $result;
 		}
 		$data      = $submitted->get_posted_data();
@@ -1437,7 +1459,7 @@ class Cf7_Grid_Layout_Public {
 		}
 
 		foreach ( $cf7form->scan_form_tags() as $tag ) {
-			// debug_msg($data);
+			// wpg_debug($data);
 			/**
 			*@since 1.9.0 fix issue with Conditional Field plugin.
 			*/
@@ -1515,8 +1537,8 @@ class Cf7_Grid_Layout_Public {
 						}
 						  $idx++;
 					}
-					// debug_msg($values, 'values '.$tag['name'].'....');
-					// debug_msg($result, 'validation '.$tag['name'].'....');
+					// wpg_debug($values, 'values '.$tag['name'].'....');
+					// wpg_debug($result, 'validation '.$tag['name'].'....');
 					break;
 				default:
 					switch ( $type ) {
@@ -1597,7 +1619,7 @@ class Cf7_Grid_Layout_Public {
 		$result = new WPCF7_Validation();
 
 		if ( ! empty( $validation ) ) {
-			// debug_msg($validation, 'validation ');
+			// wpg_debug($validation, 'validation ');
 
 			foreach ( $validation as $name => $msg ) {
 				switch ( true ) {
@@ -1613,7 +1635,7 @@ class Cf7_Grid_Layout_Public {
 									}
 									break;
 								case is_array( $validated[ $name ][ $idx ] ): // error, expecting array..
-									debug_msg( 'Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: ' . $name . '[' . $idx . ']' );
+									wpg_debug( 'Filtered cf7sg_validate_submission validation ERROR, expecting array for table field within tab: ' . $name . '[' . $idx . ']' );
 									break;
 								case empty( $value ): // no message, just continue.
 									break;
@@ -1624,7 +1646,7 @@ class Cf7_Grid_Layout_Public {
 						}
 						break;
 					case is_array( $validated[ $name ] ): // error, we should have an array.
-						debug_msg( 'Filtered cf7sg_validate_submission validation ERROR, expecting array for field ' . $name );
+						wpg_debug( 'Filtered cf7sg_validate_submission validation ERROR, expecting array for field ' . $name );
 						break;
 					case empty( $msg ): // no message, just continue.
 						break;
@@ -1707,7 +1729,7 @@ class Cf7_Grid_Layout_Public {
 					$toggles_array[ $key ] = sanitize_text_field( $value );
 				}
 			}
-			// debug_msg($toggles_array, 'toggles status saved, ');
+			// wpg_debug($toggles_array, 'toggles status saved, ');
 			update_post_meta( $post_id, 'cf7sg_toggles_status', $toggles_array );
 		}
 	}
@@ -1913,7 +1935,7 @@ class Cf7_Grid_Layout_Public {
 	public function filter_table_tab_mail_tag( $replaced, $submitted, $html = false, $mail_tag = null ) {
 		$cf7form = WPCF7_ContactForm::get_current();
 		if ( empty( $cf7form ) ) {
-			debug_msg( mail_tag, 'SMART GRID (ERR): unable to retrieve current form while filtering mail tag: ' );
+			wpg_debug( mail_tag, 'SMART GRID (ERR): unable to retrieve current form while filtering mail tag: ' );
 			return $replaced; // no form object.
 		}
 		if ( empty( $mail_tag ) || ! is_a( $mail_tag, 'WPCF7_MailTag' ) ) {
@@ -2168,7 +2190,7 @@ class Cf7_Grid_Layout_Public {
 				$data      = apply_filters( 'cf7sg_form_redirect_cached_data', $data, $_POST['_wpcf7_key'], $form->id() );
 				$transient = '_cf7sg_' . wp_create_nonce( $this->form_css_id( $_POST['_wpcf7_key'] ) );
 				set_transient( $transient, $data, $cache[0] * $cache[1] );
-				// debug_msg($data, "setting transient $transient, expiring in ".$cache[0]*$cache[1]);
+				// wpg_debug($data, "setting transient $transient, expiring in ".$cache[0]*$cache[1]);
 			}
 		}
 		/** NB @since 4.4.0 for preview forms...*/

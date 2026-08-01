@@ -2,6 +2,9 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+fieldset.hidden-fields-container {
+	display: none;
+}
  /** @since 4.11.0 layout for imagegrids */
  .cf7sg-list .cf7sg-dl.cf7sg-dc {
 	display: block;

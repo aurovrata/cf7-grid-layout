@@ -5,7 +5,7 @@ Tags: contact form 7 extension, form builder, multi-step form, repetitive fields
 Requires at least: 4.7
 Requires PHP: 7.4
 Tested up to: 7.0.2
-Stable tag: 4.17.0
+Stable tag: 4.18.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -355,6 +355,8 @@ For JavaScript helper codes, paste them in your `<theme folder>/js/<form-unique-
 24. (24) Redirect your form on submission to one of your existing pages and retrieve the submitted values from a transient field.
 
 == Changelog ==
+= 4.18.0 =
+* remove deprecated Simple HTML Dom library and use native PHP DOMDocument instead for modular form updates.
 = 4.17.0 = 
 * replace clipboard.js plugin with HTML Clipboard API.
 = 4.16.0 =
