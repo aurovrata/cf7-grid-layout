@@ -1288,7 +1288,10 @@ class Cf7_Grid_Layout_Public {
 		}
 		$rules = array();
 		foreach ( $schema->rules() as $r ) { // $rule is a WPCF7_SWV_Rule object.
-			$rule = $r->to_array();
+			$rule = self::swv_rule_to_array( $r );
+			if ( ! isset( $rule['field'] ) ) {
+				continue;
+			}
 			if ( ! isset( $rules[ $rule['field'] ] ) ) {
 				$rules[ $rule['field'] ] = array(); // can have multiple rules.
 			}
@@ -1335,18 +1338,11 @@ class Cf7_Grid_Layout_Public {
 						} else {
 							foreach ( $rules[ $field ] as $rule ) {
 								$rule_class     = get_class( $rule );
-								$_rule          = $rule->to_array();
+								$_rule          = self::swv_rule_to_array( $rule );
 								$_rule['field'] = $tag['name'];
 								$_rule          = new $rule_class( $_rule ); // cloned rule object for new field.
-								$v              = $_rule->validate(
-									array(
-										'text'  => true,
-										'file'  => false,
-										'field' => array(),
-									)
-								); // validate
-								if ( is_wp_error( $v ) ) {
-										$err = $v->get_error_message();
+								$err            = self::swv_validate_rule( $_rule ); // validate
+								if ( ! empty( $err ) ) {
 										break 1; // move to the next tag.
 								}
 							}
@@ -1378,6 +1374,54 @@ class Cf7_Grid_Layout_Public {
 			1,
 			1
 		);// call it early.
+	}
+	/**
+	 * Convert a CF7 SWV rule to an array of its properties.
+	 * CF7 v6.2 moved its rules to the RockLobsterInc\Swv library, which uses toArray() instead of to_array().
+	 *
+	 * @since 4.18.1
+	 * @param object $rule a WPCF7_SWV_Rule or RockLobsterInc\Swv\AbstractRule object.
+	 * @return array rule properties.
+	 */
+	private static function swv_rule_to_array( $rule ) {
+		if ( method_exists( $rule, 'toArray' ) ) {
+			return $rule->toArray();
+		}
+		return $rule->to_array();
+	}
+	/**
+	 * Validate a CF7 SWV rule against the submitted data.
+	 * CF7 v6.2 rules validate a FormDataTree object and throw an InvalidityException,
+	 * earlier rules read the posted data themselves and return a WP_Error.
+	 *
+	 * @since 4.18.1
+	 * @param object $rule a WPCF7_SWV_Rule or RockLobsterInc\Swv\AbstractRule object.
+	 * @return string error message, empty if valid.
+	 */
+	private static function swv_validate_rule( $rule ) {
+		$context = array(
+			'text'  => true,
+			'file'  => false,
+			'field' => array(),
+		);
+		if ( class_exists( '\RockLobsterInc\FormDataTree\FormDataTree' ) ) {
+			$form_data = new \RockLobsterInc\FormDataTree\FormDataTree(
+				array(
+					'post' => wp_unslash( $_POST ),
+				)
+			);
+			try {
+				$rule->validate( $form_data, $context );
+			} catch ( \RockLobsterInc\Swv\InvalidityException $e ) {
+				return $e->getMessage();
+			}
+			return '';
+		}
+		$v = $rule->validate( $context );
+		if ( is_wp_error( $v ) ) {
+			return $v->get_error_message();
+		}
+		return '';
 	}
 	private function repeat_field_err_messages( $tags, $validation, $d = 1 ) {
 		$f_validation = array();
