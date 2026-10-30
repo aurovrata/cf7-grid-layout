@@ -9,6 +9,9 @@
  * @subpackage Cf7_Grid_Layout/public
  */
 
+use RockLobsterInc\FormDataTree\{ FormDataTree };
+use RockLobsterInc\Swv\{ InvalidityException as Invalidity };
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -256,9 +259,13 @@ class Cf7_Grid_Layout_Public {
 		// default style for cf7 grid forms (row buttons and tables mainly).
 		// others
 		// get registered script object for jquery-ui
-		$ui_ver = '1.12.1';
+		$ui_ver = '1.14.1';
 		if ( ! empty( $wp_scripts ) ) {
 			$ui_ver = $wp_scripts->query( 'jquery-ui-core' )->ver;
+		}
+		$test = "https://ajax.googleapis.com/ajax/libs/jqueryui/{$ui_ver}/themes/smoothness/jquery-ui.min.css";
+		if( !$this->remote_file_exists( $test ) ){
+			$ui_ver = '1.14.1'; //default
 		}
 		// tell WordPress to load the Smoothness theme from Google CDN
 		if ( ! $airplane ) {
@@ -1197,7 +1204,7 @@ class Cf7_Grid_Layout_Public {
 	 * it will also remove any rules in the schema
 	 *
 	 * @since 4.14.0
-	 * @param WPCF7_SWV_Schema  $schema itself a WPCF7_SWV_Rule
+	 * @param WPCF7_SWV_Schema  $schema itself a CompositeRule
 	 * @param WPCF7_ContactForm $form form object.
 	 */
 	function cf7_swv_schemas_repetitive_fields( $schema, $form ) {
@@ -1287,13 +1294,17 @@ class Cf7_Grid_Layout_Public {
 			}
 		}
 		$rules = array();
-		foreach ( $schema->rules() as $r ) { // $rule is a WPCF7_SWV_Rule object.
-			$rule = $r->to_array();
-			if ( ! isset( $rules[ $rule['field'] ] ) ) {
-				$rules[ $rule['field'] ] = array(); // can have multiple rules.
+			// wpg_debug( $schema->rules(),"rules ");
+		// $schema_params = $schema->to_array();
+		foreach ( $schema->rules() as $rule ) { // $rule is a RockLobsterInc/Swv/XXXRule object.
+			// $rule = $r->toArray();
+			if ( ! isset( $rules[ $rule->field ] ) ) {
+				$rules[ $rule->field ] = array(); // can have multiple rules.
 			}
-			$rules[ $rule['field'] ][] = $r;
+			$rules[ $rule->field ][] = $rule;
 		}
+		// wpg_debug($rules, 'rules...');
+
 		if ( ! class_exists( 'WPCF7_SWV_Schema' ) ) {
 			wpg_debug( 'CF7SG PUBLIC: Cannot find class WPCF7_SWV_Schema, quitting validation' );
 			return;
@@ -1307,7 +1318,8 @@ class Cf7_Grid_Layout_Public {
 			'wpcf7_validate',
 			function( $result ) use ( $rules, $added_tags, $removed_tags, $valid_tags ) {
 
-				// remove the errors for removed tags
+				// remove the errors for removed tags.
+				//$results is a WPCF7_Vaidation object to track invalid fields.
 				$invalids   = $result->get_invalid_fields();
 				$validation = array();
 				foreach ( $invalids as $f => $err ) {
@@ -1318,6 +1330,9 @@ class Cf7_Grid_Layout_Public {
 						unset( $validation[ $field ] );
 					}
 				}
+				$form_data = new FormDataTree( array(
+					'post' => wp_unslash( $_POST ),
+				) );
 
 				// validate the extra schema.
 				// $field = original field name which has cloned $tags.
@@ -1335,24 +1350,19 @@ class Cf7_Grid_Layout_Public {
 						} else {
 							foreach ( $rules[ $field ] as $rule ) {
 								$rule_class     = get_class( $rule );
-								$_rule          = $rule->to_array();
+								$_rule          = $rule->toArray();
 								$_rule['field'] = $tag['name'];
 								$_rule          = new $rule_class( $_rule ); // cloned rule object for new field.
-								$v              = $_rule->validate(
-									array(
-										'text'  => true,
-										'file'  => false,
-										'field' => array(),
-									)
-								); // validate
-								if ( is_wp_error( $v ) ) {
-										$err = $v->get_error_message();
-										break 1; // move to the next tag.
+								try {
+									$v = $_rule->validate( $form_data );
+								} catch ( Invalidity $error ) {
+									$err = $error->getMessage();
+									break 1; // move to the next tag.
 								}
 							}
 						}
 						if ( ! empty( $err ) ) {
-							$validation[ $tag['name'] ] = $err;
+							$validation[ $tag['name'] ] = $err; //keep track to enable validation filter.
 						}
 					}
 				}
@@ -1379,6 +1389,11 @@ class Cf7_Grid_Layout_Public {
 			1
 		);// call it early.
 	}
+	/**
+	 * @param array $tags
+	 * @param array $validation
+	 * @param int $d
+	 */
 	private function repeat_field_err_messages( $tags, $validation, $d = 1 ) {
 		$f_validation = array();
 		foreach ( $tags as $idx => $tag ) {
@@ -1572,7 +1587,7 @@ class Cf7_Grid_Layout_Public {
 					break;
 			}
 		}
-		return $this->filter_validation( $validation, $validated, $submission );
+		return $this->filter_validation( $validation, $validated, $submission);
 	}
 	/**
 	 * Filter validation using entire submitted data set.
@@ -2461,6 +2476,56 @@ class Cf7_Grid_Layout_Public {
 			}
 		}
 		return $results;
+	}
+	/**
+	 * Check whether a remote file exists at the given URL.
+	 *
+	 * @param string $url     The URL to test
+	 * @param int    $timeout Timeout in seconds
+	 * @return bool           True if the file exists (HTTP 2xx), false otherwise
+	 */
+	public function remote_file_exists(string $url, int $timeout = 10): bool{
+    // Validate URL format and restrict to http/https
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        return false;
+    }
+    $scheme = strtolower(parse_url($url, PHP_URL_SCHEME));
+    if (!in_array($scheme, ['http', 'https'], true)) {
+        return false;
+    }
+
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_NOBODY         => true,   // HEAD request, no body
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,   // follow redirects
+        CURLOPT_MAXREDIRS      => 5,
+        CURLOPT_CONNECTTIMEOUT => $timeout,
+        CURLOPT_TIMEOUT        => $timeout,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; FileChecker/1.0)',
+        CURLOPT_PROTOCOLS      => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+    ]);
+
+    curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+
+    // Some servers reject HEAD (405/403/501): retry with a ranged GET
+    if (in_array($code, [403, 405, 501], true)) {
+        curl_setopt_array($ch, [
+            CURLOPT_NOBODY  => false,
+            CURLOPT_HTTPGET => true,
+            CURLOPT_RANGE   => '0-0',     // request only the first byte
+        ]);
+        curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    }
+
+    if (PHP_VERSION_ID < 80000) {
+        curl_close($ch);
+    }
+
+    return $code >= 200 && $code < 300;
 	}
 }
 
